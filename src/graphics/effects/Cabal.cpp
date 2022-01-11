@@ -109,7 +109,6 @@ Vec3f CabalFx::update(Vec3f casterPos) {
 	}
 	
 	RenderMaterial mat;
-	mat.setCulling(CullNone);
 	mat.setDepthTest(true);
 	mat.setBlendType(RenderMaterial::Additive);
 	

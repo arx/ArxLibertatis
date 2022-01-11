@@ -78,8 +78,8 @@ struct RenderMaterial {
 	int getDepthBias() const { return m_depthBias; }
 	void setDepthBias(int bias) { m_depthBias = bias; }
 
-	CullingMode getCulling() const { return m_cullingMode; }
-	void setCulling(CullingMode cullMode) { m_cullingMode = cullMode; }
+	bool getCulling() const { return m_cullBackfaces; }
+	void setCulling(bool cullBackfaces) { m_cullBackfaces = cullBackfaces; }
 	
 private:
 	Texture * m_texture;
@@ -88,7 +88,7 @@ private:
 	Layer m_layer;
 	TextureStage::WrapMode m_wrapMode;
 	int m_depthBias;
-	CullingMode m_cullingMode;
+	bool m_cullBackfaces;
 };
 
 class RenderBatcher {

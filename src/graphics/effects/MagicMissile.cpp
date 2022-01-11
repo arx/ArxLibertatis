@@ -131,7 +131,6 @@ void CMagicMissile::Render() {
 	}
 	
 	RenderMaterial mat;
-	mat.setCulling(CullNone);
 	mat.setDepthTest(true);
 	mat.setBlendType(RenderMaterial::Additive);
 	

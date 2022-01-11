@@ -97,7 +97,7 @@ RenderMaterial::RenderMaterial()
 	, m_layer(Effect)
 	, m_wrapMode(TextureStage::WrapRepeat)
 	, m_depthBias(0)
-	, m_cullingMode(CullNone) {
+	, m_cullBackfaces(false) {
 }
 
 bool RenderMaterial::operator<(const RenderMaterial & other) const {
@@ -127,8 +127,8 @@ bool RenderMaterial::operator<(const RenderMaterial & other) const {
 	}
 	
 	// Then cull mode
-	if(m_cullingMode != other.m_cullingMode) {
-		return m_cullingMode < other.m_cullingMode;
+	if(m_cullBackfaces != other.m_cullBackfaces) {
+		return m_cullBackfaces < other.m_cullBackfaces;
 	}
 	
 	// Then wrap mode
@@ -158,7 +158,7 @@ RenderState RenderMaterial::apply() const {
 	
 	state.setDepthWrite(false);
 
-	state.setCull(m_cullingMode);
+	state.setCull(m_cullBackfaces ? CullCW : CullNone);
 	
 	switch(m_blendType) {
 		case Opaque: {

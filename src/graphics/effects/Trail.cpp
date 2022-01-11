@@ -96,7 +96,6 @@ void Trail::Render() {
 	}
 	
 	RenderMaterial mat;
-	mat.setCulling(CullNone);
 	mat.setBlendType(RenderMaterial::AlphaAdditive);
 	mat.setDepthTest(true);
 	mat.setDepthBias(8);

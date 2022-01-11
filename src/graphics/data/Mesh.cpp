@@ -630,11 +630,8 @@ void Draw3DObject(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos,
 			mat.resetTexture();
 		else
 			mat.setTexture(eobj->texturecontainer[face.texid]);
-
-		if(face.facetype & POLY_DOUBLESIDED)
-			mat.setCulling(CullNone);
-		else
-			mat.setCulling(CullCW);
+		
+		mat.setCulling(!(face.facetype & POLY_DOUBLESIDED));
 		
 		g_renderBatcher.add(mat, vert_list);
 	}

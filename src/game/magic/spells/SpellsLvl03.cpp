@@ -470,7 +470,7 @@ void IceProjectileSpell::Update() {
 	}
 	
 	RenderMaterial mat;
-	mat.setCulling(CullCW);
+	mat.setCulling(true);
 	mat.setDepthTest(true);
 	mat.setBlendType(RenderMaterial::Screen);
 	

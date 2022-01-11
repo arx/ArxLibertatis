@@ -153,15 +153,12 @@ void CRiseDead::Split(Vec3f * v, int a, int b, float yo) {
 void CRiseDead::RenderFissure() {
 	
 	RenderMaterial mat;
-	mat.setCulling(CullNone);
-	mat.setDepthTest(false);
 	mat.setWrapMode(TextureStage::WrapClamp);
-	mat.setBlendType(RenderMaterial::Opaque);
-	
 	mat.setLayer(RenderMaterial::EffectForeground);
 
 	//-------------------------------------------------------------------------
 	// computation des sommets
+	mat.setBlendType(RenderMaterial::Opaque);
 
 	for(int i = 0; i <= std::min(end, m_visibleNotches); i++) {
 		
@@ -503,16 +500,12 @@ void CSummonCreature::Split(Vec3f * v, int a, int b, float yo) {
 void CSummonCreature::RenderFissure() {
 	
 	RenderMaterial mat;
-	mat.setCulling(CullNone);
-	mat.setDepthTest(false);
 	mat.setWrapMode(TextureStage::WrapClamp);
-	mat.setBlendType(RenderMaterial::Opaque);
-	
-	
 	mat.setLayer(RenderMaterial::EffectForeground);
 
 	//-------------------------------------------------------------------------
 	// computation des sommets
+	mat.setBlendType(RenderMaterial::Opaque);
 
 	for(int i = 0; i <= std::min(end, m_visibleNotches); i++) {
 		

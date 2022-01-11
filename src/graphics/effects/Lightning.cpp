@@ -299,8 +299,6 @@ void CLightning::Render()
 	m_cnodetab[0].f = arx::randomVec(-f, f);
 	
 	RenderMaterial mat;
-	mat.setCulling(CullNone);
-	mat.setDepthTest(false);
 	mat.setBlendType(RenderMaterial::Additive);
 	
 	float fbeta = fBeta + Random::getf(0.f, 2.f) * fMySize;
