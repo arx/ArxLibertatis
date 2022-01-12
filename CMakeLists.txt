@@ -704,7 +704,13 @@ else(MSVC)
 	endif()
 	check_builtin(ARX_HAVE_BUILTIN_ASSUME_ALIGNED   "__builtin_assume_aligned")
 	check_builtin(ARX_HAVE_BUILTIN_TRAP             "__builtin_trap")
-	check_builtin(ARX_HAVE_BUILTIN_UNREACHABLE      "__builtin_unreachable")
+	if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND
+	   ((NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.5") OR
+	    (NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS "10" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "10.4")))
+		message(STATUS "Not using __builtin_unreachable() with unpatched GCC 9/10 due to a compiler bug https://arx.vg/1600")
+	else()
+		check_builtin(ARX_HAVE_BUILTIN_UNREACHABLE      "__builtin_unreachable")
+	endif()
 	check_builtin(ARX_HAVE_BUILTIN_EXPECT           "__builtin_expect")
 	
 	if(WIN32)
