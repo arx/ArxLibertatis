@@ -380,7 +380,6 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 	#define arx_unreachable() __builtin_assume(0)
 #elif ARX_HAVE_ASSUME
 	#define arx_unreachable() __assume(0)
-#elif ARX_HAVE_BUILTIN_UNREACHABLE
 #else
 	#define arx_unreachable() do { } while(true)
 #endif
