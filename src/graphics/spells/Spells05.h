@@ -67,6 +67,7 @@ public:
 	float lightIntensityFactor;
 	
 	LightHandle lLightId;
+	long fogId;
 	
 private:
 	

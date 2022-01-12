@@ -122,8 +122,6 @@ private:
 	LightHandle lLightId;
 	std::vector<std::unique_ptr<CPoisonProjectile>> m_projectiles;
 	
-	void AddPoisonFog(const Vec3f & pos, float power);
-	
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL05_H

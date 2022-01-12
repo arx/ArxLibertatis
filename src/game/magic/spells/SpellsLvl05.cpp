@@ -32,6 +32,7 @@
 #include "game/Spells.h"
 #include "game/effect/ParticleSystems.h"
 
+#include "graphics/effects/Fog.h"
 #include "graphics/effects/PolyBoom.h"
 #include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -544,6 +545,23 @@ void PoisonProjectileSpell::Launch() {
 			light->duration = 200ms;
 		}
 		
+		projectile.fogId = ARX_FOGS_GetFree();
+		if(projectile.fogId >= 0) {
+			FOG_DEF & fog = fogs[projectile.fogId];
+			fog = FOG_DEF();
+			fog.frequency = m_level + 7;
+			fog.special = 0;
+			fog.speed = 1.f;
+			fog.speedRandom = 1.f;
+			fog.rotatespeed = 0.001f;
+			fog.scale = Vec3f(8.f, 8.f, 10.f);
+			fog.tolive = 4500;
+			fog.rgb = Color3f(0, 1.f, 0);
+			fog.rgbRandom = Color3f(1.f / 3, 0.f, 0.1f);
+			fog.size = 80.f;
+			fog.exist = true;
+		}
+		
 	}
 	
 	m_duration = lMax + 1s;
@@ -552,7 +570,14 @@ void PoisonProjectileSpell::Launch() {
 void PoisonProjectileSpell::End() {
 	
 	for(CPoisonProjectile & projectile : util::dereference(m_projectiles)) {
+		
 		endLightDelayed(projectile.lLightId, 2s);
+		
+		if(projectile.fogId >= 0) {
+			FOG_DEF & fog = fogs[projectile.fogId];
+			fog.exist = false;
+		}
+		
 	}
 	
 }
@@ -578,7 +603,10 @@ void PoisonProjectileSpell::Update() {
 			light->duration = 200ms;
 		}
 		
-		AddPoisonFog(projectile.eCurPos, m_level + 7);
+		if(projectile.fogId >= 0) {
+			FOG_DEF & fog = fogs[projectile.fogId];
+			fog.pos = projectile.eCurPos;
+		}
 		
 		if(m_elapsed > 1600ms) {
 			DamageParameters damage;
@@ -592,41 +620,6 @@ void PoisonProjectileSpell::Update() {
 			damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_POISON;
 			DamageCreate(this, damage);
 		}
-		
-	}
-	
-}
-
-void PoisonProjectileSpell::AddPoisonFog(const Vec3f & pos, float power) {
-	
-	int iDiv = 4 - config.video.levelOfDetail;
-	
-	float flDiv = static_cast<float>(1 << iDiv);
-	
-	long count = std::max(1l, checked_range_cast<long>(g_framedelay / flDiv));
-	while(count--) {
-		
-		if(Random::getf(0.f, 2000.f) >= power) {
-			continue;
-		}
-		
-		PARTICLE_DEF * pd = createParticle();
-		if(!pd) {
-			return;
-		}
-		
-		float speed = 1.f;
-		float fval = speed * 0.2f;
-		pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
-		pd->ov = pos + arx::randomVec(-100.f, 100.f);
-		pd->scale = Vec3f(8.f, 8.f, 10.f);
-		pd->move = Vec3f((speed - Random::getf()) * fval, (speed - speed * Random::getf()) * (1.f / 15),
-		                 (speed - Random::getf()) * fval);
-		pd->tolive = Random::getu(4500, 9000);
-		pd->tc = TC_smoke;
-		pd->siz = (80.f + Random::getf(0.f, 160.f)) * (1.f / 3);
-		pd->rgb = Color3f(Random::getf(0.f, 1.f / 3), 1.f, Random::getf(0.f, 0.1f));
-		pd->m_rotation = 0.001f;
 		
 	}
 	
