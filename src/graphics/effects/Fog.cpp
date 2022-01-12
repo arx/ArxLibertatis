@@ -132,7 +132,7 @@ void ARX_FOGS_Render() {
 			}
 			
 			pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
-			if(fog.special & FOG_DIRECTIONAL) {
+			if(fog.directional) {
 				pd->ov = fog.pos;
 				pd->move = fog.move * (fog.speed * 0.1f);
 			} else {

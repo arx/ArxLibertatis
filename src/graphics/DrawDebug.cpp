@@ -360,7 +360,7 @@ static void drawDebugFogs() {
 		
 		Draw3DObject(g_fogObject, Anglef(0.f, 0.f, 0.f), fog.pos, Vec3f(1.f), Color3f::white, mat);
 		
-		if(fog.special & FOG_DIRECTIONAL) {
+		if(fog.directional) {
 			drawLine(fog.pos, fog.pos + fog.move * 50.f, Color::white);
 		}
 		

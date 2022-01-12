@@ -65,7 +65,7 @@ struct FOG_DEF {
 	Color3f rgb;
 	Color3f rgbRandom;
 	float size;
-	long special;
+	bool directional;
 	Vec3f scale;
 	Vec3f move;
 	Anglef angle;
@@ -80,16 +80,16 @@ struct FOG_DEF {
 	GameInstant creationTime;
 	
 	FOG_DEF()
-		: exist(false)
+		: exist(true)
 		, pos(0.f)
 		, rgb(Color3f::black)
 		, rgbRandom(Color3f::black)
 		, size(0.f)
-		, special(0)
+		, directional(false)
 		, scale(0.f)
 		, move(0.f)
-		, speed(0.f)
-		, speedRandom(0.f)
+		, speed(1.f)
+		, speedRandom(2.f)
 		, rotatespeed(0.f)
 		, tolive(0)
 		, blend(0)
@@ -99,8 +99,6 @@ struct FOG_DEF {
 	{ }
 	
 };
-
-#define FOG_DIRECTIONAL 1
 
 extern std::vector<FOG_DEF> g_fogs;
 

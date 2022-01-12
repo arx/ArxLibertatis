@@ -354,9 +354,7 @@ bool DanaeLoadLevel(long level, bool loadEntities) {
 		
 		long n = ARX_FOGS_GetFree();
 		FOG_DEF * fd = &g_fogs[n];
-		fd->exist = true;
 		fd->rgb = dlf->rgb;
-		fd->rgbRandom = Color3f::black;
 		fd->angle = dlf->angle;
 		fd->pos = dlf->pos.toVec3() + trans;
 		fd->blend = dlf->blend;
@@ -364,14 +362,10 @@ bool DanaeLoadLevel(long level, bool loadEntities) {
 		fd->rotatespeed = dlf->rotatespeed;
 		fd->scale = Vec3f(dlf->scale);
 		fd->size = dlf->size;
-		fd->special = dlf->special;
+		fd->directional = (dlf->special & 1) != 0;
 		fd->speed = dlf->speed;
-		fd->speedRandom = 2.f;
 		fd->tolive = dlf->tolive;
-		fd->move.x = 1.f;
-		fd->move.y = 0.f;
-		fd->move.z = 0.f;
-		Vec3f out = VRotateY(fd->move, MAKEANGLE(fd->angle.getYaw()));
+		Vec3f out = VRotateY(Vec3f(1.f, 0.f, 0.f), MAKEANGLE(fd->angle.getYaw()));
 		fd->move = VRotateX(out, MAKEANGLE(fd->angle.getPitch()));
 	}
 	

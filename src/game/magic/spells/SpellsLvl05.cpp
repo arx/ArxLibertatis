@@ -548,8 +548,6 @@ void PoisonProjectileSpell::Launch() {
 		projectile.fogId = ARX_FOGS_GetFree();
 		FOG_DEF & fog = g_fogs[projectile.fogId];
 		fog.frequency = m_level + 7;
-		fog.special = 0;
-		fog.speed = 1.f;
 		fog.speedRandom = 1.f;
 		fog.rotatespeed = 0.001f;
 		fog.scale = Vec3f(8.f, 8.f, 10.f);
@@ -558,7 +556,6 @@ void PoisonProjectileSpell::Launch() {
 		fog.rgbRandom = Color3f(1.f / 3, 0.f, 0.1f);
 		fog.size = 80.f;
 		fog.creationTime = GameInstant(m_timcreation);
-		fog.exist = true;
 		
 	}
 	
