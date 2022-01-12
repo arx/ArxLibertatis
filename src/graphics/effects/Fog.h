@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <vector>
 
+#include "core/GameTime.h"
 #include "math/Types.h"
 #include "math/Angle.h"
 #include "math/Vector.h"
@@ -75,6 +76,8 @@ struct FOG_DEF {
 	long blend;
 	float frequency;
 	math::Quantizer elapsed;
+	bool visible;
+	GameInstant creationTime;
 	
 	FOG_DEF()
 		: exist(false)
@@ -91,6 +94,8 @@ struct FOG_DEF {
 		, tolive(0)
 		, blend(0)
 		, frequency(0.f)
+		, visible(false)
+		, creationTime(0)
 	{ }
 	
 };

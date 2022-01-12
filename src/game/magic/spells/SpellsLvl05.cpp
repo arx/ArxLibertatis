@@ -557,6 +557,7 @@ void PoisonProjectileSpell::Launch() {
 		fog.rgb = Color3f(0, 1.f, 0);
 		fog.rgbRandom = Color3f(1.f / 3, 0.f, 0.1f);
 		fog.size = 80.f;
+		fog.creationTime = GameInstant(m_timcreation);
 		fog.exist = true;
 		
 	}

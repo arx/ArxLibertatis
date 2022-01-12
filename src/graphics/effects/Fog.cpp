@@ -59,6 +59,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Random.h"
 #include "math/RandomVector.h"
 
+#include "scene/Background.h"
+
 std::vector<FOG_DEF> g_fogs;
 
 void ARX_FOGS_Clear() {
@@ -97,17 +99,30 @@ void ARX_FOGS_Render() {
 			continue;
 		}
 		
-		fog.elapsed.add(g_framedelay / period);
+		if(!g_tiles->isInActiveTile(fog.pos)) {
+			fog.elapsed.reset();
+			fog.visible = false;
+			continue;
+		}
 		
-		int count = std::min(fog.elapsed.consume(), 1 + int(2.f * float(fog.tolive) / period));
+		float maxCount = 2.f * float(fog.tolive) / period;
+		
+		if(fog.visible) {
+			fog.elapsed.add(g_framedelay / period);
+		} else {
+			fog.elapsed.add(std::min(toMsf(g_gameTime.now() - fog.creationTime), 1.f + maxCount));
+			fog.visible = true;
+		}
+		
+		int count = std::min(fog.elapsed.consume(), 1 + int(maxCount));
 		while(count--) {
 			
 			if(Random::getf(0.f, 2000.f) >= fog.frequency) {
 				continue;
 			}
 			
-			float tolive = fog.tolive + Random::get(0, fog.tolive) - count * period;
-			if(tolive <= 0.f) {
+			u32 tolive = fog.tolive + Random::get(0, fog.tolive);
+			if(tolive <= count * s64(period)) {
 				continue;
 			}
 			
@@ -126,7 +141,8 @@ void ARX_FOGS_Render() {
 				pd->move *= Vec3f(fog.speed * 0.2f,  1.f / 15, fog.speed * 0.2f);
 			}
 			pd->scale = Vec3f(fog.scale);
-			pd->tolive = u32(tolive);
+			pd->tolive = tolive;
+			pd->timcreation = toMsi(g_gameTime.now()) - count * s64(period);
 			pd->tc = TC_smoke;
 			pd->siz = (fog.size + Random::getf(0.f, 2.f) * fog.size) * (1.0f / 3);
 			pd->rgb = fog.rgb;
