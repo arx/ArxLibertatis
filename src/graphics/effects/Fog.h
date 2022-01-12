@@ -59,12 +59,14 @@ struct FOG_DEF {
 	bool exist;
 	Vec3f pos;
 	Color3f rgb;
+	Color3f rgbRandom;
 	float size;
 	long special;
-	float scale;
+	Vec3f scale;
 	Vec3f move;
 	Anglef angle;
 	float speed;
+	float speedRandom;
 	float rotatespeed;
 	long tolive;
 	long blend;
@@ -74,11 +76,13 @@ struct FOG_DEF {
 		: exist(false)
 		, pos(0.f)
 		, rgb(Color3f::black)
+		, rgbRandom(Color3f::black)
 		, size(0.f)
 		, special(0)
 		, scale(0.f)
 		, move(0.f)
 		, speed(0.f)
+		, speedRandom(0.f)
 		, rotatespeed(0.f)
 		, tolive(0)
 		, blend(0)

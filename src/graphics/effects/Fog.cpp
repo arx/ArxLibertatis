@@ -112,7 +112,7 @@ void ARX_FOGS_Render() {
 				pd->move = fog.move * (fog.speed * 0.1f);
 			} else {
 				pd->ov = fog.pos + arx::randomVec(-100.f, 100.f);
-				pd->move = Vec3f(fog.speed) - arx::randomVec(0.f, 2.f);
+				pd->move = Vec3f(fog.speed) - arx::randomVec3f() * fog.speedRandom;
 				pd->move *= Vec3f(fog.speed * 0.2f,  1.f / 15, fog.speed * 0.2f);
 			}
 			pd->scale = Vec3f(fog.scale);
@@ -120,6 +120,9 @@ void ARX_FOGS_Render() {
 			pd->tc = TC_smoke;
 			pd->siz = (fog.size + Random::getf(0.f, 2.f) * fog.size) * (1.0f / 3);
 			pd->rgb = fog.rgb;
+			if(fog.rgbRandom != Color3f::black) {
+				pd->rgb += randomColor3f() * fog.rgbRandom;
+			}
 			pd->m_rotation = fog.rotatespeed;
 		}
 	}
