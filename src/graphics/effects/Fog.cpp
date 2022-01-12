@@ -59,23 +59,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Random.h"
 #include "math/RandomVector.h"
 
-FOG_DEF fogs[MAX_FOG];
+std::vector<FOG_DEF> g_fogs;
 
-void ARX_FOGS_Clear()
-{
-	for(size_t i = 0; i < MAX_FOG; i++) {
-		fogs[i] = FOG_DEF();
-	}
+void ARX_FOGS_Clear() {
+	g_fogs.clear();
 }
 
-long ARX_FOGS_GetFree()
-{
-	for(size_t i = 0; i < MAX_FOG; i++) {
-		if(!fogs[i].exist)
+long ARX_FOGS_GetFree() {
+	
+	for(size_t i = 0; i < g_fogs.size(); i++) {
+		if(!g_fogs[i].exist) {
+			g_fogs[i] = FOG_DEF();
 			return i;
+		}
 	}
-
-	return -1;
+	
+	g_fogs.push_back(FOG_DEF());
+	
+	return long(g_fogs.size() - 1);
 }
 
 void ARX_FOGS_Render() {
@@ -84,9 +85,13 @@ void ARX_FOGS_Render() {
 		return;
 	}
 	
+	while(!g_fogs.empty() && !g_fogs.back().exist) {
+		g_fogs.pop_back();
+	}
+	
 	float period = float(1 << (4 - config.video.levelOfDetail));
 	
-	for(FOG_DEF & fog : fogs) {
+	for(FOG_DEF & fog : g_fogs) {
 		
 		if(!fog.exist) {
 			continue;
@@ -130,5 +135,7 @@ void ARX_FOGS_Render() {
 			}
 			pd->m_rotation = fog.rotatespeed;
 		}
+		
 	}
+	
 }

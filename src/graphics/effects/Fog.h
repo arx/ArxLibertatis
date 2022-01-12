@@ -47,6 +47,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_EFFECTS_FOG_H
 #define ARX_GRAPHICS_EFFECTS_FOG_H
 
+#include <vector>
+
 #include "math/Types.h"
 #include "math/Angle.h"
 #include "math/Vector.h"
@@ -95,8 +97,7 @@ struct FOG_DEF {
 
 #define FOG_DIRECTIONAL 1
 
-static const size_t MAX_FOG = 100;
-extern FOG_DEF fogs[MAX_FOG];
+extern std::vector<FOG_DEF> g_fogs;
 
 void ARX_FOGS_Render();
 long ARX_FOGS_GetFree();

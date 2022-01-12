@@ -352,8 +352,7 @@ static void drawDebugFogs() {
 	mat.setBlendType(RenderMaterial::Opaque);
 	mat.setDepthTest(true);
 	
-	for(size_t i = 0; i < MAX_FOG; i++) {
-		const FOG_DEF & fog = fogs[i];
+	for(const FOG_DEF & fog : g_fogs) {
 		
 		if(!fog.exist) {
 			continue;
@@ -366,7 +365,9 @@ static void drawDebugFogs() {
 		}
 		
 		drawLineSphere(Sphere(fog.pos, fog.size), Color(Color3<u8>::blue, 200));
+		
 	}
+	
 }
 
 // TODO remove too similar colors

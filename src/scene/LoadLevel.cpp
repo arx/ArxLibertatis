@@ -353,30 +353,26 @@ bool DanaeLoadLevel(long level, bool loadEntities) {
 		pos += sizeof(DANAE_LS_FOG);
 		
 		long n = ARX_FOGS_GetFree();
-		if(n > -1) {
-			
-			FOG_DEF * fd = &fogs[n];
-			*fd = FOG_DEF();
-			fd->exist = true;
-			fd->rgb = dlf->rgb;
-			fd->rgbRandom = Color3f::black;
-			fd->angle = dlf->angle;
-			fd->pos = dlf->pos.toVec3() + trans;
-			fd->blend = dlf->blend;
-			fd->frequency = dlf->frequency;
-			fd->rotatespeed = dlf->rotatespeed;
-			fd->scale = Vec3f(dlf->scale);
-			fd->size = dlf->size;
-			fd->special = dlf->special;
-			fd->speed = dlf->speed;
-			fd->speedRandom = 2.f;
-			fd->tolive = dlf->tolive;
-			fd->move.x = 1.f;
-			fd->move.y = 0.f;
-			fd->move.z = 0.f;
-			Vec3f out = VRotateY(fd->move, MAKEANGLE(fd->angle.getYaw()));
-			fd->move = VRotateX(out, MAKEANGLE(fd->angle.getPitch()));
-		}
+		FOG_DEF * fd = &g_fogs[n];
+		fd->exist = true;
+		fd->rgb = dlf->rgb;
+		fd->rgbRandom = Color3f::black;
+		fd->angle = dlf->angle;
+		fd->pos = dlf->pos.toVec3() + trans;
+		fd->blend = dlf->blend;
+		fd->frequency = dlf->frequency;
+		fd->rotatespeed = dlf->rotatespeed;
+		fd->scale = Vec3f(dlf->scale);
+		fd->size = dlf->size;
+		fd->special = dlf->special;
+		fd->speed = dlf->speed;
+		fd->speedRandom = 2.f;
+		fd->tolive = dlf->tolive;
+		fd->move.x = 1.f;
+		fd->move.y = 0.f;
+		fd->move.z = 0.f;
+		Vec3f out = VRotateY(fd->move, MAKEANGLE(fd->angle.getYaw()));
+		fd->move = VRotateX(out, MAKEANGLE(fd->angle.getPitch()));
 	}
 	
 	progressBarAdvance(2.f);
