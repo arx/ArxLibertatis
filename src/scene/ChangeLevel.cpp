@@ -1419,6 +1419,10 @@ static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	
 	size_t pos = 0;
 	
+	if(buffer.size() < pos + sizeof(ARX_CHANGELEVEL_PLAYER)) {
+		LogError << "Truncated data";
+		return -1;
+	}
 	const ARX_CHANGELEVEL_PLAYER * asp = reinterpret_cast<const ARX_CHANGELEVEL_PLAYER *>(dat + pos);
 	pos += sizeof(ARX_CHANGELEVEL_PLAYER);
 	
