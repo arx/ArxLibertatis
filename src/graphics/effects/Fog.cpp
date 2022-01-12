@@ -84,20 +84,25 @@ void ARX_FOGS_Render() {
 		return;
 	}
 	
-	int iDiv = 4 - config.video.levelOfDetail;
+	float period = float(1 << (4 - config.video.levelOfDetail));
 	
-	float flDiv = static_cast<float>(1 << iDiv);
-	
-	for(size_t i = 0; i < MAX_FOG; i++) {
-		const FOG_DEF & fog = fogs[i];
+	for(FOG_DEF & fog : fogs) {
 		
-		if(!fog.exist)
+		if(!fog.exist) {
 			continue;
+		}
 		
-		long count = std::max(1l, checked_range_cast<long>(g_framedelay / flDiv));
+		fog.elapsed.add(g_framedelay / period);
+		
+		int count = std::min(fog.elapsed.consume(), 1 + int(2.f * float(fog.tolive) / period));
 		while(count--) {
 			
 			if(Random::getf(0.f, 2000.f) >= fog.frequency) {
+				continue;
+			}
+			
+			float tolive = fog.tolive + Random::get(0, fog.tolive) - count * period;
+			if(tolive <= 0.f) {
 				continue;
 			}
 			
@@ -116,7 +121,7 @@ void ARX_FOGS_Render() {
 				pd->move *= Vec3f(fog.speed * 0.2f,  1.f / 15, fog.speed * 0.2f);
 			}
 			pd->scale = Vec3f(fog.scale);
-			pd->tolive = fog.tolive + Random::get(0, fog.tolive);
+			pd->tolive = u32(tolive);
 			pd->tc = TC_smoke;
 			pd->siz = (fog.size + Random::getf(0.f, 2.f) * fog.size) * (1.0f / 3);
 			pd->rgb = fog.rgb;

@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Types.h"
 #include "math/Angle.h"
 #include "math/Vector.h"
+#include "math/Quantizer.h"
 #include "graphics/Color.h"
 
 struct EERIE_3DOBJ;
@@ -71,6 +72,7 @@ struct FOG_DEF {
 	long tolive;
 	long blend;
 	float frequency;
+	math::Quantizer elapsed;
 	
 	FOG_DEF()
 		: exist(false)

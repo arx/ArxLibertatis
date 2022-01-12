@@ -4,6 +4,7 @@
 Graphics:
 
 * Fixed messed up graphics with the Steam overlay active
+* Fixed increased fog particle count with hight framerates
 
 Interface:
 

@@ -356,6 +356,7 @@ bool DanaeLoadLevel(long level, bool loadEntities) {
 		if(n > -1) {
 			
 			FOG_DEF * fd = &fogs[n];
+			*fd = FOG_DEF();
 			fd->exist = true;
 			fd->rgb = dlf->rgb;
 			fd->rgbRandom = Color3f::black;
