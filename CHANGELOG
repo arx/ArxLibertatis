@@ -4,6 +4,7 @@
 Gameplay:
 
 * Fixed lightning strike damage depending on framerate
+* Fixed fireplace damage depending on framerate
 
 Graphics:
 
