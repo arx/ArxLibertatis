@@ -348,7 +348,7 @@ void HarmSpell::Launch() {
 	damage.radius = 150.f;
 	damage.damages = 4.f;
 	damage.area = DAMAGE_FULL;
-	damage.duration = 100000s;
+	damage.duration = GameDuration::max();
 	damage.source = m_caster;
 	damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 	damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL;
