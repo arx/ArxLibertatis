@@ -115,6 +115,18 @@ CLightning::CLightning(Spell * spell)
 	m_elapsed = m_duration + 1ms;
 }
 
+CLightning::~CLightning() {
+	
+	for(size_t i = 0; i < m_nbtotal; i++) {
+		CLightningNode & node = m_cnodetab[i];
+		if(node.damage !=DamageHandle()) {
+			DamageRequestEnd(node.damage);
+			node.damage = DamageHandle();
+		}
+	}
+	
+}
+
 void CLightning::BuildS(LIGHTNING * lightingInfo) {
 	
 	Vec3f astart = lightingInfo->eStart;
@@ -238,10 +250,18 @@ void CLightning::Create(Vec3f aeFrom, Vec3f aeTo) {
 	ReCreate(15);
 }
 
-void CLightning::ReCreate(float rootSize)
-{
+void CLightning::ReCreate(float rootSize) {
+	
+	for(size_t i = 0; i < m_nbtotal; i++) {
+		CLightningNode & node = m_cnodetab[i];
+		if(node.damage !=DamageHandle()) {
+			DamageRequestEnd(node.damage);
+			node.damage = DamageHandle();
+		}
+	}
+	
 	m_nbtotal = 0;
-
+	
 	if(m_nbtotal == 0) {
 		LIGHTNING LInfo = LIGHTNING();
 		
@@ -327,16 +347,18 @@ void CLightning::Render()
 			sphere.origin = a;
 			sphere.radius = std::min(node.size, 50.f);
 			if(CheckAnythingInSphere(sphere, entities.get(m_spell->m_caster), CAS_NO_SAME_GROUP)) {
-				DamageParameters damage;
+				DamageParameters & damage = damageGet(m_spell, node.damage);
 				damage.pos = sphere.origin;
 				damage.radius = sphere.radius;
 				damage.damages = m_fDamage;
 				damage.area = DAMAGE_FULL;
 				damage.duration = GameDuration::max();
 				damage.source = m_spell->m_caster;
-				damage.flags = DAMAGE_ONCE | DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
+				damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 				damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_LIGHTNING;
-				DamageCreate(m_spell, damage);
+			} else if(node.damage !=DamageHandle()) {
+				DamageRequestEnd(node.damage);
+				node.damage = DamageHandle();
 			}
 		}
 		

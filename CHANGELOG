@@ -22,6 +22,7 @@ Controls:
 Audio:
 
 * Fixed some audio samples not ending correctly
+* Fixed lighting strike damage sound being played for every frame
 
 Modding:
 

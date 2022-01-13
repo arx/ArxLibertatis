@@ -59,6 +59,7 @@ class CLightning final : public CSpellFx {
 public:
 	
 	explicit CLightning(Spell * spell);
+	~CLightning();
 	
 	void Create(Vec3f aeFrom, Vec3f aeTo);
 	void Update(GameDuration timeDelta) override;
@@ -92,6 +93,7 @@ private:
 		float size;
 		int parent;
 		Vec3f f;
+		DamageHandle damage;
 	};
 	
 	static const size_t MAX_NODES = 2000;
