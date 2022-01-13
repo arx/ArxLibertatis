@@ -138,7 +138,7 @@ void ARX_QuickLoad() {
 		return;
 	}
 	
-	ARX_LoadGame(savegames[save]);
+	LOADQUEST_SLOT = save;
 }
 
 bool MENU_NoActiveWindow() {
