@@ -994,6 +994,16 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 				return TYPE_TEXT;
 			}
 			
+			if(name == "^class") {
+				txtcontent = context.getEntity() ? context.getEntity()->className() : "";
+				return TYPE_TEXT;
+			}
+			
+			if(name == "^class" || boost::starts_with(name, "^class_")) {
+				txtcontent = EntityId(name.substr(7)).className();
+				return TYPE_TEXT;
+			}
+			
 			break;
 		}
 		
