@@ -326,14 +326,14 @@ void CLightning::Render()
 			Sphere sphere;
 			sphere.origin = a;
 			sphere.radius = std::min(node.size, 50.f);
-			if(CheckAnythingInSphere(sphere, entities.get(m_caster), CAS_NO_SAME_GROUP)) {
+			if(CheckAnythingInSphere(sphere, entities.get(m_spell->m_caster), CAS_NO_SAME_GROUP)) {
 				DamageParameters damage;
 				damage.pos = sphere.origin;
 				damage.radius = sphere.radius;
 				damage.damages = m_fDamage;
 				damage.area = DAMAGE_FULL;
 				damage.duration = GameDuration::max();
-				damage.source = m_caster;
+				damage.source = m_spell->m_caster;
 				damage.flags = DAMAGE_ONCE | DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 				damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_LIGHTNING;
 				DamageCreate(m_spell, damage);

@@ -600,7 +600,6 @@ void LightningStrikeSpell::Update() {
 	m_lightning.m_alpha = falpha;
 	
 	m_lightning.m_fDamage = m_level * 1.067f;
-	m_lightning.m_caster = m_caster;
 	
 	m_lightning.Update(g_gameTime.lastFrameDuration());
 	m_lightning.Render();

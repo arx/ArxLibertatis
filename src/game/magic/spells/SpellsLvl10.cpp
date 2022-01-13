@@ -123,7 +123,6 @@ void MassLightningStrikeSpell::End() {
 void MassLightningStrikeSpell::Update() {
 	
 	for(CLightning & arc : util::dereference(m_arcs)) {
-		arc.m_caster = m_caster;
 		arc.Update(g_gameTime.lastFrameDuration());
 	}
 	
