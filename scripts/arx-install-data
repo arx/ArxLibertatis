@@ -82,7 +82,7 @@ patch_jp_urls="https://arx.vg/${patch_jp_name}" # master URL is no longer availa
 patch_jp_urls="$patch_jp_urls https://web.archive.org/web/${patch_jp_url_master}"
 
 # Name and store page for the GOG.com download
-gog_names='setup_arx_fatalis.exe setup_arx_fatalis_2.0.0.7.exe'
+gog_names='"setup_arx_fatalis.exe" "setup_arx_fatalis_2.0.0.7.exe" "setup_arx_fatalis_1.21_(21994).exe" "setup_arx_fatalis_1.22_(38577).exe" "setup_arx_fatalis_1.22_(french)_(38577).exe" "setup_arx_fatalis_1.22_(german)_(38577).exe" "setup_arx_fatalis_1.22_(italian)_(38577).exe" "setup_arx_fatalis_1.22_(russian)_(38577).exe" "setup_arx_fatalis_1.22_(spanish)_(38577).exe"'
 gog_url='https://www.gog.com/gamecard/arx_fatalis'
 
 # Store page for the Steam download
