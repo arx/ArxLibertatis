@@ -911,12 +911,6 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 				return TYPE_TEXT;
 			}
 			
-			if(boost::starts_with(name, "^spellcaster_")) {
-				Spell * spell = getSpellParam(name, 13);
-				txtcontent = idString(spell ? entities.get(spell->m_caster) : nullptr);
-				return TYPE_TEXT;
-			}
-			
 			if(name == "^spelllevel") {
 				*fcontent = player.spellLevel();
 				return TYPE_FLOAT;
@@ -986,6 +980,17 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			
 			if(name == "^camera") {
 				txtcontent = idString(g_cameraEntity);
+				return TYPE_TEXT;
+			}
+			
+			if(name == "^caster" || boost::starts_with(name, "^caster_")) {
+				Entity * caster = nullptr;
+				if(Entity * entity = getEntityParam(name, 8, context)) {
+					caster = (entity->ioflags & IO_NPC) ? entities.get(entity->_npcdata->summoner) : nullptr;
+				} else if(Spell * spell = getSpellParam(name, 8)) {
+					caster = entities.get(spell->m_caster);
+				}
+				txtcontent = idString(caster);
 				return TYPE_TEXT;
 			}
 			
