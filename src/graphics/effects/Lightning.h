@@ -68,7 +68,6 @@ public:
 	float m_beta;
 	float m_alpha;
 	EntityHandle m_caster;
-	float m_level;
 	
 	float m_fDamage;
 	bool m_isMassLightning;

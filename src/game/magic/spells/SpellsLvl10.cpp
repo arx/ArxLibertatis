@@ -81,7 +81,7 @@ void MassLightningStrikeSpell::Launch() {
 		
 		std::unique_ptr<CLightning> lightning = std::make_unique<CLightning>(this);
 		lightning->m_isMassLightning = true;
-		lightning->m_fDamage = 2;
+		lightning->m_fDamage = 2 * m_level * 1.067f;
 		lightning->Create(m_pos, target);
 		lightning->SetDuration(duration);
 		m_arcs.emplace_back(std::move(lightning));
@@ -124,7 +124,6 @@ void MassLightningStrikeSpell::Update() {
 	
 	for(CLightning & arc : util::dereference(m_arcs)) {
 		arc.m_caster = m_caster;
-		arc.m_level = m_level;
 		arc.Update(g_gameTime.lastFrameDuration());
 	}
 	

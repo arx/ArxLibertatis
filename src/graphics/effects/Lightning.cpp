@@ -95,8 +95,7 @@ CLightning::CLightning(Spell * spell)
 	: m_pos(0.f)
 	, m_beta(0.f)
 	, m_alpha(0.f)
-	, m_level(1.f)
-	, m_fDamage(1)
+	, m_fDamage(0.f)
 	, m_isMassLightning(false)
 	, m_spell(spell)
 	, fTotoro(0.f)
@@ -331,7 +330,7 @@ void CLightning::Render()
 				DamageParameters damage;
 				damage.pos = sphere.origin;
 				damage.radius = sphere.radius;
-				damage.damages = m_fDamage * m_level * 1.067f;
+				damage.damages = m_fDamage;
 				damage.area = DAMAGE_FULL;
 				damage.duration = GameDuration::max();
 				damage.source = m_caster;
