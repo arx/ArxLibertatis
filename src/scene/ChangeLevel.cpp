@@ -1913,24 +1913,32 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 			ats = reinterpret_cast<const ARX_CHANGELEVEL_TIMERS_SAVE *>(dat + pos);
 			pos += sizeof(ARX_CHANGELEVEL_TIMERS_SAVE);
 			
-			SCR_TIMER & timer = createScriptTimer(io, util::toLowercase(util::loadString(ats->name)));
+			std::string name = util::toLowercase(util::loadString(ats->name));
 			
-			if(timer.name == "_r_a_t_") {
-				timer.es = nullptr;
-			} else {
-				timer.es = ats->script ? &io->over_script : &io->script;
+			EERIE_SCRIPT * script = nullptr;
+			if(name != "_r_a_t_") {
+				script = ats->script ? &io->over_script : &io->script;
+				if(!script || size_t(ats->pos) > script->data.length()) {
+					// TODO also check that the positin matches a timer command and perhaps adjust as needed
+					LogError << "Found bad script timer " << name << " for entity " << io->idString()
+					         << " @ " << (ats->script ? io->idString() : io->className()) << ":" << ats->pos << ": "
+					         << (!script ? "missing script" : "position out of bounds");
+					continue;
+				}
 			}
+			
+			SCR_TIMER & timer = createScriptTimer(io, std::move(name));
 			
 			timer.idle = (ats->flags & 1) != 0;
 			timer.interval = std::chrono::milliseconds(ats->interval); // TODO save/load time
+			timer.es = script;
 			timer.pos = size_t(ats->pos);
-			// TODO if the script has changed since the last save, this position may be invalid
 			
 			GameDuration remaining = std::chrono::milliseconds(ats->remaining);
 			if(remaining > timer.interval) {
-				LogWarning << "Found bad script timer " << timer.name
-				           << " for entity " << io->idString() << ": remaining time ("
-				           << toMsi(remaining) << "ms) > interval (" << toMsi(timer.interval) << "ms) " << ats->flags;
+				LogWarning << "Found bad script timer " << timer.name << " for entity " << io->idString()
+				           << ": remaining time (" << toMsi(remaining) << "ms) > interval ("
+				           << toMsi(timer.interval) << "ms) " << ats->flags;
 				remaining = timer.interval;
 			}
 			
