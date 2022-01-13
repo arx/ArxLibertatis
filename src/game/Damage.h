@@ -95,7 +95,8 @@ enum DamageFlag {
 	DAMAGE_FLAG_ADD_VISUAL_FX    = 1 << 1, // depending on type
 	DAMAGE_FLAG_FOLLOW_SOURCE    = 1 << 2,
 	DAMAGE_NOT_FRAME_DEPENDANT   = 1 << 5,
-	DAMAGE_SPAWN_BLOOD           = 1 << 6
+	DAMAGE_SPAWN_BLOOD           = 1 << 6,
+	DAMAGE_ONCE                  = 1 << 7,
 };
 DECLARE_FLAGS(DamageFlag, DamageFlags)
 DECLARE_FLAGS_OPERATORS(DamageFlags)

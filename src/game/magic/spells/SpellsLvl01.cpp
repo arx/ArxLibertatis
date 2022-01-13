@@ -276,9 +276,8 @@ void MagicMissileSpell::Update() {
 			damage.radius = 80.f;
 			damage.damages = (4 + m_level * 0.2f) * 0.8f;
 			damage.area = DAMAGE_FULL;
-			damage.duration = GameDuration::ofRaw(-1);
 			damage.source = m_caster;
-			damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE;
+			damage.flags = DAMAGE_ONCE | DAMAGE_NOT_FRAME_DEPENDANT | DAMAGE_FLAG_DONT_HURT_SOURCE;
 			damage.type = DAMAGE_TYPE_MAGICAL;
 			DamageCreate(this, damage);
 			

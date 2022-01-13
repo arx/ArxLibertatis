@@ -951,13 +951,12 @@ static void updateDamage(DAMAGE_INFO & damage, GameInstant now) {
 	}
 	
 	float dmg;
-	if((damage.params.flags & DAMAGE_NOT_FRAME_DEPENDANT)
-	   || damage.params.duration == GameDuration::ofRaw(-1))  {
+	if(damage.params.flags & DAMAGE_NOT_FRAME_DEPENDANT) {
 		dmg = damage.params.damages;
 	} else {
 		GameDuration FD = g_gameTime.lastFrameDuration();
 		
-		if(now > damage.start_time + damage.params.duration) {
+		if(!(damage.params.flags & DAMAGE_ONCE) && now - damage.start_time > damage.params.duration) {
 			FD -= damage.start_time + damage.params.duration - now;
 		}
 		
@@ -1125,7 +1124,7 @@ static void updateDamage(DAMAGE_INFO & damage, GameInstant now) {
 		
 	}
 	
-	if(damage.params.duration == GameDuration::ofRaw(-1) || now > damage.start_time + damage.params.duration) {
+	if((damage.params.flags & DAMAGE_ONCE) || now - damage.start_time > damage.params.duration) {
 		damage.exist = false;
 	}
 	
