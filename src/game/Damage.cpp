@@ -147,6 +147,17 @@ DamageHandle DamageCreate(Spell * spell, const DamageParameters & params) {
 	return DamageHandle(i);
 }
 
+DamageParameters & damageGet(Spell * spell, DamageHandle & handle) {
+	
+	if(handle.handleData() >= 0 && size_t(handle.handleData()) < g_damages.size()) {
+		g_damages[handle.handleData()].spell = spell;
+		return g_damages[handle.handleData()].params;
+	}
+	
+	handle = DamageCreate(spell, DamageParameters());
+	return g_damages[handle.handleData()].params;
+}
+
 void DamageRequestEnd(DamageHandle handle) {
 	if(handle.handleData() >= 0 && size_t(handle.handleData()) < g_damages.size()) {
 		g_damages[handle.handleData()].exist = false;

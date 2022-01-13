@@ -127,6 +127,7 @@ struct DamageParameters {
 void damageClearSpell(Spell * spell);
 
 DamageHandle DamageCreate(Spell * spell, const DamageParameters & params);
+DamageParameters & damageGet(Spell * spell, DamageHandle & handle);
 void DamageRequestEnd(DamageHandle handle);
 
 void igniteLights(const Sphere & sphere, bool ignite = true, bool ignoreFireplaces = false);
