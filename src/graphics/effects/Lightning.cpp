@@ -331,11 +331,11 @@ void CLightning::Render()
 				DamageParameters damage;
 				damage.pos = sphere.origin;
 				damage.radius = sphere.radius;
-				damage.damages = m_fDamage * m_level * (1.f / 3);
+				damage.damages = m_fDamage * m_level * 1.067f;
 				damage.area = DAMAGE_FULL;
-				damage.duration = 1ms;
+				damage.duration = GameDuration::max();
 				damage.source = m_caster;
-				damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
+				damage.flags = DAMAGE_ONCE | DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 				damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_LIGHTNING;
 				DamageCreate(m_spell, damage);
 			}

@@ -1,6 +1,10 @@
 
 = Arx Libertatis 1.3  (TBD) =
 
+Gameplay:
+
+* Fixed lightning strike damage depending on framerate
+
 Graphics:
 
 * Fixed messed up graphics with the Steam overlay active
