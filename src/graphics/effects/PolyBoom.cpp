@@ -95,8 +95,6 @@ static std::vector<POLYBOOM> polyboom(MAX_POLYBOOM);
 
 static const float BOOM_RADIUS = 420.f;
 
-extern TextureContainer * Boom;
-
 size_t PolyBoomCount() {
 	return polyboom.size();
 }
@@ -408,7 +406,7 @@ void PolyBoomDraw() {
 				} else {
 					mat.setBlendType(RenderMaterial::Subtractive);
 				}
-				mat.setTexture(Boom);
+				mat.setTexture(g_particleTextures.boom);
 				
 				drawTriangle(mat, ltv.data());
 				if(pb.nbvert == 4) {

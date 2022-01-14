@@ -507,7 +507,6 @@ bool ArxGame::initGameData() {
 
 TextureContainer * enviro = nullptr;
 TextureContainer * ombrignon = nullptr;
-TextureContainer * Boom = nullptr;
 TextureContainer * arx_logo_tc = nullptr;
 
 
@@ -522,7 +521,6 @@ static void LoadSysTextures() {
 	ARX_INTERFACE_DrawNumberInit();
 	initLightFlares();
 	ombrignon = TextureContainer::LoadUI("graph/particles/ombrignon");
-	Boom = TextureContainer::LoadUI("graph/particles/boom");
 	arx_logo_tc = TextureContainer::LoadUI("graph/interface/icons/arx_logo_32");
 	
 	TextureContainer::LoadUI("graph/particles/fire_hit");

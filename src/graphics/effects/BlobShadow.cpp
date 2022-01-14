@@ -25,10 +25,9 @@
 #include "graphics/Draw.h"
 #include "graphics/GlobalFog.h"
 #include "graphics/Renderer.h"
+#include "graphics/particle/ParticleTextures.h"
 #include "platform/profiler/Profiler.h"
 #include "scene/Interactive.h"
-
-extern TextureContainer * Boom;
 
 static std::vector<TexturedVertex> g_shadowBatch;
 
@@ -158,7 +157,7 @@ void ARXDRAW_DrawInterShadows() {
 	if(!g_shadowBatch.empty()) {
 		GRenderer->SetFogColor(Color::none);
 		UseRenderState state(render3D().depthWrite(false).blend(BlendZero, BlendInvSrcColor).depthOffset(1));
-		GRenderer->SetTexture(0, Boom);
+		GRenderer->SetTexture(0, g_particleTextures.boom);
 		EERIEDRAWPRIM(Renderer::TriangleList, g_shadowBatch.data(), g_shadowBatch.size());
 		GRenderer->SetFogColor(g_fogColor);
 	}
