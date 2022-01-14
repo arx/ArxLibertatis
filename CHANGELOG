@@ -23,6 +23,7 @@ Controls:
 
 Audio:
 
+* Fixed missing death screams for most NPCs (bug #1579)
 * Fixed some audio samples not ending correctly
 * Fixed lighting strike damage sound being played for every frame
 

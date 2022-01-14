@@ -193,8 +193,6 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io) {
 		}
 	}
 	
-	ARX_SPEECH_ReleaseIOSpeech(io);
-	
 	ARX_SCRIPT_EventStackClearForIo(io);
 	
 	spells.endByCaster(io->index());

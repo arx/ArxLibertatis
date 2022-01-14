@@ -626,8 +626,6 @@ void ARX_DAMAGES_ForceDeath(Entity & io_dead, Entity * io_killer) {
 		resetNpcBehavior(io_dead);
 	}
 	
-	ARX_SPEECH_ReleaseIOSpeech(&io_dead);
-	
 	ARX_SCRIPT_Timer_Clear_For_IO(&io_dead);
 	
 	if(io_dead.mainevent != SM_DEAD) {
