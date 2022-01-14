@@ -65,6 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Dragging.h"
 #include "gui/Interface.h"
+#include "gui/Speech.h"
 #include "gui/hud/SecondaryInventory.h"
 
 #include "io/log/Logger.h"
@@ -285,6 +286,8 @@ void Entity::cleanReferences() {
 		TREATZONE_RemoveIO(this);
 	}
 	gameFlags &= ~GFLAG_ISINTREATZONE;
+	
+	ARX_SPEECH_ReleaseIOSpeech(this);
 	
 	ARX_INTERACTIVE_DestroyDynamicInfo(this);
 	
