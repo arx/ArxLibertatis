@@ -1532,6 +1532,7 @@ IO_NPCDATA::IO_NPCDATA()
 	, stare_factor(0.f)
 	, fDetect(0.f)
 	, cuts(0)
+	, m_magicalDamageTime(0)
 { }
 
 IO_NPCDATA::~IO_NPCDATA() {

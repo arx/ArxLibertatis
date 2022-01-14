@@ -901,7 +901,7 @@ extern TextureContainer * TC_fire2;
 
 static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg, Entity * io) {
 	
-	arx_assert(io);
+	arx_assert(io && (io->ioflags & IO_NPC));
 	
 	if(!(di.params.type & DAMAGE_TYPE_FAKEFIRE)) {
 		return;
@@ -917,31 +917,48 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 		}
 	}
 	
-	long num = Random::get(0, io->obj->vertexlist.size() / 4 - 1) * 4 + 1;
-	arx_assert(num >= 0);
-	Vec3f vertPos = io->obj->vertexWorldPositions[num].v;
-	
-	for(long k = 0 ; k < 14 ; k++) {
-		
-		PARTICLE_DEF * pd = createParticle();
-		if(!pd) {
-			break;
-		}
-		
-		pd->ov = vertPos + arx::randomVec(-5.f, 5.f);
-		pd->siz = glm::clamp(dmg, 5.f, 15.f);
-		pd->scale = Vec3f(-10.f);
-		pd->m_flags = ROTATING | FIRE_TO_SMOKE;
-		pd->tolive = Random::getu(500, 900);
-		pd->move = Vec3f(1.f, 2.f, 1.f) - arx::randomVec3f() * Vec3f(2.f, 16.f, 2.f);
-		if(di.params.type & DAMAGE_TYPE_MAGICAL) {
-			pd->rgb = Color3f(0.3f, 0.3f, 0.8f);
-		} else {
-			pd->rgb = Color3f::gray(0.5f);
-		}
-		pd->tc = TC_fire2;
-		pd->m_rotation = Random::getf(-0.1f, 0.1f);
+	if(io->_npcdata->m_magicalDamageTime + 500ms < now) {
+		// Make sure there is at least one particle
+		io->_npcdata->m_magicalDamageQuantizer.reset();
+		io->_npcdata->m_magicalDamageQuantizer.add(1.f);
+	} else {
+		// Add 60 new particles per second
+		io->_npcdata->m_magicalDamageQuantizer.add(g_framedelay * 0.06f);
 	}
+	io->_npcdata->m_magicalDamageTime = now;
+	
+	int count = io->_npcdata->m_magicalDamageQuantizer.consume();
+	
+	for(int i = 0; i < count; i++) {
+		
+		long num = Random::get(0, io->obj->vertexlist.size() / 4 - 1) * 4 + 1;
+		arx_assert(num >= 0);
+		Vec3f vertPos = io->obj->vertexWorldPositions[num].v;
+		
+		for(long k = 0 ; k < 14 ; k++) {
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(!pd) {
+				break;
+			}
+			
+			pd->ov = vertPos + arx::randomVec(-5.f, 5.f);
+			pd->siz = glm::clamp(dmg, 5.f, 15.f);
+			pd->scale = Vec3f(-10.f);
+			pd->m_flags = ROTATING | FIRE_TO_SMOKE;
+			pd->tolive = Random::getu(500, 900);
+			pd->move = Vec3f(1.f, 2.f, 1.f) - arx::randomVec3f() * Vec3f(2.f, 16.f, 2.f);
+			if(di.params.type & DAMAGE_TYPE_MAGICAL) {
+				pd->rgb = Color3f(0.3f, 0.3f, 0.8f);
+			} else {
+				pd->rgb = Color3f::gray(0.5f);
+			}
+			pd->tc = TC_fire2;
+			pd->m_rotation = Random::getf(-0.1f, 0.1f);
+		}
+		
+	}
+	
 }
 
 // source = -1 no source but valid pos

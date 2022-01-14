@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Entity.h"
 #include "game/GameTypes.h"
 #include "math/Types.h"
+#include "math/Quantizer.h"
 #include "util/Flags.h"
 
 static constexpr size_t MAX_STACKED_BEHAVIOR = 5;
@@ -226,6 +227,9 @@ struct IO_NPCDATA {
 	DismembermentFlags cuts;
 	
 	EntityHandle summoner;
+	
+	GameInstant m_magicalDamageTime;
+	math::Quantizer m_magicalDamageQuantizer;
 	
 };
 

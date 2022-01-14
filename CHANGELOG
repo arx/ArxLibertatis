@@ -10,6 +10,7 @@ Graphics:
 
 * Fixed messed up graphics with the Steam overlay active
 * Fixed increased fog particle count with hight framerates
+* Fixed increased magic damage particle count for the lightning strike, harm, mana drain, life drain and chaos spells with hight framerates
 * Fixed fogs starting out with 0 particles after coming into view
 
 Interface:
