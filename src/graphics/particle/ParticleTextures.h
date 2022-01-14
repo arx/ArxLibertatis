@@ -33,6 +33,7 @@ struct ParticleTextures {
 	TextureContainer * water_drop[3];
 	TextureContainer * healing;
 	TextureContainer * tzupouf;
+	TextureContainer * fire;
 	TextureContainer * fire2;
 	TextureContainer * fire_hit;
 	TextureContainer * boom;

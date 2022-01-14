@@ -59,6 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 #include "graphics/effects/PolyBoom.h"
 #include "graphics/particle/ParticleEffects.h"
+#include "graphics/particle/ParticleTextures.h"
 
 #include "math/Random.h"
 #include "math/RandomVector.h"
@@ -180,15 +181,11 @@ void ARX_MISSILES_Spawn(Entity * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f &
 	}
 }
 
-extern TextureContainer * TC_fire;
-
 //-----------------------------------------------------------------------------
 // Updates all currently launched projectiles
 void ARX_MISSILES_Update() {
 	
 	ARX_PROFILE_FUNC();
-	
-	TextureContainer * tc = TC_fire;
 	
 	GameInstant now = g_gameTime.now();
 
@@ -256,7 +253,7 @@ void ARX_MISSILES_Update() {
 					pd->move = missiles[i].velocity;
 					pd->move += Vec3f(3.f, 4.f, 3.f) + Vec3f(-6.f, -12.f, -6.f) * arx::randomVec3f();
 					pd->tolive = Random::getu(500, 1000);
-					pd->tc = tc;
+					pd->tc = g_particleTextures.fire;
 					pd->siz = 12.f * ((missiles[i].tolive - framediff3) / 4s);
 					pd->scale = arx::randomVec(15.f, 20.f);
 					pd->m_flags = FIRE_TO_SMOKE;

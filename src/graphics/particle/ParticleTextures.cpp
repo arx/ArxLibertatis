@@ -51,6 +51,7 @@ void ParticleTextures::init() {
 	water_drop[2] = TextureContainer::Load("graph/particles/[fx]_water_drop03");
 	healing = TextureContainer::Load("graph/particles/heal_0005");
 	tzupouf = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_greypouf");
+	fire = TextureContainer::LoadUI("graph/particles/fire", TextureContainer::NoColorKey);
 	fire2 = TextureContainer::Load("graph/particles/fire2");
 	fire_hit = TextureContainer::Load("graph/particles/fire_hit");
 	boom = TextureContainer::Load("graph/particles/boom");
