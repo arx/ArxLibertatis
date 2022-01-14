@@ -124,6 +124,10 @@ void EERIE_LIGHT_GlobalInit() {
 		if(EERIE_LIGHT * dynLight = lightHandleGet(light.m_ignitionLightHandle)) {
 			dynLight->m_exists = false;
 		}
+		if(light.m_damage != DamageHandle()) {
+			DamageRequestEnd(light.m_damage);
+			light.m_damage = DamageHandle();
+		}
 	}
 	
 	g_culledStaticLightsCount = 0;

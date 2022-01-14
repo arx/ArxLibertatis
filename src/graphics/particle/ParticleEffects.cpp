@@ -943,20 +943,25 @@ void TreatBackgroundActions() {
 			// Out of treat range
 			ARX_SOUND_Stop(light.sample);
 			light.sample = audio::SourcedSample();
+			DamageRequestEnd(light.m_damage);
+			light.m_damage = DamageHandle();
 			continue;
 		}
 		
 		if((light.extras & EXTRAS_SPAWNFIRE) && light.m_ignitionStatus) {
-			DamageParameters damage;
+			Spell * spell = nullptr; // TODO create a real spell for this?
+			DamageParameters & damage = damageGet(spell, light.m_damage);
 			damage.radius = light.ex_radius;
 			damage.damages = light.ex_radius * 0.4f;
 			damage.area = DAMAGE_FULL;
+			damage.duration = GameDuration::max();
 			damage.source = EntityHandle();
-			damage.flags = DAMAGE_ONCE;
+			damage.flags = 0;
 			damage.type = DAMAGE_TYPE_FAKESPELL | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_NO_FIX;
 			damage.pos = light.pos;
-			Spell * spell = nullptr; // TODO create a real spell for this?
-			DamageCreate(spell, damage);
+		} else if(light.m_damage != DamageHandle()) {
+			DamageRequestEnd(light.m_damage);
+			light.m_damage = DamageHandle();
 		}
 		
 		if(!(light.extras & (EXTRAS_SPAWNFIRE | EXTRAS_SPAWNSMOKE)) || !light.m_ignitionStatus) {

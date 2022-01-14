@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/TimeTypes.h"
 #include "audio/AudioTypes.h"
+#include "game/Damage.h"
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
 #include "math/Angle.h"
@@ -102,6 +103,7 @@ struct EERIE_LIGHT {
 	bool m_isVisible;
 	ExtrasType extras;
 	bool m_ignitionStatus; // on/off
+	DamageHandle m_damage;
 	Vec3f pos;
 	float fallstart;
 	float fallend;
