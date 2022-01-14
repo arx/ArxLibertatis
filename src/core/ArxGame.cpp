@@ -523,9 +523,6 @@ static void LoadSysTextures() {
 	ombrignon = TextureContainer::LoadUI("graph/particles/ombrignon");
 	arx_logo_tc = TextureContainer::LoadUI("graph/interface/icons/arx_logo_32");
 	
-	TextureContainer::LoadUI("graph/particles/fire_hit");
-	TextureContainer::LoadUI("graph/particles/light");
-	
 	g_hudRoot.init();
 	
 	// Load book textures and text
