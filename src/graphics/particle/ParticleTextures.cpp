@@ -27,7 +27,7 @@ ParticleTextures g_particleTextures;
 
 void ParticleTextures::init() {
 	
-	smokeparticle = TextureContainer::Load("graph/particles/smoke");
+	smoke = TextureContainer::Load("graph/particles/smoke", TextureContainer::NoColorKey);
 	
 	// TODO bloodsplat and water_splat cannot use mipmapping because they need a constant color border pixel
 	// this may also apply to other textures

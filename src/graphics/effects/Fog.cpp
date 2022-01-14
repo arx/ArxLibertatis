@@ -55,6 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
 #include "graphics/particle/ParticleEffects.h"
+#include "graphics/particle/ParticleTextures.h"
 
 #include "math/Random.h"
 #include "math/RandomVector.h"
@@ -143,7 +144,7 @@ void ARX_FOGS_Render() {
 			pd->scale = Vec3f(fog.scale);
 			pd->tolive = tolive;
 			pd->timcreation = toMsi(g_gameTime.now()) - count * s64(period);
-			pd->tc = TC_smoke;
+			pd->tc = g_particleTextures.smoke;
 			pd->siz = (fog.size + Random::getf(0.f, 2.f) * fog.size) * (1.0f / 3);
 			pd->rgb = fog.rgb;
 			if(fog.rgbRandom != Color3f::black) {

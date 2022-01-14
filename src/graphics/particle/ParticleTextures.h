@@ -25,7 +25,8 @@
 class TextureContainer;
 
 struct ParticleTextures {
-	TextureContainer * smokeparticle;
+	
+	TextureContainer * smoke;
 	TextureContainer * bloodsplat[6];
 	TextureContainer * blood_splat;
 	TextureContainer * water_splat[3];
@@ -41,6 +42,7 @@ struct ParticleTextures {
 	TextureContainer * explo[MAX_EXPLO];
 	
 	void init();
+	
 };
 
 extern ParticleTextures g_particleTextures;

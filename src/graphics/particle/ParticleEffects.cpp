@@ -176,7 +176,7 @@ void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f pos, Entity * io) {
 	pd->ov = pos;
 	pd->move = arx::randomVec3f() * Vec3f(2.f, -12.f, 2.f) - Vec3f(4.f, 15.f, 4.f);
 	pd->tolive = 800;
-	pd->tc = g_particleTextures.smokeparticle;
+	pd->tc = g_particleTextures.smoke;
 	pd->siz = 15.f;
 	pd->scale = arx::randomVec(15.f, 20.f);
 	pd->m_flags = FIRE_TO_SMOKE;
@@ -365,7 +365,7 @@ void AddRandomSmoke(const Entity & io, long amount) {
 		pd->tolive = Random::getu(900, 1300);
 		pd->move = arx::linearRand(Vec3f(-0.25f, -0.7f, -0.25f), Vec3f(0.25f, 0.3f, 0.25f));
 		pd->rgb = Color3f(0.3f, 0.3f, 0.34f);
-		pd->tc = g_particleTextures.smokeparticle;
+		pd->tc = g_particleTextures.smoke;
 		pd->m_rotation = 0.001f;
 	}
 }
@@ -395,7 +395,7 @@ void ARX_PARTICLES_Add_Smoke(const Vec3f & pos, long flags, long amount, const C
 		pd->delay = amount * 120 + Random::getu(0, 100);
 		pd->move = arx::linearRand(Vec3f(-0.25f, -0.7f, -0.25f), Vec3f(0.25f, 0.3f, 0.25f));
 		pd->rgb = rgb;
-		pd->tc = g_particleTextures.smokeparticle;
+		pd->tc = g_particleTextures.smoke;
 		pd->m_rotation = 0.01f;
 	}
 }
@@ -771,7 +771,7 @@ void ARX_PARTICLES_Update()  {
 				part->ov += part->move;
 				part->tolive = u32(part->tolive * 1.375f);
 				part->m_flags &= ~FIRE_TO_SMOKE;
-				part->tc = g_particleTextures.smokeparticle;
+				part->tc = g_particleTextures.smoke;
 				part->scale = glm::abs(part->scale * 2.4f);
 				part->rgb = Color3f::gray(.45f);
 				part->move *= 0.5f;
@@ -1003,7 +1003,7 @@ void TreatBackgroundActions() {
 					if((light.extras & EXTRAS_SPAWNFIRE) && (light.extras & EXTRAS_SPAWNSMOKE)) {
 						pd->m_flags = FIRE_TO_SMOKE;
 					}
-					pd->tc = (light.extras & EXTRAS_SPAWNFIRE) ? g_particleTextures.fire2 : g_particleTextures.smokeparticle;
+					pd->tc = (light.extras & EXTRAS_SPAWNFIRE) ? g_particleTextures.fire2 : g_particleTextures.smoke;
 					pd->m_flags |= ROTATING;
 					pd->m_rotation = 0.1f - Random::getf(0.f, 0.2f) * light.ex_speed;
 					pd->scale = Vec3f(-8.f);

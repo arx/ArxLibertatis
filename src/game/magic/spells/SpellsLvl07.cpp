@@ -98,7 +98,7 @@ void FlyingEyeSpell::Launch() {
 		pd->siz = 28.f;
 		pd->tolive = Random::getu(2000, 6000);
 		pd->scale = Vec3f(12.f);
-		pd->tc = g_particleTextures.smokeparticle;
+		pd->tc = g_particleTextures.smoke;
 		pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 		pd->m_rotation = 0.0000001f;
 		pd->rgb = Color3f(0.7f, 0.7f, 1.f);
@@ -132,7 +132,7 @@ void FlyingEyeSpell::End() {
 		pd->siz = 28.f;
 		pd->tolive = Random::getu(2000, 6000);
 		pd->scale = Vec3f(12.f);
-		pd->tc = g_particleTextures.smokeparticle;
+		pd->tc = g_particleTextures.smoke;
 		pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 		pd->m_rotation = 0.0000001f;
 		pd->rgb = Color3f(0.7f, 0.7f, 1.f);
@@ -167,7 +167,7 @@ static void FlyingEyeSpellUpdateHand(const Vec3f & pos, LightHandle & light) {
 		pd->siz = 5.f;
 		pd->tolive = Random::getu(1500, 3500);
 		pd->scale = Vec3f(0.2f);
-		pd->tc = TC_smoke;
+		pd->tc = g_particleTextures.smoke;
 		pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 		pd->sourceionum = EntityHandle_Player;
 		pd->m_rotation = 0.0000001f;

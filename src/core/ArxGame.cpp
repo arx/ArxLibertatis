@@ -509,7 +509,6 @@ TextureContainer * enviro = nullptr;
 TextureContainer * ombrignon = nullptr;
 TextureContainer * TC_fire = nullptr;
 TextureContainer * TC_fire2 = nullptr;
-TextureContainer * TC_smoke = nullptr;
 TextureContainer * Boom = nullptr;
 TextureContainer * arx_logo_tc = nullptr;
 
@@ -527,7 +526,6 @@ static void LoadSysTextures() {
 	ombrignon = TextureContainer::LoadUI("graph/particles/ombrignon");
 	TC_fire = TextureContainer::LoadUI("graph/particles/fire", TextureContainer::NoColorKey);
 	TC_fire2 = TextureContainer::LoadUI("graph/particles/fire2", TextureContainer::NoColorKey);
-	TC_smoke = TextureContainer::LoadUI("graph/particles/smoke", TextureContainer::NoColorKey);
 	Boom = TextureContainer::LoadUI("graph/particles/boom");
 	arx_logo_tc = TextureContainer::LoadUI("graph/interface/icons/arx_logo_32");
 	
