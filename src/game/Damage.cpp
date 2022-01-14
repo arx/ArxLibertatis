@@ -85,6 +85,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Vertex.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/particle/ParticleEffects.h"
+#include "graphics/particle/ParticleTextures.h"
 
 #include "io/resource/ResourcePath.h"
 
@@ -895,8 +896,6 @@ void ARX_DAMAGES_Reset() {
 	g_damages.clear();
 }
 
-extern TextureContainer * TC_fire2;
-
 static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg, Entity * io) {
 	
 	arx_assert(io && (io->ioflags & IO_NPC));
@@ -951,7 +950,7 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 			} else {
 				pd->rgb = Color3f::gray(0.5f);
 			}
-			pd->tc = TC_fire2;
+			pd->tc = g_particleTextures.fire2;
 			pd->m_rotation = Random::getf(-0.1f, 0.1f);
 		}
 		
