@@ -44,6 +44,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_EFFECTS_LIGHTNING_H
 #define ARX_GRAPHICS_EFFECTS_LIGHTNING_H
 
+#include <vector>
+
 #include "game/Entity.h"
 #include "graphics/Vertex.h"
 #include "graphics/data/Mesh.h"
@@ -77,7 +79,6 @@ private:
 	Spell * m_spell;
 	float fTotoro;
 	float fMySize;
-	size_t m_nbtotal;
 	int m_lNbSegments;
 	float m_invNbSegments;
 	float m_fLengthMin;
@@ -91,14 +92,14 @@ private:
 	struct CLightningNode {
 		Vec3f pos;
 		float size;
-		int parent;
+		size_t parent;
 		Vec3f f;
 		DamageHandle damage;
 	};
 	
 	static const size_t MAX_NODES = 2000;
 	
-	CLightningNode m_cnodetab[MAX_NODES];
+	std::vector<CLightningNode> m_nodes;
 	
 	struct LIGHTNING;
 	void BuildS(LIGHTNING * lightingInfo);

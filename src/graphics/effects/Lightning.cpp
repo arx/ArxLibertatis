@@ -100,7 +100,6 @@ CLightning::CLightning(Spell * spell)
 	, m_spell(spell)
 	, fTotoro(0.f)
 	, fMySize(2.f)
-	, m_nbtotal(0)
 	, m_lNbSegments(40)
 	, m_invNbSegments(1.0f / 40.0f)
 	, m_fLengthMin(5.0f)
@@ -117,12 +116,9 @@ CLightning::CLightning(Spell * spell)
 
 CLightning::~CLightning() {
 	
-	for(size_t i = 0; i < m_nbtotal; i++) {
-		CLightningNode & node = m_cnodetab[i];
-		if(node.damage !=DamageHandle()) {
-			DamageRequestEnd(node.damage);
-			node.damage = DamageHandle();
-		}
+	for(CLightningNode & node : m_nodes) {
+		DamageRequestEnd(node.damage);
+		node.damage = DamageHandle();
 	}
 	
 }
@@ -132,9 +128,11 @@ void CLightning::BuildS(LIGHTNING * lightingInfo) {
 	Vec3f astart = lightingInfo->eStart;
 	Vec3f avect = lightingInfo->eVect;
 	
-	if(lightingInfo->anb > 0 && m_nbtotal < (MAX_NODES - 1)) {
+	if(lightingInfo->anb > 0) {
 		
-		int moi = ++m_nbtotal;
+		size_t i = m_nodes.size();
+		
+		m_nodes.resize(m_nodes.size() + 1);
 		
 		if(lightingInfo->abFollow) {
 			avect = glm::normalize(m_eDest - lightingInfo->eStart);
@@ -159,9 +157,9 @@ void CLightning::BuildS(LIGHTNING * lightingInfo) {
 		astart += av;
 		lightingInfo->eStart = astart;
 		
-		m_cnodetab[m_nbtotal].pos = lightingInfo->eStart;
-		m_cnodetab[m_nbtotal].size = m_cnodetab[0].size * lightingInfo->anb * m_invNbSegments;
-		m_cnodetab[m_nbtotal].parent = lightingInfo->aParent;
+		m_nodes[i].pos = lightingInfo->eStart;
+		m_nodes[i].size = m_nodes[0].size * lightingInfo->anb * m_invNbSegments;
+		m_nodes[i].parent = lightingInfo->aParent;
 		
 		int anb = lightingInfo->anb;
 		int anbrec = lightingInfo->anbrec;
@@ -178,7 +176,7 @@ void CLightning::BuildS(LIGHTNING * lightingInfo) {
 				lightingInfo->abFollow = false;
 				lightingInfo->anb =  anb - int(10 * (1 - m));
 				lightingInfo->anbrec = anbrec + int(2 * m);
-				lightingInfo->aParent = moi;
+				lightingInfo->aParent = i;
 				lightingInfo->fAngleMin = m_fAngleMin;
 				lightingInfo->fAngleMax = m_fAngleMax;
 				
@@ -189,7 +187,7 @@ void CLightning::BuildS(LIGHTNING * lightingInfo) {
 				lightingInfo->abFollow = true;
 				lightingInfo->anb = anb - int(10 * m);
 				lightingInfo->anbrec = anbrec + int(2 * m);
-				lightingInfo->aParent = moi;
+				lightingInfo->aParent = i;
 				lightingInfo->fAngleMin = m_fAngleMin;
 				lightingInfo->fAngleMax = m_fAngleMax;
 				
@@ -202,7 +200,7 @@ void CLightning::BuildS(LIGHTNING * lightingInfo) {
 				lightingInfo->eVect = avect;
 				lightingInfo->anb = anb - int(10 * (1 - m));
 				lightingInfo->anbrec = anbrec + int(2 * m);
-				lightingInfo->aParent = moi;
+				lightingInfo->aParent = i;
 				lightingInfo->fAngleMin = m_fAngleMin;
 				lightingInfo->fAngleMax = m_fAngleMax;
 				
@@ -213,7 +211,7 @@ void CLightning::BuildS(LIGHTNING * lightingInfo) {
 				lightingInfo->eVect = avect;
 				lightingInfo->anb = anb - int(10 * m);
 				lightingInfo->anbrec = anbrec + int(2 * m);
-				lightingInfo->aParent = moi;
+				lightingInfo->aParent = i;
 				lightingInfo->fAngleMin = m_fAngleMin;
 				lightingInfo->fAngleMax = m_fAngleMax;
 				
@@ -229,7 +227,7 @@ void CLightning::BuildS(LIGHTNING * lightingInfo) {
 			lightingInfo->eVect = avect;
 			lightingInfo->anb = anb - 1;
 			lightingInfo->anbrec = anbrec;
-			lightingInfo->aParent = moi;
+			lightingInfo->aParent = i;
 			lightingInfo->fAngleMin = m_fAngleMin;
 			lightingInfo->fAngleMax = m_fAngleMax;
 			
@@ -252,34 +250,33 @@ void CLightning::Create(Vec3f aeFrom, Vec3f aeTo) {
 
 void CLightning::ReCreate(float rootSize) {
 	
-	for(size_t i = 0; i < m_nbtotal; i++) {
-		CLightningNode & node = m_cnodetab[i];
-		if(node.damage !=DamageHandle()) {
-			DamageRequestEnd(node.damage);
-			node.damage = DamageHandle();
-		}
+	for(CLightningNode & node : m_nodes) {
+		DamageRequestEnd(node.damage);
+		node.damage = DamageHandle();
 	}
 	
-	m_nbtotal = 0;
+	m_nodes.clear();
 	
-	if(m_nbtotal == 0) {
-		LIGHTNING LInfo = LIGHTNING();
-		
-		LInfo.eStart = m_eSrc;
-		LInfo.eVect = m_eDest - m_eSrc;
-		LInfo.anb = m_lNbSegments;
-		LInfo.anbrec = 0;
-		LInfo.abFollow = true;
-		LInfo.aParent = 0;
-		LInfo.fAngleMin = m_fAngleMin;
-		LInfo.fAngleMax = m_fAngleMax;
-		
-		m_cnodetab[0].pos = m_eSrc;
-		m_cnodetab[0].size = rootSize;
-		m_cnodetab[0].parent = 0;
-
-		BuildS(&LInfo);
-	}
+	LIGHTNING LInfo = LIGHTNING();
+	
+	LInfo.eStart = m_eSrc;
+	LInfo.eVect = m_eDest - m_eSrc;
+	LInfo.anb = m_lNbSegments;
+	LInfo.anbrec = 0;
+	LInfo.abFollow = true;
+	LInfo.aParent = 0;
+	LInfo.fAngleMin = m_fAngleMin;
+	LInfo.fAngleMax = m_fAngleMax;
+	
+	m_nodes.resize(1);
+	
+	m_nodes[0].pos = m_eSrc;
+	m_nodes[0].size = rootSize;
+	m_nodes[0].parent = 0;
+	
+	BuildS(&LInfo);
+	
+	m_nodes.resize(m_nodes.size() - 1);
 	
 	m_iTTL = std::chrono::milliseconds(Random::get(500, 1500));
 }
@@ -315,19 +312,19 @@ void CLightning::Render()
 	}
 	
 	float f = 1.5f * fMySize;
-	m_cnodetab[0].f = arx::randomVec(-f, f);
+	m_nodes[0].f = arx::randomVec(-f, f);
 	
 	RenderMaterial mat;
 	mat.setBlendType(RenderMaterial::Additive);
 	
 	float fbeta = fBeta + Random::getf(0.f, 2.f) * fMySize;
 
-	for(size_t i = 0; i < m_nbtotal && i <= fTotoro; i++) {
-		CLightningNode & node = m_cnodetab[i];
+	for(size_t i = 0; i < m_nodes.size() && i <= fTotoro; i++) {
+		CLightningNode & node = m_nodes[i];
 		
-		Vec3f astart = m_cnodetab[node.parent].pos + m_cnodetab[node.parent].f;
+		Vec3f astart = m_nodes[node.parent].pos + m_nodes[node.parent].f;
 		float temp = 1.5f * fMySize;
-		Vec3f z_z = m_cnodetab[node.parent].f + arx::randomVec(-temp, temp);
+		Vec3f z_z = m_nodes[node.parent].f + arx::randomVec(-temp, temp);
 		float zz = node.size + node.size * Random::getf(0.f, 0.3f);
 		float xx = node.size * glm::cos(glm::radians(-fbeta));
 		node.f = z_z;
