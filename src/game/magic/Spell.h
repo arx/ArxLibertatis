@@ -119,7 +119,8 @@ enum SpellcastFlag {
 	SPELLCAST_FLAG_NOCHECKCANCAST = 1 << 5,
 	SPELLCAST_FLAG_NOSOUND        = 1 << 6,
 	SPELLCAST_FLAG_RESTORE        = 1 << 7,
-	SPELLCAST_FLAG_ORPHAN         = 1 << 8
+	SPELLCAST_FLAG_ORPHAN         = 1 << 8,
+	SPELLCAST_FLAG_NODAMAGE       = 1 << 9,
 };
 DECLARE_FLAGS(SpellcastFlag, SpellcastFlags)
 DECLARE_FLAGS_OPERATORS(SpellcastFlags)

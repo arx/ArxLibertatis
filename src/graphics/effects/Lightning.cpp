@@ -339,7 +339,7 @@ void CLightning::Render()
 			a += ePos;
 		}
 		
-		if(i % 4 == 0) {
+		if(i % 4 == 0 && !(m_spell->m_flags & SPELLCAST_FLAG_NODAMAGE)) {
 			Sphere sphere;
 			sphere.origin = a;
 			sphere.radius = std::min(node.size, 50.f);

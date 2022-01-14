@@ -249,6 +249,11 @@ public:
 			spflags |= SPELLCAST_FLAG_NOCHECKCANCAST;
 		}
 		
+		if(spellid == SPELL_LIGHTNING_STRIKE && context.getEntity()->idString() == "intro_draw_0001") {
+			// TODO(patch-scripts) Workaround for http://arx.vg/93
+			spflags |= SPELLCAST_FLAG_NODAMAGE;
+		}
+		
 		DebugScript(' ' << spellname << ' ' << level << ' ' << target << ' ' << spflags << ' '
 		            << std::chrono::milliseconds(duration).count());
 		
