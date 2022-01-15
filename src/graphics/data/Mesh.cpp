@@ -568,14 +568,13 @@ static void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 		}
 		ep->center /= 4;
 		
-		for(size_t nroom = 0; nroom < portals->rooms.size(); nroom++) {
-			if(nroom == portal.room_1 || nroom == portal.room_2) {
-				EERIE_ROOM_DATA & room = portals->rooms[nroom];
-				room.portals.push_back(long(num));
-			}
+		for(size_t i : { portal.room_1, portal.room_2 }) {
+			arx_assert(i < portals->rooms.size());
+			portals->rooms[i].portals.push_back(long(num));
 		}
 		
 	}
+	
 }
 
 void EERIE_PORTAL_Release() {
@@ -903,11 +902,11 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		
 		const EERIE_SAVE_ROOM_DATA * erd = fts_read<EERIE_SAVE_ROOM_DATA>(data, end);
 		
-		LogDebug(" - room: " << erd->nb_portals << " portals, " << erd->nb_polys << " polygons");
+		LogDebug(" - room: " << erd->nb_polys << " polygons");
 		
-		room.portals.resize(erd->nb_portals);
-		const s32 * start = fts_read<s32>(data, end, erd->nb_portals);
-		std::copy(start, start + erd->nb_portals, room.portals.begin());
+		// Portal room associations stored in the .fts files are incomplete so we have to fill in the
+		// missing ones anyway and doing so without duplicates is easier when starting from scratch
+		(void)fts_read<s32>(data, end, erd->nb_portals);
 		
 		room.epdata.resize(erd->nb_polys);
 		const FAST_EP_DATA * ed = fts_read<FAST_EP_DATA>(data, end, erd->nb_polys);
