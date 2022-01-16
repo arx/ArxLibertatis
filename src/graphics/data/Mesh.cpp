@@ -548,35 +548,6 @@ float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, long io_room, long 
 	return fdist(c_pos, dist.startpos) + dist.distance + fdist(dist.endpos, pos);
 }
 
-static void EERIE_PORTAL_Blend_Portals_And_Rooms() {
-	
-	if(!portals)
-		return;
-
-	for(size_t num = 0; num < portals->portals.size(); num++) {
-		EERIE_PORTALS & portal = portals->portals[num];
-		PortalPoly * ep = &portal.poly;
-		
-		portal.poly.norm = CalcFaceNormal(portal.poly.p);
-		
-		ep->bounds.origin = ep->p[0];
-		ep->maxY = ep->minY = ep->p[0].y;
-		for(long i = 1; i < 4; i++) {
-			ep->bounds.origin += ep->p[i];
-			ep->minY = std::min(ep->minY, ep->p[i].y);
-			ep->maxY = std::max(ep->maxY, ep->p[i].y);
-		}
-		ep->bounds.origin /= 4.f;
-		
-		for(size_t i : { portal.room_1, portal.room_2 }) {
-			arx_assert(i < portals->rooms.size());
-			portals->rooms[i].portals.push_back(long(num));
-		}
-		
-	}
-	
-}
-
 void EERIE_PORTAL_Release() {
 	
 	if(!portals) {
@@ -873,7 +844,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	portals->portals.resize(fsh->nb_portals);
 	
 	LogDebug("FTS: loading " << portals->portals.size() << " portals ...");
-	for(EERIE_PORTALS & portal : portals->portals) {
+	for(size_t portalidx = 0; portalidx < portals->portals.size(); portalidx++) {
+		EERIE_PORTALS & portal = portals->portals[portalidx];
 		
 		const EERIE_SAVE_PORTALS * epo = fts_read<EERIE_SAVE_PORTALS>(data, end);
 		
@@ -884,13 +856,9 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		portal.room_1 = epo->room_1;
 		portal.room_2 = epo->room_2;
 		portal.useportal = epo->useportal;
-		portal.poly.maxY = epo->poly.max.toVec3().y;
-		portal.poly.minY = epo->poly.min.toVec3().y;
-		portal.poly.norm = epo->poly.norm.toVec3();
 		for(size_t j = 0; j < 4; j++) {
 			portal.poly.p[j] = epo->poly.v[j].pos.toVec3();
 		}
-		portal.poly.bounds.origin = epo->poly.center.toVec3();
 		portal.poly.bounds.radius = epo->poly.v[0].rhw;
 		
 		if(epo->poly.type == 0) {
@@ -900,6 +868,21 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			portal.poly.p[3] = glm::mix(portal.poly.p[1], portal.poly.p[2], 0.5f);
 		} else if(epo->poly.type != 64) {
 			LogWarning << "Invalid poly type found in portal " << epo->poly.type;
+		}
+		
+		portal.poly.norm = CalcFaceNormal(portal.poly.p);
+		
+		portal.poly.bounds.origin = portal.poly.p[0];
+		portal.poly.maxY = portal.poly.minY = portal.poly.p[0].y;
+		for(long i = 1; i < 4; i++) {
+			portal.poly.bounds.origin += portal.poly.p[i];
+			portal.poly.minY = std::min(portal.poly.minY, portal.poly.p[i].y);
+			portal.poly.maxY = std::max(portal.poly.maxY, portal.poly.p[i].y);
+		}
+		portal.poly.bounds.origin /= 4.f;
+		
+		for(size_t room : { portal.room_1, portal.room_2 }) {
+			portals->rooms[room].portals.push_back(long(portalidx));
 		}
 		
 	}
@@ -948,7 +931,6 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	LoadLevelScreen();
 	
 	EERIE_PATHFINDER_Create();
-	EERIE_PORTAL_Blend_Portals_And_Rooms();
 	progressBarAdvance();
 	LoadLevelScreen();
 	
