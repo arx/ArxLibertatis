@@ -110,9 +110,6 @@ void EERIE_PORTAL_Release();
 
 bool RayCollidingPoly(const Vec3f & orgn, const Vec3f & dest, const EERIEPOLY & ep, Vec3f * hit);
 
-
-#define MAX_FRUSTRUMS 32
-
 inline float distanceToPoint(Plane plane, Vec3f point) {
 	return glm::dot(point, plane.normal) + plane.offset;
 }
@@ -125,20 +122,6 @@ inline void normalizePlane(Plane & plane) {
 	plane.offset *= n;
 	
 }
-
-struct EERIE_FRUSTRUM {
-	Plane plane[4];
-};
-
-struct EERIE_FRUSTRUM_DATA {
-	long nb_frustrums;
-	EERIE_FRUSTRUM frustrums[MAX_FRUSTRUMS];
-};
-
-struct PORTAL_ROOM_DRAW {
-	short count;
-	EERIE_FRUSTRUM_DATA frustrum;
-};
 
 struct ROOM_DIST_DATA {
 	

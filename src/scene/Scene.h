@@ -77,7 +77,4 @@ EntityVisibility getEntityVisibility(Entity & entity, bool cullingOnly = false);
 
 extern Plane efpPlaneNear;
 
-extern std::vector<PORTAL_ROOM_DRAW> RoomDraw;
-extern std::vector<size_t> RoomDrawList;
-
 #endif // ARX_SCENE_SCENE_H

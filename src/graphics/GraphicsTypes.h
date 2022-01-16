@@ -257,4 +257,8 @@ struct Plane {
 	
 };
 
+struct EERIE_FRUSTRUM {
+	Plane plane[4];
+};
+
 #endif // ARX_GRAPHICS_GRAPHICSTYPES_H

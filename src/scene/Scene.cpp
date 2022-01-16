@@ -194,9 +194,6 @@ static EERIE_FRUSTRUM g_screenFrustum;
 static std::vector<EERIEPOLY *> vPolyWater;
 static std::vector<EERIEPOLY *> vPolyLava;
 
-std::vector<PORTAL_ROOM_DRAW> RoomDraw;
-std::vector<size_t> RoomDrawList;
-
 Vec2f getWaterFxUvOffset(float watereffect, const Vec3f & odtv) {
 	return Vec2f(std::sin(watereffect + odtv.x), std::cos(watereffect + odtv.z));
 }
@@ -270,8 +267,8 @@ bool VisibleSphere(const Sphere & sphere) {
 	
 	long room_num = ARX_PORTALS_GetRoomNumForPosition(sphere.origin);
 	if(room_num >= 0) {
-		EERIE_FRUSTRUM_DATA & frustrums = RoomDraw[room_num].frustrum;
-		if(FrustrumsClipSphere(frustrums, sphere)) {
+		arx_assert(g_rooms);
+		if(FrustrumsClipSphere(g_rooms->visibility[room_num].frustrum, sphere)) {
 			return false;
 		}
 	}
@@ -368,8 +365,8 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 			room_num = ARX_PORTALS_GetRoomNumForPosition(posi);
 		}
 
-		if(room_num >= 0 && size_t(room_num) < RoomDraw.size()) {
-			if(RoomDraw[room_num].count == 0) {
+		if(room_num >= 0 && size_t(room_num) < g_rooms->visibility.size()) {
+			if(g_rooms->visibility[room_num].count == 0) {
 				if(io) {
 					io->bbox2D.min = Vec2f(-1.f, -1.f);
 					io->bbox2D.max = Vec2f(-1.f, -1.f);
@@ -378,7 +375,7 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 			}
 			
 			if(io) {
-				EERIE_FRUSTRUM_DATA & frustrums = RoomDraw[room_num].frustrum;
+				EERIE_FRUSTRUM_DATA & frustrums = g_rooms->visibility[room_num].frustrum;
 				// TODO also use the portals from intermediate rooms for clipping
 				if(FrustrumsClipSphere(frustrums, sphere) ||
 				   FrustrumsClipBBox3D(frustrums, io->bbox3D)
@@ -440,7 +437,7 @@ static bool isOccludedByPortals(Entity & entity, float dist2, size_t currentRoom
 	sphere.origin = (entity.bbox3D.min + entity.bbox3D.max) / 2.f;
 	sphere.radius = glm::distance(sphere.origin, entity.bbox3D.min);
 	
-	const EERIE_FRUSTRUM_DATA & frustrums = RoomDraw[currentRoom].frustrum;
+	const EERIE_FRUSTRUM_DATA & frustrums = g_rooms->visibility[currentRoom].frustrum;
 	if(FrustrumsClipSphere(frustrums, sphere) || FrustrumsClipBBox3D(frustrums, entity.bbox3D)) {
 		return true;
 	}
@@ -569,12 +566,12 @@ EntityVisibility getEntityVisibility(Entity & entity, bool cullingOnly) {
 		}
 		if(g_rooms && USE_PLAYERCOLLISIONS) {
 			long room = ARX_PORTALS_GetRoomNumForPosition(g_camera->m_pos, 1);
-			if(room >= 0 && size_t(room) < RoomDraw.size()) {
+			if(room >= 0 && size_t(room) < g_rooms->visibility.size()) {
 				long room2 = entity.room;
 				if(room2 == -1) {
 					room2 = ARX_PORTALS_GetRoomNumForPosition(parent->pos - Vec3f(0.f, 120.f, 0.f));
 				}
-				if(room2 >= 0 && size_t(room2) < RoomDraw.size() && room2 != room) {
+				if(room2 >= 0 && size_t(room2) < g_rooms->visibility.size() && room2 != room) {
 					if(isOccludedByPortals(entity, arx::distance2(parent->pos, g_camera->m_pos), room2, room)) {
 						return EntityFullyOccluded;
 					}
@@ -855,13 +852,13 @@ static void ARX_PORTALS_InitDrawnRooms() {
 		ARX_PORTALS_Frustrum_ClearIndexCount(i);
 	}
 	
-	RoomDraw.resize(g_rooms->rooms.size());
-	for(PORTAL_ROOM_DRAW & room : RoomDraw) {
+	g_rooms->visibility.resize(g_rooms->rooms.size());
+	for(PORTAL_ROOM_DRAW & room : g_rooms->visibility) {
 		room.count = 0;
 		room.frustrum.nb_frustrums = 0;
 	}
 	
-	RoomDrawList.clear();
+	g_rooms->visibleRooms.clear();
 	
 	vPolyWater.clear();
 	vPolyLava.clear();
@@ -966,14 +963,16 @@ static void CreateScreenFrustrum() {
 }
 
 void RoomDrawRelease() {
-	RoomDrawList.clear();
-	RoomDraw.clear();
+	if(g_rooms) {
+		g_rooms->visibleRooms.clear();
+		g_rooms->visibility.clear();
+	}
 }
 
 static void RoomFrustrumAdd(size_t num, const EERIE_FRUSTRUM & fr) {
-	if(RoomDraw[num].frustrum.nb_frustrums < MAX_FRUSTRUMS - 1) {
-		RoomDraw[num].frustrum.frustrums[RoomDraw[num].frustrum.nb_frustrums] = fr;
-		RoomDraw[num].frustrum.nb_frustrums++;
+	if(g_rooms->visibility[num].frustrum.nb_frustrums < MAX_FRUSTRUMS - 1) {
+		g_rooms->visibility[num].frustrum.frustrums[g_rooms->visibility[num].frustrum.nb_frustrums] = fr;
+		g_rooms->visibility[num].frustrum.nb_frustrums++;
 	}
 }
 
@@ -1229,8 +1228,9 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 ) {
 	ARX_PROFILE_FUNC();
 	
-	if(!RoomDraw[room_num].count)
+	if(!g_rooms->visibility[room_num].count) {
 		return;
+	}
 	
 	Room & room = g_rooms->rooms[room_num];
 	if(!room.pVertexBuffer) {
@@ -1517,12 +1517,12 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 ) {
 	arx_assert(roomIndex < g_rooms->rooms.size());
 	
-	if(RoomDraw[roomIndex].count == 0) {
-		RoomDrawList.push_back(roomIndex);
+	if(g_rooms->visibility[roomIndex].count == 0) {
+		g_rooms->visibleRooms.push_back(roomIndex);
 	}
 	
 	RoomFrustrumAdd(roomIndex, frustrum);
-	RoomDraw[roomIndex].count++;
+	g_rooms->visibility[roomIndex].count++;
 	
 	float fClippZFar = camDepth * fZFogEnd * 1.1f;
 	
@@ -1612,8 +1612,8 @@ void ARX_SCENE_Update() {
 	
 	if(!USE_PLAYERCOLLISIONS) {
 		for(size_t i = 0; i < g_rooms->rooms.size(); i++) {
-			RoomDraw[i].count = 1;
-			RoomDrawList.push_back(i);
+			g_rooms->visibility[i].count = 1;
+			g_rooms->visibleRooms.push_back(i);
 			RoomFrustrumAdd(i, g_screenFrustum);
 		}
 	} else {
@@ -1624,8 +1624,8 @@ void ARX_SCENE_Update() {
 		}
 	}
 	
-	for(size_t room : RoomDrawList) {
-		ARX_PORTALS_Frustrum_RenderRoomTCullSoft(room, RoomDraw[room].frustrum, now, camPos);
+	for(size_t room : g_rooms->visibleRooms) {
+		ARX_PORTALS_Frustrum_RenderRoomTCullSoft(room, g_rooms->visibility[room].frustrum, now, camPos);
 	}
 	
 	ARX_THROWN_OBJECT_Manage(g_gameTime.lastFrameDuration());
@@ -1643,8 +1643,10 @@ void ARX_SCENE_Render() {
 		GRenderer->GetTextureStage(0)->setMipMapLODBias(10.f);
 	}
 	
-	for(size_t room : RoomDrawList) {
-		BackgroundRenderOpaque(room);
+	if(g_rooms) {
+		for(size_t room : g_rooms->visibleRooms) {
+			BackgroundRenderOpaque(room);
+		}
 	}
 	
 	if(!player.m_improve) {
@@ -1681,8 +1683,10 @@ void ARX_SCENE_Render() {
 	
 	GRenderer->SetFogColor(Color::none);
 	
-	for(size_t room : RoomDrawList) {
-		BackgroundRenderTransparent(room);
+	if(g_rooms) {
+		for(size_t room : g_rooms->visibleRooms) {
+			BackgroundRenderTransparent(room);
+		}
 	}
 	
 	RenderWater();

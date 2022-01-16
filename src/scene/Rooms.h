@@ -100,10 +100,29 @@ struct Room {
 	
 };
 
+#define MAX_FRUSTRUMS 32
+
+struct EERIE_FRUSTRUM_DATA {
+	
+	long nb_frustrums;
+	EERIE_FRUSTRUM frustrums[MAX_FRUSTRUMS];
+	
+};
+
+struct PORTAL_ROOM_DRAW {
+	
+	short count;
+	EERIE_FRUSTRUM_DATA frustrum;
+	
+};
+
 struct RoomData {
 	
 	std::vector<Room> rooms;
 	std::vector<RoomPortal> portals;
+	
+	std::vector<PORTAL_ROOM_DRAW> visibility;
+	std::vector<u32> visibleRooms;
 	
 };
 
