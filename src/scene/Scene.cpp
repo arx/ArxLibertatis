@@ -456,7 +456,7 @@ static bool isOccludedByPortals(Entity & entity, float dist2, size_t currentRoom
 			continue;
 		}
 		
-		size_t nextRoom = (portal.room_1 == currentRoom) ? portal.room_2 : portal.room_1;
+		u32 nextRoom = (portal.room0 == currentRoom) ? portal.room1 : portal.room0;
 		if(nextRoom == cameraRoom) {
 			return false;
 		}
@@ -800,9 +800,9 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 						if(height > yy) {
 							if(yy >= pos.y && yy - pos.y < nearest_dist) {
 								if(portal.plane.normal.y > 0) {
-									nearest = portal.room_2;
+									nearest = portal.room1;
 								} else {
-									nearest = portal.room_1;
+									nearest = portal.room0;
 								}
 								nearest_dist = yy - pos.y;
 							}
@@ -1570,11 +1570,11 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 		size_t roomToCompute = 0;
 		bool computeRoom = false;
 
-		if(portal.room_1 == roomIndex && !Cull) {
-			roomToCompute = portal.room_2;
+		if(portal.room0 == roomIndex && !Cull) {
+			roomToCompute = portal.room1;
 			computeRoom = true;
-		}else if(portal.room_2 == roomIndex && Cull) {
-			roomToCompute = portal.room_1;
+		}else if(portal.room1 == roomIndex && Cull) {
+			roomToCompute = portal.room0;
 			computeRoom = true;
 		}
 		

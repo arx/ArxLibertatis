@@ -853,8 +853,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		   epo->room_1 < 0 || size_t(epo->room_1) >= portals->portals.size()) {
 			throw std::runtime_error("portal room index out of bounds");
 		}
-		portal.room_1 = epo->room_1;
-		portal.room_2 = epo->room_2;
+		portal.room0 = epo->room_1;
+		portal.room1 = epo->room_2;
 		portal.useportal = epo->useportal;
 		for(size_t j = 0; j < 4; j++) {
 			portal.p[j] = epo->poly.v[j].pos.toVec3();
@@ -881,7 +881,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		}
 		portal.bounds.origin /= 4.f;
 		
-		for(size_t room : { portal.room_1, portal.room_2 }) {
+		for(u32 room : { portal.room0, portal.room1 }) {
 			portals->rooms[room].portals.push_back(long(portalidx));
 		}
 		

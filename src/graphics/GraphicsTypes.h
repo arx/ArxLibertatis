@@ -265,16 +265,16 @@ struct RoomPortal {
 	float minY;
 	float maxY;
 	
-	size_t room_1; // facing normal
-	size_t room_2;
+	u32 room0; // facing normal
+	u32 room1;
 	
 	short useportal;
 	
 	RoomPortal()
 		: minY(0.f)
 		, maxY(0.f)
-		, room_1(0)
-		, room_2(0)
+		, room0(0)
+		, room1(0)
 		, useportal(0)
 	{
 		p[0] = p[1] = p[2] = p[3] = Vec3f(0.f);
