@@ -415,7 +415,7 @@ bool GetTruePolyY(const PortalPoly * ep, const Vec3f & pos, float * ret) {
 	float y = glm::dot(ep->p[0] - Vec3f(pos.x, 0.f, pos.z), n) / n.y;
 	
 	// Perhaps we can remove the clamp... (need to test)
-	*ret = glm::clamp(y, ep->min.y, ep->max.y);
+	*ret = glm::clamp(y, ep->minY, ep->maxY);
 	
 	return true;
 }
@@ -560,11 +560,11 @@ static void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 		portal.poly.norm = CalcFaceNormal(portal.poly.p);
 		
 		ep->bounds.origin = ep->p[0];
-		ep->max = ep->min = ep->p[0];
+		ep->maxY = ep->minY = ep->p[0].y;
 		for(long i = 1; i < 4; i++) {
 			ep->bounds.origin += ep->p[i];
-			ep->min = glm::min(ep->min, ep->p[i]);
-			ep->max = glm::max(ep->max, ep->p[i]);
+			ep->minY = std::min(ep->minY, ep->p[i].y);
+			ep->maxY = std::max(ep->maxY, ep->p[i].y);
 		}
 		ep->bounds.origin /= 4.f;
 		
@@ -884,8 +884,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		portal.room_1 = epo->room_1;
 		portal.room_2 = epo->room_2;
 		portal.useportal = epo->useportal;
-		portal.poly.max = epo->poly.max.toVec3();
-		portal.poly.min = epo->poly.min.toVec3();
+		portal.poly.maxY = epo->poly.max.toVec3().y;
+		portal.poly.minY = epo->poly.min.toVec3().y;
 		portal.poly.norm = epo->poly.norm.toVec3();
 		for(size_t j = 0; j < 4; j++) {
 			portal.poly.p[j] = epo->poly.v[j].pos.toVec3();

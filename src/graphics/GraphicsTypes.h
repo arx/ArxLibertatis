@@ -247,17 +247,17 @@ struct EERIE_3DOBJ {
 
 struct PortalPoly {
 	
-	Vec3f min;
-	Vec3f max;
 	Vec3f norm;
 	Vec3f p[4];
 	Sphere bounds;
+	float minY;
+	float maxY;
 	
 	PortalPoly()
-		: min(0.f)
-		, max(0.f)
-		, norm(0.f)
+		: norm(0.f)
 		, bounds(Vec3f(0.f), 1.f)
+		, minY(0.f)
+		, maxY(0.f)
 	{
 		p[0] = p[1] = p[2] = p[3] = Vec3f(0.f);
 	}
