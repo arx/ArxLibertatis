@@ -888,7 +888,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	}
 	
 	LogDebug("FTS: loading " << portals->rooms.size() << " rooms ...");
-	for(EERIE_ROOM_DATA & room : portals->rooms) {
+	for(Room & room : portals->rooms) {
 		
 		const EERIE_SAVE_ROOM_DATA * erd = fts_read<EERIE_SAVE_ROOM_DATA>(data, end);
 		
@@ -960,7 +960,7 @@ void EERIE_PORTAL_ReleaseOnlyVertexBuffer() {
 	
 	LogDebug("Destroying scene VBOs");
 	
-	for(EERIE_ROOM_DATA & room : portals->rooms) {
+	for(Room & room : portals->rooms) {
 		room.pVertexBuffer.reset();
 		room.indexBuffer.clear();
 		room.ppTextureContainer.clear();
@@ -1016,8 +1016,7 @@ void ComputePortalVertexBuffer() {
 	TextureMap infos;
 	
 	for(size_t i = 0; i < portals->rooms.size(); i++) {
-		
-		EERIE_ROOM_DATA * room = &portals->rooms[i];
+		Room * room = &portals->rooms[i];
 		
 		// Skip empty rooms
 		if(room->epdata.empty()) {

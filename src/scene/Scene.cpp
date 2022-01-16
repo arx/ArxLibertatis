@@ -445,7 +445,7 @@ static bool isOccludedByPortals(Entity & entity, float dist2, size_t currentRoom
 		return true;
 	}
 	
-	const EERIE_ROOM_DATA & room = portals->rooms[currentRoom];
+	const Room & room = portals->rooms[currentRoom];
 	for(long i : room.portals) {
 		
 		if(i < 0 || size_t(i) >= portals->portals.size()) {
@@ -791,7 +791,7 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 		long nearest = -1;
 		float nearest_dist = 99999.f;
 		
-		for(const EERIE_ROOM_DATA & room : portals->rooms) {
+		for(const Room & room : portals->rooms) {
 			for(long i : room.portals) {
 				const RoomPortal & portal = portals->portals[i];
 				if(PointIn2DPolyXZ(portal, pos.x, pos.z)) {
@@ -823,7 +823,7 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 
 static void ARX_PORTALS_Frustrum_ClearIndexCount(size_t room_num) {
 	
-	EERIE_ROOM_DATA & room = portals->rooms[room_num];
+	Room & room = portals->rooms[room_num];
 	
 	std::vector<TextureContainer *>::const_iterator itr;
 	for(itr = room.ppTextureContainer.begin(); itr != room.ppTextureContainer.end(); ++itr) {
@@ -1231,9 +1231,8 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 	
 	if(!RoomDraw[room_num].count)
 		return;
-
-	EERIE_ROOM_DATA & room = portals->rooms[room_num];
-
+	
+	Room & room = portals->rooms[room_num];
 	if(!room.pVertexBuffer) {
 		// No need to spam this for every frame as there will already be an
 		// earlier warning
@@ -1403,7 +1402,7 @@ static void BackgroundRenderOpaque(size_t room_num) {
 	
 	ARX_PROFILE_FUNC();
 	
-	EERIE_ROOM_DATA & room = portals->rooms[room_num];
+	Room & room = portals->rooms[room_num];
 	
 	std::vector<TextureContainer *>::const_iterator itr;
 	for(itr = room.ppTextureContainer.begin(); itr != room.ppTextureContainer.end(); ++itr) {
@@ -1453,7 +1452,7 @@ static void BackgroundRenderTransparent(size_t room_num) {
 	
 	ARX_PROFILE_FUNC();
 	
-	EERIE_ROOM_DATA & room = portals->rooms[room_num];
+	Room & room = portals->rooms[room_num];
 	
 	for(TextureContainer * pTexCurr : room.ppTextureContainer) {
 		
@@ -1644,7 +1643,7 @@ void ARX_SCENE_Render() {
 		GRenderer->GetTextureStage(0)->setMipMapLODBias(10.f);
 	}
 	
-	for(size_t  room : RoomDrawList) {
+	for(size_t room : RoomDrawList) {
 		BackgroundRenderOpaque(room);
 	}
 	

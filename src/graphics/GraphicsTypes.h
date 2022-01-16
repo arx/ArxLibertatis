@@ -294,7 +294,7 @@ struct EP_DATA {
 	
 };
 
-struct EERIE_ROOM_DATA {
+struct Room {
 	
 	std::vector<long> portals;
 	std::vector<EP_DATA> epdata;
@@ -305,7 +305,7 @@ struct EERIE_ROOM_DATA {
 };
 
 struct EERIE_PORTAL_DATA {
-	std::vector<EERIE_ROOM_DATA> rooms;
+	std::vector<Room> rooms;
 	std::vector<RoomPortal> portals;
 };
 
