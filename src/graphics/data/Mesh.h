@@ -79,14 +79,14 @@ EERIEPOLY * EEIsUnderWater(const Vec3f & pos);
  *         on the xz plane, true otherwise.
  */
 bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f & pos, float * ret);
-bool GetTruePolyY(const PortalPoly * ep, const Vec3f & pos, float * ret);
+bool GetTruePolyY(const EERIE_PORTALS & ep, const Vec3f & pos, float * ret);
 
 bool IsAnyPolyThere(float x, float z);
 EERIEPOLY * GetMinPoly(const Vec3f & pos);
 EERIEPOLY * GetMaxPoly(const Vec3f & pos);
  
 int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z);
-int PointIn2DPolyXZ(const PortalPoly * ep, float x, float z);
+int PointIn2DPolyXZ(const EERIE_PORTALS & ep, float x, float z);
 
 Vec3f EE_RT(const Vec3f & in);
 Vec4f worldToClipSpace(const Vec3f & in);

@@ -159,21 +159,17 @@ static void drawDebugLights() {
 
 static void drawDebugPortals() {
 	
-	for(size_t i = 0; i < portals->portals.size(); i++) {
-		
-		EERIE_PORTALS & po = portals->portals[i];
+	for(const EERIE_PORTALS & portal : portals->portals) {
 		
 		Color color = Color::red;
-		if(po.useportal == 1) {
+		if(portal.useportal == 1) {
 			color = Color::green;
 		}
 		
-		PortalPoly & epp = po.poly;
-
-		drawLine(epp.p[0], epp.p[1], color);
-		drawLine(epp.p[1], epp.p[3], color);
-		drawLine(epp.p[2], epp.p[3], color, color * 0.5f);
-		drawLine(epp.p[0], epp.p[2], color);
+		drawLine(portal.p[0], portal.p[1], color);
+		drawLine(portal.p[1], portal.p[3], color);
+		drawLine(portal.p[2], portal.p[3], color, color * 0.5f);
+		drawLine(portal.p[0], portal.p[2], color);
 		
 	}
 	

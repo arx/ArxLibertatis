@@ -461,7 +461,7 @@ static bool isOccludedByPortals(Entity & entity, float dist2, size_t currentRoom
 			return false;
 		}
 		
-		float nextDist2 = arx::distance2(portal.poly.bounds.origin, g_camera->m_pos);
+		float nextDist2 = arx::distance2(portal.bounds.origin, g_camera->m_pos);
 		if(nextDist2 < dist2 && !isOccludedByPortals(entity, nextDist2, nextRoom, cameraRoom)) {
 			return false;
 		}
@@ -787,22 +787,22 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 	}
 	
 	if(num > -1) {
+		
 		long nearest = -1;
 		float nearest_dist = 99999.f;
-
+		
 		for(const EERIE_ROOM_DATA & room : portals->rooms) {
-			for(long portal : room.portals) {
-				const EERIE_PORTALS & po = portals->portals[portal];
-				const PortalPoly * epp = &po.poly;
-				if(PointIn2DPolyXZ(epp, pos.x, pos.z)) {
+			for(long i : room.portals) {
+				const EERIE_PORTALS & portal = portals->portals[i];
+				if(PointIn2DPolyXZ(portal, pos.x, pos.z)) {
 					float yy;
-					if(GetTruePolyY(epp, pos, &yy)) {
+					if(GetTruePolyY(portal, pos, &yy)) {
 						if(height > yy) {
 							if(yy >= pos.y && yy - pos.y < nearest_dist) {
-								if(epp->plane.normal.y > 0) {
-									nearest = po.room_2;
+								if(portal.plane.normal.y > 0) {
+									nearest = portal.room_2;
 								} else {
-									nearest = po.room_1;
+									nearest = portal.room_1;
 								}
 								nearest_dist = yy - pos.y;
 							}
@@ -895,20 +895,20 @@ static bool FrustrumsClipPoly(const EERIE_FRUSTRUM_DATA & frustrums,
 	return true;
 }
 
-static EERIE_FRUSTRUM CreateFrustrum(const Vec3f & pos, const PortalPoly & ep, bool cull) {
+static EERIE_FRUSTRUM createFrustum(const Vec3f & pos, const EERIE_PORTALS & portal, bool cull) {
 	
 	EERIE_FRUSTRUM frustrum;
 	
 	if(cull) {
-		frustrum.plane[0] = createNormalizedPlane(pos, ep.p[0], ep.p[1]);
-		frustrum.plane[1] = createNormalizedPlane(pos, ep.p[3], ep.p[2]);
-		frustrum.plane[2] = createNormalizedPlane(pos, ep.p[1], ep.p[3]);
-		frustrum.plane[3] = createNormalizedPlane(pos, ep.p[2], ep.p[0]);
+		frustrum.plane[0] = createNormalizedPlane(pos, portal.p[0], portal.p[1]);
+		frustrum.plane[1] = createNormalizedPlane(pos, portal.p[3], portal.p[2]);
+		frustrum.plane[2] = createNormalizedPlane(pos, portal.p[1], portal.p[3]);
+		frustrum.plane[3] = createNormalizedPlane(pos, portal.p[2], portal.p[0]);
 	} else {
-		frustrum.plane[0] = createNormalizedPlane(pos, ep.p[1], ep.p[0]);
-		frustrum.plane[1] = createNormalizedPlane(pos, ep.p[2], ep.p[3]);
-		frustrum.plane[2] = createNormalizedPlane(pos, ep.p[3], ep.p[1]);
-		frustrum.plane[3] = createNormalizedPlane(pos, ep.p[0], ep.p[2]);
+		frustrum.plane[0] = createNormalizedPlane(pos, portal.p[1], portal.p[0]);
+		frustrum.plane[1] = createNormalizedPlane(pos, portal.p[2], portal.p[3]);
+		frustrum.plane[2] = createNormalizedPlane(pos, portal.p[3], portal.p[1]);
+		frustrum.plane[3] = createNormalizedPlane(pos, portal.p[0], portal.p[2]);
 	}
 	
 	return frustrum;
@@ -1528,20 +1528,17 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 	float fClippZFar = camDepth * fZFogEnd * 1.1f;
 	
 	// Now Checks For room Portals !!!
-	for(long portal : portals->rooms[roomIndex].portals) {
-		EERIE_PORTALS * po = &portals->portals[portal];
+	for(long i : portals->rooms[roomIndex].portals) {
+		EERIE_PORTALS & portal = portals->portals[i];
 		
-		if(po->useportal) {
+		if(portal.useportal) {
 			continue;
 		}
 		
-		PortalPoly & epp = po->poly;
-		
 		unsigned char ucVisibilityNear = 0;
 		unsigned char ucVisibilityFar = 0;
-		
-		for(size_t i = 0; i < std::size(epp.p); i++) {
-			float fDist0 = distanceToPoint(efpPlaneNear, epp.p[i]);
+		for(Vec3f corner : portal.p) {
+			float fDist0 = distanceToPoint(efpPlaneNear, corner);
 			if(fDist0 < 0.f) {
 				ucVisibilityNear++;
 			}
@@ -1549,41 +1546,40 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 				ucVisibilityFar++;
 			}
 		}
-		
-		if((ucVisibilityFar & 4) || (ucVisibilityNear & 4)) {
-			po->useportal = 2;
+		if(ucVisibilityFar ==  std::size(portal.p) || ucVisibilityNear == std::size(portal.p)) {
+			portal.useportal = 2;
 			continue;
 		}
 		
-		Vec3f pos = epp.bounds.origin - camPos;
-		float fRes = glm::dot(pos, epp.plane.normal);
+		Vec3f pos = portal.bounds.origin - camPos;
+		float fRes = glm::dot(pos, portal.plane.normal);
 		
-		if(!IsSphereInFrustrum(epp.bounds.origin, frustrum, epp.bounds.radius)) {
+		if(!IsSphereInFrustrum(portal.bounds.origin, frustrum, portal.bounds.radius)) {
 			continue;
 		}
 		// TODO Ideally we would also check portal frustums from intermediate rooms
 		// like in isOccludedByPortals() but those may be incomplete at this point.
-		if(!IsSphereInFrustrum(epp.bounds.origin, g_screenFrustum, epp.bounds.radius)) {
+		if(!IsSphereInFrustrum(portal.bounds.origin, g_screenFrustum, portal.bounds.radius)) {
 			continue;
 		}
 		
 		bool Cull = !(fRes < 0.f);
 		
-		EERIE_FRUSTRUM fd = CreateFrustrum(camPos, epp, Cull);
+		EERIE_FRUSTRUM fd = createFrustum(camPos, portal, Cull);
 
 		size_t roomToCompute = 0;
 		bool computeRoom = false;
 
-		if(po->room_1 == roomIndex && !Cull) {
-			roomToCompute = po->room_2;
+		if(portal.room_1 == roomIndex && !Cull) {
+			roomToCompute = portal.room_2;
 			computeRoom = true;
-		}else if(po->room_2 == roomIndex && Cull) {
-			roomToCompute = po->room_1;
+		}else if(portal.room_2 == roomIndex && Cull) {
+			roomToCompute = portal.room_1;
 			computeRoom = true;
 		}
 		
 		if(computeRoom) {
-			po->useportal = 1;
+			portal.useportal = 1;
 			ARX_PORTALS_Frustrum_ComputeRoom(roomToCompute, fd, camPos, camDepth);
 		}
 		

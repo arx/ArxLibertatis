@@ -99,16 +99,14 @@ void debugHud_Culling() {
 	
 	// Draw all portals
 	if(portals) {
-		for(size_t i = 0; i < portals->portals.size(); i++) {
-			EERIE_PORTALS & po = portals->portals[i];
+		for(const EERIE_PORTALS & portal : portals->portals) {
 			Color color = Color::red;
-			if(po.useportal == 1) {
+			if(portal.useportal == 1) {
 				color = Color::green;
 			}
-			PortalPoly & epp = po.poly;
 			Vec2f pos[4];
 			for(int j = 0; j < 4; j++) {
-				pos[j] = offset + worldToDebug * epp.p[j];
+				pos[j] = offset + worldToDebug * portal.p[j];
 			}
 			drawLine(pos[0], pos[1], 0.01f, color);
 			drawLine(pos[1], pos[3], 0.01f, color);

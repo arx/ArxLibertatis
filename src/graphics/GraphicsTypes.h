@@ -257,7 +257,7 @@ struct Plane {
 	
 };
 
-struct PortalPoly {
+struct EERIE_PORTALS {
 	
 	Vec3f p[4];
 	Plane plane;
@@ -265,21 +265,21 @@ struct PortalPoly {
 	float minY;
 	float maxY;
 	
-	PortalPoly()
-		: bounds(Vec3f(0.f), 1.f)
-		, minY(0.f)
+	size_t room_1; // facing normal
+	size_t room_2;
+	
+	short useportal;
+	
+	EERIE_PORTALS()
+		: minY(0.f)
 		, maxY(0.f)
+		, room_1(0)
+		, room_2(0)
+		, useportal(0)
 	{
 		p[0] = p[1] = p[2] = p[3] = Vec3f(0.f);
 	}
 	
-};
-
-struct EERIE_PORTALS {
-	PortalPoly poly;
-	size_t room_1; // facing normal
-	size_t room_2;
-	short useportal;
 };
 
 struct EP_DATA {
