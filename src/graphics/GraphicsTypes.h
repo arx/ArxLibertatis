@@ -257,7 +257,7 @@ struct Plane {
 	
 };
 
-struct EERIE_PORTALS {
+struct RoomPortal {
 	
 	Vec3f p[4];
 	Plane plane;
@@ -270,7 +270,7 @@ struct EERIE_PORTALS {
 	
 	short useportal;
 	
-	EERIE_PORTALS()
+	RoomPortal()
 		: minY(0.f)
 		, maxY(0.f)
 		, room_1(0)
@@ -306,7 +306,7 @@ struct EERIE_ROOM_DATA {
 
 struct EERIE_PORTAL_DATA {
 	std::vector<EERIE_ROOM_DATA> rooms;
-	std::vector<EERIE_PORTALS> portals;
+	std::vector<RoomPortal> portals;
 };
 
 extern EERIE_PORTAL_DATA * portals;

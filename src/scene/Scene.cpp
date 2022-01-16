@@ -451,7 +451,7 @@ static bool isOccludedByPortals(Entity & entity, float dist2, size_t currentRoom
 		if(i < 0 || size_t(i) >= portals->portals.size()) {
 			continue;
 		}
-		const EERIE_PORTALS & portal = portals->portals[i];
+		const RoomPortal & portal = portals->portals[i];
 		if(portal.useportal != 1) {
 			continue;
 		}
@@ -793,7 +793,7 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 		
 		for(const EERIE_ROOM_DATA & room : portals->rooms) {
 			for(long i : room.portals) {
-				const EERIE_PORTALS & portal = portals->portals[i];
+				const RoomPortal & portal = portals->portals[i];
 				if(PointIn2DPolyXZ(portal, pos.x, pos.z)) {
 					float yy;
 					if(GetTruePolyY(portal, pos, &yy)) {
@@ -847,7 +847,7 @@ static void ARX_PORTALS_InitDrawnRooms() {
 	
 	arx_assert(portals);
 	
-	for(EERIE_PORTALS & portal : portals->portals) {
+	for(RoomPortal & portal : portals->portals) {
 		portal.useportal = 0;
 	}
 	
@@ -895,7 +895,7 @@ static bool FrustrumsClipPoly(const EERIE_FRUSTRUM_DATA & frustrums,
 	return true;
 }
 
-static EERIE_FRUSTRUM createFrustum(const Vec3f & pos, const EERIE_PORTALS & portal, bool cull) {
+static EERIE_FRUSTRUM createFrustum(const Vec3f & pos, const RoomPortal & portal, bool cull) {
 	
 	EERIE_FRUSTRUM frustrum;
 	
@@ -1529,7 +1529,7 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 	
 	// Now Checks For room Portals !!!
 	for(long i : portals->rooms[roomIndex].portals) {
-		EERIE_PORTALS & portal = portals->portals[i];
+		RoomPortal & portal = portals->portals[i];
 		
 		if(portal.useportal) {
 			continue;

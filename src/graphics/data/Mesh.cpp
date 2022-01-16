@@ -405,7 +405,7 @@ bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f & pos, float * ret) {
 }
 
 // TODO copy-paste PortalPoly
-bool GetTruePolyY(const EERIE_PORTALS & portal, const Vec3f & pos, float * ret) {
+bool GetTruePolyY(const RoomPortal & portal, const Vec3f & pos, float * ret) {
 	
 	Vec3f n = glm::cross(portal.p[1] - portal.p[0], portal.p[2] - portal.p[0]);
 	if(n.y == 0.f) {
@@ -486,7 +486,7 @@ int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z) {
 	return PointIn2DPolyXZ(p, (ep->type & POLY_QUAD) != 0, x, z);
 }
 
-int PointIn2DPolyXZ(const EERIE_PORTALS & portal, float x, float z) {
+int PointIn2DPolyXZ(const RoomPortal & portal, float x, float z) {
 	return PointIn2DPolyXZ(portal.p, true, x, z);
 }
 
@@ -845,7 +845,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	
 	LogDebug("FTS: loading " << portals->portals.size() << " portals ...");
 	for(size_t portalidx = 0; portalidx < portals->portals.size(); portalidx++) {
-		EERIE_PORTALS & portal = portals->portals[portalidx];
+		RoomPortal & portal = portals->portals[portalidx];
 		
 		const EERIE_SAVE_PORTALS * epo = fts_read<EERIE_SAVE_PORTALS>(data, end);
 		

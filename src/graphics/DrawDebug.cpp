@@ -159,7 +159,7 @@ static void drawDebugLights() {
 
 static void drawDebugPortals() {
 	
-	for(const EERIE_PORTALS & portal : portals->portals) {
+	for(const RoomPortal & portal : portals->portals) {
 		
 		Color color = Color::red;
 		if(portal.useportal == 1) {

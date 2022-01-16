@@ -99,7 +99,7 @@ void debugHud_Culling() {
 	
 	// Draw all portals
 	if(portals) {
-		for(const EERIE_PORTALS & portal : portals->portals) {
+		for(const RoomPortal & portal : portals->portals) {
 			Color color = Color::red;
 			if(portal.useportal == 1) {
 				color = Color::green;
