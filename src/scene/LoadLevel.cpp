@@ -523,6 +523,7 @@ void DanaeClearLevel() {
 	
 	arx_assert(g_tiles);
 	EERIE_PORTAL_Release();
+	AnchorData_ClearAll();
 	g_tiles->clear();
 	FreeRoomDistance();
 	

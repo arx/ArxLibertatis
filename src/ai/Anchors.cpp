@@ -52,21 +52,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Entity.h"
 #include "graphics/data/Mesh.h"
 
-void AnchorData_ClearAll(BackgroundData * eb) {
+
+std::vector<ANCHOR_DATA> g_anchors;
+
+void AnchorData_ClearAll() {
 	
 	EERIE_PATHFINDER_Clear();
 	
-	eb->m_anchors.clear();
+	g_anchors.clear();
+	
 }
 
 void ANCHOR_BLOCK_Clear() {
 	
-	BackgroundData * eb = g_tiles;
-	if(!eb) {
-		return;
-	}
-	
-	for(ANCHOR_DATA & ad : eb->m_anchors) {
+	for(ANCHOR_DATA & ad : g_anchors) {
 		ad.blocked = false;
 	}
 	
@@ -74,9 +73,7 @@ void ANCHOR_BLOCK_Clear() {
 
 void ANCHOR_BLOCK_By_IO(Entity * io, bool blocked) {
 	
-	BackgroundData * eb = g_tiles;
-	
-	for(ANCHOR_DATA & ad : eb->m_anchors) {
+	for(ANCHOR_DATA & ad : g_anchors) {
 		
 		if(fartherThan(ad.pos, io->pos, 600.f))
 			continue;

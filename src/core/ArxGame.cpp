@@ -966,6 +966,8 @@ void ArxGame::shutdownGame() {
 	
 	ReleaseSystemObjects();
 	
+	AnchorData_ClearAll();
+	
 	if(g_tiles) {
 		g_tiles->clear();
 		FreeRoomDistance();

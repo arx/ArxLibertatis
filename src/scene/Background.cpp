@@ -39,8 +39,6 @@ bool BackgroundData::isNearActiveTile(Vec3f pos, float extend) noexcept {
 
 void BackgroundData::clear() {
 	
-	AnchorData_ClearAll(this);
-	
 	for(auto tile : tiles()) {
 		tile.data() = BackgroundTileData();
 	}

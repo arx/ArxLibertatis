@@ -140,8 +140,6 @@ private:
 	
 public:
 	
-	std::vector<ANCHOR_DATA> m_anchors;
-	
 	[[nodiscard]] auto get(Vec2s tile) {
 		return TileView(this, tile);
 	}

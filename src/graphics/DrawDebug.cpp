@@ -273,14 +273,14 @@ static void drawDebugPathFinding() {
 	
 	const float zbias = 0.00001f;
 	
-	for(size_t i = 0; i < g_tiles->m_anchors.size(); i++) {
+	for(size_t i = 0; i < g_anchors.size(); i++) {
 		
-		const ANCHOR_DATA & node = g_tiles->m_anchors[i];
+		const ANCHOR_DATA & node = g_anchors[i];
 		
 		Color color1 = node.blocked ? Color::blue : Color::green;
 		for(long k : node.linked) {
-			if(k >= 0 && size_t(k) < g_tiles->m_anchors.size() && i < size_t(k)) {
-				const ANCHOR_DATA & other = g_tiles->m_anchors[k];
+			if(k >= 0 && size_t(k) < g_anchors.size() && i < size_t(k)) {
+				const ANCHOR_DATA & other = g_anchors[k];
 				Color color2 = other.blocked ? Color::blue : Color::green;
 				drawLine(node.pos, other.pos, color1, color2, zbias);
 			}
@@ -305,9 +305,9 @@ static void drawDebugPathFinding() {
 		for(long j = 1; j < pathfind.listnb; j++) {
 			long k0 = pathfind.list[j - 1];
 			long k1 = pathfind.list[j];
-			if(k0 >= 0 && size_t(k0) < g_tiles->m_anchors.size()
-			   && k1 >= 0 && size_t(k1) < g_tiles->m_anchors.size()) {
-				const ANCHOR_DATA & n0 = g_tiles->m_anchors[k0], & n1 = g_tiles->m_anchors[k1];
+			if(k0 >= 0 && size_t(k0) < g_anchors.size()
+			   && k1 >= 0 && size_t(k1) < g_anchors.size()) {
+				const ANCHOR_DATA & n0 = g_anchors[k0], & n1 = g_anchors[k1];
 				Color color0 = (j     <= pathfind.listpos) ? Color::yellow : Color::red;
 				Color color1 = (j + 1 <= pathfind.listpos) ? Color::yellow : Color::red;
 				drawLine(n0.pos, n1.pos, color0, color1, 2.f * zbias);
@@ -316,22 +316,22 @@ static void drawDebugPathFinding() {
 		
 		// Highlight end nodes
 		short k0 = pathfind.list[pathfind.listnb - 1];
-		if(k0 >= 0 && size_t(k0) < g_tiles->m_anchors.size()) {
+		if(k0 >= 0 && size_t(k0) < g_anchors.size()) {
 			Anglef angle(0.f, 0.f, 0.f);
 			Vec3f scale(0.5f);
 			RenderMaterial mat;
 			mat.setBlendType(RenderMaterial::Opaque);
 			mat.setDepthTest(true);
 			
-			Draw3DObject(g_nodeObject, angle, g_tiles->m_anchors[k0].pos, scale, Color3f::white, mat);
+			Draw3DObject(g_nodeObject, angle, g_anchors[k0].pos, scale, Color3f::white, mat);
 		}
 		
 		// Show entity ID at the active node
 		if(pathfind.listpos < pathfind.listnb) {
 			short k1 = pathfind.list[pathfind.listpos];
-			if(k1 >= 0 && size_t(k1) < g_tiles->m_anchors.size()) {
-				if(closerThan(g_tiles->m_anchors[k1].pos, player.pos, DebugTextMaxDistance)) {
-					drawTextAt(hFontDebug, g_tiles->m_anchors[k1].pos, npc.idString());
+			if(k1 >= 0 && size_t(k1) < g_anchors.size()) {
+				if(closerThan(g_anchors[k1].pos, player.pos, DebugTextMaxDistance)) {
+					drawTextAt(hFontDebug, g_anchors[k1].pos, npc.idString());
 				}
 			}
 		}

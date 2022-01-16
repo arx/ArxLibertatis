@@ -73,10 +73,12 @@ struct ANCHOR_DATA {
 	
 };
 
+extern std::vector<ANCHOR_DATA> g_anchors;
+
 /*!
  * Clears all Anchor data from a Background
  */
-void AnchorData_ClearAll(BackgroundData * eb);
+void AnchorData_ClearAll();
 
 void ANCHOR_BLOCK_By_IO(Entity * io, bool blocked);
 void ANCHOR_BLOCK_Clear();

@@ -663,6 +663,7 @@ bool FastSceneLoad(const res::path & partial_path, Vec3f & trans) {
 		(void)fts_read<UNIQUE_HEADER3>(data, end, uh->count);
 		arx_assert(g_tiles);
 		EERIE_PORTAL_Release();
+		AnchorData_ClearAll();
 		g_tiles->clear();
 		FreeRoomDistance();
 		progressBarAdvance();
@@ -814,8 +815,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	
 	// Load anchor links
 	LogDebug("FTS: loading " << fsh->nb_anchors << " anchors ...");
-	g_tiles->m_anchors.resize(fsh->nb_anchors);
-	for(ANCHOR_DATA & anchor : g_tiles->m_anchors) {
+	g_anchors.resize(fsh->nb_anchors);
+	for(ANCHOR_DATA & anchor : g_anchors) {
 		
 		const FAST_ANCHOR_DATA * fad = fts_read<FAST_ANCHOR_DATA>(data, end);
 		
