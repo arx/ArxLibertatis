@@ -52,8 +52,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 #include "util/Flags.h"
 
-struct BackgroundData;
-struct Cylinder;
 class Entity;
 
 struct ANCHOR_DATA {

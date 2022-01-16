@@ -24,9 +24,9 @@
 #include "graphics/data/Mesh.h"
 
 
-BackgroundData * g_tiles = nullptr;
+TileData * g_tiles = nullptr;
 
-bool BackgroundData::isNearActiveTile(Vec3f pos, float extend) noexcept {
+bool TileData::isNearActiveTile(Vec3f pos, float extend) noexcept {
 	
 	for(auto neighbor : g_tiles->tilesAround(pos, extend)) {
 		if(neighbor.active()) {
@@ -37,7 +37,7 @@ bool BackgroundData::isNearActiveTile(Vec3f pos, float extend) noexcept {
 	return false;
 }
 
-void BackgroundData::clear() {
+void TileData::clear() {
 	
 	for(auto tile : tiles()) {
 		tile.data() = BackgroundTileData();
@@ -49,7 +49,7 @@ static bool PointInBBox(const Vec3f & point, const Rectf & bb) {
 	return (point.x <= bb.right && point.x >= bb.left && point.z <= bb.bottom && point.z >= bb.top);
 }
 
-void BackgroundData::computeIntersectingPolygons() {
+void TileData::computeIntersectingPolygons() {
 	
 	for(auto tile : tiles()) {
 		
@@ -92,7 +92,7 @@ void BackgroundData::computeIntersectingPolygons() {
 	
 }
 
-size_t BackgroundData::countVertices() {
+size_t TileData::countVertices() {
 	
 	size_t count = 0;
 	

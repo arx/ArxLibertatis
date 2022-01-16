@@ -804,6 +804,6 @@ MiniMap::MapMarkerData MiniMap::mapMarkerGet(size_t id) {
 	return m_mapMarkers[id];
 }
 
-void MiniMap::setActiveBackground(BackgroundData * activeBkg) {
+void MiniMap::setActiveBackground(TileData * activeBkg) {
 	m_activeBkg = activeBkg;
 }

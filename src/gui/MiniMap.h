@@ -62,9 +62,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 #include "graphics/VertexBuffer.h"
 
-struct BackgroundData;
 class TextureContainer;
 struct SavedMiniMap;
+struct TileData;
 
 static const size_t MINIMAP_MAX_X = 50;
 static const size_t MINIMAP_MAX_Z = 50;
@@ -154,13 +154,13 @@ public:
 	void load(const SavedMiniMap * saved, size_t size);
 	void save(SavedMiniMap * toSave, size_t size);
 	
-	void setActiveBackground(BackgroundData * activeBkg);
+	void setActiveBackground(TileData * activeBkg);
 	
 private:
 	
 	int m_currentLevel;
 	EntityManager * m_entities;
-	BackgroundData * m_activeBkg;
+	TileData * m_activeBkg;
 	
 	std::array<Vec2f, MAX_MINIMAP_LEVELS> m_miniOffset;
 	std::array<float, MAX_MINIMAP_LEVELS> m_mapMaxY;

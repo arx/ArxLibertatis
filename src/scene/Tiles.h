@@ -49,7 +49,7 @@ constexpr short MAX_BKGZ = 160;
 
 constexpr Vec2f g_backgroundTileSize = Vec2f(100, 100);
 
-struct BackgroundData {
+struct TileData {
 	
 	static constexpr Vec2s m_size = Vec2s(MAX_BKGX, MAX_BKGZ);
 	static constexpr Vec2f m_mul = 1.f / g_backgroundTileSize;
@@ -134,7 +134,7 @@ private:
 			return m_base->m_tileLights[x][y];
 		}
 		
-		friend struct BackgroundData;
+		friend struct TileData;
 		
 	};
 	
@@ -271,6 +271,6 @@ public:
 	
 };
 
-extern BackgroundData * g_tiles;
+extern TileData * g_tiles;
 
 #endif // ARX_SCENE_TILES_H

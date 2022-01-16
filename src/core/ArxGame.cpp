@@ -759,7 +759,7 @@ bool ArxGame::initGame()
 	player.m_torchColor = Color3f(1.f, 0.8f, 0.66666f);
 	LogDebug("InitializeDanae");
 	
-	g_tiles = new BackgroundData();
+	g_tiles = new TileData();
 	
 	ARX_MISSILES_ClearAll();
 	spells.init();
