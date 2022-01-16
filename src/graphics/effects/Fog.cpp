@@ -60,7 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Random.h"
 #include "math/RandomVector.h"
 
-#include "scene/Background.h"
+#include "scene/Tiles.h"
 
 std::vector<FOG_DEF> g_fogs;
 

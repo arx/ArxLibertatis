@@ -28,6 +28,7 @@
 #include "graphics/particle/ParticleTextures.h"
 #include "platform/profiler/Profiler.h"
 #include "scene/Interactive.h"
+#include "scene/Tiles.h"
 
 static std::vector<TexturedVertex> g_shadowBatch;
 

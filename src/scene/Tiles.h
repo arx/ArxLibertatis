@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef ARX_SCENE_BACKGROUND_H
-#define ARX_SCENE_BACKGROUND_H
+#ifndef ARX_SCENE_TILES_H
+#define ARX_SCENE_TILES_H
 
 #include <bitset>
 #include <utility>
@@ -273,4 +273,4 @@ public:
 
 extern BackgroundData * g_tiles;
 
-#endif // ARX_SCENE_BACKGROUND_H
+#endif // ARX_SCENE_TILES_H

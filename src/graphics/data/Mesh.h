@@ -54,7 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsTypes.h"
 #include "math/Rectangle.h"
 #include "game/Camera.h"
-#include "scene/Background.h"
 
 class Entity;
 

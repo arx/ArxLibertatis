@@ -57,6 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "platform/profiler/Profiler.h"
 #include "scene/Interactive.h"
+#include "scene/Tiles.h"
 
 
 long ON_PLATFORM = 0;

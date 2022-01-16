@@ -41,8 +41,8 @@
 
 #include "gui/Menu.h"
 
-#include "scene/Background.h"
 #include "scene/Scene.h"
+#include "scene/Tiles.h"
 
 #include "gui/Text.h"
 

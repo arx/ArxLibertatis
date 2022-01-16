@@ -64,9 +64,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Collisions.h"
 
-#include "scene/Background.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
+#include "scene/Tiles.h"
 
 
 // Creation of the physics box... quite cabalistic and extensive func...

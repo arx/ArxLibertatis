@@ -62,6 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 #include "graphics/VertexBuffer.h"
 
+struct BackgroundData;
 class TextureContainer;
 struct SavedMiniMap;
 

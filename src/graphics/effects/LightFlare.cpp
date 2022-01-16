@@ -31,6 +31,7 @@
 #include "platform/profiler/Profiler.h"
 #include "scene/Interactive.h"
 #include "scene/Light.h"
+#include "scene/Tiles.h"
 
 static TextureContainer * tflare = nullptr;
 

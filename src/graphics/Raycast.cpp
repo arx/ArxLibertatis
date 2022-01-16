@@ -27,6 +27,7 @@
 #include "platform/Platform.h"
 #include "platform/profiler/Profiler.h"
 #include "scene/Interactive.h"
+#include "scene/Tiles.h"
 
 void dbg_addRay(Vec3f start, Vec3f end);
 void dbg_addTile(Vec2i tile);

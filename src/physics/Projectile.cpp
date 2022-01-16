@@ -33,6 +33,7 @@
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
 #include "scene/Light.h"
+#include "scene/Tiles.h"
 
 #include "animation/AnimationRender.h"
 

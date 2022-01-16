@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "scene/Background.h"
+#include "scene/Tiles.h"
 
 #include <algorithm>
 

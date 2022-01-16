@@ -162,6 +162,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/LoadLevel.h"
 #include "scene/Object.h"
 #include "scene/Scene.h"
+#include "scene/Tiles.h"
 
 #include "script/ScriptEvent.h"
 
