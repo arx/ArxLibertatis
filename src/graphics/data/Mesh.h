@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Camera.h"
 
 class Entity;
+struct RoomPortal;
 
 extern long EERIEDrawnPolys;
 

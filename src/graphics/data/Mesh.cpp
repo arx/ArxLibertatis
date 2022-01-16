@@ -89,9 +89,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/profiler/Profiler.h"
 
-#include "scene/Scene.h"
-#include "scene/Light.h"
 #include "scene/Interactive.h"
+#include "scene/Light.h"
+#include "scene/Rooms.h"
+#include "scene/Scene.h"
 #include "scene/Tiles.h"
 
 #include "util/Range.h"

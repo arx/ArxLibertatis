@@ -66,7 +66,9 @@
 #include "scene/Interactive.h"
 #include "scene/Light.h"
 #include "scene/Object.h"
+#include "scene/Rooms.h"
 #include "scene/Tiles.h"
+
 
 extern bool EXTERNALVIEW; // *sigh*
 

@@ -41,6 +41,7 @@
 
 #include "gui/Menu.h"
 
+#include "scene/Rooms.h"
 #include "scene/Scene.h"
 #include "scene/Tiles.h"
 

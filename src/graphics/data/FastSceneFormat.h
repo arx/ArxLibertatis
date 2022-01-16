@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsFormat.h"
 #include "platform/Platform.h"
+#include "scene/Rooms.h"
 
 
 #pragma pack(push, 1)

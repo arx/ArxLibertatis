@@ -1207,6 +1207,7 @@ set(SCENE_SOURCES
 	src/scene/LinkedObject.cpp
 	src/scene/LoadLevel.cpp
 	src/scene/Object.cpp
+	src/scene/Rooms.cpp
 	src/scene/Scene.cpp
 	src/scene/Tiles.cpp
 )

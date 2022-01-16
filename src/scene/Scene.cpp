@@ -95,6 +95,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/Interactive.h"
 #include "scene/Light.h"
+#include "scene/Rooms.h"
 #include "scene/Tiles.h"
 
 #include "physics/Projectile.h"
@@ -103,8 +104,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 extern bool EXTERNALVIEW; // *sigh*
-
-EERIE_PORTAL_DATA * portals = nullptr;
 
 float WATEREFFECT = 0.f;
 
