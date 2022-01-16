@@ -43,4 +43,4 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/Rooms.h"
 
-EERIE_PORTAL_DATA * portals = nullptr;
+EERIE_PORTAL_DATA * g_rooms = nullptr;

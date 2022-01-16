@@ -514,7 +514,7 @@ void FreeRoomDistance() {
 static void SetRoomDistance(size_t i, size_t j, float val,
                             const Vec3f & p1, const Vec3f & p2) {
 	
-	size_t index = i + j * portals->rooms.size();
+	size_t index = i + j * g_rooms->rooms.size();
 	arx_assert(index < g_roomDistance.size());
 	
 	g_roomDistance[index].startpos = p1;
@@ -530,19 +530,19 @@ float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, long io_room, long 
 		return dst;
 	}
 	
-	if(!portals || g_roomDistance.empty()) {
+	if(!g_rooms || g_roomDistance.empty()) {
 		return dst;
 	}
 	
-	if(io_room < 0 || size_t(io_room) >= portals->rooms.size()) {
+	if(io_room < 0 || size_t(io_room) >= g_rooms->rooms.size()) {
 		return dst;
 	}
 	
-	if(Cam_Room < 0 || size_t(Cam_Room) >= portals->rooms.size()) {
+	if(Cam_Room < 0 || size_t(Cam_Room) >= g_rooms->rooms.size()) {
 		return dst;
 	}
 	
-	const ROOM_DIST_DATA & dist = g_roomDistance[size_t(Cam_Room) + size_t(io_room) * portals->rooms.size()];
+	const ROOM_DIST_DATA & dist = g_roomDistance[size_t(Cam_Room) + size_t(io_room) * g_rooms->rooms.size()];
 	if(dist.distance <= 0.f) {
 		return dst;
 	}
@@ -552,12 +552,8 @@ float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, long io_room, long 
 
 void EERIE_PORTAL_Release() {
 	
-	if(!portals) {
-		return;
-	}
-	
-	delete portals;
-	portals = nullptr;
+	delete g_rooms;
+	g_rooms = nullptr;
 	
 }
 
@@ -842,18 +838,18 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	// Load rooms and portals
 	EERIE_PORTAL_Release();
 	
-	portals = new EERIE_PORTAL_DATA;
-	portals->rooms.resize(fsh->nb_rooms + 1);
-	portals->portals.resize(fsh->nb_portals);
+	g_rooms = new EERIE_PORTAL_DATA;
+	g_rooms->rooms.resize(fsh->nb_rooms + 1);
+	g_rooms->portals.resize(fsh->nb_portals);
 	
-	LogDebug("FTS: loading " << portals->portals.size() << " portals ...");
-	for(size_t portalidx = 0; portalidx < portals->portals.size(); portalidx++) {
-		RoomPortal & portal = portals->portals[portalidx];
+	LogDebug("FTS: loading " << g_rooms->portals.size() << " portals ...");
+	for(size_t portalidx = 0; portalidx < g_rooms->portals.size(); portalidx++) {
+		RoomPortal & portal = g_rooms->portals[portalidx];
 		
 		const EERIE_SAVE_PORTALS * epo = fts_read<EERIE_SAVE_PORTALS>(data, end);
 		
-		if(epo->room_1 < 0 || size_t(epo->room_1) >= portals->portals.size() ||
-		   epo->room_1 < 0 || size_t(epo->room_1) >= portals->portals.size()) {
+		if(epo->room_1 < 0 || size_t(epo->room_1) >= g_rooms->portals.size() ||
+		   epo->room_1 < 0 || size_t(epo->room_1) >= g_rooms->portals.size()) {
 			throw std::runtime_error("portal room index out of bounds");
 		}
 		portal.room0 = epo->room_1;
@@ -885,13 +881,13 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		portal.bounds.origin /= 4.f;
 		
 		for(u32 room : { portal.room0, portal.room1 }) {
-			portals->rooms[room].portals.push_back(long(portalidx));
+			g_rooms->rooms[room].portals.push_back(long(portalidx));
 		}
 		
 	}
 	
-	LogDebug("FTS: loading " << portals->rooms.size() << " rooms ...");
-	for(Room & room : portals->rooms) {
+	LogDebug("FTS: loading " << g_rooms->rooms.size() << " rooms ...");
+	for(Room & room : g_rooms->rooms) {
 		
 		const EERIE_SAVE_ROOM_DATA * erd = fts_read<EERIE_SAVE_ROOM_DATA>(data, end);
 		
@@ -910,11 +906,11 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	
 	// Load distances between rooms
 	FreeRoomDistance();
-	if(portals) {
-		g_roomDistance.resize(portals->rooms.size() * portals->rooms.size());
+	if(g_rooms) {
+		g_roomDistance.resize(g_rooms->rooms.size() * g_rooms->rooms.size());
 		LogDebug("FTS: loading " << g_roomDistance.size() << " room distances ...");
-		for(size_t n = 0; n < portals->rooms.size(); n++) {
-			for(size_t m = 0; m < portals->rooms.size(); m++) {
+		for(size_t n = 0; n < g_rooms->rooms.size(); n++) {
+			for(size_t m = 0; m < g_rooms->rooms.size(); m++) {
 				const ROOM_DIST_DATA_SAVE * rdds;
 				rdds = fts_read<ROOM_DIST_DATA_SAVE>(data, end);
 				SetRoomDistance(m, n, rdds->distance, rdds->startpos.toVec3(), rdds->endpos.toVec3());
@@ -953,17 +949,17 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 
 void EERIE_PORTAL_ReleaseOnlyVertexBuffer() {
 	
-	if(!portals) {
+	if(!g_rooms) {
 		return;
 	}
 	
-	if(portals->rooms.empty()) {
+	if(g_rooms->rooms.empty()) {
 		return;
 	}
 	
 	LogDebug("Destroying scene VBOs");
 	
-	for(Room & room : portals->rooms) {
+	for(Room & room : g_rooms->rooms) {
 		room.pVertexBuffer.reset();
 		room.indexBuffer.clear();
 		room.ppTextureContainer.clear();
@@ -1002,7 +998,7 @@ struct HasAlphaChannel {
 
 void ComputePortalVertexBuffer() {
 	
-	if(!portals) {
+	if(!g_rooms) {
 		return;
 	}
 	
@@ -1010,16 +1006,16 @@ void ComputePortalVertexBuffer() {
 	
 	LogDebug("Creating scene VBOs");
 	
-	if(portals->rooms.size() > 255) {
-		LogError << "Too many rooms: " << portals->rooms.size();
+	if(g_rooms->rooms.size() > 255) {
+		LogError << "Too many rooms: " << g_rooms->rooms.size();
 		return;
 	}
 	
 	typedef std::unordered_map<TextureContainer *,  SINFO_TEXTURE_VERTEX> TextureMap;
 	TextureMap infos;
 	
-	for(size_t i = 0; i < portals->rooms.size(); i++) {
-		Room * room = &portals->rooms[i];
+	for(size_t i = 0; i < g_rooms->rooms.size(); i++) {
+		Room * room = &g_rooms->rooms[i];
 		
 		// Skip empty rooms
 		if(room->epdata.empty()) {
@@ -1048,7 +1044,7 @@ void ComputePortalVertexBuffer() {
 				continue;
 			}
 			
-			poly.tex->m_roomBatches.resize(portals->rooms.size());
+			poly.tex->m_roomBatches.resize(g_rooms->rooms.size());
 			
 			SINFO_TEXTURE_VERTEX & info = infos[poly.tex];
 			

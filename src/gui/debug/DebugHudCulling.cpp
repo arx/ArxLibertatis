@@ -99,8 +99,8 @@ void debugHud_Culling() {
 	worldToDebug[2][1] = -g_tiles->m_mul.y * scale;
 	
 	// Draw all portals
-	if(portals) {
-		for(const RoomPortal & portal : portals->portals) {
+	if(g_rooms) {
+		for(const RoomPortal & portal : g_rooms->portals) {
 			Color color = Color::red;
 			if(portal.useportal == 1) {
 				color = Color::green;

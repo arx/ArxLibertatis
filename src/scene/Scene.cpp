@@ -350,7 +350,7 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 		}
 	}
 	
-	if(portals) {
+	if(g_rooms) {
 		Vec3f posi = position + Vec3f(0, -60, 0); // -20 ?
 		long room_num;
 
@@ -445,13 +445,13 @@ static bool isOccludedByPortals(Entity & entity, float dist2, size_t currentRoom
 		return true;
 	}
 	
-	const Room & room = portals->rooms[currentRoom];
+	const Room & room = g_rooms->rooms[currentRoom];
 	for(long i : room.portals) {
 		
-		if(i < 0 || size_t(i) >= portals->portals.size()) {
+		if(i < 0 || size_t(i) >= g_rooms->portals.size()) {
 			continue;
 		}
-		const RoomPortal & portal = portals->portals[i];
+		const RoomPortal & portal = g_rooms->portals[i];
 		if(portal.useportal != 1) {
 			continue;
 		}
@@ -567,7 +567,7 @@ EntityVisibility getEntityVisibility(Entity & entity, bool cullingOnly) {
 		if(!IsBBoxInFrustrum(entity.bbox3D, g_screenFrustum)) {
 			return EntityNotInView;
 		}
-		if(portals && USE_PLAYERCOLLISIONS) {
+		if(g_rooms && USE_PLAYERCOLLISIONS) {
 			long room = ARX_PORTALS_GetRoomNumForPosition(g_camera->m_pos, 1);
 			if(room >= 0 && size_t(room) < RoomDraw.size()) {
 				long room2 = entity.room;
@@ -791,9 +791,9 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 		long nearest = -1;
 		float nearest_dist = 99999.f;
 		
-		for(const Room & room : portals->rooms) {
+		for(const Room & room : g_rooms->rooms) {
 			for(long i : room.portals) {
-				const RoomPortal & portal = portals->portals[i];
+				const RoomPortal & portal = g_rooms->portals[i];
 				if(PointIn2DPolyXZ(portal, pos.x, pos.z)) {
 					float yy;
 					if(GetTruePolyY(portal, pos, &yy)) {
@@ -823,7 +823,7 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 
 static void ARX_PORTALS_Frustrum_ClearIndexCount(size_t room_num) {
 	
-	Room & room = portals->rooms[room_num];
+	Room & room = g_rooms->rooms[room_num];
 	
 	std::vector<TextureContainer *>::const_iterator itr;
 	for(itr = room.ppTextureContainer.begin(); itr != room.ppTextureContainer.end(); ++itr) {
@@ -845,17 +845,17 @@ static void ARX_PORTALS_InitDrawnRooms() {
 	
 	ARX_PROFILE_FUNC();
 	
-	arx_assert(portals);
+	arx_assert(g_rooms);
 	
-	for(RoomPortal & portal : portals->portals) {
+	for(RoomPortal & portal : g_rooms->portals) {
 		portal.useportal = 0;
 	}
 	
-	for(size_t i = 0; i < portals->rooms.size(); i++) {
+	for(size_t i = 0; i < g_rooms->rooms.size(); i++) {
 		ARX_PORTALS_Frustrum_ClearIndexCount(i);
 	}
 	
-	RoomDraw.resize(portals->rooms.size());
+	RoomDraw.resize(g_rooms->rooms.size());
 	for(PORTAL_ROOM_DRAW & room : RoomDraw) {
 		room.count = 0;
 		room.frustrum.nb_frustrums = 0;
@@ -1232,7 +1232,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 	if(!RoomDraw[room_num].count)
 		return;
 	
-	Room & room = portals->rooms[room_num];
+	Room & room = g_rooms->rooms[room_num];
 	if(!room.pVertexBuffer) {
 		// No need to spam this for every frame as there will already be an
 		// earlier warning
@@ -1402,7 +1402,7 @@ static void BackgroundRenderOpaque(size_t room_num) {
 	
 	ARX_PROFILE_FUNC();
 	
-	Room & room = portals->rooms[room_num];
+	Room & room = g_rooms->rooms[room_num];
 	
 	std::vector<TextureContainer *>::const_iterator itr;
 	for(itr = room.ppTextureContainer.begin(); itr != room.ppTextureContainer.end(); ++itr) {
@@ -1452,7 +1452,7 @@ static void BackgroundRenderTransparent(size_t room_num) {
 	
 	ARX_PROFILE_FUNC();
 	
-	Room & room = portals->rooms[room_num];
+	Room & room = g_rooms->rooms[room_num];
 	
 	for(TextureContainer * pTexCurr : room.ppTextureContainer) {
 		
@@ -1515,7 +1515,7 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
                                              const EERIE_FRUSTRUM & frustrum,
                                              const Vec3f & camPos, float camDepth
 ) {
-	arx_assert(roomIndex < portals->rooms.size());
+	arx_assert(roomIndex < g_rooms->rooms.size());
 	
 	if(RoomDraw[roomIndex].count == 0) {
 		RoomDrawList.push_back(roomIndex);
@@ -1527,8 +1527,8 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 	float fClippZFar = camDepth * fZFogEnd * 1.1f;
 	
 	// Now Checks For room Portals !!!
-	for(long i : portals->rooms[roomIndex].portals) {
-		RoomPortal & portal = portals->portals[i];
+	for(long i : g_rooms->rooms[roomIndex].portals) {
+		RoomPortal & portal = g_rooms->portals[i];
 		
 		if(portal.useportal) {
 			continue;
@@ -1590,7 +1590,7 @@ void ARX_SCENE_Update() {
 	
 	CreateScreenFrustrum();
 	
-	if(!portals) {
+	if(!g_rooms) {
 		return;
 	}
 	
@@ -1611,7 +1611,7 @@ void ARX_SCENE_Update() {
 	ARX_PORTALS_InitDrawnRooms();
 	
 	if(!USE_PLAYERCOLLISIONS) {
-		for(size_t i = 0; i < portals->rooms.size(); i++) {
+		for(size_t i = 0; i < g_rooms->rooms.size(); i++) {
 			RoomDraw[i].count = 1;
 			RoomDrawList.push_back(i);
 			RoomFrustrumAdd(i, g_screenFrustum);
