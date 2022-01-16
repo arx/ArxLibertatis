@@ -114,24 +114,21 @@ bool RayCollidingPoly(const Vec3f & orgn, const Vec3f & dest, const EERIEPOLY & 
 #define MAX_FRUSTRUMS 32
 
 struct Plane {
-	float a;
-	float b;
-	float c;
-	float d; // dist to origin
+	Vec3f normal;
+	float offset; // dist to origin
 };
 
-inline float distanceToPoint(const Plane & plane, const Vec3f & point) {
-	return point.x * plane.a + point.y * plane.b + point.z * plane.c + plane.d;
+inline float distanceToPoint(Plane plane, Vec3f point) {
+	return glm::dot(point, plane.normal) + plane.offset;
 }
 
 inline void normalizePlane(Plane & plane) {
 	
-	float n = 1.f / std::sqrt(plane.a * plane.a + plane.b * plane.b + plane.c * plane.c);
+	float n = 1.f / glm::length(plane.normal);
 	
-	plane.a = plane.a * n;
-	plane.b = plane.b * n;
-	plane.c = plane.c * n;
-	plane.d = plane.d * n;
+	plane.normal *= n;
+	plane.offset *= n;
+	
 }
 
 struct EERIE_FRUSTRUM {

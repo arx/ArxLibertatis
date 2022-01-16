@@ -895,24 +895,12 @@ static bool FrustrumsClipPoly(const EERIE_FRUSTRUM_DATA & frustrums,
 	return true;
 }
 
-static Plane CreatePlane(const Vec3f & orgn, const Vec3f & pt1, const Vec3f & pt2) {
+static Plane CreatePlane(const Vec3f & origin, const Vec3f & pt1, const Vec3f & pt2) {
 	
 	Plane plane;
 	
-	Vec3f A = pt1 - orgn;
-	Vec3f B = pt2 - orgn;
-	
-	plane.a = A.y * B.z - A.z * B.y;
-	plane.b = A.z * B.x - A.x * B.z;
-	plane.c = A.x * B.y - A.y * B.x;
-	
-	float epnlen = std::sqrt(plane.a * plane.a + plane.b * plane.b + plane.c * plane.c);
-	epnlen = 1.f / epnlen;
-	
-	plane.a *= epnlen;
-	plane.b *= epnlen;
-	plane.c *= epnlen;
-	plane.d = -(orgn.x * plane.a + orgn.y * plane.b + orgn.z * plane.c);
+	plane.normal = glm::normalize(glm::cross(pt1 - origin, pt2 - origin));
+	plane.offset = -glm::dot(plane.normal, origin);
 	
 	return plane;
 }
@@ -942,46 +930,46 @@ static void CreateScreenFrustrum() {
 	
 	{
 		Plane & plane = g_screenFrustum.plane[0];
-		plane.a = worldToClip[0][3] - worldToClip[0][0];
-		plane.b = worldToClip[1][3] - worldToClip[1][0];
-		plane.c = worldToClip[2][3] - worldToClip[2][0];
-		plane.d = worldToClip[3][3] - worldToClip[3][0];
+		plane.normal.x = worldToClip[0][3] - worldToClip[0][0];
+		plane.normal.y = worldToClip[1][3] - worldToClip[1][0];
+		plane.normal.z = worldToClip[2][3] - worldToClip[2][0];
+		plane.offset   = worldToClip[3][3] - worldToClip[3][0];
 		normalizePlane(plane);
 	}
 	
 	{
 		Plane & plane = g_screenFrustum.plane[1];
-		plane.a = worldToClip[0][3] + worldToClip[0][0];
-		plane.b = worldToClip[1][3] + worldToClip[1][0];
-		plane.c = worldToClip[2][3] + worldToClip[2][0];
-		plane.d = worldToClip[3][3] + worldToClip[3][0];
+		plane.normal.x = worldToClip[0][3] + worldToClip[0][0];
+		plane.normal.y = worldToClip[1][3] + worldToClip[1][0];
+		plane.normal.z = worldToClip[2][3] + worldToClip[2][0];
+		plane.offset   = worldToClip[3][3] + worldToClip[3][0];
 		normalizePlane(plane);
 	}
 	
 	{
 		Plane & plane = g_screenFrustum.plane[2];
-		plane.a = worldToClip[0][3] - worldToClip[0][1];
-		plane.b = worldToClip[1][3] - worldToClip[1][1];
-		plane.c = worldToClip[2][3] - worldToClip[2][1];
-		plane.d = worldToClip[3][3] - worldToClip[3][1];
+		plane.normal.x = worldToClip[0][3] - worldToClip[0][1];
+		plane.normal.y = worldToClip[1][3] - worldToClip[1][1];
+		plane.normal.z = worldToClip[2][3] - worldToClip[2][1];
+		plane.offset   = worldToClip[3][3] - worldToClip[3][1];
 		normalizePlane(plane);
 	}
 	
 	{
 		Plane & plane = g_screenFrustum.plane[3];
-		plane.a = worldToClip[0][3] + worldToClip[0][1];
-		plane.b = worldToClip[1][3] + worldToClip[1][1];
-		plane.c = worldToClip[2][3] + worldToClip[2][1];
-		plane.d = worldToClip[3][3] + worldToClip[3][1];
+		plane.normal.x = worldToClip[0][3] + worldToClip[0][1];
+		plane.normal.y = worldToClip[1][3] + worldToClip[1][1];
+		plane.normal.z = worldToClip[2][3] + worldToClip[2][1];
+		plane.offset   = worldToClip[3][3] + worldToClip[3][1];
 		normalizePlane(plane);
 	}
 	
 	{
 		Plane & plane = efpPlaneNear;
-		plane.a = worldToClip[0][3] + worldToClip[0][2];
-		plane.b = worldToClip[1][3] + worldToClip[1][2];
-		plane.c = worldToClip[2][3] + worldToClip[2][2];
-		plane.d = worldToClip[3][3] + worldToClip[3][2];
+		plane.normal.x = worldToClip[0][3] + worldToClip[0][2];
+		plane.normal.y = worldToClip[1][3] + worldToClip[1][2];
+		plane.normal.z = worldToClip[2][3] + worldToClip[2][2];
+		plane.offset   = worldToClip[3][3] + worldToClip[3][2];
 		normalizePlane(plane);
 	}
 	
