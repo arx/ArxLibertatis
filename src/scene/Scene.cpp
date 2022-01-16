@@ -461,7 +461,7 @@ static bool isOccludedByPortals(Entity & entity, float dist2, size_t currentRoom
 			return false;
 		}
 		
-		float nextDist2 = arx::distance2(portal.poly.center, g_camera->m_pos);
+		float nextDist2 = arx::distance2(portal.poly.bounds.origin, g_camera->m_pos);
 		if(nextDist2 < dist2 && !isOccludedByPortals(entity, nextDist2, nextRoom, cameraRoom)) {
 			return false;
 		}
@@ -1565,15 +1565,15 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 			continue;
 		}
 		
-		Vec3f pos = epp.center - camPos;
+		Vec3f pos = epp.bounds.origin - camPos;
 		float fRes = glm::dot(pos, epp.norm);
 		
-		if(!IsSphereInFrustrum(epp.center, frustrum, epp.rhw)) {
+		if(!IsSphereInFrustrum(epp.bounds.origin, frustrum, epp.bounds.radius)) {
 			continue;
 		}
 		// TODO Ideally we would also check portal frustums from intermediate rooms
 		// like in isOccludedByPortals() but those may be incomplete at this point.
-		if(!IsSphereInFrustrum(epp.center, g_screenFrustum, epp.rhw)) {
+		if(!IsSphereInFrustrum(epp.bounds.origin, g_screenFrustum, epp.bounds.radius)) {
 			continue;
 		}
 		

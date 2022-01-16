@@ -251,15 +251,13 @@ struct PortalPoly {
 	Vec3f max;
 	Vec3f norm;
 	Vec3f p[4];
-	float rhw;
-	Vec3f center;
+	Sphere bounds;
 	
 	PortalPoly()
 		: min(0.f)
 		, max(0.f)
 		, norm(0.f)
-		, rhw(1.f)
-		, center(0.f)
+		, bounds(Vec3f(0.f), 1.f)
 	{
 		p[0] = p[1] = p[2] = p[3] = Vec3f(0.f);
 	}

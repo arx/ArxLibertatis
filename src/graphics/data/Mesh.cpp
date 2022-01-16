@@ -559,14 +559,14 @@ static void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 		
 		portal.poly.norm = CalcFaceNormal(portal.poly.p);
 		
-		ep->center = ep->p[0];
+		ep->bounds.origin = ep->p[0];
 		ep->max = ep->min = ep->p[0];
 		for(long i = 1; i < 4; i++) {
-			ep->center += ep->p[i];
+			ep->bounds.origin += ep->p[i];
 			ep->min = glm::min(ep->min, ep->p[i]);
 			ep->max = glm::max(ep->max, ep->p[i]);
 		}
-		ep->center /= 4;
+		ep->bounds.origin /= 4.f;
 		
 		for(size_t i : { portal.room_1, portal.room_2 }) {
 			arx_assert(i < portals->rooms.size());
@@ -884,14 +884,14 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		portal.room_1 = epo->room_1;
 		portal.room_2 = epo->room_2;
 		portal.useportal = epo->useportal;
-		portal.poly.center = epo->poly.center.toVec3();
 		portal.poly.max = epo->poly.max.toVec3();
 		portal.poly.min = epo->poly.min.toVec3();
 		portal.poly.norm = epo->poly.norm.toVec3();
 		for(size_t j = 0; j < 4; j++) {
 			portal.poly.p[j] = epo->poly.v[j].pos.toVec3();
 		}
-		portal.poly.rhw = epo->poly.v[0].rhw;
+		portal.poly.bounds.origin = epo->poly.center.toVec3();
+		portal.poly.bounds.radius = epo->poly.v[0].rhw;
 		
 		if(epo->poly.type == 0) {
 			// Make sure all portal polys have 4 vertices
