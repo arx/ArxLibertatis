@@ -720,6 +720,9 @@ bool FastSceneLoad(const res::path & partial_path, Vec3f & trans) {
 	} catch(const file_truncated_exception &) {
 		LogError << "Truncated compressed data in FTS file " << file;
 		return false;
+	} catch(const std::exception & e) {
+		LogError << "Error loading FTS file " << file << ": " << e.what();
+		return false;
 	}
 	
 }
@@ -874,6 +877,10 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		
 		const EERIE_SAVE_PORTALS * epo = fts_read<EERIE_SAVE_PORTALS>(data, end);
 		
+		if(epo->room_1 < 0 || size_t(epo->room_1) >= portals->portals.size() ||
+		   epo->room_1 < 0 || size_t(epo->room_1) >= portals->portals.size()) {
+			throw std::runtime_error("portal room index out of bounds");
+		}
 		portal.room_1 = epo->room_1;
 		portal.room_2 = epo->room_2;
 		portal.useportal = epo->useportal;
