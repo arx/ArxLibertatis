@@ -245,17 +245,28 @@ struct EERIE_3DOBJ {
 	
 };
 
+struct Plane {
+	
+	Vec3f normal;
+	float offset; // dist to origin
+	
+	Plane()
+		: normal(0.f)
+		, offset(0.f)
+	{ }
+	
+};
+
 struct PortalPoly {
 	
-	Vec3f norm;
 	Vec3f p[4];
+	Plane plane;
 	Sphere bounds;
 	float minY;
 	float maxY;
 	
 	PortalPoly()
-		: norm(0.f)
-		, bounds(Vec3f(0.f), 1.f)
+		: bounds(Vec3f(0.f), 1.f)
 		, minY(0.f)
 		, maxY(0.f)
 	{

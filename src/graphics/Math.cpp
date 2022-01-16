@@ -541,10 +541,14 @@ Anglef vectorToAngle(const Vec3f & vector) {
 	return unitVectorToAngle(glm::normalize(vector));
 }
 
-Vec3f CalcFaceNormal(const Vec3f * v) {
-	Vec3f A = v[1] - v[0];
-	Vec3f B = v[2] - v[0];
-	return glm::normalize(Vec3f(A.y * B.z - A.z * B.y, A.z * B.x - A.x * B.z, A.x * B.y - A.y * B.x));
+Plane createNormalizedPlane(const Vec3f & origin, const Vec3f & pt1, const Vec3f & pt2) {
+	
+	Plane plane;
+	
+	plane.normal = glm::normalize(glm::cross(pt1 - origin, pt2 - origin));
+	plane.offset = -glm::dot(plane.normal, origin);
+	
+	return plane;
 }
 
 void MatrixSetByVectors(glm::mat4x4 & m, const Vec3f & d, const Vec3f & u) {

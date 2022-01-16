@@ -113,11 +113,6 @@ bool RayCollidingPoly(const Vec3f & orgn, const Vec3f & dest, const EERIEPOLY & 
 
 #define MAX_FRUSTRUMS 32
 
-struct Plane {
-	Vec3f normal;
-	float offset; // dist to origin
-};
-
 inline float distanceToPoint(Plane plane, Vec3f point) {
 	return glm::dot(point, plane.normal) + plane.offset;
 }

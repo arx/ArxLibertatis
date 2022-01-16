@@ -870,7 +870,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			LogWarning << "Invalid poly type found in portal " << epo->poly.type;
 		}
 		
-		portal.poly.norm = CalcFaceNormal(portal.poly.p);
+		portal.poly.plane = createNormalizedPlane(portal.poly.p[0], portal.poly.p[1], portal.poly.p[2]);
 		
 		portal.poly.bounds.origin = portal.poly.p[0];
 		portal.poly.maxY = portal.poly.minY = portal.poly.p[0].y;

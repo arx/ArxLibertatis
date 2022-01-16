@@ -799,7 +799,7 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 					if(GetTruePolyY(epp, pos, &yy)) {
 						if(height > yy) {
 							if(yy >= pos.y && yy - pos.y < nearest_dist) {
-								if(epp->norm.y > 0) {
+								if(epp->plane.normal.y > 0) {
 									nearest = po.room_2;
 								} else {
 									nearest = po.room_1;
@@ -895,30 +895,20 @@ static bool FrustrumsClipPoly(const EERIE_FRUSTRUM_DATA & frustrums,
 	return true;
 }
 
-static Plane CreatePlane(const Vec3f & origin, const Vec3f & pt1, const Vec3f & pt2) {
-	
-	Plane plane;
-	
-	plane.normal = glm::normalize(glm::cross(pt1 - origin, pt2 - origin));
-	plane.offset = -glm::dot(plane.normal, origin);
-	
-	return plane;
-}
-
 static EERIE_FRUSTRUM CreateFrustrum(const Vec3f & pos, const PortalPoly & ep, bool cull) {
 	
 	EERIE_FRUSTRUM frustrum;
 	
 	if(cull) {
-		frustrum.plane[0] = CreatePlane(pos, ep.p[0], ep.p[1]);
-		frustrum.plane[1] = CreatePlane(pos, ep.p[3], ep.p[2]);
-		frustrum.plane[2] = CreatePlane(pos, ep.p[1], ep.p[3]);
-		frustrum.plane[3] = CreatePlane(pos, ep.p[2], ep.p[0]);
+		frustrum.plane[0] = createNormalizedPlane(pos, ep.p[0], ep.p[1]);
+		frustrum.plane[1] = createNormalizedPlane(pos, ep.p[3], ep.p[2]);
+		frustrum.plane[2] = createNormalizedPlane(pos, ep.p[1], ep.p[3]);
+		frustrum.plane[3] = createNormalizedPlane(pos, ep.p[2], ep.p[0]);
 	} else {
-		frustrum.plane[0] = CreatePlane(pos, ep.p[1], ep.p[0]);
-		frustrum.plane[1] = CreatePlane(pos, ep.p[2], ep.p[3]);
-		frustrum.plane[2] = CreatePlane(pos, ep.p[3], ep.p[1]);
-		frustrum.plane[3] = CreatePlane(pos, ep.p[0], ep.p[2]);
+		frustrum.plane[0] = createNormalizedPlane(pos, ep.p[1], ep.p[0]);
+		frustrum.plane[1] = createNormalizedPlane(pos, ep.p[2], ep.p[3]);
+		frustrum.plane[2] = createNormalizedPlane(pos, ep.p[3], ep.p[1]);
+		frustrum.plane[3] = createNormalizedPlane(pos, ep.p[0], ep.p[2]);
 	}
 	
 	return frustrum;
@@ -1566,7 +1556,7 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 		}
 		
 		Vec3f pos = epp.bounds.origin - camPos;
-		float fRes = glm::dot(pos, epp.norm);
+		float fRes = glm::dot(pos, epp.plane.normal);
 		
 		if(!IsSphereInFrustrum(epp.bounds.origin, frustrum, epp.bounds.radius)) {
 			continue;
