@@ -551,19 +551,19 @@ void DanaeClearLevel() {
 	CURRENTLEVEL = -1;
 }
 
-void RestoreLastLoadedLightning(BackgroundData & eb) {
+void RestoreLastLoadedLightning() {
 	
 	if(g_levelLighting.empty()) {
 		return;
 	}
 	
-	if(g_levelLighting.size() != eb.countVertices()) {
+	if(g_levelLighting.size() != g_tiles->countVertices()) {
 		g_levelLighting.clear();
 		return;
 	}
 	
 	size_t i = 0;
-	for(auto tile : eb.tiles<util::GridYXIterator>()) {
+	for(auto tile : g_tiles->tiles<util::GridYXIterator>()) {
 		for(EERIEPOLY & ep : tile.polygons()) {
 			long nbvert = (ep.type & POLY_QUAD) ? 4 : 3;
 			for(long k = 0; k < nbvert; k++) {

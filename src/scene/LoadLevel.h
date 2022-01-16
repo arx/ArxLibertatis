@@ -54,11 +54,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class Entity;
 namespace res { class path; }
-struct BackgroundData;
 
 bool DanaeLoadLevel(long level, bool loadEntities = true);
 void DanaeClearLevel();
-void RestoreLastLoadedLightning(BackgroundData & eb);
+void RestoreLastLoadedLightning();
 
 extern long FAST_RELEASE;
 

@@ -380,7 +380,7 @@ void levelInit() {
 	g_playerCamera.m_pos = g_moveto = player.pos;
 	g_playerCamera.angle = player.angle;
 	
-	RestoreLastLoadedLightning(*g_tiles);
+	RestoreLastLoadedLightning();
 
 	progressBarAdvance();
 	LoadLevelScreen();
