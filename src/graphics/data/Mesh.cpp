@@ -838,7 +838,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	// Load rooms and portals
 	EERIE_PORTAL_Release();
 	
-	g_rooms = new EERIE_PORTAL_DATA;
+	g_rooms = new RoomData;
 	g_rooms->rooms.resize(fsh->nb_rooms + 1);
 	g_rooms->portals.resize(fsh->nb_portals);
 	

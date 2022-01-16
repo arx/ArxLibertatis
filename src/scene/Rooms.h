@@ -100,11 +100,13 @@ struct Room {
 	
 };
 
-struct EERIE_PORTAL_DATA {
+struct RoomData {
+	
 	std::vector<Room> rooms;
 	std::vector<RoomPortal> portals;
+	
 };
 
-extern EERIE_PORTAL_DATA * g_rooms;
+extern RoomData * g_rooms;
 
 #endif // ARX_SCENE_ROOMS_H
