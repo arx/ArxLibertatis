@@ -961,10 +961,10 @@ void OpenGLRenderer::flushState() {
 			}
 			
 			if(m_glsampleShading && alphaTest != TestSS) {
-				glDisable(GL_SAMPLE_SHADING);
+				glDisable(GL_SAMPLE_SHADING_ARB);
 				m_glsampleShading = false;
 			} else if(!m_glsampleShading && alphaTest == TestSS) {
-				glEnable(GL_SAMPLE_SHADING);
+				glEnable(GL_SAMPLE_SHADING_ARB);
 				m_glsampleShading = true;
 			}
 			
