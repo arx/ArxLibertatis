@@ -57,6 +57,10 @@ Other Fixes:
 
 * Fixed a hang on startup on some POSIX platforms
 
+Technical Changes:
+
+* The mold or lld linker is now used when available (for non-LTO builds)
+
 ################################################################################
 
 = Arx Libertatis 1.2 "Mega Mega Mega"  (2021-07-13) =
