@@ -64,7 +64,9 @@ void SignalHandler(int signalCode);
 
 CrashHandlerWindows * CrashHandlerWindows::m_sInstance = 0;
 
-CrashHandlerWindows::CrashHandlerWindows() {
+CrashHandlerWindows::CrashHandlerWindows()
+	: m_pPreviousCrashHandlers(nullptr)
+{
 	m_sInstance = this;
 }
 
@@ -129,12 +131,12 @@ bool CrashHandlerWindows::registerCrashHandlers() {
 	m_pPreviousCrashHandlers->m_SIGTERMHandler = signal(SIGTERM, SignalHandler);
 	
 	// We must also register the main thread crash handlers.
-	return registerThreadCrashHandlers();
+	return registerThreadCrashHandlersImpl();
 }
 
 void CrashHandlerWindows::unregisterCrashHandlers() {
 	
-	unregisterThreadCrashHandlers();
+	unregisterThreadCrashHandlersImpl();
 	
 	SetUnhandledExceptionFilter(m_pPreviousCrashHandlers->m_SEHHandler);
 	_set_purecall_handler(m_pPreviousCrashHandlers->m_pureCallHandler);
@@ -158,8 +160,11 @@ void SIGILLHandler(int signalCode);
 void SIGSEGVHandler(int signalCode);
 
 bool CrashHandlerWindows::registerThreadCrashHandlers() {
-	
 	std::scoped_lock lock(m_mutex);
+	return registerThreadCrashHandlersImpl();
+}
+
+bool CrashHandlerWindows::registerThreadCrashHandlersImpl() {
 	
 	DWORD dwThreadId = GetCurrentThreadId();
 	
@@ -199,8 +204,11 @@ bool CrashHandlerWindows::registerThreadCrashHandlers() {
 }
 
 void CrashHandlerWindows::unregisterThreadCrashHandlers() {
-	
 	std::scoped_lock lock(m_mutex);
+	unregisterThreadCrashHandlersImpl();
+}
+
+void CrashHandlerWindows::unregisterThreadCrashHandlersImpl() {
 	
 	DWORD dwThreadId = GetCurrentThreadId();
 	

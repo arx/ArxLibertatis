@@ -50,6 +50,9 @@ private:
 	bool registerCrashHandlers() override;
 	void unregisterCrashHandlers() override;
 	
+	bool registerThreadCrashHandlersImpl();
+	void unregisterThreadCrashHandlersImpl();
+	
 	void writeCrashDump(PEXCEPTION_POINTERS pointers);
 	
 	void processCrashInfo() override;
