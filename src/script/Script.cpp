@@ -1125,7 +1125,7 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			}
 
 			if(boost::starts_with(name, "^player_maxmana")) {
-				*fcontent = player.manaPool.max;
+				*fcontent = player.Full_maxmana;
 				return TYPE_FLOAT;
 			}
 			
