@@ -56,6 +56,7 @@ Performance:
 Other Fixes:
 
 * Fixed a hang on startup on some POSIX platforms
+* Restored Windows XP support (bug #1569)
 
 Technical Changes:
 
