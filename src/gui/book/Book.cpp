@@ -967,7 +967,7 @@ void StatsPage::manageStats()
 	{
 		Vec2f pos = bookPos + Vec2f(227, 90) * scale;
 		std::string value = std::to_string(long(std::ceil(player.Full_maxlife)));
-		Color color = attributeModToColor(player.Full_maxlife, player.lifePool.max);
+		Color color = attributeModToColor(player.Full_maxlife - player.lifePool.max);
 		UNICODE_ARXDrawTextCenter(hFontInBook, pos, value, color);
 	}
 	
@@ -1334,11 +1334,11 @@ bool StatsPage::CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc, f
 	return rval;
 }
 
-Color StatsPage::attributeModToColor(float modValue, float baseValue) {
-	if(modValue < baseValue) {
+Color StatsPage::attributeModToColor(float modValue) {
+	if(modValue < 0.f) {
 		return Color::red;
 	}
-	if(modValue > baseValue) {
+	if(modValue > 0.f) {
 		return Color::blue;
 	}
 	return Color::black;
