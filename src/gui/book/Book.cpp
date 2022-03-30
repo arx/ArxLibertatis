@@ -973,8 +973,8 @@ void StatsPage::manageStats()
 	
 	{
 		Vec2f pos = bookPos + Vec2f(227, 150) * scale;
-		std::string value = std::to_string(long(std::ceil(player.Full_maxmana)));
-		Color color = attributeModToColor(player.Full_maxmana, player.manaPool.max);
+		std::string value = std::to_string(long(std::ceil(player.manaPool.max)));
+		Color color = attributeModToColor(player.manaPool.max - player.m_manaMaxWithoutMods);
 		UNICODE_ARXDrawTextCenter(hFontInBook, pos, value, color);
 	}
 	

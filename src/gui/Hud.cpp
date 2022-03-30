@@ -776,7 +776,7 @@ void ManaGauge::update(const Rectf & parent) {
 	
 	m_rect = createChild(parent, Anchor_BottomRight, m_size * m_scale, Anchor_BottomRight);
 	
-	m_amount = player.manaPool.current / player.Full_maxmana;
+	m_amount = player.manaPool.current / player.manaPool.max;
 }
 
 void ManaGauge::updateInput(const Vec2f & mousePos) {

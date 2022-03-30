@@ -515,15 +515,12 @@ void healCharacter(Entity & entity, float dmg) {
 
 static void ARX_DAMAGES_HealManaPlayer(float dmg) {
 	
-	if(player.lifePool.current == 0.f)
+	if(player.lifePool.current == 0.f || dmg <= 0.f) {
 		return;
-
-	if(dmg > 0.f) {
-		player.manaPool.current += dmg;
-
-		if(player.manaPool.current > player.Full_maxmana)
-			player.manaPool.current = player.Full_maxmana;
 	}
+	
+	player.manaPool.current = std::min(player.manaPool.current + dmg, player.manaPool.max);
+	
 }
 
 static void restoreMana(Entity & entity, float dmg) {
@@ -1070,7 +1067,7 @@ static void updateDamage(DAMAGE_INFO & damage, GameInstant now) {
 				}
 				
 				if(source == entities.player()) {
-					player.manaPool.current = std::min(player.manaPool.current + manadrained, player.Full_maxmana);
+					player.manaPool.current = std::min(player.manaPool.current + manadrained, player.manaPool.max);
 				} else if(source && (source->ioflags & IO_NPC)) {
 					source->_npcdata->manaPool.current = std::min(source->_npcdata->manaPool.current + manadrained,
 					                                              source->_npcdata->manaPool.max);

@@ -414,7 +414,7 @@ static PlayerMisc getMiscStats(const PlayerAttribute & attribute, const PlayerSk
 static void ARX_PLAYER_ComputePlayerStats() {
 	
 	player.lifePool.max = player.m_attribute.constitution * (player.level + 2);
-	player.manaPool.max = player.m_attribute.mind * (player.level + 1);
+	player.m_manaMaxWithoutMods = player.m_attribute.mind * (player.level + 1);
 	
 }
 
@@ -688,8 +688,8 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	player.Full_life = player.lifePool.current;
 	player.Full_maxlife = player.m_attributeFull.constitution * (player.level + 2);
 	player.lifePool.current = std::min(player.lifePool.current, player.Full_maxlife);
-	player.Full_maxmana = player.m_attributeFull.mind * (player.level + 1);
-	player.manaPool.current = std::min(player.manaPool.current, player.Full_maxmana);
+	player.manaPool.max = player.m_attributeFull.mind * (player.level + 1);
+	player.manaPool.current = std::min(player.manaPool.current, player.manaPool.max);
 }
 
 /*!
@@ -769,7 +769,7 @@ void ARX_PLAYER_MakeSpHero()
 
 	ARX_PLAYER_ComputePlayerStats();
 	player.lifePool.current = player.lifePool.max;
-	player.manaPool.current = player.manaPool.max;
+	player.manaPool.current = player.m_manaMaxWithoutMods;
 
 	player.rune_flags = RuneFlags::all();
 	player.SpellToMemorize.bSpell = false;
@@ -917,7 +917,7 @@ static void ARX_PLAYER_LEVEL_UP() {
 	player.Attribute_Redistribute++;
 	ARX_PLAYER_ComputePlayerStats();
 	player.lifePool.current = player.lifePool.max;
-	player.manaPool.current = player.manaPool.max;
+	player.manaPool.current = player.m_manaMaxWithoutMods;
 	player.m_skillOld = player.m_skill;
 	SendIOScriptEvent(nullptr, entities.player(), "level_up");
 }
@@ -992,10 +992,9 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta) {
 			}
 			
 			// Natural MANA recovery
-			player.manaPool.current += 0.0000008f * Framedelay * ((player.m_attributeFull.mind + player.m_skillFull.etheralLink) * 10);
+			float recoveredMana = 0.0000008f * Framedelay * ((player.m_attributeFull.mind + player.m_skillFull.etheralLink) * 10);
 			
-			if(player.manaPool.current > player.Full_maxmana)
-				player.manaPool.current = player.Full_maxmana;
+			player.manaPool.current = std::min(player.manaPool.current + recoveredMana, player.manaPool.max);
 		}
 		
 		if(player.lifePool.current > player.Full_maxlife) {
@@ -1269,15 +1268,13 @@ void ARX_PLAYER_Manage_Visual() {
 		io->halo.radius = 20.f;
 		player.lifePool.current += g_framedelay * 0.1f;
 		player.lifePool.current = std::min(player.lifePool.current, player.Full_maxlife);
-		player.manaPool.current += g_framedelay * 0.1f;
-		player.manaPool.current = std::min(player.manaPool.current, player.Full_maxmana);
+		player.manaPool.current = std::min(player.manaPool.current + g_framedelay * 0.1f, player.manaPool.max);
 	}
 	
 	if(cur_mr == 3) {
 		player.lifePool.current += g_framedelay * 0.05f;
 		player.lifePool.current = std::min(player.lifePool.current, player.Full_maxlife);
-		player.manaPool.current += g_framedelay * 0.05f;
-		player.manaPool.current = std::min(player.manaPool.current, player.Full_maxmana);
+		player.manaPool.current = std::min(player.manaPool.current + g_framedelay * 0.05f, player.manaPool.max);
 	}
 	
 	io->pos = player.basePosition();
@@ -1619,7 +1616,7 @@ void ARX_PLAYER_InitPlayer() {
 	player.physics.cyl.height = player.baseHeight();
 	player.physics.cyl.radius = player.baseRadius();
 	player.lifePool.current = player.lifePool.max = player.Full_maxlife = 100.f;
-	player.manaPool.current = player.manaPool.max = player.Full_maxmana = 100.f;
+	player.manaPool.current = player.m_manaMaxWithoutMods = player.manaPool.max = 100.f;
 	player.falling = false;
 	player.torch = nullptr;
 	player.gold = 0;

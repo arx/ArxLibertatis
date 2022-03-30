@@ -416,7 +416,7 @@ public:
 			
 			DebugScript(" mana " << val);
 			
-			player.manaPool.current = glm::clamp(player.manaPool.current + val, 0.f, player.Full_maxmana);
+			player.manaPool.current = glm::clamp(player.manaPool.current + val, 0.f, player.manaPool.max);
 			
 		} else if(type == "newspell") {
 			

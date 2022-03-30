@@ -294,7 +294,6 @@ struct ARXCHARACTER {
 	
 	float Full_life;
 	float Full_maxlife;
-	float Full_maxmana;
 	
 	// true (naked) Player Values
 	PlayerAttribute m_attribute;
@@ -304,6 +303,7 @@ struct ARXCHARACTER {
 	
 	ResourcePool lifePool;
 	ResourcePool manaPool;
+	float m_manaMaxWithoutMods;
 	
 	// Player Old Values
 	PlayerSkill m_skillOld;
@@ -358,8 +358,8 @@ struct ARXCHARACTER {
 		, Full_AimTime(0)
 		, Full_life(0)
 		, Full_maxlife(0)
-		, Full_maxmana(0)
 		, m_aimTime(0)
+		, m_manaMaxWithoutMods(0.f)
 		, Attribute_Redistribute(0)
 		, Skill_Redistribute(0)
 		, level(0)
