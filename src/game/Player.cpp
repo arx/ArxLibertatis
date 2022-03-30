@@ -413,7 +413,7 @@ static PlayerMisc getMiscStats(const PlayerAttribute & attribute, const PlayerSk
  */
 static void ARX_PLAYER_ComputePlayerStats() {
 	
-	player.lifePool.max = player.m_attribute.constitution * (player.level + 2);
+	player.m_lifeMaxWithoutMods = player.m_attribute.constitution * (player.level + 2);
 	player.m_manaMaxWithoutMods = player.m_attribute.mind * (player.level + 1);
 	
 }
@@ -686,8 +686,8 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	/////////////////////////////////////////////////////////////////////////////////////
 	
 	player.Full_life = player.lifePool.current;
-	player.Full_maxlife = player.m_attributeFull.constitution * (player.level + 2);
-	player.lifePool.current = std::min(player.lifePool.current, player.Full_maxlife);
+	player.lifePool.max = player.m_attributeFull.constitution * (player.level + 2);
+	player.lifePool.current = std::min(player.lifePool.current, player.lifePool.max);
 	player.manaPool.max = player.m_attributeFull.mind * (player.level + 1);
 	player.manaPool.current = std::min(player.manaPool.current, player.manaPool.max);
 }
@@ -768,7 +768,7 @@ void ARX_PLAYER_MakeSpHero()
 	player.skin = 4;
 
 	ARX_PLAYER_ComputePlayerStats();
-	player.lifePool.current = player.lifePool.max;
+	player.lifePool.current = player.m_lifeMaxWithoutMods;
 	player.manaPool.current = player.m_manaMaxWithoutMods;
 
 	player.rune_flags = RuneFlags::all();
@@ -916,7 +916,7 @@ static void ARX_PLAYER_LEVEL_UP() {
 	player.Skill_Redistribute += 15;
 	player.Attribute_Redistribute++;
 	ARX_PLAYER_ComputePlayerStats();
-	player.lifePool.current = player.lifePool.max;
+	player.lifePool.current = player.m_lifeMaxWithoutMods;
 	player.manaPool.current = player.m_manaMaxWithoutMods;
 	player.m_skillOld = player.m_skill;
 	SendIOScriptEvent(nullptr, entities.player(), "level_up");
@@ -997,9 +997,7 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta) {
 			player.manaPool.current = std::min(player.manaPool.current + recoveredMana, player.manaPool.max);
 		}
 		
-		if(player.lifePool.current > player.Full_maxlife) {
-			player.lifePool.current = player.Full_maxlife;
-		}
+		player.lifePool.current = std::min(player.lifePool.current, player.lifePool.max);
 		
 		// Now Checks Poison Progression
 		if(!BLOCK_PLAYER_CONTROLS)
@@ -1266,14 +1264,12 @@ void ARX_PLAYER_Manage_Visual() {
 		io->halo.color = Color3f::red;
 		io->halo.flags |= HALO_ACTIVE;
 		io->halo.radius = 20.f;
-		player.lifePool.current += g_framedelay * 0.1f;
-		player.lifePool.current = std::min(player.lifePool.current, player.Full_maxlife);
+		player.lifePool.current = std::min(player.lifePool.current + g_framedelay * 0.1f, player.lifePool.max);
 		player.manaPool.current = std::min(player.manaPool.current + g_framedelay * 0.1f, player.manaPool.max);
 	}
 	
 	if(cur_mr == 3) {
-		player.lifePool.current += g_framedelay * 0.05f;
-		player.lifePool.current = std::min(player.lifePool.current, player.Full_maxlife);
+		player.lifePool.current = std::min(player.lifePool.current + g_framedelay * 0.05f, player.lifePool.max);
 		player.manaPool.current = std::min(player.manaPool.current + g_framedelay * 0.05f, player.manaPool.max);
 	}
 	
@@ -1615,7 +1611,7 @@ void ARX_PLAYER_InitPlayer() {
 	player.Interface = INTER_MINIBOOK | INTER_MINIBACK | INTER_LIFE_MANA;
 	player.physics.cyl.height = player.baseHeight();
 	player.physics.cyl.radius = player.baseRadius();
-	player.lifePool.current = player.lifePool.max = player.Full_maxlife = 100.f;
+	player.lifePool.current = player.m_lifeMaxWithoutMods = player.lifePool.max = 100.f;
 	player.manaPool.current = player.m_manaMaxWithoutMods = player.manaPool.max = 100.f;
 	player.falling = false;
 	player.torch = nullptr;

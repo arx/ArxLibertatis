@@ -421,7 +421,7 @@ float damagePlayer(float dmg, DamageType type, Entity * source) {
 	if(elapsed > 500ms) {
 		entities.player()->ouch_time = g_gameTime.now();
 		SendIOScriptEvent(source, entities.player(), SM_OUCH, getOuchEventParameter(entities.player()));
-		float power = entities.player()->dmg_sum / player.lifePool.max * 220.f;
+		float power = entities.player()->dmg_sum / player.m_lifeMaxWithoutMods * 220.f;
 		AddQuakeFX(power * 3.5f, 500ms + 3ms * power, Random::getf(200.f, 300.f) + power, false);
 		entities.player()->dmg_sum = 0.f;
 	}
@@ -467,13 +467,8 @@ float damagePlayer(float dmg, DamageType type, Entity * source) {
 			}
 		}
 		
-		if(player.lifePool.max <= 0.f) {
-			return damagesdone;
-		}
-		
-		float t = dmg / player.lifePool.max;
-		
-		g_screenFxBloodSplash.hit(t);
+		arx_assert(player.m_lifeMaxWithoutMods > 0.f);
+		g_screenFxBloodSplash.hit(dmg / player.m_lifeMaxWithoutMods);
 	}
 	
 	// revient les barres
@@ -484,16 +479,16 @@ float damagePlayer(float dmg, DamageType type, Entity * source) {
 
 static void ARX_DAMAGES_HealPlayer(float dmg) {
 	
-	if(player.lifePool.current == 0.f)
+	if(player.lifePool.current == 0.f || dmg <= 0.f) {
 		return;
-
-	if(dmg > 0.f) {
-		if(!BLOCK_PLAYER_CONTROLS)
-			player.lifePool.current += dmg;
-
-		if(player.lifePool.current > player.Full_maxlife)
-			player.lifePool.current = player.Full_maxlife;
 	}
+	
+	if(!BLOCK_PLAYER_CONTROLS) {
+		player.lifePool.current += dmg;
+	}
+	
+	player.lifePool.current = std::min(player.lifePool.current, player.lifePool.max);
+	
 }
 
 void healCharacter(Entity & entity, float dmg) {

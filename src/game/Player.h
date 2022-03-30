@@ -293,7 +293,6 @@ struct ARXCHARACTER {
 	PlatformDuration Full_AimTime;
 	
 	float Full_life;
-	float Full_maxlife;
 	
 	// true (naked) Player Values
 	PlayerAttribute m_attribute;
@@ -302,6 +301,8 @@ struct ARXCHARACTER {
 	PlatformDuration m_aimTime;
 	
 	ResourcePool lifePool;
+	float m_lifeMaxWithoutMods;
+	
 	ResourcePool manaPool;
 	float m_manaMaxWithoutMods;
 	
@@ -357,8 +358,8 @@ struct ARXCHARACTER {
 		, m_strikeAimRatio(0.f)
 		, Full_AimTime(0)
 		, Full_life(0)
-		, Full_maxlife(0)
 		, m_aimTime(0)
+		, m_lifeMaxWithoutMods(0.f)
 		, m_manaMaxWithoutMods(0.f)
 		, Attribute_Redistribute(0)
 		, Skill_Redistribute(0)

@@ -361,7 +361,7 @@ void levelInit() {
 
 		g_hudRoot.playerInterfaceFader.resetSlid();
 
-		player.lifePool.current = player.lifePool.max;
+		player.lifePool.current = player.m_lifeMaxWithoutMods;
 		player.manaPool.current = player.m_manaMaxWithoutMods;
 		if(!DONT_ERASE_PLAYER) {
 			ARX_PLAYER_MakeFreshHero();

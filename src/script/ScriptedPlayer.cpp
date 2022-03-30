@@ -408,7 +408,7 @@ public:
 			if(!BLOCK_PLAYER_CONTROLS) {
 				player.lifePool.current += val;
 			}
-			player.lifePool.current = glm::clamp(player.lifePool.current, 0.f, player.Full_maxlife);
+			player.lifePool.current = glm::clamp(player.lifePool.current, 0.f, player.lifePool.max);
 			
 		} else if(type == "mana") {
 			

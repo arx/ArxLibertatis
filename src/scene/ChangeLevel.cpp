@@ -700,7 +700,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	
 	asp->life = player.lifePool.current;
 	asp->mana = player.manaPool.current;
-	asp->maxlife = player.lifePool.max;
+	asp->maxlife = player.m_lifeMaxWithoutMods;
 	asp->maxmana = player.m_manaMaxWithoutMods;
 	
 	asp->misc_flags = 0;
@@ -1501,7 +1501,7 @@ static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	
 	player.lifePool.current = asp->life;
 	player.manaPool.current = asp->mana;
-	player.lifePool.max = asp->maxlife;
+	player.m_lifeMaxWithoutMods = asp->maxlife;
 	player.m_manaMaxWithoutMods = asp->maxmana;
 	
 	player.onfirmground = (asp->misc_flags & 1) != 0;

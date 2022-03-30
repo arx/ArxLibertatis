@@ -1120,7 +1120,7 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			}
 			
 			if(boost::starts_with(name, "^player_maxlife")) {
-				*fcontent = player.Full_maxlife;
+				*fcontent = player.lifePool.max;
 				return TYPE_FLOAT;
 			}
 
