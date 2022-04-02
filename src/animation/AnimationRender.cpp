@@ -1084,17 +1084,15 @@ static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos
 	Cedric_RenderObject(eobj, obj, io, pos, invisibility);
 	
 	// Now we can render Linked Objects
-	for(size_t k = 0; k < eobj->linked.size(); k++) {
-		const EERIE_LINKED & link = eobj->linked[k];
+	for(const EERIE_LINKED & link : eobj->linked) {
 		
-		if(link.lgroup == ObjVertGroup() || !link.obj)
+		if(link.lgroup == ObjVertGroup() || !link.obj) {
 			continue;
+		}
 		
 		// specific check to avoid drawing player weapon on its back when in subjective view
-		if(io == entities.player() &&
-			link.lidx == entities.player()->obj->fastaccess.weapon_attach &&
-			!EXTERNALVIEW
-		) {
+		if(!EXTERNALVIEW && io == entities.player() &&
+		   link.lidx == entities.player()->obj->fastaccess.weapon_attach) {
 			continue;
 		}
 		
@@ -1104,7 +1102,9 @@ static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos
 		t.pos = t(link.obj->vertexlist[link.obj->origin].v - link.obj->vertexlist[link.lidx2.handleData()].v);
 		
 		DrawEERIEInter(link.obj, t, link.io, true, invisibility);
+		
 	}
+	
 }
 
 static Vec3f CalcTranslation(AnimLayer & layer) {
