@@ -1908,6 +1908,7 @@ void ArxGame::manageEditorControls() {
 								break;
 							}
 						}
+						arx_assert(!locateInInventories(io));
 						io->show = show;
 					}
 					
