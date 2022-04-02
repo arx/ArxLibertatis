@@ -1535,6 +1535,12 @@ public:
 		
 		addBackButton(Page_Options);
 		
+		{
+			ButtonWidget * cb = new ButtonWidget(buttonSize(16, 16), "graph/interface/menus/next");
+			cb->setTargetPage(Page_OptionsInputCustomizeKeys1);
+			addCorner(cb, BottomRight);
+		}
+		
 	}
 	
 };
