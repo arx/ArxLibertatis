@@ -76,6 +76,7 @@ Other Fixes:
 * Fixed a crash caused by the flying eye spell (bug #511)
 * Fixed a crash when combining the coin purse with lights
 * Fixed a crash with the `activatephysics` script command (bug #1259)
+* Fixed a crash with the entity debug view (bug #1608)
 * Fixed a hang on startup on some POSIX platforms
 * Fixed formatting for HTTPS links in dialogs
 * Windows: Fixed a crash with Intel graphics and Crispt Alpha Cutout AA enabled (bug #1568)
