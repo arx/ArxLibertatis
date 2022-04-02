@@ -47,6 +47,7 @@ if(MSVC)
 		add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 		add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
 		add_definitions(-D_SCL_SECURE_NO_WARNINGS)
+		add_definitions(-D_SILENCE_CXX17_OLD_ALLOCATOR_MEMBERS_DEPRECATION_WARNING)
 		
 		# TODO TEMP - disable very noisy warning
 		# Conversion from 'A' to 'B', possible loss of data
