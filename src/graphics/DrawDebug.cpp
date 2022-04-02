@@ -533,10 +533,9 @@ static void drawDebugEntities(bool drawSkeletons) {
 			}
 			
 			if(entity.obj) {
-				for(size_t j = 0; j < entity.obj->linked.size(); j++) {
-					Vec3f pos = actionPointPosition(entity.obj, entity.obj->linked[j].lidx);
-					Entity * other = entity.obj->linked[j].io;
-					drawTextAt(hFontDebug, pos, other ? std::string_view(other->idString()) : "(obj)", Color::cyan);
+				for(const EERIE_LINKED & link : entity.obj->linked) {
+					Vec3f pos = actionPointPosition(entity.obj, link.lidx);
+					drawTextAt(hFontDebug, pos, link.io ? std::string_view(link.io->idString()) : "(obj)", Color::cyan);
 				}
 			}
 			
