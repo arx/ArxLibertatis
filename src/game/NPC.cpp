@@ -897,7 +897,7 @@ void ARX_PHYSICS_Apply() {
 			if(io->ioflags & IO_NPC) {
 				const float LAVA_DAMAGE = 10.f;
 				float dmg = LAVA_DAMAGE * g_framedelay * 0.01f;
-				damageNpc(*io, dmg, nullptr, nullptr, DAMAGE_TYPE_FIELD | DAMAGE_TYPE_FIELD, nullptr);
+				damageNpc(*io, dmg, nullptr, nullptr, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_FIELD, nullptr);
 			}
 		}
 		
