@@ -107,6 +107,7 @@ public:
 		ioo->angle = io->angle;
 		ioo->move = io->move;
 		if(ioo->show != SHOW_FLAG_IN_INVENTORY) {
+			arx_assert(!locateInInventories(ioo));
 			ioo->show = (io->show == SHOW_FLAG_IN_INVENTORY ? SHOW_FLAG_IN_SCENE : io->show);
 		}
 		
