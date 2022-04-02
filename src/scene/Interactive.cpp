@@ -622,6 +622,7 @@ void CleanScriptLoadedIO() {
 		          && entity.show != SHOW_FLAG_LINKED) {
 			// TODO why not jus leave it as is?
 			entity.show = SHOW_FLAG_IN_SCENE;
+			arx_assert(!locateInInventories(&entity));
 		}
 		
 	}
