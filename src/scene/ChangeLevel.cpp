@@ -681,6 +681,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	}
 	
 	if(g_draggedEntity) {
+		arx_assert(!locateInInventories(g_draggedEntity));
 		g_draggedEntity->show = SHOW_FLAG_IN_SCENE; // Fallback for loading save in older versions
 		storeIdString(asp->draggedEntity, g_draggedEntity);
 	}
@@ -1588,6 +1589,8 @@ static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 		if(!insertIntoInventoryAtNoEvent(item, InventoryPos(EntityHandle_Player, slot.z, slot.x, slot.y))) {
 			LogWarning << "Could not load item " << item->idString() << " into player inventory";
 			PutInFrontOfPlayer(item);
+		} else {
+			arx_assert(item->show == SHOW_FLAG_IN_INVENTORY);
 		}
 	}
 	
@@ -2126,6 +2129,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 				if(!item || locateInInventories(item).io == io->index()) {
 					continue;
 				}
+				arx_assert(item->show == SHOW_FLAG_IN_INVENTORY);
 				if(!insertIntoInventoryAtNoEvent(item, InventoryPos(io->index(), 0, slot.x, slot.y))) {
 					LogWarning << "Could not load item " << item->idString() << " into inventory of " << io->idString();
 					PutInFrontOfPlayer(item);
