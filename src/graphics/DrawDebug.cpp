@@ -556,7 +556,7 @@ static void drawDebugEntities(bool drawSkeletons) {
 				for(size_t j = 0; j < entity->obj->linked.size(); j++) {
 					Vec3f pos = actionPointPosition(entity->obj, entity->obj->linked[j].lidx);
 					Entity * other = entity->obj->linked[j].io;
-					drawTextAt(hFontDebug, pos, other->idString(), Color::cyan);
+					drawTextAt(hFontDebug, pos, other ? other->idString() : "(obj)", Color::cyan);
 				}
 			}
 			
