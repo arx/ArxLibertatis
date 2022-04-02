@@ -77,7 +77,7 @@ long ARX_FOGS_GetFree() {
 		}
 	}
 	
-	g_fogs.push_back(FOG_DEF());
+	g_fogs.emplace_back();
 	
 	return long(g_fogs.size() - 1);
 }
