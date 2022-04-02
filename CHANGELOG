@@ -9,8 +9,8 @@ Gameplay:
 Graphics:
 
 * Fixed messed up graphics with the Steam overlay active
-* Fixed increased fog particle count with hight framerates
-* Fixed increased magic damage particle count for the lightning strike, harm, mana drain, life drain and chaos spells with hight framerates
+* Fixed increased fog particle count with high framerates
+* Fixed increased magic damage particle count for the lightning strike, harm, mana drain, life drain and chaos spells with high framerates
 * Fixed fogs starting out with 0 particles after coming into view
 
 Interface:
@@ -24,7 +24,6 @@ Controls:
 
 Audio:
 
-* Fixed missing death screams for most NPCs (bug #1579)
 * Fixed some audio samples not ending correctly
 * Fixed lighting strike damage sound being played for every frame
 
@@ -51,19 +50,44 @@ Debugging:
 
 * Added a new entity visibility debug HUD under F11
 
+Technical Changes:
+
+* The mold or lld linker is now used when available (for non-LTO builds)
+
+################################################################################
+
+= Arx Libertatis 1.2.1  (TBD) =
+
+Audio:
+
+* Fixed missing death screams for most NPCs (bug #1579)
+
 Performance:
 
 * Fixed excessively slow performance with "Crisp" alpha cutout antialiasing (bug #1595)
 
 Other Fixes:
 
+* The spellcast animation is no longer played when casting fails
 * Fixed a crash when starting a new game while a game is already loaded
+* Fixed a crash when color-keyed BMP images failed to load (bug #1557)
+* Fixed a crash when the player is given an item while the inventory is full (bug #1570)
+* Fixed a crash when releasing the escape key during the first frame of the main menu (bug #1155)
+* Fixed a crash caused by the flying eye spell (bug #511)
+* Fixed a crash when combining the coin purse with lights
+* Fixed a crash with the `activatephysics` script command (bug #1259)
 * Fixed a hang on startup on some POSIX platforms
-* Restored Windows XP support (bug #1569)
+* Fixed formatting for HTTPS links in dialogs
+* Windows: Fixed a crash with Intel graphics and Crispt Alpha Cutout AA enabled (bug #1568)
+* Windows: Restored Windows XP support (bug #1569)
 
 Technical Changes:
 
-* The mold or lld linker is now used when available (for non-LTO builds)
+* Fixed compatibility with the CMake config installed by SDL 2.0.4+
+* Fixed build without fstatat()
+* Initial flags in CMAKE_REQUIRED_DEFINITIONS are no longer dropped when testing some platform features
+* Platform feature tests no longer fail if they produce generic warnings
+* Force disabled _GLIBCXX_ASSERTIONS in release builds (proper fixes will be in version 1.3)
 
 ################################################################################
 
