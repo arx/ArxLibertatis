@@ -150,7 +150,7 @@ if(MSVC)
 else(MSVC)
 	
 	set(linker_used)
-	if(NOT linker_used AND (USE_LD STREQUAL "mold" OR (USE_LD STREQUAL "best" AND NOT USE_LTO)))
+	if(NOT linker_used AND USE_LD STREQUAL "mold")
 		# Does not really support LTO yet
 		add_ldflag("-fuse-ld=mold")
 		if(FLAG_FOUND)
