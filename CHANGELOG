@@ -16,6 +16,7 @@ Graphics:
 Interface:
 
 * Fixed cheat text not scaling correctly with higher resolutions
+* Made the "Customize controls" button look less like a heading
 
 Controls:
 

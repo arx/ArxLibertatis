@@ -1393,9 +1393,11 @@ public:
 		reserveBottom();
 		
 		{
-			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_options_input_customize_controls"));
+			std::string label(getLocalised("system_menus_options_input_customize_controls"));
+			label += "…";
+			TextWidget * txt = new TextWidget(hFontMenu, label);
 			txt->setTargetPage(Page_OptionsInputCustomizeKeys1);
-			addCenter(txt);
+			addCenter(txt, false);
 		}
 		
 		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
