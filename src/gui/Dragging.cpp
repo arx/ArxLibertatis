@@ -277,9 +277,11 @@ void updateDraggedEntity() {
 		// Throw item if there is no collision withthin the maximum distance
 		g_dragStatus = EntityDragStatus_Throw;
 	} else if(glm::abs(result.offsetY) > result.height) {
+		arx_assert(!locateInInventories(entity));
 		entity->show = SHOW_FLAG_IN_SCENE;
 		g_dragStatus = EntityDragStatus_Drop;
 	} else {
+		arx_assert(!locateInInventories(entity));
 		entity->show = SHOW_FLAG_IN_SCENE;
 		g_dragStatus = EntityDragStatus_OnGround;
 	}
@@ -291,6 +293,7 @@ void updateDraggedEntity() {
 	ARX_PLAYER_Remove_Invisibility();
 	entity->soundtime = 0;
 	entity->soundcount = 0;
+	arx_assert(!locateInInventories(entity));
 	entity->show = SHOW_FLAG_IN_SCENE;
 	entity->obj->pbox->active = 0;
 	entity->gameFlags &= ~GFLAG_NOCOMPUTATION;
@@ -310,6 +313,7 @@ void updateDraggedEntity() {
 			unstackedEntity->_itemdata->count = 1;
 			unstackedEntity->pos = entity->pos;
 			unstackedEntity->angle = entity->angle;
+			arx_assert(!locateInInventories(unstackedEntity));
 			unstackedEntity->show = SHOW_FLAG_IN_SCENE;
 			if(g_dragStatus == EntityDragStatus_Throw) {
 				Vec3f start = player.pos + Vec3f(0.f, 80.f, 0.f) - Vec3f(result.offset.x, 0.f, result.offset.z);
