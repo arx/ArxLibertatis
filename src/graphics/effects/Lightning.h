@@ -61,7 +61,7 @@ class CLightning final : public CSpellFx {
 public:
 	
 	explicit CLightning(Spell * spell);
-	~CLightning();
+	~CLightning() override;
 	
 	void Create(Vec3f aeFrom, Vec3f aeTo);
 	void Update(GameDuration timeDelta) override;
