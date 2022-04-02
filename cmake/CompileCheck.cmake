@@ -26,6 +26,7 @@ function(check_compile RESULT FILE FLAG TYPE)
 	# if we tried to use the flag itself in the variable name it will fail for -std=c++11.
 	# But we can at least use the expressions for warnings from that macro (and more):
 	set(fail_regexps
+		"warning:.*command-line option"                # GCC
 		"unrecognized .*option"                        # GNU
 		"${escaped_flag}.* not supported"              # GNU
 		"unknown .*option"                             # Clang
