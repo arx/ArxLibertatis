@@ -57,6 +57,7 @@ Performance:
 
 Other Fixes:
 
+* Fixed a crash when starting a new game while a game is already loaded
 * Fixed a hang on startup on some POSIX platforms
 * Restored Windows XP support (bug #1569)
 

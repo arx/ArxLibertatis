@@ -128,6 +128,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 #include "scene/Light.h"
+#include "scene/LoadLevel.h"
 #include "scene/Object.h"
 
 #include "script/Script.h"
@@ -2380,14 +2381,12 @@ void ARX_PLAYER_Start_New_Quest() {
 	
 	LogInfo << "Starting a new playthrough";
 	
+	DanaeClearLevel();
+	SetEditMode();
+	
 	g_characterCreation.resetCheat();
-	EERIE_PATHFINDER_Clear();
-	EERIE_PATHFINDER_Release();
-	ARX_PLAYER_MakeFreshHero();
 	player.torch = nullptr;
-	entities.clear();
 	svar.clear();
-	ARX_EQUIPMENT_UnEquipAllPlayer();
 	
 	ARX_CHANGELEVEL_StartNew();
 	
