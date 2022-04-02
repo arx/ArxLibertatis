@@ -697,7 +697,8 @@ else(MSVC)
 	if(USE_NATIVE_FS AND NOT WIN32)
 		list(APPEND libc_features -D_FILE_OFFSET_BITS=64)
 	endif()
-	string(REPLACE ";" " " CMAKE_REQUIRED_DEFINITIONS "${libc_features}")
+	string(REPLACE ";" " " libc_feature_list "${libc_features}")
+	list(APPEND CMAKE_REQUIRED_DEFINITIONS ${libc_feature_list})
 	add_definitions(${libc_features})
 	
 	# Check compiler builtins & language extensions
