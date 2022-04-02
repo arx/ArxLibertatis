@@ -687,7 +687,8 @@ else(MSVC)
 			list(APPEND libc_features -D_FILE_OFFSET_BITS=64)
 		endif()
 	endif()
-	string(REPLACE ";" " " CMAKE_REQUIRED_DEFINITIONS "${libc_features}")
+	string(REPLACE ";" " " libc_feature_list "${libc_features}")
+	list(APPEND CMAKE_REQUIRED_DEFINITIONS ${libc_feature_list})
 	add_definitions(${libc_features})
 	
 	# Check compiler builtins & language extensions
