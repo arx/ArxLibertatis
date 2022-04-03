@@ -138,12 +138,12 @@ OpenALSource::~OpenALSource() {
 		}
 		arx_assert(!m_refcount);
 	} else {
-		if(m_buffers[0]) {
+		if(m_buffers.front()) {
 			arx_assert(!m_refcount || *m_refcount > 0);
 			if(!m_refcount || !--*m_refcount) {
 				delete m_refcount, m_refcount = nullptr;
-				TraceAL("deleting buffer " << m_buffers[0]);
-				alDeleteBuffers(1, &m_buffers[0]);
+				TraceAL("deleting buffer " << m_buffers.front());
+				alDeleteBuffers(1, &m_buffers.front());
 				nbbuffers--;
 				AL_CHECK_ERROR_N("deleting buffer")
 			}
@@ -176,9 +176,9 @@ aalError OpenALSource::init(SourcedSample id, OpenALSource * instance, const Cha
 		
 		arx_assert(instance->m_sample == m_sample);
 		
-		arx_assert(instance->m_buffers[0] != 0);
-		m_buffers[0] = instance->m_buffers[0];
-		m_bufferSizes[0] = instance->m_bufferSizes[0];
+		arx_assert(instance->m_buffers.front() != 0);
+		m_buffers.front() = instance->m_buffers.front();
+		m_bufferSizes.front() = instance->m_bufferSizes.front();
 		if(!instance->m_refcount) {
 			instance->m_refcount = new unsigned int;
 			*instance->m_refcount = 1;
@@ -196,18 +196,18 @@ aalError OpenALSource::init(SourcedSample id, OpenALSource * instance, const Cha
 	m_streaming = (m_sample->getLength() > (StreamLimitBytes * NBUFFERS));
 	
 	LogAL("init: length=" << m_sample->getLength() << " " << (m_streaming ? "m_streaming" : "static")
-	      << (m_buffers[0] ? " (copy)" : ""));
+	      << (m_buffers.front() ? " (copy)" : ""));
 	
-	if(!m_streaming && !m_buffers[0]) {
+	if(!m_streaming && !m_buffers.front()) {
 		m_stream = createStream(m_sample->getName());
 		if(!m_stream) {
 			ALError << "error creating stream";
 			return AAL_ERROR_FILEIO;
 		}
-		alGenBuffers(1, &m_buffers[0]);
+		alGenBuffers(1, &m_buffers.front());
 		nbbuffers++;
 		AL_CHECK_ERROR("generating buffer")
-		arx_assert(m_buffers[0] != 0);
+		arx_assert(m_buffers.front() != 0);
 		m_loadCount = 1;
 		if(aalError error = fillBuffer(0, m_sample->getLength())) {
 			return error;
@@ -504,8 +504,8 @@ aalError OpenALSource::play(unsigned playCount) {
 		AL_CHECK_ERROR("getting queued buffer count")
 		size_t nbuffers = MAXLOOPBUFFERS;
 		for(size_t i = queuedBuffers; i < nbuffers && m_loadCount; i++) {
-			TraceAL("queueing buffer " << m_buffers[0]);
-			alSourceQueueBuffers(m_source, 1, &m_buffers[0]);
+			TraceAL("queueing buffer " << m_buffers.front());
+			alSourceQueueBuffers(m_source, 1, &m_buffers.front());
 			AL_CHECK_ERROR("queueing buffer")
 			markAsLoaded();
 		}
