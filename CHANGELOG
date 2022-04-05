@@ -83,7 +83,7 @@ Other Fixes:
 * Fixed a crash with the entity debug view (bug #1608)
 * Fixed a hang on startup on some POSIX platforms
 * Fixed formatting for HTTPS links in dialogs
-* Windows: Fixed a crash with Intel graphics and Crispt Alpha Cutout AA enabled (bug #1568)
+* Windows: Fixed a crash with Intel graphics and Crispt Alpha Cutout AA enabled (bug #1568, bug #1603)
 * Windows: Restored Windows XP support (bug #1569)
 
 Technical Changes:
@@ -92,7 +92,7 @@ Technical Changes:
 * Fixed build without fstatat()
 * Initial flags in CMAKE_REQUIRED_DEFINITIONS are no longer dropped when testing some platform features
 * Platform feature tests no longer fail if they produce generic warnings
-* Force disabled _GLIBCXX_ASSERTIONS in release builds (proper fixes will be in version 1.3)
+* Force disabled _GLIBCXX_ASSERTIONS in release builds - proper fixes will be in version 1.3 (bug #1563)
 * Added a workaround for miscompilation bugs in GCC 9.0-9.4 and 10.0-10.3 (bug #1600)
 
 ################################################################################
