@@ -50,6 +50,10 @@ Debugging:
 
 * Added a new entity visibility debug HUD under F11
 
+Other Fixes:
+
+* Added a workaround for broken ratman backflip in intro (bug #93)
+
 Technical Changes:
 
 * The mold or lld linker is now used when available (for non-LTO builds)
