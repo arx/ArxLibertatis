@@ -295,7 +295,7 @@ float Context::getFloatVar(std::string_view name) const {
 		std::string tv;
 		switch(getSystemVar(*this, name, tv, &fv, &lv)) {
 			case TYPE_TEXT:
-				return float(atof(tv.c_str()));
+				return util::parseFloat(tv);
 			case TYPE_LONG:
 				return float(lv);
 			default:
