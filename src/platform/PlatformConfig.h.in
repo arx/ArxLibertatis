@@ -12,6 +12,10 @@
 // C++17 features
 // wide character support for filenames in fstream
 #cmakedefine01 ARX_HAVE_CXX17_FSTREAM_WCHAR
+// std::from_chars(float)
+#cmakedefine01 ARX_HAVE_CXX17_FROM_CHARS_FLOAT
+// std::from_chars(int)
+#cmakedefine01 ARX_HAVE_CXX17_FROM_CHARS_INT
 
 // GCC extensions
 // __attribute__((alloc_align(i)))

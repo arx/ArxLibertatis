@@ -109,6 +109,7 @@ suboption(USE_LTO "Use link-time code generation" BOOL ${default_USE_LTO})
 suboption(WERROR "Turn warnings into errors" BOOL ${CONTINUOUS_INTEGRATION})
 
 suboption(CXX_STD_VERSION "Maximum C++ standard version to enable" STRING 2017)
+option(USE_CXX17_FROM_CHARS_FLOAT "Use std::from_chars(float) instead of fast_float::from_chars" OFF)
 if(DEVELOPER OR CMAKE_BUILD_TYPE STREQUAL "Debug")
 	set(default_DEBUG ON)
 else()
@@ -639,9 +640,15 @@ endif()
 
 if(NOT CXX_STD_VERSION LESS 2011)
 	enable_cxx_version(${CXX_STD_VERSION})
-	if(WIN32)
-		check_cxx17("std::fstream(wchar*)" ARX_HAVE_CXX17_FSTREAM_WCHAR ALWAYS)
-	endif()
+endif()
+if(WIN32)
+	check_cxx17("std::fstream(wchar*)" ARX_HAVE_CXX17_FSTREAM_WCHAR ALWAYS)
+endif()
+check_cxx17("std::from_chars(int)" ARX_HAVE_CXX17_FROM_CHARS_INT 1914)
+if(USE_CXX17_FROM_CHARS_FLOAT)
+	check_cxx17("std::from_chars(float)" ARX_HAVE_CXX17_FROM_CHARS_FLOAT 1924)
+else()
+	set(ARX_HAVE_CXX17_FROM_CHARS_FLOAT 0)
 endif()
 
 if(MSVC)
@@ -1233,6 +1240,7 @@ set(SCRIPT_SOURCES
 )
 
 set(UTIL_SOURCES
+	src/util/Number.cpp
 	src/util/String.cpp
 )
 
@@ -1391,6 +1399,10 @@ if(LIBRT_LIBRARY AND ARX_HAVE_CRASHHANDLER_POSIX)
 endif()
 
 list(APPEND ARX_LIBRARIES ${BASE_LIBRARIES})
+
+if(NOT ARX_HAVE_CXX17_FROM_CHARS_FLOAT)
+	include_directories(SYSTEM thirdparty/fast_float/include)
+endif()
 
 if(NOT MSVC)
 	check_link_library(Boost Boost_LIBRARIES)

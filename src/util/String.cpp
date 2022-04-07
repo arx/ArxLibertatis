@@ -84,5 +84,4 @@ std::string getDateTimeString() {
 	return localTimeString.str();
 }
 
-
 } // namespace util
