@@ -848,8 +848,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		
 		const EERIE_SAVE_PORTALS * epo = fts_read<EERIE_SAVE_PORTALS>(data, end);
 		
-		if(epo->room_1 < 0 || size_t(epo->room_1) >= g_rooms->portals.size() ||
-		   epo->room_1 < 0 || size_t(epo->room_1) >= g_rooms->portals.size()) {
+		if(epo->room_1 < 0 || size_t(epo->room_1) >= g_rooms->rooms.size() ||
+		   epo->room_2 < 0 || size_t(epo->room_2) >= g_rooms->rooms.size()) {
 			throw std::runtime_error("portal room index out of bounds");
 		}
 		portal.room0 = epo->room_1;
