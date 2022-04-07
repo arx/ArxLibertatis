@@ -852,6 +852,9 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		   epo->room_2 < 0 || size_t(epo->room_2) >= g_rooms->rooms.size()) {
 			throw std::runtime_error("portal room index out of bounds");
 		}
+		if(epo->poly.type != 64 && epo->poly.type != 0) {
+			throw std::runtime_error("invalid portal polygon type");
+		}
 		portal.room0 = epo->room_1;
 		portal.room1 = epo->room_2;
 		portal.useportal = epo->useportal;
@@ -865,8 +868,6 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			// This is required to fix two polys in the original gamedata
 			LogDebug("Adding position for non quad portal poly");
 			portal.p[3] = glm::mix(portal.p[1], portal.p[2], 0.5f);
-		} else if(epo->poly.type != 64) {
-			LogWarning << "Invalid poly type found in portal " << epo->poly.type;
 		}
 		
 		portal.plane = createNormalizedPlane(portal.p[0], portal.p[1], portal.p[2]);
