@@ -26,6 +26,8 @@
 
 #include "game/Entity.h"
 #include "graphics/data/Mesh.h"
+#include "util/Number.h"
+
 
 namespace script {
 
@@ -309,11 +311,7 @@ float Context::getFloatVar(std::string_view name) const {
 		return GETVarValueFloat(getEntity()->m_variables, name);
 	}
 	
-	try {
-		return boost::lexical_cast<float>(name);
-	} catch(...) {
-		return 0.f;
-	}
+	return util::parseFloat(name);
 }
 
 size_t Context::skipCommand() {
