@@ -640,7 +640,7 @@ endif()
 if(NOT CXX_STD_VERSION LESS 2011)
 	enable_cxx_version(${CXX_STD_VERSION})
 	if(WIN32)
-		check_cxx17("fstream(wchar*)" ARX_HAVE_CXX17_FSTREAM_WCHAR ALWAYS)
+		check_cxx17("std::fstream(wchar*)" ARX_HAVE_CXX17_FSTREAM_WCHAR ALWAYS)
 	endif()
 endif()
 
