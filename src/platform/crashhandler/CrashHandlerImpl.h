@@ -34,10 +34,8 @@
 #include <sys/time.h>
 #endif
 
-// BOOST
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/interprocess/shared_memory_object.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include "io/fs/FilePath.h"
 #include "platform/CrashHandler.h"
