@@ -27,8 +27,6 @@
 #include <string_view>
 #include <vector>
 
-#include <boost/lexical_cast.hpp>
-
 #include "audio/Audio.h"
 
 #include "core/Application.h"
@@ -75,6 +73,7 @@
 
 #include "scene/GameSound.h"
 
+#include "util/Number.h"
 #include "util/Unicode.h"
 
 #include "window/RenderWindow.h"
@@ -743,11 +742,7 @@ public:
 				if(pos == 0) {
 					config.video.fpsLimit = 0;
 				} else {
-					try {
-						config.video.fpsLimit = boost::lexical_cast<int>(string);
-					} catch(...) {
-						config.video.fpsLimit = -1;
-					}
+					config.video.fpsLimit = util::toInt(string).value_or(-1);
 				}
 			};
 			cb->addEntry(getLocalised("system_menus_options_video_fps_limit_off"));
@@ -1006,11 +1001,7 @@ public:
 				int anisotropy = 1;
 				if(pos > 0) {
 					if(!string.empty() && string[0] == 'x') {
-						try {
-							anisotropy = boost::lexical_cast<int>(string.substr(1));
-						} catch(...) {
-							anisotropy = 1;
-						}
+						anisotropy = util::toInt(string.substr(1)).value_or(1);
 					} else {
 						anisotropy = 9001;
 					}
