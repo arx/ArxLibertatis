@@ -21,7 +21,6 @@
 
 #include <algorithm>
 
-#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
 #include "core/Application.h"
@@ -33,6 +32,7 @@
 #include "platform/ProgramOptions.h"
 #include "platform/Time.h"
 
+#include "util/Number.h"
 #include "util/cmdline/Optional.h"
 
 namespace benchmark {
@@ -305,9 +305,9 @@ static void enable(util::cmdline::optional<std::string> limit) {
 				                           "unknown unit \"" + unit + "\"");
 			}
 		}
-		try {
-			g_timeLimit = multiplier * boost::lexical_cast<float>(*limit);
-		} catch(...) {
+		if(auto timeLimit = util::toFloat(*limit)) {
+			g_timeLimit = multiplier * timeLimit.value();
+		} else {
 			throw util::cmdline::error(util::cmdline::error::invalid_cmd_syntax,
 			                           "inavlid number \"" + *limit + "\"");
 		}
