@@ -50,7 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include "animation/Animation.h"
 
@@ -97,7 +96,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
+#include "util/Number.h"
 #include "util/String.h"
+
 
 struct EQUIP_INFO {
 	const char * name;
@@ -1143,7 +1144,7 @@ float GetHitValue(std::string_view name) {
 	if(boost::starts_with(name, "hit_")) {
 		// Get the number after the first 4 characters in the string
 		try {
-			return float(boost::lexical_cast<long>(name.substr(4)));
+			return float(util::parseInt(name.substr(4)));
 		} catch(...) { /* ignore */ }
 	}
 	
