@@ -57,7 +57,6 @@ struct IUnknown; // Workaround for error C2187 in combaseapi.h when using /permi
 #include <sys/sysctl.h>
 #endif
 
-#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 
 #include "io/fs/PathConstants.h"
@@ -66,6 +65,7 @@ struct IUnknown; // Workaround for error C2187 in combaseapi.h when using /permi
 
 #include "platform/WindowsUtils.h"
 
+#include "util/Number.h"
 #include "util/String.h"
 
 
@@ -625,13 +625,11 @@ std::vector<std::string> getPreferredLocales() {
 	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
 	LCID installerLanguage = 0;
-	try {
+	{
 		std::string value;
 		if(getSystemConfiguration("InstallerLanguage", value)) {
-			installerLanguage = boost::lexical_cast<LCID>(value);
+			installerLanguage = static_cast<LCID>(util::toInt(value).value_or(0));
 		}
-	} catch(...) {
-		// Ignore
 	}
 	
 	WideString buffer;
