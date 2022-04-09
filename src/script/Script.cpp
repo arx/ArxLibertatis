@@ -53,7 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <limits>
 #include <sstream>
 
-#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "ai/Paths.h"
@@ -427,15 +426,12 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 		case '$': {
 			
 			if(boost::starts_with(name, "^$param")) {
-				try {
-					const ScriptParameters & params = context.getParameters();
-					size_t index = boost::lexical_cast<std::size_t>(name.substr(7));
-					if(index == 0 || index > params.size()) {
-						throw std::exception();
-					}
-					txtcontent = params[index - 1];
-				} catch(...) {
+				const ScriptParameters & params = context.getParameters();
+				s32 index = util::toInt(name.substr(7)).value_or(0);
+				if(index < 1 || size_t(index) > params.size()) {
 					txtcontent.clear();
+				} else {
+					txtcontent = params[size_t(index) - 1];
 				}
 				return TYPE_TEXT;
 			}
@@ -454,15 +450,12 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 		case '&': {
 			
 			if(boost::starts_with(name, "^&param")) {
-				try {
-					const ScriptParameters & params = context.getParameters();
-					size_t index = boost::lexical_cast<std::size_t>(name.substr(7));
-					if(index == 0 || index > params.size()) {
-						throw std::exception();
-					}
-					*fcontent = util::parseFloat(params[index - 1]);
-				} catch(...) {
+				const ScriptParameters & params = context.getParameters();
+				s32 index = util::toInt(name.substr(7)).value_or(0);
+				if(index < 1 || size_t(index) > params.size()) {
 					*fcontent = 0.f;
+				} else {
+					*fcontent = util::parseFloat(params[size_t(index) - 1]);
 				}
 				return TYPE_FLOAT;
 			}
@@ -480,15 +473,12 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 		case '#': {
 			
 			if(boost::starts_with(name, "^#param")) {
-				try {
-					const ScriptParameters & params = context.getParameters();
-					size_t index = boost::lexical_cast<std::size_t>(name.substr(7));
-					if(index == 0 || index > params.size()) {
-						throw std::exception();
-					}
-					*lcontent = util::parseInt(params[index - 1]);
-				} catch(...) {
+				const ScriptParameters & params = context.getParameters();
+				s32 index = util::toInt(name.substr(7)).value_or(0);
+				if(index < 1 || size_t(index) > params.size()) {
 					*lcontent = 0;
+				} else {
+					*lcontent = util::parseInt(params[size_t(index) - 1]);
 				}
 				return TYPE_LONG;
 			}
