@@ -25,21 +25,26 @@
 #include <sstream>
 #include <string_view>
 
-#include <boost/lexical_cast.hpp>
 #include <boost/preprocessor/stringize.hpp>
 
 #include "input/Input.h"
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
+
 #include "io/fs/Filesystem.h"
 #include "io/fs/FileStream.h"
 #include "io/IniReader.h"
 #include "io/IniSection.h"
 #include "io/IniWriter.h"
 #include "io/log/Logger.h"
+
 #include "math/Vector.h"
+
 #include "platform/CrashHandler.h"
+
+#include "util/Number.h"
 #include "util/String.h"
+
 
 // To avoid conflicts with potential other classes/namespaces
 namespace {
@@ -551,22 +556,17 @@ bool Config::save() {
 
 static Vec2i parseResolution(std::string_view resolution, Vec2i defaultResolution) {
 	
-	try {
-		size_t pos = resolution.find('x');
-		if(pos == std::string_view::npos) {
-			throw std::exception();
+	size_t pos = resolution.find('x');
+	if(pos != std::string_view::npos) {
+		Vec2i result(util::toInt(resolution.substr(0, pos)).value_or(0),
+		             util::toInt(resolution.substr(pos + 1)).value_or(0));
+		if(result.x > 0 && result.y > 0) {
+			return result;
 		}
-		Vec2i result(boost::lexical_cast<s32>(resolution.substr(0, pos)),
-		             boost::lexical_cast<s32>(resolution.substr(pos + 1)));
-		if(result.x <= 0 || result.y <= 0) {
-			throw std::exception();
-		}
-		return result;
-	} catch(...) {
-		LogWarning << "Bad resolution string: " << resolution;
-		return defaultResolution;
 	}
 	
+	LogWarning << "Bad resolution string: " << resolution;
+	return defaultResolution;
 }
 
 bool Config::init(const fs::path & file) {
