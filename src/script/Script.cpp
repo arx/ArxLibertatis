@@ -91,6 +91,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
 
+#include "util/Number.h"
 #include "util/String.h"
 
 
@@ -459,7 +460,7 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 					if(index == 0 || index > params.size()) {
 						throw std::exception();
 					}
-					*fcontent = boost::lexical_cast<float>(params[index - 1]);
+					*fcontent = util::parseFloat(params[index - 1]);
 				} catch(...) {
 					*fcontent = 0.f;
 				}
@@ -485,7 +486,7 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 					if(index == 0 || index > params.size()) {
 						throw std::exception();
 					}
-					*lcontent = boost::lexical_cast<long>(params[index - 1]);
+					*lcontent = util::parseInt(params[index - 1]);
 				} catch(...) {
 					*lcontent = 0;
 				}
@@ -717,11 +718,7 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 				// TODO should max be inclusive or exclusive?
 				// if inclusive, use proper integer random, otherwise fix rnd()?
 				if(!max.empty()) {
-					try {
-						*fcontent = Random::getf(0.f, boost::lexical_cast<float>(max));
-					} catch(...) {
-						*fcontent = 0;
-					}
+					*fcontent = Random::getf(0.f, util::parseFloat(max));
 				} else {
 					*fcontent = 0;
 				}
