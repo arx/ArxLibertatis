@@ -24,20 +24,27 @@
 #include <memory>
 #include <string>
 
-#include <boost/lexical_cast.hpp>
-
 #include "core/Config.h"
+
 #include "game/EntityManager.h"
 #include "game/Equipment.h"
 #include "game/Player.h"
 #include "game/magic/Spell.h"
 #include "game/spell/Cheat.h"
+
 #include "graphics/Math.h"
 #include "graphics/particle/ParticleEffects.h"
-#include "math/GtxFunctions.h"
-#include "scene/GameSound.h"
+
 #include "input/Input.h"
+
 #include "io/log/Logger.h"
+
+#include "math/GtxFunctions.h"
+
+#include "scene/GameSound.h"
+
+#include "util/Number.h"
+
 
 static std::vector<Vec2f> plist;
 bool bPrecastSpell = false;
@@ -776,12 +783,7 @@ static void unrecognizedRune() {
 
 void ARX_SPELLS_AnalyseSYMBOL() {
 	
-	long sm = 0;
-	try {
-		sm = boost::lexical_cast<long>(SpellMoves);
-	} catch(...) {
-		LogDebug("bad spell moves: " << SpellMoves);
-	}
+	s32 sm = util::toInt(SpellMoves).value_or(0);
 	
 	switch(sm) {
 		
