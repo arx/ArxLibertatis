@@ -46,7 +46,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <memory>
 #include <string>
 
-#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "ai/Paths.h"
@@ -59,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
+#include "util/Number.h"
 
 
 namespace script {
@@ -490,11 +490,7 @@ class IfCommand : public Command {
 					s = var;
 					return TYPE_TEXT;
 				} else {
-					try {
-						f = boost::lexical_cast<float>(var);
-					} catch(...) {
-						f = 0.f;
-					}
+					f = util::parseFloat(var);
 					return TYPE_FLOAT;
 				}
 			}
