@@ -50,8 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <string_view>
 
-#include <boost/lexical_cast.hpp>
-
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
 
@@ -564,13 +562,9 @@ static void skipLogo() {
 }
 ARX_PROGRAM_OPTION("skiplogo", "", "Skip logos at startup", &skipLogo)
 
-static void loadLevel(const std::string & level) {
-	try {
-		LEVEL_TO_LOAD = boost::lexical_cast<long>(level);
-		skipLogo();
-	} catch(...) {
-		LogWarning << "Invalid level number: " << level;
-	}
+static void loadLevel(u32 level) {
+	LEVEL_TO_LOAD = level;
+	skipLogo();
 }
 ARX_PROGRAM_OPTION_ARG("loadlevel", "", "Load a specific level", &loadLevel, "LEVELID")
 
