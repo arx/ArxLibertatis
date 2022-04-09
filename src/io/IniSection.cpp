@@ -22,36 +22,17 @@
 #include <sstream>
 #include <ios>
 
-#include <boost/lexical_cast.hpp>
-
 #include "io/log/Logger.h"
 
+#include "util/Number.h"
 #include "util/String.h"
 
 int IniKey::getValue(int defaultValue) const {
-	
-	if(value == "false")
-		return 0;
-	else if(value == "true")
-		return 1;
-	
-	std::istringstream iss(value);
-	
-	int val = defaultValue;
-	if((iss >> val).fail()) {
-		return defaultValue;
-	}
-	
-	return val;
+	return (value == "false") ? 0 : (value == "true") ? 1 : util::toInt(value, true).value_or(defaultValue);
 }
 
 float IniKey::getValue(float defaultValue) const {
-	
-	try {
-		return boost::lexical_cast<float>(value);
-	} catch(boost::bad_lexical_cast &) {
-		return defaultValue;
-	}
+	return util::toFloat(value).value_or(defaultValue);
 }
 
 bool IniKey::getValue(bool defaultValue) const {
