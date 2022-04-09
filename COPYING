@@ -6,6 +6,9 @@ Copyright (C) 2011-2021 Arx Libertatis Team and Contributors.
 Arx Libertatis is based on the Arx Fatalis GPLv3 source code.
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
+Arx Libertatis makes use of the stb_image library.
+Copyright (C) Sean T. Barrett. See the LICENSE.stb file for details.
+
 Arx Libertatis makes use of the fast_float number parsing library.
 Copyright (C) Daniel Lemire and João Paulo Magalhaes. See the LICENSE.fast_float file for details.
 
