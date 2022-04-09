@@ -21,7 +21,7 @@
 
 #include "platform/PlatformConfig.h"
 
-#if ARX_HAVE_CXX17_FROM_CHARS_INT ||ARX_HAVE_CXX17_FROM_CHARS_FLOAT
+#if ARX_HAVE_CXX17_FROM_CHARS_INT || ARX_HAVE_CXX17_FROM_CHARS_FLOAT
 #include <charconv>
 #endif
 
@@ -46,9 +46,9 @@ namespace util {
 	}
 	
 	#if ARX_HAVE_CXX17_FROM_CHARS_INT
-	s32 value{};
+	s32 value = 0;
 	auto result = std::from_chars(string.data(), string.data() + string.length(), value);
-  if(result.ec == std::errc() && (allowTrailingGarbage || result.ptr == string.data() + string.length())) {
+	if(result.ec == std::errc() && (allowTrailingGarbage || result.ptr == string.data() + string.length())) {
 		return value;
 	} else {
 		return { };
@@ -80,7 +80,7 @@ namespace util {
 		string.remove_prefix(1);
 	}
 	
-	float value{};
+	float value = 0.f;
 	
 	#if ARX_HAVE_CXX17_FROM_CHARS_FLOAT
 	auto result = std::from_chars(string.data(), string.data() + string.length(), value);
