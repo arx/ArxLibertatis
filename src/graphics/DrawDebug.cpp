@@ -391,8 +391,6 @@ static const Color distinctDebugColors[] = {
 	Color::rgb(0.f, 0.f, 0.5f) // Navy
 };
 
-#include <boost/lexical_cast.hpp>
-
 static void drawColorChart() {
 	Vec2f p = Vec2f(50, 50);
 	for(size_t i = 0; i < std::size(distinctDebugColors); i++) {
