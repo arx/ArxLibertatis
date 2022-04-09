@@ -21,13 +21,16 @@
 
 #include <cstring>
 
-#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 
 #include "core/Config.h"
+
 #include "io/log/Logger.h"
+
 #include "platform/ProgramOptions.h"
+
+#include "util/Number.h"
 #include "util/String.h"
 
 
@@ -140,16 +143,24 @@ void OpenGLInfo::parseOverrideConfig(std::string_view string) {
 				} else if(token == "-*" || token == "-") {
 					m_versionOverride = m_version;
 				} else if(dot != std::string_view::npos) {
-					u32 major = boost::lexical_cast<u32>(token.substr(offset, dot - offset));
-					u32 minor = boost::lexical_cast<u32>(token.substr(dot + 1));
-					if(minor > 10 || major > std::numeric_limits<u32>::max() / 10) {
+					s32 major = util::toInt(token.substr(offset, dot - offset)).value();
+					s32 minor = util::toInt(token.substr(dot + 1)).value();
+					if(minor < 0 || minor > 10 || major < 0 || major > s32(std::numeric_limits<u32>::max() / 10)) {
 						throw std::exception();
 					}
-					m_versionOverride = major * 10 + minor;
+					m_versionOverride = u32(major) * 10 + u32(minor);
 				} else if(token.length() - offset > 1) {
-					m_versionOverride = boost::lexical_cast<u32>(token.substr(offset));
+					s32 version = util::toInt(token.substr(offset)).value();
+					if(version < 0) {
+						throw std::exception();
+					}
+					m_versionOverride = u32(version);
 				} else {
-					m_versionOverride = boost::lexical_cast<u32>(token.substr(offset)) * 10;
+					s32 major = util::toInt(token.substr(offset)).value();
+					if(major < 0 || major > s32(std::numeric_limits<u32>::max() / 10)) {
+						throw std::exception();
+					}
+					m_versionOverride = u32(major) * 10;
 				}
 				if(!first) {
 					LogWarning << "Ignoring OpenGL feature overrides before '" << token << "'";
