@@ -26,6 +26,8 @@
 
 #include "game/Entity.h"
 #include "io/resource/ResourcePath.h"
+#include "util/Number.h"
+
 
 const EntityId EntityId::self("self", 0);
 
@@ -45,18 +47,17 @@ EntityId::EntityId(std::string_view id)
 		
 		size_t sep = id.find_last_of('_');
 		
+		m_className = id.substr(0, sep);
 		m_instance = 0;
 		if(sep != std::string_view::npos) {
-			try {
-				m_instance = boost::lexical_cast<EntityInstance>(id.substr(sep + 1));
-			} catch(...) {
+			if(auto instance = util::toInt(id.substr(sep + 1))) {
+				m_instance = instance.value();
+			} else {
 				m_className = id;
 				m_instance = -1;
-				return;
 			}
 		}
 		
-		m_className = id.substr(0, sep);
 	}
 }
 
