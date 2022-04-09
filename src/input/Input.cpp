@@ -50,17 +50,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <map>
 #include <cmath>
 
-#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/GameTime.h"
+
 #include "graphics/Math.h"
+
 #include "gui/Menu.h"
+
 #include "input/InputBackend.h"
+
 #include "io/log/Logger.h"
+
+#include "util/Number.h"
+
 #include "window/RenderWindow.h"
+
 
 Input * GInput = nullptr;
 
@@ -696,19 +703,17 @@ InputKeyId Input::getKeyId(std::string_view name) {
 	}
 	
 	if(boost::starts_with(name, PREFIX_KEY)) {
-		try {
-			int key = boost::lexical_cast<int>(name.substr(PREFIX_KEY.length()));
+		s32 key = util::toInt(name.substr(PREFIX_KEY.length())).value_or(-1);
+		if(key >= 0) {
 			return key;
-		} catch(const boost::bad_lexical_cast &) { }
+		}
 	}
 	
 	if(boost::starts_with(name, PREFIX_BUTTON)) {
-		try {
-			int key = boost::lexical_cast<int>(name.substr(PREFIX_BUTTON.length()));
-			if(key >= 0 && key < Mouse::ButtonCount) {
-				return Mouse::ButtonBase + key - 1;
-			}
-		} catch(const boost::bad_lexical_cast &) { }
+		s32 button = util::toInt(name.substr(PREFIX_BUTTON.length())).value_or(-1);
+		if(button >= 0 && button < Mouse::ButtonCount) {
+			return Mouse::ButtonBase + button - 1;
+		}
 	}
 	
 	if(keyNames.empty()) {
