@@ -123,6 +123,9 @@ int utf8_main(int argc, char ** argv) {
 		CrashHandler::setVariable("zlib version (runtime)", oss.str());
 		credits::setLibraryCredits("deflate", "zlib " + oss.str());
 		credits::setLibraryCredits("image", "stb_image");
+		#if !ARX_HAVE_CXX17_FROM_CHARS_FLOAT
+		credits::setLibraryCredits("from_chars", "fast_float");
+		#endif
 	}
 	
 	// Also initialize the logging system early as we might need it
