@@ -47,8 +47,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <utility>
 
-#include <boost/lexical_cast.hpp>
-
 #include "core/Localisation.h"
 #include "core/Config.h"
 #include "core/Core.h"
@@ -65,7 +63,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/resource/ResourcePath.h"
 #include "io/log/Logger.h"
 
+#include "util/Number.h"
 #include "util/Unicode.h"
+
 
 TextManager * pTextManage = nullptr;
 
@@ -259,13 +259,14 @@ static Font * createFont(const res::path & fontFace, std::string_view configSize
 	arx_assert(scaleFactor > 0.f);
 	arx_assert(scaleFactor < 1000.f); // TODO better maximum
 	
-	try {
-		std::string_view configSize = getLocalised(configSizeKey, std::string_view());
-		if(!configSize.empty()) {
-			fontSize = boost::lexical_cast<unsigned int>(configSize);
+	std::string_view configSize = getLocalised(configSizeKey, std::string_view());
+	if(!configSize.empty()) {
+		s32 size = util::toInt(configSize).value_or(0);
+		if(size > 0) {
+			fontSize = size;
+		} else {
+			LogError << "Invalid font size for: " << configSizeKey;
 		}
-	} catch(const boost::bad_lexical_cast &) {
-		LogError << "Invalid font size for: " << configSizeKey;
 	}
 	
 	fontSize = unsigned(fontSize * scaleFactor);
