@@ -54,8 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cctype>
 #include <ctime>
 
-#include <boost/lexical_cast.hpp>
-
 #include "ai/Paths.h"
 
 #include "audio/Audio.h"
@@ -111,6 +109,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
 
+#include "util/Number.h"
 #include "util/String.h"
 
 
@@ -180,9 +179,9 @@ static Entity * convertToValidIO(std::string_view idString) {
 	}
 	
 	EntityInstance instance = -1;
-	try {
-		instance = boost::lexical_cast<EntityInstance>(idString.substr(pos));
-	} catch(...) {
+	if(auto value = util::toInt(idString.substr(pos))) {
+		instance = value.value();
+	} else {
 		LogError << "Could not parse entity ID: " << idString;
 	}
 	
@@ -1451,11 +1450,7 @@ static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	player.playerflags = PlayerFlags::load(asp->playerflags); // TODO save/load flags
 	
 	if(asp->TELEPORT_TO_LEVEL[0]) {
-		try {
-			TELEPORT_TO_LEVEL = boost::lexical_cast<long>(util::loadString(asp->TELEPORT_TO_LEVEL));
-		} catch(...) {
-			TELEPORT_TO_LEVEL = -1;
-		}
+		TELEPORT_TO_LEVEL = util::toInt(util::loadString(asp->TELEPORT_TO_LEVEL)).value_or(-1);
 	} else {
 		TELEPORT_TO_LEVEL = -1;
 	}
