@@ -8,7 +8,6 @@ Gameplay:
 
 Graphics:
 
-* Fixed messed up graphics with the Steam overlay active
 * Fixed increased fog particle count with high framerates
 * Fixed increased magic damage particle count for the lightning strike, harm, mana drain, life drain and chaos spells with high framerates
 * Fixed fogs starting out with 0 particles after coming into view
@@ -66,6 +65,10 @@ Gameplay:
 
 * Fixed being able to use items multiple times by dropping them on the player book (bug #1011)
 * Fixed using stacks of items by dropping them on the player book causing the remaining unused items in the stack to disappear
+
+Graphics:
+
+* Fixed messed up graphics with the Steam overlay active
 
 Audio:
 
