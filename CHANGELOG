@@ -78,7 +78,7 @@ Audio:
 
 Performance:
 
-* Fixed excessively slow performance with "Crisp" alpha cutout antialiasing (bug #1595)
+* Fixed excessively slow performance with "Crisp" Alpha Cutout AA enabled (bug #1595)
 * Linux: Fixed stuttering and freezing in the portable binary release caused by the bundled SDL2 library (bug #1605)
 
 Other Fixes:
@@ -95,7 +95,7 @@ Other Fixes:
 * Fixed a crash when passing invalid values to command-line arguments
 * Fixed a hang on startup on some POSIX platforms
 * Fixed formatting for HTTPS links in dialogs
-* Windows: Fixed a crash with Intel graphics and Crispt Alpha Cutout AA enabled (bug #1568, bug #1603)
+* Windows: Fixed a crash with Intel graphics and "Crisp" Alpha Cutout AA enabled (bug #1568, bug #1603)
 * Windows: Restored Windows XP support (bug #1569)
 
 Technical Changes:
