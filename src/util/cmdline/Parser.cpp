@@ -178,6 +178,22 @@ void parse(interpreter<std::string> & cli, int argc, char ** argv) {
 			
 			throw error(e.code(), oss.str());
 			
+		} catch(...) {
+			
+			std::ostringstream oss;
+			oss << "Error parsing command-line";
+			
+			if(option != "--") {
+				oss << " option " << option;
+			}
+			
+			oss << ": invalid value";
+			if(p != end) {
+				oss << " \"" << util::escapeString(*p) << "\"";
+			}
+			
+			throw error(error::invalid_value, oss.str());
+			
 		}
 		
 	}
