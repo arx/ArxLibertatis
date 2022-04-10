@@ -399,9 +399,9 @@ static PlayerMisc getMiscStats(const PlayerAttribute & attribute, const PlayerSk
 	
 	PlayerMisc stats;
 	
-	stats.armorClass   = std::max(1.f, skill.defense * 0.1f - 1.0f);
-	stats.resistMagic  = attribute.mind * 2.f * (1.f + skill.casting * 0.005f); // TODO why *?
-	stats.resistPoison = attribute.constitution * 2.f + skill.defense * 0.25f;
+	stats.armorClass   = std::floor(std::max(1.f, skill.defense * 0.1f - 1.0f));
+	stats.resistMagic  = std::floor(attribute.mind * 2.f * (1.f + skill.casting * 0.005f)); // TODO why *?
+	stats.resistPoison = std::floor(attribute.constitution * 2.f + skill.defense * 0.25f);
 	stats.criticalHit  = attribute.dexterity * 2.f + skill.closeCombat * 0.2f - 18.f;
 	stats.damages      = std::max(1.f, attribute.strength * 0.5f - 5.f);
 	
@@ -675,9 +675,9 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	);
 	
 	// Calculate full stats
-	player.m_miscFull.armorClass = std::floor(std::max(0.f, miscBase.armorClass + player.m_miscMod.armorClass));
-	player.m_miscFull.resistMagic = std::floor(std::max(0.f, miscBase.resistMagic + player.m_miscMod.resistMagic));
-	player.m_miscFull.resistPoison = std::floor(std::max(0.f, miscBase.resistPoison + player.m_miscMod.resistPoison));
+	player.m_miscFull.armorClass = std::max(0.f, miscBase.armorClass + player.m_miscMod.armorClass);
+	player.m_miscFull.resistMagic = std::max(0.f, miscBase.resistMagic + player.m_miscMod.resistMagic);
+	player.m_miscFull.resistPoison = std::max(0.f, miscBase.resistPoison + player.m_miscMod.resistPoison);
 	player.m_miscFull.criticalHit = std::max(0.f, miscBase.criticalHit + player.m_miscMod.criticalHit);
 	player.m_miscFull.damages = std::max(1.f, miscBase.damages + player.m_miscMod.damages
 	                                          + player.m_skillFull.closeCombat * 0.1f);
