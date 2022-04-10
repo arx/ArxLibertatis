@@ -36,6 +36,7 @@
 #define ARX_PLATFORM_WIN32   1
 #define ARX_PLATFORM_LINUX   2
 #define ARX_PLATFORM_MACOS   3
+#define ARX_PLATFORM_HAIKU   4
 #define ARX_PLATFORM_BSD     100 // Generic BSD system
 #define ARX_PLATFORM_UNIX    101 // Generic UNIX system
 
@@ -45,6 +46,8 @@
 	#define ARX_PLATFORM ARX_PLATFORM_WIN32
 #elif defined(__MACH__)
 	#define ARX_PLATFORM ARX_PLATFORM_MACOS
+#elif defined(__HAIKU__)
+	#define ARX_PLATFORM ARX_PLATFORM_HAIKU
 #elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) \
       || defined(__bsdi__) || defined(__DragonFly__)
 	#define ARX_PLATFORM ARX_PLATFORM_BSD

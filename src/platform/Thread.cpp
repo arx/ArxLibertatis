@@ -145,6 +145,9 @@ void * Thread::entryPoint(void * param) {
 	#elif ARX_HAVE_PRCTL && defined(PR_SET_NAME)
 	// Linux
 	prctl(PR_SET_NAME, reinterpret_cast<unsigned long>(thread.m_threadName.c_str()), 0, 0, 0);
+	#elif ARX_PLATFORM == ARX_PLATFORM_HAIKU
+	// Haiku
+	rename_thread(get_pthread_thread_id(thread.m_thread), thread.m_threadName.c_str());
 	#else
 	// This is non-fatal, but let's print a warning so future ports will be
 	// reminded to implement it.
