@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2018-2021 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
