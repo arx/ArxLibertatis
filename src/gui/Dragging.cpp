@@ -218,7 +218,7 @@ void updateDraggedEntity() {
 		return;
 	}
 	if(ARX_INTERFACE_MouseInBook()) {
-		if(drop && g_playerBook.currentPage() == BOOKMODE_STATS) {
+		if(drop && g_playerBook.currentPage() == BOOKMODE_STATS && (entity->gameFlags & GFLAG_INTERACTIVITY)) {
 			SendIOScriptEvent(entities.player(), entity, SM_INVENTORYUSE);
 			COMBINE = nullptr;
 		}

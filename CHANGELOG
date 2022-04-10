@@ -62,6 +62,10 @@ Technical Changes:
 
 = Arx Libertatis 1.2.1  (TBD) =
 
+Gameplay:
+
+* Fixed being able to use items multiple times by dropping them on the player book (bug #1011)
+
 Audio:
 
 * Fixed missing death screams for most NPCs (bug #1579)
