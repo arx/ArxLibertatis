@@ -65,6 +65,7 @@ Technical Changes:
 Audio:
 
 * Fixed missing death screams for most NPCs (bug #1579)
+* Fixed double click sound when unequipping armor
 
 Performance:
 

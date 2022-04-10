@@ -1889,7 +1889,7 @@ void ArxGame::manageEditorControls() {
 				if(io && (!g_cursorOverBook || io->show == SHOW_FLAG_ON_PLAYER)) {
 					
 					if(io->show == SHOW_FLAG_ON_PLAYER) {
-						ARX_EQUIPMENT_UnEquip(entities.player(), io);
+						ARX_EQUIPMENT_UnEquip(entities.player(), io, 1);
 						io->bbox2D.max.x = -1;
 					}
 					
