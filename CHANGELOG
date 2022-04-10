@@ -44,7 +44,7 @@ Technical Changes:
 * Fixed build without fstatat()
 * Initial flags in CMAKE_REQUIRED_DEFINITIONS are no longer dropped when testing some platform features
 * Platform feature tests no longer fail if they produce generic warnings
-* Force disabled _GLIBCXX_ASSERTIONS in release builds - proper fixes will be in version 1.3 (bug #1563)
+* Fixed libstdc++ assert failures and disabled _GLIBCXX_ASSERTIONS in release builds (bug #1563)
 * Added a workaround for miscompilation bugs in GCC 9.0-9.4 and 10.0-10.3 (bug #1600)
 
 ################################################################################
