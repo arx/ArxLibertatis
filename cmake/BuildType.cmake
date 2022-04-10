@@ -166,7 +166,7 @@ else(MSVC)
 			execute_process(COMMAND ${CMAKE_CXX_COMPILER} "-fuse-ld=lld" "-Wl,-version"
 			                OUTPUT_VARIABLE _LLD_Version ERROR_QUIET)
 		endif()
-		if(USE_LD STREQUAL "best" AND _LLD_Version MATCHES "LLD [0-7]\\.[0-9\\.]*")
+		if(USE_LD STREQUAL "best" AND _LLD_Version MATCHES "LLD [0-8]\\.[0-9\\.]*")
 			message(STATUS "Not using ancient ${CMAKE_MATCH_0}")
 		elseif(USE_LD STREQUAL "best" AND CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND
 		       CMAKE_CXX_COMPILER_VERSION VERSION_LESS 8)
