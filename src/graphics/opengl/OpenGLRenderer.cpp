@@ -328,7 +328,7 @@ void OpenGLRenderer::initialize() {
 
 void OpenGLRenderer::beforeResize(bool wasOrIsFullscreen) {
 	
-#if ARX_PLATFORM == ARX_PLATFORM_LINUX || ARX_PLATFORM == ARX_PLATFORM_BSD
+#if ARX_PLATFORM == ARX_PLATFORM_LINUX || ARX_PLATFORM == ARX_PLATFORM_BSD || ARX_PLATFORM == ARX_PLATFORM_HAIKU
 	// No re-initialization needed
 	ARX_UNUSED(wasOrIsFullscreen);
 #else
