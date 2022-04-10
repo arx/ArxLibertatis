@@ -106,11 +106,8 @@ public:
 			ioo->show = (io->show == SHOW_FLAG_IN_INVENTORY ? SHOW_FLAG_IN_SCENE : io->show);
 		}
 		
-		if(io == g_draggedEntity) {
-			setDraggedEntity(ioo);
-		}
-		
 		InventoryPos oldPos = locateInInventories(io);
+		bool wasDragged = (io == g_draggedEntity);
 		
 		// Delay destruction of the object to avoid invalid references
 		bool removed = false;
@@ -151,12 +148,21 @@ public:
 					PutInFrontOfPlayer(ioo);
 				}
 			} else {
+				bool equipped = false;
 				for(size_t i = 0; i < MAX_EQUIPED; i++) {
 					if(ValidIONum(player.equiped[i])) {
 						if(entities[player.equiped[i]] == io) {
 							ARX_EQUIPMENT_UnEquip(entities.player(), io, 1);
 							ARX_EQUIPMENT_Equip(entities.player(), ioo);
+							equipped = true;
 						}
+					}
+				}
+				if(!equipped && wasDragged) {
+					if(g_draggedEntity && g_draggedEntity->show != SHOW_FLAG_MEGAHIDE) {
+						giveToPlayer(ioo);
+					} else {
+						setDraggedEntity(ioo);
 					}
 				}
 			}
