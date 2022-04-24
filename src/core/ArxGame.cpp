@@ -1294,7 +1294,17 @@ void ArxGame::updateFirstPersonCamera() {
 				g_playerCamera.m_pos.x = player.pos.x + vect.x;
 				g_playerCamera.m_pos.z = player.pos.z + vect.z;
 			}
-			
+
+			// ----------------
+
+			int distance = 200.0f;
+			Vec3f angle = angleToVector(player.angle);
+
+			g_playerCamera.m_pos.x -= distance * angle.x;
+			g_playerCamera.m_pos.y -= distance * angle.y;
+			g_playerCamera.m_pos.z -= distance * angle.z;
+
+			// ----------------
 		} else {
 			g_playerCameraStablePos = g_playerCamera.m_pos = player.basePosition();
 		}
@@ -1718,6 +1728,13 @@ void ArxGame::updateLevel() {
 		ARX_SOUND_SetListener(g_camera->m_pos, frontUp.first, frontUp.second);
 	}
 	
+	// ------------------
+
+	ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 0);
+
+	// ------------------
+
+	/*
 	// Check For Hiding/unHiding Player Gore
 	if(EXTERNALVIEW || player.lifePool.current <= 0) {
 		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 0);
@@ -1726,6 +1743,7 @@ void ArxGame::updateLevel() {
 	if(!EXTERNALVIEW) {
 		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 1);
 	}
+	*/
 
 	PrepareIOTreatZone();
 	ARX_PHYSICS_Apply();
