@@ -196,42 +196,6 @@ std::string expandEnvironmentVariables(std::string_view in) {
 	#endif
 }
 
-#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-static bool getRegistryValue(HKEY hkey, const platform::WideString & wname, std::string & result,
-                             REGSAM flags = 0) {
-	
-	HKEY handle = 0;
-	long ret = RegOpenKeyEx(hkey, L"Software\\ArxLibertatis\\", 0,
-	                        KEY_QUERY_VALUE | flags, &handle);
-	if(ret != ERROR_SUCCESS) {
-		return false;
-	}
-	
-	platform::WideString buffer;
-	buffer.allocate(buffer.capacity());
-	
-	// find size of value
-	DWORD type = 0;
-	DWORD length = buffer.size() * sizeof(WCHAR);
-	ret = RegQueryValueExW(handle, wname, nullptr, &type, LPBYTE(buffer.data()), &length);
-	if(ret == ERROR_MORE_DATA && length > 0) {
-		buffer.resize(length / sizeof(WCHAR) + 1);
-		ret = RegQueryValueExW(handle, wname, nullptr, &type, LPBYTE(buffer.data()), &length);
-	}
-	
-	RegCloseKey(handle);
-	
-	if(ret == ERROR_SUCCESS && type == REG_SZ) {
-		buffer.resize(length / sizeof(WCHAR));
-		buffer.compact();
-		result = buffer.toUTF8();
-		return true;
-	} else {
-		return false;
-	}
-}
-#endif
-
 std::optional<std::string> getSystemConfiguration(std::string_view name) {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
@@ -244,19 +208,18 @@ std::optional<std::string> getSystemConfiguration(std::string_view name) {
 	
 	const WCHAR * key = L"Software\\ArxLibertatis\\";
 	platform::WideString wname(name);
-	std::string value;
 	
-	if(getRegistryValue(HKEY_CURRENT_USER, wname, value)) {
+	if(auto value = getRegistryValue(HKEY_CURRENT_USER, key, wname)) {
 		return value;
 	}
-	if(getRegistryValue(HKEY_CURRENT_USER, wname, value, foreign_registry)) {
+	if(auto value = getRegistryValue(HKEY_CURRENT_USER, key, wname, foreign_registry)) {
 		return value;
 	}
 	
-	if(getRegistryValue(HKEY_LOCAL_MACHINE, wname, value)) {
+	if(auto value = getRegistryValue(HKEY_LOCAL_MACHINE, key, wname)) {
 		return value;
 	}
-	if(getRegistryValue(HKEY_LOCAL_MACHINE, wname, value, foreign_registry)) {
+	if(auto value = getRegistryValue(HKEY_LOCAL_MACHINE, key, wname, foreign_registry)) {
 		return value;
 	}
 	

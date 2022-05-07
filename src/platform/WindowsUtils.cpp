@@ -161,4 +161,57 @@ std::string getErrorString(DWORD error, HMODULE module) {
 	
 }
 
+std::optional<DWORD> getRegistryDWORD(HKEY key, const WCHAR * name) {
+	
+	DWORD buffer;
+	
+	DWORD type = 0;
+	DWORD length = sizeof(buffer);
+	long ret = RegQueryValueExW(key, name, nullptr, &type, reinterpret_cast<LPBYTE>(&buffer), &length);
+	
+	if(ret == ERROR_SUCCESS && type == REG_DWORD) {
+		return buffer;
+	} else {
+		return { };
+	}
+	
+}
+
+std::optional<std::string> getRegistryString(HKEY key, const WCHAR * name) {
+	
+	platform::WideString buffer;
+	buffer.allocate(buffer.capacity());
+	
+	DWORD type = 0;
+	DWORD length = buffer.size() * sizeof(WCHAR);
+	long ret = RegQueryValueExW(key, name, nullptr, &type, reinterpret_cast<LPBYTE>(buffer.data()), &length);
+	if(ret == ERROR_MORE_DATA && length > 0) {
+		buffer.resize(length / sizeof(WCHAR) + 1);
+		ret = RegQueryValueExW(key, name, nullptr, &type, reinterpret_cast<LPBYTE>(buffer.data()), &length);
+	}
+	
+	if(ret == ERROR_SUCCESS && type == REG_SZ) {
+		buffer.resize(length / sizeof(WCHAR));
+		buffer.compact();
+		return buffer.toUTF8();
+	} else {
+		return { };
+	}
+	
+}
+
+std::optional<std::string> getRegistryValue(HKEY hive, const WCHAR * key, const WCHAR * name, REGSAM flags) {
+	
+	HKEY handle = 0;
+	if(RegOpenKeyEx(hive, key, 0, KEY_QUERY_VALUE | flags, &handle) != ERROR_SUCCESS) {
+		return { };
+	}
+	
+	auto result = getRegistryString(handle, name);
+	
+	RegCloseKey(handle);
+	
+	return result;
+}
+
 } // namespace platform

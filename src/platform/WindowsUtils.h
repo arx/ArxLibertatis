@@ -26,6 +26,7 @@
 
 #include <stddef.h>
 #include <cstring>
+#include <optional>
 #include <string>
 #include <string_view>
 
@@ -146,6 +147,11 @@ template <typename FunctionType>
 FunctionType getProcAddress(HMODULE module, const char * symbol) {
 	return reinterpret_cast<FunctionType>(reinterpret_cast<void(*)()>(GetProcAddress(module, symbol)));
 }
+
+std::optional<DWORD> getRegistryDWORD(HKEY key, const WCHAR * name);
+std::optional<std::string> getRegistryString(HKEY key, const WCHAR * name);
+std::optional<std::string> getRegistryValue(HKEY hive, const WCHAR * key,
+                                            const WCHAR * name, REGSAM flags = 0);
 
 } // namespace
 
