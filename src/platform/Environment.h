@@ -20,6 +20,7 @@
 #ifndef ARX_PLATFORM_ENVIRONMENT_H
 #define ARX_PLATFORM_ENVIRONMENT_H
 
+#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -70,11 +71,10 @@ std::vector<fs::path> getSystemPaths(SystemPathId id);
  *
  * \param name path of the registry entry to read. This is looked up under HKCU first, and
  *             if it doesn't exist there, under HKLM.
- * \param result string to receive the value of the registry key.
  *
- * \return \c true of the requested registry key exists, \c false otherwise.
+ * \return the requested registry key or std::nullopt if it does not exist.
  */
-bool getSystemConfiguration(std::string_view name, std::string & result);
+std::optional<std::string> getSystemConfiguration(std::string_view name);
 
 /*!
  * \brief Get the path to the current running executable

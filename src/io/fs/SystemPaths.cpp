@@ -142,18 +142,18 @@ path findUserPath(const char * name, const path & force,
 	}
 	
 	// Check system settings (windows registry)
-	std::string temp;
-	if(registry && platform::getSystemConfiguration(registry, temp)) {
-		path dir = canonical(temp);
-		if(!create) {
-			return dir;
-		} else if(create_directories(dir)) {
-			LogDebug("got " << name << " dir from registry: \"" << temp
-			         << "\" = " << dir);
-			return dir;
-		} else {
-			LogError << "Could not create " << name << " directory " << dir << '.';
-			LogDebug("ignoring " << name << " dir from registry: \"" << temp << '"');
+	if(registry) {
+		if(auto value = platform::getSystemConfiguration(registry)) {
+			path dir = canonical(value.value());
+			if(!create) {
+				return dir;
+			} else if(create_directories(dir)) {
+				LogDebug("got " << name << " dir from registry: \"" << value.value() << "\" = " << dir);
+				return dir;
+			} else {
+				LogError << "Could not create " << name << " directory " << dir << '.';
+				LogDebug("ignoring " << name << " dir from registry: \"" << value.value() << '"');
+			}
 		}
 	}
 	
@@ -313,13 +313,12 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 	}
 	
 	// Check system settings (windows registry)
-	std::string temp;
-	if(platform::getSystemConfiguration("DataDir", temp)) {
-		path dir = canonical(temp);
+	if(auto value = platform::getSystemConfiguration("DataDir")) {
+		path dir = canonical(value.value());
 		if(addSearchRoot(result, dir, filter)) {
-			LogDebug("got data dir from registry: \"" << temp << "\" = " << dir);
+			LogDebug("got data dir from registry: \"" << value.value() << "\" = " << dir);
 		} else {
-			LogDebug("ignoring data dir from registry: \"" << temp << "\" = " << dir);
+			LogDebug("ignoring data dir from registry: \"" << value.value() << "\" = " << dir);
 		}
 	}
 	
@@ -383,9 +382,8 @@ void listDirectoriesFor(std::ostream & os, std::string_view regKey, platform::Sy
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	if(!regKey.empty()) {
 		os << " - Registry key {HKCU,HKLM}\\Software\\ArxLibertatis\\" << regKey << '\n';
-		std::string temp;
-		if(platform::getSystemConfiguration(regKey, temp)) {
-			os << "   = " << canonical(temp) << '\n';
+		if(auto value = platform::getSystemConfiguration(regKey)) {
+			os << "   = " << canonical(value.value()) << '\n';
 		}
 	}
 #else

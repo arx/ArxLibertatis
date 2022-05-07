@@ -232,7 +232,7 @@ static bool getRegistryValue(HKEY hkey, const platform::WideString & wname, std:
 }
 #endif
 
-bool getSystemConfiguration(std::string_view name, std::string & result) {
+std::optional<std::string> getSystemConfiguration(std::string_view name) {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
@@ -242,27 +242,29 @@ bool getSystemConfiguration(std::string_view name, std::string & result) {
 	REGSAM foreign_registry = KEY_WOW64_64KEY;
 	#endif
 	
+	const WCHAR * key = L"Software\\ArxLibertatis\\";
 	platform::WideString wname(name);
+	std::string value;
 	
-	if(getRegistryValue(HKEY_CURRENT_USER, wname, result)) {
-		return true;
+	if(getRegistryValue(HKEY_CURRENT_USER, wname, value)) {
+		return value;
 	}
-	if(getRegistryValue(HKEY_CURRENT_USER, wname, result, foreign_registry)) {
-		return true;
+	if(getRegistryValue(HKEY_CURRENT_USER, wname, value, foreign_registry)) {
+		return value;
 	}
 	
-	if(getRegistryValue(HKEY_LOCAL_MACHINE, wname, result)) {
-		return true;
+	if(getRegistryValue(HKEY_LOCAL_MACHINE, wname, value)) {
+		return value;
 	}
-	if(getRegistryValue(HKEY_LOCAL_MACHINE, wname, result, foreign_registry)) {
-		return true;
+	if(getRegistryValue(HKEY_LOCAL_MACHINE, wname, value, foreign_registry)) {
+		return value;
 	}
 	
 #else
-	ARX_UNUSED(name), ARX_UNUSED(result);
+	ARX_UNUSED(name);
 #endif
 	
-	return false;
+	return { };
 }
 
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
@@ -625,11 +627,8 @@ std::vector<std::string> getPreferredLocales() {
 	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
 	LCID installerLanguage = 0;
-	{
-		std::string value;
-		if(getSystemConfiguration("InstallerLanguage", value)) {
-			installerLanguage = static_cast<LCID>(util::toInt(value).value_or(0));
-		}
+	if(auto value = getSystemConfiguration("InstallerLanguage")) {
+		installerLanguage = static_cast<LCID>(util::toInt(value.value()).value_or(0));
 	}
 	
 	WideString buffer;
