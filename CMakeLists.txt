@@ -352,6 +352,7 @@ if(WIN32)
 	
 	add_definitions(-DNOMINMAX)
 	add_definitions(-DWIN32_LEAN_AND_MEAN)
+	list(APPEND BASE_LIBRARIES version)
 	list(APPEND ARX_LIBRARIES gdi32 shell32 comdlg32 ole32 comctl32)
 endif()
 

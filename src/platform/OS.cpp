@@ -59,6 +59,7 @@
 #include "platform/Process.h"
 #include "platform/WindowsUtils.h"
 
+#include "util/Number.h"
 #include "util/String.h"
 
 namespace platform {
@@ -66,64 +67,31 @@ namespace platform {
 // Windows-specific functions
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 
-//! Get a string describing the Windows version
-static std::string getWindowsVersionName() {
+static std::string formatWindowsVersion(u32 major, u32 minor, u32 build, std::string_view servicepack,
+                                        bool isNT = true, bool isServer = false) {
 	
-	bool osviValid = false;
-	OSVERSIONINFOEXW osvi;
-	SYSTEM_INFO si;
-	
-	ZeroMemory(&si, sizeof(si));
-	ZeroMemory(&osvi, sizeof(osvi));
-	osvi.dwOSVersionInfoSize = sizeof(osvi);
-	
-	HMODULE ntdll = GetModuleHandleW(L"ntdll.dll");
-	HMODULE kernel32 = GetModuleHandleW(L"kernel32.dll");
-	
-	typedef LONG (WINAPI * RtlGetVersionPtr)(POSVERSIONINFOW);
-	RtlGetVersionPtr RtlGetVersion = nullptr;
-	if(ntdll) {
-		RtlGetVersion = getProcAddress<RtlGetVersionPtr>(ntdll, "RtlGetVersion");
-	}
-	if(RtlGetVersion && RtlGetVersion(reinterpret_cast<POSVERSIONINFOW>(&osvi)) == 0) {
-		osviValid = true;
+	if(!isNT) {
+		build = (build & 0xffff);
 	}
 	
-	#if ARX_COMPILER_MSVC
-	#pragma warning(push)
-	#pragma warning(disable:4996) // VC12+ deprecates GetVersionEx
-	#endif
-	if(!osviValid && GetVersionExW(reinterpret_cast<POSVERSIONINFOW>(&osvi))) {
-		osviValid = true;
-	}
-	#if ARX_COMPILER_MSVC
-	#pragma warning(pop)
-	#endif
-	
-	// Call GetNativeSystemInfo if supported or GetSystemInfo otherwise.
-	typedef void (WINAPI * GetNativeSystemInfoPtr)(LPSYSTEM_INFO);
-	GetNativeSystemInfoPtr GetNativeSystemInfo = nullptr;
-	if(kernel32) {
-		GetNativeSystemInfo = getProcAddress<GetNativeSystemInfoPtr>(kernel32, "GetNativeSystemInfo");
-	}
-	if(GetNativeSystemInfo) {
-		GetNativeSystemInfo(&si);
-	} else {
-		GetSystemInfo(&si);
-	}
-	
-	std::stringstream os;
-	os << "Microsoft Windows"; // Test for the specific product
-	
-	if(VER_PLATFORM_WIN32_NT != osvi.dwPlatformId || osvi.dwMajorVersion <= 4) {
-		osviValid = false;
-	}
-	
-	bool isServer = (osvi.wProductType != VER_NT_WORKSTATION);
+	std::ostringstream os;
+	os << "Windows";
 	
 	#define ARX_WINVER(x, y) ((u64(x) << 32) | u64(y))
-	if(osviValid) {
-		switch(ARX_WINVER(osvi.dwMajorVersion, osvi.dwMinorVersion)) {
+	if(isNT) {
+		switch(ARX_WINVER(major, minor)) {
+			case ARX_WINVER(10, 0): {
+				if(build >= 22000) {
+					os << (isServer ? " Server 2022" : " 11");
+				} else {
+					os << (isServer ? " Server 2016" : " 10");
+				}
+				break;
+			}
+			case ARX_WINVER(6, 3): {
+				os << (isServer ? " Server 2012 R2" : " 8.1");
+				break;
+			}
 			case ARX_WINVER(6, 2): {
 				os << (isServer ? " Server 2012" : " 8");
 				break;
@@ -133,16 +101,14 @@ static std::string getWindowsVersionName() {
 				break;
 			}
 			case ARX_WINVER(6, 0): {
-				os << (isServer ? " Server 2008" : "Windows Vista");
+				os << (isServer ? " Server 2008" : " Vista");
 				break;
 			}
 			case ARX_WINVER(5, 2): {
 				if(GetSystemMetrics(SM_SERVERR2)) {
 					os << " Server 2003 R2";
-				} else if(!isServer && si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
-					os << " XP Professional x64 Edition";
 				} else {
-					os << " Server 2003";
+					os << (isServer ? " Server 2003" : " XP" /* x64 Edition */);
 				}
 				break;
 			}
@@ -154,39 +120,273 @@ static std::string getWindowsVersionName() {
 				os << (isServer ? " 2000 Server" : " 2000");
 				break;
 			}
+			case ARX_WINVER(4, 0): {
+				os << " NT 4.0";
+				break;
+			}
 			default: {
-				os << "  version " << osvi.dwMajorVersion << "." << osvi.dwMinorVersion;
+				os << " NT";
+			}
+		}
+	} else {
+		switch(ARX_WINVER(major, minor)) {
+			case ARX_WINVER(4, 90): {
+				os << " ME";
+				break;
+			}
+			case ARX_WINVER(4, 10): {
+				os << (build >= 2222 ? " 98 SE" : " 98");
+				break;
+			}
+			case ARX_WINVER(4, 0): {
+				os << " 95";
+				break;
 			}
 		}
 	}
 	#undef ARX_WINVER
 	
 	// Include service pack (if any) and build number
-	if(osviValid && osvi.szCSDVersion[0] != L'\0') {
-		os << " " << platform::WideString::toUTF8(osvi.szCSDVersion);
-	}
-	
-	if(osviValid) {
-		os << " (build " << osvi.dwBuildNumber << ")";
-	}
-	if(osviValid && osvi.dwMajorVersion >= 6) {
-		if(si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
-			os << ", 64-bit";
-		} else if(si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL) {
-			os << ", 32-bit";
+	if(!servicepack.empty()) {
+		std::string_view prefix = "Service Pack ";
+		if(boost::starts_with(servicepack, prefix)) {
+			os << " SP" << std::string_view(servicepack).substr(prefix.length());
+		} else {
+			os << " " << servicepack;
 		}
 	}
 	
-	typedef const char * (CDECL * wine_get_version_ptr)();
-	wine_get_version_ptr wine_get_version = nullptr;
-	if(ntdll) {
-		wine_get_version = getProcAddress<wine_get_version_ptr>(ntdll, "wine_get_version");
-	}
-	if(wine_get_version) {
-		os << " (Wine " << wine_get_version() << ")";
-	}
+	os << " (" << major << "." << minor << " build " << build << ")";
 	
 	return os.str();
+}
+
+struct WindowsVersion {
+	
+	u32 major = 0;
+	u32 minor = 0;
+	u32 build = 0;
+	std::string servicepack;
+	bool isNT = true;
+	bool isServer = false;
+	
+	bool operator>=(const WindowsVersion & other) {
+		return major > other.major ||
+		       (major == other.major && (minor > other.minor || (minor == other.minor && build >= other.build)));
+	}
+	
+};
+
+static WindowsVersion getWindowsVersionFromResourceData(char * data) {
+	
+	UINT valueSize = 0;
+	LPBYTE value = NULL;
+	if(VerQueryValueW(data, L"\\", reinterpret_cast<LPVOID *>(&value), &valueSize) &&
+	   valueSize >= sizeof(VS_FIXEDFILEINFO)) {
+		const VS_FIXEDFILEINFO * version = reinterpret_cast<const VS_FIXEDFILEINFO *>(value);
+		if(version->dwSignature == 0xfeef04bd) {
+			WindowsVersion v = { HIWORD(version->dwProductVersionMS), LOWORD(version->dwProductVersionMS),
+			                     HIWORD(version->dwProductVersionLS), std::string(), true, false };
+			// Determine service pack from build number where possible
+			if(v.major == 6 && v.minor == 0 && v.build == 6001) {
+				v.servicepack = " SP1"; // Vista
+			} else if(v.major == 6 && v.minor == 0 && v.build == 6002) {
+				v.servicepack = " SP2"; // Vista
+			} else if(v.major == 6 && v.minor == 1 && v.build == 7601) {
+				v.servicepack = " SP1"; // 7
+			}
+			return v;
+		}
+	}
+	
+	return { };
+}
+
+static WindowsVersion getWindowsVersionFromRegistry(bool isServer = false) {
+	
+	WindowsVersion v;
+	
+	// Registry (Windows 10+)
+	HKEY key = 0;
+	RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"Software\\Microsoft\\Windows NT\\CurrentVersion\\",
+	             0, KEY_QUERY_VALUE | KEY_WOW64_64KEY, &key);
+	if(key) {
+		auto major = getRegistryDWORD(key, L"CurrentMajorVersionNumber");
+		auto minor = getRegistryDWORD(key, L"CurrentMinorVersionNumber");
+		if(major && minor) {
+			v.major = major.value();
+			v.minor = minor.value();
+			v.build = u32(util::toInt(getRegistryString(key, L"CurrentBuild").value_or(std::string())).value_or(0));
+			if(auto display = getRegistryString(key, L"DisplayVersion")) {
+				v.servicepack = display.value();
+			} else if(auto release = getRegistryString(key, L"ReleaseId")) {
+				v.servicepack = release.value();
+			} else if(auto sp = getRegistryString(key, L"CSDVersion")) {
+				v.servicepack = sp.value();
+			}
+			v.isNT = true;
+			v.isServer = isServer;
+		}
+		RegCloseKey(key);
+	}
+	
+	return v;
+}
+
+//! Get a string describing the Windows version being presented to this process
+static std::string getWindowsCompatVersionName() {
+	
+	OSVERSIONINFOEXW osvi;
+	ZeroMemory(&osvi, sizeof(osvi));
+	osvi.dwOSVersionInfoSize = sizeof(osvi);
+	
+	/*
+	 * VC12+ deprecates GetVersionEx but as of Windows 10 it is still the best way to get the compat versin
+	 * Alternatives:
+	 * - RtlGetVersion: sometimes returns the real version even if a compat version is active
+	 * - Registry: CurrentVersion + CurrentBuildNumber + CSDVersion sometimes are fake or mix real and compat
+	 */
+	#if ARX_COMPILER_MSVC
+	#pragma warning(push)
+	#pragma warning(disable:4996)
+	#endif
+	if(GetVersionExW(reinterpret_cast<POSVERSIONINFOW>(&osvi))) {
+		std::string servicepack = platform::WideString::toUTF8(osvi.szCSDVersion);
+		if(osvi.dwMajorVersion >= 10 && servicepack.empty()) {
+			// Get the Windows 10 display version from the registry
+			WindowsVersion v = getWindowsVersionFromRegistry();
+			if(v.major == osvi.dwMajorVersion && v.minor == osvi.dwMinorVersion && v.build == osvi.dwBuildNumber) {
+				servicepack = v.servicepack;
+			}
+		}
+		return formatWindowsVersion(osvi.dwMajorVersion, osvi.dwMinorVersion, osvi.dwBuildNumber,
+		                            servicepack, osvi.dwPlatformId == VER_PLATFORM_WIN32_NT,
+		                            osvi.wProductType != VER_NT_WORKSTATION);
+	}
+	#if ARX_COMPILER_MSVC
+	#pragma warning(pop)
+	#endif
+	
+	return "Windows";
+}
+
+static WideString getSystemDir() {
+	
+	platform::WideString buffer;
+	buffer.allocate(buffer.capacity());
+	
+	while(true) {
+		DWORD size = GetSystemDirectoryW(buffer.data(), buffer.size());
+		if(size < buffer.size()) {
+			buffer.resize(size);
+			return buffer;
+		}
+		buffer.allocate(buffer.size() * 2);
+	}
+	
+}
+
+//! Get a string describing the real Windows version
+static std::string getWindowsRealVersionName() {
+	
+	// Detect Wine
+	HMODULE ntdll = GetModuleHandleW(L"ntdll.dll");
+	if(ntdll) {
+		typedef const char * (CDECL * wine_get_version_ptr)();
+		wine_get_version_ptr wine_get_version = getProcAddress<wine_get_version_ptr>(ntdll, "wine_get_version");
+		if(wine_get_version) {
+			std::stringstream os;
+			os << "Wine " << wine_get_version();
+			return os.str();
+		}
+	}
+	
+	/*
+	 * Microsoft really makes it hard to get the real Windows versin
+	 * - GetVersionEx returns the emulated version if a program is run in compatibility mode
+	 * - RtlGetVersion returns the emultated version in some cases and the real version on Windows XP
+	 *   or when emulating non-NT Windows versions as of Windows 10
+	 * - Registry: CurrentVersion + CurgetWindowsCompatVersionNamerentBuildNumber + CSDVersion has the same
+	 *   problem as RtlGetVersion and additionally sometimes mixes the real build number and/or service pack
+	 *   with the emulated version, making this data too unrealiable to be useful
+	 * - Registry: CurrentMajorVersionNumber + CurrentMinorVersionNumber + CurrentBuild +
+	 *   DisplayVersion/ReleaseId/CSDVersion is available since Windows 10 and has the correct information
+	 *   but does not distinguish between desktop and server versions
+	 * - Version information in Windows system DLL resources is always correct but is missing service pack info
+	 * What we do is use the highest version among kernel32.dll, RtlGetVersion and Windows 10 registry keys.
+	 */
+	WindowsVersion best;
+	
+	// system32/kernel32.dll
+	// Always the real version as of Win 10, but no service pack info on Win XP and no display version for Win 10+
+	{
+		WideString dll = getSystemDir();
+		dll.append(L"\\");
+		dll.append(L"kernel32.dll");
+		if(DWORD size = GetFileVersionInfoSizeW(dll, nullptr)) {
+			std::vector<char> buffer(size);
+			if(GetFileVersionInfoW(dll, 0, size, buffer.data())) {
+				WindowsVersion v = getWindowsVersionFromResourceData(buffer.data());
+				if(v >= best) {
+					best = std::move(v);
+				}
+			}
+		}
+	}
+	
+	// loaded kernel32.dll
+	// Always the real version as of Win 10, but no service pack info on Win XP and no display version for Win 10+
+	if(HMODULE kernel32 = GetModuleHandleW(L"kernel32.dll")) {
+		if(HRSRC res = FindResourceW(kernel32, MAKEINTRESOURCE(1), RT_VERSION)) {
+			if(HGLOBAL handle = LoadResource(kernel32, res)) {
+				if(LPCVOID locked = LockResource(handle)) {
+					if(DWORD size = SizeofResource(kernel32, res)) {
+						const char * data = reinterpret_cast<const char*>(locked);
+						WindowsVersion v = getWindowsVersionFromResourceData(std::vector<char>(data, data + size).data());
+						if(v >= best) {
+							best = std::move(v);
+						}
+					}
+				}
+				FreeResource(handle);
+			}
+		}
+	}
+	
+	// RtlGetVersion
+	// Real version with service pack on Win XP
+	// May be compat version on Win Vista+ and no display version for Win 10+
+	if(ntdll) {
+		typedef LONG (WINAPI * RtlGetVersionPtr)(POSVERSIONINFOW);
+		if(RtlGetVersionPtr RtlGetVersion = getProcAddress<RtlGetVersionPtr>(ntdll, "RtlGetVersion")) {
+			OSVERSIONINFOEXW osvi;
+			ZeroMemory(&osvi, sizeof(osvi));
+			osvi.dwOSVersionInfoSize = sizeof(osvi);
+			if(RtlGetVersion(reinterpret_cast<POSVERSIONINFOW>(&osvi)) == 0) {
+				WindowsVersion v = { osvi.dwMajorVersion, osvi.dwMinorVersion, osvi.dwBuildNumber,
+				                     platform::WideString::toUTF8(osvi.szCSDVersion),
+				                     osvi.dwPlatformId == VER_PLATFORM_WIN32_NT,
+				                     osvi.wProductType != VER_NT_WORKSTATION };
+				if(v >= best) {
+					best = std::move(v);
+				}
+			}
+		}
+	}
+	
+	// Registry
+	// Real version with display version on Windows 10/11
+	WindowsVersion v = getWindowsVersionFromRegistry(best.isServer);
+	if(v >= best) {
+		best = std::move(v);
+	}
+	
+	if(best.major > 0) {
+		return formatWindowsVersion(best.major, best.minor, best.build, best.servicepack, best.isNT, best.isServer);
+	}
+	
+	// Fallback
+	return getWindowsCompatVersionName();
 }
 
 #endif // ARX_PLATFORM == ARX_PLATFORM_WIN32
@@ -202,8 +402,7 @@ std::string getOSName() {
 	#endif
 	
 	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-	// Get operating system friendly name from registry.
-	return getWindowsVersionName();
+	return getWindowsRealVersionName();
 	#elif ARX_PLATFORM == ARX_PLATFORM_LINUX
 	return "Linux";
 	#elif ARX_PLATFORM == ARX_PLATFORM_MACOS
@@ -214,6 +413,15 @@ std::string getOSName() {
 	return "Haiku";
 	#elif ARX_PLATFORM == ARX_PLATFORM_UNIX
 	return "UNIX";
+	#else
+	return std::string();
+	#endif
+}
+
+
+std::string getOSCompatName() {
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	return getWindowsCompatVersionName();
 	#else
 	return std::string();
 	#endif

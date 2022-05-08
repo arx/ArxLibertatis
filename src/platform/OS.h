@@ -39,6 +39,13 @@ namespace platform {
 std::string getOSName();
 
 /*!
+ * \brief Get the name and version of the runtime host operating system being presented to the process
+ *
+ * \return the os name or an empty string.
+ */
+std::string getOSCompatName();
+
+/*!
  * \brief Get the processor architecture of the runtime host
  *
  * This may be different from the process architecture on multilib systems.
