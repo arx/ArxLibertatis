@@ -158,6 +158,11 @@ void CrashHandlerImpl::processCrash() {
 			if(m_pCrashInfo->memoryUsage != 0) {
 				ofs << "- memory usage: " << m_pCrashInfo->memoryUsage << " bytes" << '\n';
 			}
+			std::string os = platform::getOSName();
+			std::string oscompat = platform::getOSCompatName();
+			if(!oscompat.empty() && oscompat != os) {
+				ofs << "- compatibility mode: " << oscompat << '\n';
+			}
 			const char * arch = platform::getArchitectureName(m_pCrashInfo->architecture);
 			ofs << "- architecture: " << arch << '\n';
 			if(m_pCrashInfo->runningTime > 0.0) {
@@ -172,7 +177,6 @@ void CrashHandlerImpl::processCrash() {
 			    << std::setfill('0') << std::setw(2) << time->tm_sec << '\n';
 			
 			ofs << "\nSystem information:\n";
-			std::string os = platform::getOSName();
 			if(!os.empty()) {
 				ofs << "- operating system: " << os << '\n';
 			}
