@@ -322,7 +322,7 @@ static bool try_readlink(std::vector<char> & buffer, const char * path) {
 
 fs::path getExecutablePath() {
 	
-#if ARX_PLATFORM == ARX_PLATFORM_MACOS
+	#if ARX_PLATFORM == ARX_PLATFORM_MACOS
 	
 	uint32_t bufsize = 0;
 	
@@ -338,21 +338,11 @@ fs::path getExecutablePath() {
 		}
 	}
 	
-#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
+	#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
-	platform::WideString buffer;
-	buffer.allocate(buffer.capacity());
+	return getModuleFileName(nullptr).toUTF8();
 	
-	while(true) {
-		DWORD size = GetModuleFileNameW(nullptr, buffer.data(), buffer.size());
-		if(size < buffer.size()) {
-			buffer.resize(size);
-			return buffer.toUTF8();
-		}
-		buffer.allocate(buffer.size() * 2);
-	}
-	
-#else
+	#else
 	
 	// FreeBSD
 	#if ARX_HAVE_SYSCTL && defined(CTL_KERN) && defined(KERN_PROC) \
@@ -400,7 +390,9 @@ fs::path getExecutablePath() {
 	}
 	#endif
 	
-#endif
+	#endif
+	
+	#if ARX_PLATFORM != ARX_PLATFORM_WIN32
 	
 	// Fall back to argv[0] if possible
 	if(executablePath != nullptr) {
@@ -412,6 +404,9 @@ fs::path getExecutablePath() {
 	
 	// Give up - we couldn't determine the exe path.
 	return fs::path();
+	
+	#endif
+	
 }
 
 std::string getCommandName() {

@@ -551,19 +551,9 @@ bool SDL2Window::initialize() {
 		SDL_VERSION(&info.version);
 		if(SDL_GetWindowWMInfo(m_window, &info) && info.subsystem == SDL_SYSWM_WINDOWS) {
 			nativeWindow = u64(info.info.win.window);
-			platform::WideString filename;
-			filename.allocate(filename.capacity());
-			while(true) {
-				DWORD size = GetModuleFileNameW(nullptr, filename.data(), filename.size());
-				if(size < filename.size()) {
-					filename.resize(size);
-					break;
-				}
-				filename.allocate(filename.size() * 2);
-			}
 			HICON largeIcon = 0;
 			HICON smallIcon = 0;
-			ExtractIconExW(filename, 0, &largeIcon, &smallIcon, 1);
+			ExtractIconExW(platform::getModuleFileName(nullptr), 0, &largeIcon, &smallIcon, 1);
 			if(smallIcon) {
 				SendMessage(info.info.win.window, WM_SETICON, ICON_SMALL, LPARAM(smallIcon));
 			}

@@ -153,6 +153,8 @@ std::optional<std::string> getRegistryString(HKEY key, const WCHAR * name);
 std::optional<std::string> getRegistryValue(HKEY hive, const WCHAR * key,
                                             const WCHAR * name, REGSAM flags = 0);
 
+WideString getModuleFileName(HMODULE module);
+
 } // namespace
 
 #endif

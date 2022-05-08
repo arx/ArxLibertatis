@@ -214,4 +214,20 @@ std::optional<std::string> getRegistryValue(HKEY hive, const WCHAR * key, const 
 	return result;
 }
 
+WideString getModuleFileName(HMODULE module) {
+	
+	platform::WideString buffer;
+	buffer.allocate(buffer.capacity());
+	
+	while(true) {
+		DWORD size = GetModuleFileNameW(module, buffer.data(), buffer.size());
+		if(size < buffer.size()) {
+			buffer.resize(size);
+			return buffer;
+		}
+		buffer.allocate(buffer.size() * 2);
+	}
+	
+}
+
 } // namespace platform
