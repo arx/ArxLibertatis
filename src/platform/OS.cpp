@@ -341,7 +341,7 @@ static std::string getWindowsRealVersionName() {
 			if(HGLOBAL handle = LoadResource(kernel32, res)) {
 				if(LPCVOID locked = LockResource(handle)) {
 					if(DWORD size = SizeofResource(kernel32, res)) {
-						const char * data = reinterpret_cast<const char*>(locked);
+						const char * data = reinterpret_cast<const char *>(locked);
 						WindowsVersion v = getWindowsVersionFromResourceData(std::vector<char>(data, data + size).data());
 						if(v >= best) {
 							best = std::move(v);
