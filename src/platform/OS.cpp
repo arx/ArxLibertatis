@@ -435,9 +435,10 @@ std::string getOSArchitecture() {
 	HANDLE process = GetCurrentProcess();
 	
 	// IsWow64Process2 is only available starting with Windows 10, version 1511
-	if(HMODULE handle = GetModuleHandleW(L"kernel32")) {
+	HMODULE kernel32 = GetModuleHandleW(L"kernel32");
+	if(kernel32) {
 		typedef BOOL (WINAPI * IsWow64Process2_t)(HANDLE, USHORT *, USHORT *);
-		IsWow64Process2_t IsWow64Process2_p = getProcAddress<IsWow64Process2_t>(handle, "IsWow64Process2");
+		IsWow64Process2_t IsWow64Process2_p = getProcAddress<IsWow64Process2_t>(kernel32, "IsWow64Process2");
 		USHORT processArch;
 		USHORT systemArch;
 		if(IsWow64Process2_p && IsWow64Process2_p(process, &processArch, &systemArch)) {
@@ -453,17 +454,37 @@ std::string getOSArchitecture() {
 		}
 	}
 	
-	#if ARX_ARCH == ARX_ARCH_X86 || ARX_ARCH == ARX_ARCH_ARM
-	if(platform::isWoW64Process(process)) {
-		#if ARX_ARCH == ARX_ARCH_X86
-		// Could actually be running on ARM64 using emulation built into Windows
-		// But that should be caught with IsWow64Process2
-		return ARX_ARCH_NAME_X86_64;
-		#else
-		return ARX_ARCH_NAME_ARM64;
-		#endif
+	SYSTEM_INFO si;
+	ZeroMemory(&si, sizeof(si));
+	// Call GetNativeSystemInfo if supported or GetSystemInfo otherwise.
+	typedef void (WINAPI * GetNativeSystemInfoPtr)(LPSYSTEM_INFO);
+	GetNativeSystemInfoPtr GetNativeSystemInfo = nullptr;
+	if(kernel32) {
+		GetNativeSystemInfo = getProcAddress<GetNativeSystemInfoPtr>(kernel32, "GetNativeSystemInfo");
 	}
-	#endif
+	if(GetNativeSystemInfo) {
+		GetNativeSystemInfo(&si);
+	} else {
+		#if ARX_ARCH == ARX_ARCH_X86 || ARX_ARCH == ARX_ARCH_ARM
+		if(platform::isWoW64Process(process)) {
+			#if ARX_ARCH == ARX_ARCH_X86
+			// Could actually be running on ARM64 using emulation built into Windows
+			// But that should be caught with IsWow64Process2
+			return ARX_ARCH_NAME_X86_64;
+			#else
+			return ARX_ARCH_NAME_ARM64;
+			#endif
+		}
+		#endif
+		GetSystemInfo(&si);
+	}
+	switch(si.wProcessorArchitecture) {
+		case 0:  return ARX_ARCH_NAME_X86;
+		case 5:  return ARX_ARCH_NAME_ARM;
+		case 6:  return ARX_ARCH_NAME_IA64;
+		case 9:  return ARX_ARCH_NAME_X86_64;
+		case 12: return ARX_ARCH_NAME_ARM64;
+	}
 	
 	return ARX_ARCH_NAME;
 	
