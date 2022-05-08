@@ -32,6 +32,11 @@ if(CONTINUOUS_INTEGRATION OR DEVELOPER)
 	set(default_BUILD_ALL ON)
 endif()
 suboption(BUILD_ALL "Build everything" BOOL ${default_BUILD_ALL})
+set(default_BUILD_DOCS OFF)
+if(DEVELOPER)
+	set(default_BUILD_DOCS ON)
+endif()
+suboption(BUILD_DOCS "Enable make doc" BOOL ${default_BUILD_DOCS})
 suboption(BUILD_TESTS "Build tests" BOOL ${BUILD_ALL})
 option(BUILD_TOOLS "Build tools" ON)
 set(default_BUILD_TOOLS_MERGED ON)
@@ -600,7 +605,9 @@ if(BUILD_CRASHREPORTER OR BUILD_PROFILER)
 	
 endif()
 
-find_package(Doxygen)
+if(BUILD_DOCS)
+	find_package(Doxygen ${OPTIONAL_DEPENDENCY})
+endif()
 
 find_package(PythonInterp)
 
@@ -1878,7 +1885,7 @@ endif()
 
 # Custom make targets
 
-if(DOXYGEN_EXECUTABLE)
+if(BUILD_DOCS AND DOXYGEN_EXECUTABLE)
 	set(DOXYGEN_OUTPUT_DIR "${PROJECT_BINARY_DIR}/doc")
 	configure_file("scripts/Doxyfile" "Doxyfile" ESCAPE_QUOTES)
 	add_custom_target(doc
