@@ -53,6 +53,7 @@ Language getLanguageInfo(std::string_view id) {
 	Language result;
 	result.name = reader.getKey("language", "name", id);
 	result.locale = util::toLowercase(reader.getKey("language", "locale", id));
+	// result.mods = 
 	
 	return result;
 }
@@ -290,20 +291,35 @@ Languages getAvailableTextLanguages() {
 			continue;
 		}
 
-		const std::string_view modname = name.substr(prefix.length(), name.find_last_of("_") - (prefix.length() - 1));
+		// expecting filenames like "utext_english.ini" and "utext_modname_english.ini"
+		std::string_view modname = name.substr(prefix.length(), name.find_last_of("_") - (prefix.length() - 1));
+		if (modname.length() > 0) {
+			modname.remove_suffix(1);
+		}
 
 		// Extract the language name.
-		size_t length = name.length() - prefix.length() - modname.length() - suffix.length();
-		std::string_view id = name.substr(prefix.length() + modname.length(), length);
+		size_t length = name.length() - (name.find_last_of("_") + 1) - suffix.length();
+		std::string_view id = name.substr(name.find_last_of("_") + 1, length);
 		
 		if(id.find_first_not_of("abcdefghijklmnopqrstuvwxyz_") != std::string_view::npos) {
 			LogWarning << "Ignoring localisation/" << name;
 			continue;
 		}
-		
-		result.insert(Languages::value_type(id, getLanguageInfo(id)));
+
+		if (result.find(std::string(id)) == result.end()) {
+			Language langInfo = getLanguageInfo(id);
+			if (modname.length() > 0) {
+				langInfo.mods.push_back(std::string(modname));
+			}
+			result.insert(Languages::value_type(id, langInfo));
+		} else {
+			Language& langInfo = result.find(std::string(id))->second;
+			if (modname.length() > 0) {
+				langInfo.mods.push_back(std::string(modname));
+			}
+		}
 	}
-	
+
 	return result;
 }
 

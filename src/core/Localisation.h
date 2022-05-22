@@ -23,12 +23,13 @@
 #include <map>
 #include <string>
 #include <string_view>
+#include <vector>
 
 struct Language {
 	
 	std::string name;
 	std::string locale;
-	
+	std::vector<std::string> mods;
 };
 
 typedef std::map<std::string, Language> Languages;
