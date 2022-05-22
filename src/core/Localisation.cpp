@@ -289,10 +289,12 @@ Languages getAvailableTextLanguages() {
 			// Missing language name.
 			continue;
 		}
-		
+
+		const std::string_view modname = name.substr(prefix.length(), name.find_last_of("_") - (prefix.length() - 1));
+
 		// Extract the language name.
-		size_t length = name.length() - prefix.length() - suffix.length();
-		std::string_view id = name.substr(prefix.length(), length);
+		size_t length = name.length() - prefix.length() - modname.length() - suffix.length();
+		std::string_view id = name.substr(prefix.length() + modname.length(), length);
 		
 		if(id.find_first_not_of("abcdefghijklmnopqrstuvwxyz_") != std::string_view::npos) {
 			LogWarning << "Ignoring localisation/" << name;
