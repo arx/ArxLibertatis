@@ -160,6 +160,12 @@ constexpr const ActionKey actions[NUM_ACTION_KEY] = {
 	ActionKey(Keyboard::Key_1), // PRECAST1
 	ActionKey(Keyboard::Key_2), // PRECAST2
 	ActionKey(Keyboard::Key_3), // PRECAST3
+	ActionKey(Keyboard::Key_4), // PRECAST4
+	ActionKey(Keyboard::Key_5), // PRECAST5
+	ActionKey(Keyboard::Key_6), // PRECAST6
+	ActionKey(Keyboard::Key_7), // PRECAST7
+	ActionKey(Keyboard::Key_8), // PRECAST8
+	ActionKey(Keyboard::Key_9), // PRECAST9
 	ActionKey(Keyboard::Key_Tab, Keyboard::Key_NumPad0), // WEAPON
 	ActionKey(Keyboard::Key_F9), // QUICKLOAD
 	ActionKey(Keyboard::Key_F5), // QUICKSAVE
@@ -174,7 +180,7 @@ constexpr const ActionKey actions[NUM_ACTION_KEY] = {
 	ActionKey(Keyboard::Key_Equals), // NEXT
 	ActionKey(Keyboard::Key_C), // CROUCHTOGGLE
 	ActionKey(Keyboard::Key_B), // UNEQUIPWEAPON
-	ActionKey(Keyboard::Key_4), // CANCELCURSPELL
+	ActionKey(Keyboard::Key_0, Mouse::Button_2), // CANCELCURSPELL
 	ActionKey(Keyboard::Key_R, Keyboard::Key_M), // MINIMAP
 	ActionKey((Keyboard::Key_LeftAlt << 16) | Keyboard::Key_Enter, (Keyboard::Key_RightAlt << 16) | Keyboard::Key_Enter), // TOGGLE_FULLSCREEN
 	ActionKey(Keyboard::Key_Grave), // CONSOLE
@@ -301,6 +307,12 @@ constexpr const std::string_view actions[NUM_ACTION_KEY] = {
 	"precast_1",
 	"precast_2",
 	"precast_3",
+	"precast_4",
+	"precast_5",
+	"precast_6",
+	"precast_7",
+	"precast_8",
+	"precast_9",
 	"draw_weapon",
 	"quickload",
 	"quicksave",

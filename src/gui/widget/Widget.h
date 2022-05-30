@@ -43,6 +43,7 @@ enum MENUSTATE {
 	Page_OptionsInput,
 	Page_OptionsInputCustomizeKeys1,
 	Page_OptionsInputCustomizeKeys2,
+	Page_OptionsInputCustomizeKeys3,
 	Page_QuitConfirm,
 	Page_Localization,
 };

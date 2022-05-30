@@ -290,7 +290,7 @@ struct SavedMiniMap {
 	
 };
 
-const size_t SAVED_MAX_PRECAST = 3;
+const size_t SAVED_MAX_PRECAST = 9;
 
 struct SavedPrecast {
 	
