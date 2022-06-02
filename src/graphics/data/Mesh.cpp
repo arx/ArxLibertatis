@@ -176,7 +176,9 @@ long MakeTopObjString(Entity * entity, std::string & dest) {
 		if(&other != entity) {
 			if(other.pos.x > box.min.x && other.pos.x < box.max.x && other.pos.z > box.min.z && other.pos.z < box.max.z) {
 				if(glm::abs(other.pos.y - box.min.y) < 40.f) {
-					dest += ' ';
+					if(dest.length() != 0) {
+						dest += ' ';
+					}
 					dest += other.idString();
 				}
 			}
