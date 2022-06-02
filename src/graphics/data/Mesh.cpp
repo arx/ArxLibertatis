@@ -165,17 +165,11 @@ long MakeTopObjString(Entity * entity, std::string & dest) {
 	
 	dest = "";
 	
-	if(player.pos.x > box.min.x && player.pos.x < box.max.x
-	   && player.pos.z > box.min.z && player.pos.z < box.max.z) {
-		if(glm::abs(player.pos.y + 160.f - box.min.y) < 50.f) {
-			dest += " player";
-		}
-	}
-	
 	for(const Entity & other : entities.inScene(IO_NPC | IO_ITEM)) {
 		if(&other != entity) {
 			if(other.pos.x > box.min.x && other.pos.x < box.max.x && other.pos.z > box.min.z && other.pos.z < box.max.z) {
-				if(glm::abs(other.pos.y - box.min.y) < 40.f) {
+				float offset = (&other == entities.player() ? 10.f : 0.f);
+				if(glm::abs(other.pos.y - offset - box.min.y) < 40.f + offset) {
 					if(dest.length() != 0) {
 						dest += ' ';
 					}
