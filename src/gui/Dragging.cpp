@@ -229,6 +229,12 @@ void updateDraggedEntity() {
 		return;
 	}
 	
+	if(!entity->obj) {
+		// Cannot place noncorporeal entity into the world
+		g_dragStatus = EntityDragStatus_Invalid;
+		return;
+	}
+	
 	if(g_camera == g_dragStartCamera && g_camera->angle.getYaw() != g_dragStartAngle) {
 		float deltaYaw = g_camera->angle.getYaw() - g_dragStartAngle;
 		Anglef angle = entity->angle;

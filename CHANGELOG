@@ -53,6 +53,7 @@ Debugging:
 Other Fixes:
 
 * Added a workaround for broken ratman backflip in intro (bug #93)
+* Fixed a crash when dragging an entity without a 3D object (bug #1592)
 
 Technical Changes:
 
