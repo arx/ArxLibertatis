@@ -351,7 +351,7 @@ class StealNPCCommand : public Command {
 	
 public:
 	
-	StealNPCCommand() : Command("stealnpc") { }
+	StealNPCCommand() : Command("stealnpc", AnyEntity) { }
 	
 	Result execute(Context & context) override {
 		
