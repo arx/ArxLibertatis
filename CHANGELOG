@@ -57,7 +57,7 @@ Other Fixes:
 
 Technical Changes:
 
-* The mold or lld linker is now used when available (for non-LTO builds)
+* The lld linker is now used when available (for non-LTO builds)
 
 ################################################################################
 
