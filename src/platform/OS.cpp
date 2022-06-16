@@ -241,7 +241,7 @@ static std::string getWindowsCompatVersionName() {
 	osvi.dwOSVersionInfoSize = sizeof(osvi);
 	
 	/*
-	 * VC12+ deprecates GetVersionEx but as of Windows 10 it is still the best way to get the compat versin
+	 * VC12+ deprecates GetVersionEx but as of Windows 10 it is still the best way to get the compat version
 	 * Alternatives:
 	 * - RtlGetVersion: sometimes returns the real version even if a compat version is active
 	 * - Registry: CurrentVersion + CurrentBuildNumber + CSDVersion sometimes are fake or mix real and compat
@@ -302,7 +302,7 @@ static std::string getWindowsRealVersionName() {
 	}
 	
 	/*
-	 * Microsoft really makes it hard to get the real Windows versin
+	 * Microsoft really makes it hard to get the real Windows version
 	 * - GetVersionEx returns the emulated version if a program is run in compatibility mode
 	 * - RtlGetVersion returns the emultated version in some cases and the real version on Windows XP
 	 *   or when emulating non-NT Windows versions as of Windows 10
