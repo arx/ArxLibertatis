@@ -57,6 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Inventory.h"
 #include "game/Item.h"
 #include "game/Levels.h"
+#include "game/Player.h"
 #include "game/NPC.h"
 
 #include "graphics/data/Mesh.h"
@@ -270,6 +271,10 @@ void Entity::cleanReferences() {
 	
 	if(ioSteal == this) {
 		ioSteal = nullptr;
+	}
+	
+	if(player.torch == this) {
+		player.torch = nullptr;
 	}
 	
 	if(!FAST_RELEASE) {
