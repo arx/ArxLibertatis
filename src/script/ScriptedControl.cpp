@@ -120,38 +120,33 @@ public:
 	
 	Result execute(Context & context) override {
 		
+		float volume = 1.f;
+		SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED;
+		
 		HandleFlags("nv") {
-			
 			if(flg & flag('v')) {
-				float volume = context.getFloat();
-				res::path ambiance = res::path::load(context.getWord());
-				DebugScript(' ' << options << ' ' << volume << ' ' << ambiance);
-				bool ret = ARX_SOUND_PlayScriptAmbiance(ambiance, ARX_SOUND_PLAY_LOOPED, volume * 0.01f);
-				if(!ret) {
-					ScriptWarning << "unable to find ambiance " << ambiance;
-					return Failed;
-				}
-				return Success;
+				volume = context.getFloat() * 0.01f;
 			}
-			
 			if(flg & flag('n')) {
-				res::path ambiance = res::path::load(context.getWord());
-				DebugScript(' ' << options << ' ' << ambiance);
-				ARX_SOUND_PlayScriptAmbiance(ambiance, ARX_SOUND_PLAY_ONCE);
-				return Success;
+				loop = ARX_SOUND_PLAY_ONCE;
 			}
 		}
 		
 		res::path ambiance = res::path::load(context.getWord());
-		DebugScript(' ' << ambiance);
+		DebugScript(' ' << options << ' ' << volume << ' ' << ambiance);
+		
 		if(ambiance == "kill") {
-			ARX_SOUND_KillAmbiances();
-		} else {
-			bool ret = ARX_SOUND_PlayScriptAmbiance(ambiance);
-			if(!ret) {
-				ScriptWarning << "unable to find " << ambiance;
+			if(!options.empty()) {
+				ScriptError << "flags cannot be used with ambiance kill";
 				return Failed;
 			}
+			ARX_SOUND_KillAmbiances();
+			return Success;
+		}
+		
+		if(!ARX_SOUND_PlayScriptAmbiance(ambiance, loop, volume)) {
+			ScriptWarning << "unable to find " << ambiance;
+			return Failed;
 		}
 		
 		return Success;
