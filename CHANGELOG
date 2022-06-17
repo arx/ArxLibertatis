@@ -45,6 +45,7 @@ Modding:
 * Added the damage type flags as parameter 4 to the hit script event
 * Added support for stopping specific spells using the `destroy` script command
 * Added support for specifying volume of non-looped ambiances with the `ammbiance` script command
+* Added support for creating items without an icon existing at the same path as the script
 * Fixed the ^$objontop script variable to not have a leading space and don't repeat 'player'
 
 Debugging:

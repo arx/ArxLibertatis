@@ -1636,10 +1636,6 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 		return nullptr;
 	}
 	
-	if(!g_resources->getFile(res::path(icon).set_ext("bmp"))) {
-		return nullptr;
-	}
-	
 	if(instance == -1) {
 		instance = getFreeEntityInstance(classPath);
 	}
