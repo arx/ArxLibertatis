@@ -104,7 +104,7 @@ class CloseStealBagCommand : public Command {
 	
 public:
 	
-	CloseStealBagCommand() : Command("closestealbag", IO_NPC) { }
+	CloseStealBagCommand() : Command("closestealbag") { }
 	
 	Result execute(Context & context) override {
 		
