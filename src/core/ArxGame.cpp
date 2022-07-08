@@ -1435,7 +1435,7 @@ void ArxGame::speechControlledCinematic() {
 					break;
 				}
 				
-				case ARX_CINE_SPEECH_NONE: break;
+				case ARX_CINE_SPEECH_NONE: arx_unreachable();
 				
 			}
 			
