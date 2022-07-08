@@ -485,17 +485,13 @@ static void strikeSpeak(Entity * io) {
 		return;
 	}
 	
-	const std::string * str;
+	std::string_view speech = io->strikespeech;
 	Entity * equiped = entities.get(player.equiped[EQUIP_SLOT_WEAPON]);
 	if(equiped && !equiped->strikespeech.empty()) {
-		str = &equiped->strikespeech;
-	} else if(!io->strikespeech.empty()) {
-		str = &io->strikespeech;
-	} else {
-		return;
+		speech = equiped->strikespeech;
 	}
 	
-	ARX_SPEECH_AddSpeech(io, *str, ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
+	ARX_SPEECH_AddSpeech(io, speech, ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
 }
 
 void ManageCombatModeAnimations() {
