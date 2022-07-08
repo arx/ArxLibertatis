@@ -70,13 +70,13 @@ public:
 	Result execute(Context & context) override {
 		
 		HandleFlags("aem") {
-			if(flg & flag('a')) { // Magic
+			if(flg & flag('a')) {
 				g_playerBook.forcePage(BOOKMODE_MINIMAP);
 			}
-			if(flg & flag('e')) { // Equip
+			if(flg & flag('e')) {
 				g_playerBook.forcePage(BOOKMODE_SPELLS);
 			}
-			if(flg & flag('m')) { // Map
+			if(flg & flag('m')) {
 				g_playerBook.forcePage(BOOKMODE_QUESTS);
 			}
 		}
