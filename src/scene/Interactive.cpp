@@ -340,14 +340,15 @@ void ARX_INTERACTIVE_HideGore(Entity * io, long flag) {
 
 bool ForceNPC_Above_Ground(Entity * io) {
 	
-	if(io && (io->ioflags & IO_NPC) && !(io->ioflags & IO_PHYSICAL_OFF)) {
-		io->physics.cyl.origin = io->pos;
-		AttemptValidCylinderPos(io->physics.cyl, io, CFLAG_NO_INTERCOL);
-		if(glm::abs(io->pos.y - io->physics.cyl.origin.y) < 45.f) {
-			io->pos.y = io->physics.cyl.origin.y;
-			return true;
-		}
+	arx_assert(io && (io->ioflags & IO_NPC) && !(io->ioflags & IO_PHYSICAL_OFF));
+	
+	io->physics.cyl.origin = io->pos;
+	AttemptValidCylinderPos(io->physics.cyl, io, CFLAG_NO_INTERCOL);
+	if(glm::abs(io->pos.y - io->physics.cyl.origin.y) < 45.f) {
+		io->pos.y = io->physics.cyl.origin.y;
+		return true;
 	}
+	
 	return false;
 }
 
