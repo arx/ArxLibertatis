@@ -204,7 +204,7 @@ class ShowLocalsCommand : public Command {
 	
 public:
 	
-	ShowLocalsCommand() : Command("showlocals") { }
+	ShowLocalsCommand() : Command("showlocals", AnyEntity) { }
 	
 	Result execute(Context & context) override {
 		
@@ -222,7 +222,7 @@ class ShowVarsCommand : public Command {
 	
 public:
 	
-	ShowVarsCommand() : Command("showvars") { }
+	ShowVarsCommand() : Command("showvars", AnyEntity) { }
 	
 	Result execute(Context & context) override {
 		
