@@ -544,26 +544,14 @@ static void ARX_TEMPORARY_TrySound(Entity & source, Material collisionMaterial, 
 	GameInstant now = g_gameTime.now();
 	
 	if(now > source.soundtime) {
-		
 		source.soundcount++;
-		
 		if(source.soundcount < 5) {
-			Material material;
-			if(EEIsUnderWater(source.pos))
-				material = MATERIAL_WATER;
-			else if(source.material)
-				material = source.material;
-			else
-				material = MATERIAL_STONE;
-			
-			if(volume > 1.f)
-				volume = 1.f;
-			
-			ARX_SOUND_PlayCollision(material, collisionMaterial, volume, 1.f, source.pos, &source);
-			
+			Material material = EEIsUnderWater(source.pos) ? MATERIAL_WATER : source.material;
+			ARX_SOUND_PlayCollision(material, collisionMaterial, std::min(volume, 1.f), 1.f, source.pos, &source);
 			source.soundtime = now + 100ms;
 		}
 	}
+	
 }
 
 bool EERIE_PHYSICS_BOX_IsValidPosition(const Vec3f & pos) {
