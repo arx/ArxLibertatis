@@ -848,6 +848,11 @@ void timerCommand(std::string_view name, Context & context) {
 		interval *= 1000;
 	}
 	
+	if(count < 0 || interval < 0) {
+		ScriptError << "Timer count and interval must not be negative";
+		return;
+	}
+	
 	std::string timername = name.empty() ? getDefaultScriptTimerName(context.getEntity()) : std::string(name);
 	DebugScript(timername << ' ' << options << ' ' << count << ' ' << interval);
 	

@@ -1756,10 +1756,14 @@ void ARX_SCRIPT_Timer_Check() {
 		
 		// Skip heartbeat timer events for far away objects
 		if(timer.idle && !(timer.io->gameFlags & GFLAG_ISINTREATZONE)) {
-			s64 increment = toMsi(now - timer.start) / toMsi(timer.interval);
-			timer.start += timer.interval * increment;
+			if(timer.interval == 0) {
+				timer.start = now;
+			} else {
+				s64 increment = toMsi(now - timer.start) / toMsi(timer.interval); // TODO handle interval 0
+				timer.start += timer.interval * increment;
+			}
 			// TODO print full 64-bit time
-			arx_assert_msg(timer.start <= now && timer.start + timer.interval > now,
+			arx_assert_msg(timer.start <= now && (timer.interval == 0 || timer.start + timer.interval > now),
 			               "start=%ld wait=%ld now=%ld",
 			               long(toMsi(timer.start)), long(toMsi(timer.interval)), long(toMsi(now)));
 			continue;
@@ -1783,7 +1787,11 @@ void ARX_SCRIPT_Timer_Check() {
 			if(timer.count != 0) {
 				timer.count--;
 			}
-			timer.start += timer.interval;
+			if(timer.interval == 0) {
+				timer.start = now;
+			} else {
+				timer.start += timer.interval;
+			}
 		}
 		
 		if(es && ValidIOAddress(io)) {
