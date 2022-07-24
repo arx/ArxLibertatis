@@ -981,9 +981,9 @@ static void ARX_SOUND_CreateCollisionMaps() {
 	
 	collisionMaps.clear();
 	
-	for(size_t i = 0; i < std::size(ARX_SOUND_COLLISION_MAP_NAMES); i++) {
+	for(const auto & name : ARX_SOUND_COLLISION_MAP_NAMES) {
 		
-		res::path file = ARX_SOUND_PATH_INI / ARX_SOUND_COLLISION_MAP_NAMES[i];
+		res::path file = ARX_SOUND_PATH_INI / name;
 		file.set_ext(ARX_SOUND_FILE_EXTENSION_INI);
 		
 		std::string data = g_resources->read(file);
