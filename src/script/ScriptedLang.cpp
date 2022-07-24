@@ -841,14 +841,9 @@ void timerCommand(std::string_view name, Context & context) {
 	}
 	
 	long count = long(context.getFloatVar(command));
-	long interval = long(context.getFloat());
+	float interval = context.getFloat();
 	
-	if(!mili) {
-		// Seconds → millisecons
-		interval *= 1000;
-	}
-	
-	if(count < 0 || interval < 0) {
+	if(count < 0 || interval < 0.f) {
 		ScriptError << "Timer count and interval must not be negative";
 		return;
 	}
@@ -860,7 +855,11 @@ void timerCommand(std::string_view name, Context & context) {
 	
 	SCR_TIMER & timer = createScriptTimer(context.getEntity(), std::move(timername));
 	timer.es = context.getScript();
-	timer.interval = std::chrono::milliseconds(interval);
+	if(mili) {
+		timer.interval = std::chrono::duration<float, std::milli>(interval);
+	} else {
+		timer.interval = std::chrono::duration<float>(interval);
+	}
 	timer.pos = pos;
 	timer.start = g_gameTime.now();
 	timer.count = count;

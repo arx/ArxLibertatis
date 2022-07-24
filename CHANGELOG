@@ -47,6 +47,7 @@ Modding:
 * Added support for specifying volume of non-looped ambiances with the `ammbiance` script command
 * Added support for creating items without an icon existing at the same path as the script
 * Added support for calling the `closestealbag` command from non-NPC entities
+* Added support for fractional intervals in the `timer` command
 * Fixed the ^$objontop script variable to not have a leading space and don't repeat 'player'
 
 Debugging:
