@@ -678,8 +678,8 @@ std::string getOSDistribution() {
 		"/etc/mageia-release",
 		"/etc/system-release",
 	};
-	for(size_t i = 0; i < std::size(release_files); i++) {
-		std::string distro = fs::read(release_files[i]);
+	for(auto & file : release_files) {
+		std::string distro = fs::read(file);
 		boost::trim(distro);
 		if(!distro.empty()) {
 			return distro;
