@@ -695,7 +695,7 @@ std::string getOSDistribution() {
 	};
 	for(size_t i = 0; i < std::size(version_files); i++) {
 		if(fs::exists(version_files[i][0])) {
-			std::string distro = version_files[i][1] + fs::read(release_files[i]);
+			std::string distro = version_files[i][1] + fs::read(version_files[i][0]);
 			boost::trim(distro);
 			return distro;
 		}
