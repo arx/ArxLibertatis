@@ -693,7 +693,7 @@ std::string getOSDistribution() {
 		{ "/etc/slackware-version", "Slackware " },
 		{ "/etc/angstrom-version", "Ångström " },
 	};
-	for(auto & file : version_files) {
+	for(const auto & file : version_files) {
 		if(fs::exists(file[0])) {
 			std::string distro = file[1] + fs::read(file[0]);
 			boost::trim(distro);
