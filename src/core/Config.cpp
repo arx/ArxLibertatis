@@ -603,7 +603,7 @@ bool Config::init(const fs::path & file) {
 	int fpsLimit = reader.getKey(Section::Video, Key::fpsLimit, Default::fpsLimit);
 	video.fpsLimit = std::max(fpsLimit, -1);
 	float fov = reader.getKey(Section::Video, Key::fov, Default::fov);
-	video.fov = std::max(fov, 60.f);
+	video.fov = std::max(fov, 10.f);
 	video.viewBobbing = reader.getKey(Section::Video, Key::viewBobbing, Default::viewBobbing);
 	video.screenShake = reader.getKey(Section::Video, Key::screenShake, Default::screenShake);
 	video.antialiasing = reader.getKey(Section::Video, Key::antialiasing, Default::antialiasing);
