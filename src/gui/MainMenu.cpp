@@ -793,9 +793,9 @@ public:
 			std::string_view label = getLocalised("system_menus_options_video_fov");
 			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) noexcept {
-				config.video.fov = 75.f + float(value) * 5.f;
+				config.video.fov = 50.f + float(value) * 5.f;
 			};
-			sld->setValue(glm::clamp(int((config.video.fov - 75.f) / 5.f), 0, 10));
+			sld->setValue(glm::clamp(int((config.video.fov - 50.f) / 5.f), 0, 10));
 			addCenter(sld);
 		}
 		

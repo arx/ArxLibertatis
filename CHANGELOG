@@ -16,6 +16,7 @@ Interface:
 
 * Fixed cheat text not scaling correctly with higher resolutions
 * Made the "Customize controls" button look less like a heading
+* Changed the field of view slider to go from 50° to 100° (vertical) instead of from 75° to 125°
 
 Controls:
 
