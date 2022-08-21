@@ -181,17 +181,6 @@ inline Mode defaultMode() {
 	}
 	#endif
 	
-	// Workaround for https://github.com/ValveSoftware/steam-for-linux/issues/7358
-	// Note that this even triggers if the overlay is disabled as gameoverlayrenderer.so is still LD_PRELOADed.
-	// However calling IsOverlayEnabled() would lead to false negatives as it returns false before the overlay
-	// is initialized while we need to know this at context creation time.
-	#if ARX_HAVE_DLSYM && defined(RTLD_DEFAULT)
-	if(dlsym(RTLD_DEFAULT, "IsOverlayEnabled") != nullptr) {
-		LogInfo << "Potentially buggy Steam overlay detected, falling back to --debug-gl=ignored instead of noerror";
-		return Ignored;
-	}
-	#endif
-	
 	return NoError;
 }
 
