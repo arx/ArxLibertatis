@@ -192,7 +192,7 @@ private:
 	void drawBackground(size_t showLevel, Rect boundaries, Vec2f start, float zoom,
 	                    float fadeBorder = 0.f, bool invColor = false, float alpha = 1.f);
 	void drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending);
-	void drawDetectedEntities(size_t showLevel, Vec2f start, float zoom);
+	void drawDetectedEntities(Vec2f start, float zoom);
 	
 	std::vector<TexturedVertex> m_mapVertices;
 	

@@ -288,7 +288,7 @@ void MiniMap::showPlayerMiniMap(size_t showLevel) {
 		// Draw the player (red arrow)
 		if(showLevel == size_t(ARX_LEVELS_GetRealNum(m_currentLevel))) {
 			drawPlayer(playerSize, playerPos, true);
-			drawDetectedEntities(showLevel, start, miniMapZoom);
+			drawDetectedEntities(start, miniMapZoom);
 		}
 		
 	}
@@ -318,7 +318,7 @@ void MiniMap::showBookMiniMap(size_t showLevel, Rect rect, float scale) {
 		
 		if(showLevel == size_t(ARX_LEVELS_GetRealNum(m_currentLevel))) {
 			drawPlayer(6.f * scale, playerPos, false);
-			drawDetectedEntities(showLevel, start, zoom);
+			drawDetectedEntities(start, zoom);
 		}
 		
 	}
@@ -352,7 +352,7 @@ void MiniMap::showBookEntireMap(size_t showLevel, Rect rect, float scale) {
 	
 	if(showLevel == size_t(ARX_LEVELS_GetRealNum(m_currentLevel))) {
 		drawPlayer(3.f * scale, playerPos, false);
-		drawDetectedEntities(showLevel, start, zoom);
+		drawDetectedEntities(start, zoom);
 	}
 	
 	std::array<TexturedVertex, 4> verts;
@@ -654,7 +654,7 @@ void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) 
 	
 }
 
-void MiniMap::drawDetectedEntities(size_t showLevel, Vec2f start, float zoom) {
+void MiniMap::drawDetectedEntities(Vec2f start, float zoom) {
 	
 	if(!m_pTexDetect) {
 		m_pTexDetect = TextureContainer::Load("graph/particles/flare");
