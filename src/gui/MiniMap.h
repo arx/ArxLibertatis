@@ -121,7 +121,6 @@ public:
 		, m_player(nullptr)
 		, m_playerLastPosX(0.f)
 		, m_playerLastPosZ(0.f)
-		, m_mod(0.f)
 	{ }
 	
 	void mapMarkerRemove(std::string_view name);
@@ -171,9 +170,6 @@ private:
 	ARXCHARACTER * m_player;
 	float m_playerLastPosX;
 	float m_playerLastPosZ;
-	
-	// should be const
-	Vec2f m_mod;
 	
 	std::vector<MapMarkerData> m_mapMarkers;
 	std::array<MiniMapData, MAX_MINIMAP_LEVELS> m_levels;

@@ -80,6 +80,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 MiniMap g_miniMap; // TODO: remove this
 
+static constexpr Vec2f g_mapMod(float(MAX_BKGX) / MINIMAP_MAX_X, float(MAX_BKGZ) / MINIMAP_MAX_Z);
+
 void MiniMap::getData(size_t showLevel) {
 	
 	if(m_levels[showLevel].m_texContainer == nullptr) {
@@ -205,9 +207,6 @@ void MiniMap::firstInit(ARXCHARACTER * pl, PakReader * pakRes, EntityManager * e
 	m_player = pl;
 	m_playerLastPosX = -999999.f;
 	m_playerLastPosZ = -999999.f;
-	
-	m_mod.x = float(MAX_BKGX) / MINIMAP_MAX_X;
-	m_mod.y = float(MAX_BKGZ) / MINIMAP_MAX_Z;
 	
 	m_currentLevel = 0;
 	m_entities = entityMng;
@@ -472,7 +471,7 @@ Vec2f MiniMap::worldToMapPos(Vec3f pos, float zoom, size_t showLevel) {
 	
 	Vec2f p(pos.x - m_levels[showLevel].m_ratio.x, m_mapMaxY[showLevel] - pos.z);
 	
-	Vec2f worldToMapScale = 0.01f / m_mod / Vec2f(MINIMAP_MAX_X, MINIMAP_MAX_Z);
+	Vec2f worldToMapScale = 0.01f / g_mapMod / Vec2f(MINIMAP_MAX_X, MINIMAP_MAX_Z);
 	Vec2f worldToMapOffset = m_miniOffset[m_currentLevel] * (1.f / 250.f + Vec2f(1.f, -2.f) * worldToMapScale);
 	
 	return (p * worldToMapScale + worldToMapOffset) * zoom;
@@ -490,7 +489,7 @@ void MiniMap::drawBackground(size_t showLevel, Rect boundaries, Vec2f start, flo
 	TextureContainer * tc = m_levels[showLevel].m_texContainer;
 	Vec2f d(1.f / float(tc->m_pTexture->getStoredSize().x), 1.f / float(tc->m_pTexture->getStoredSize().y));
 	
-	Vec2f v2 = 4.f * d * m_mod;
+	Vec2f v2 = 4.f * d * g_mapMod;
 	
 	float fadeDiv = 0.f;
 	Rect fadeBounds = boundaries;
@@ -513,7 +512,7 @@ void MiniMap::drawBackground(size_t showLevel, Rect boundaries, Vec2f start, flo
 	
 	for(Vec2i tile : util::grid(Vec2i(-2), Vec2i(MINIMAP_MAX_X, MINIMAP_MAX_X) + Vec2i(2))) {
 		
-		Vec2f v3 = Vec2f(tile) * g_backgroundTileSize * m_mod;
+		Vec2f v3 = Vec2f(tile) * g_backgroundTileSize * g_mapMod;
 		
 		Vec2f v4 = v3 * div * d;
 		
