@@ -848,7 +848,6 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->gameFlags &= ~GFLAG_ELEVATOR;
 		io->gameFlags &= ~GFLAG_HIDEWEAPON;
 		io->gameFlags &= ~GFLAG_NOCOMPUTATION;
-		io->gameFlags &= ~GFLAG_INTERACTIVITYHIDE;
 		io->gameFlags &= ~GFLAG_DOOR;
 		io->gameFlags &= ~GFLAG_GOREEXPLODE;
 		io->invisibility = 0.f;

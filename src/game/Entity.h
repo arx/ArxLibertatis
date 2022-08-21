@@ -220,7 +220,7 @@ enum GameFlag {
 	GFLAG_ISINTREATZONE     = 1 << 1,
 	GFLAG_WASINTREATZONE    = 1 << 2, // TODO remove
 	GFLAG_NEEDINIT          = 1 << 3,
-	GFLAG_INTERACTIVITYHIDE = 1 << 4,
+	GFLAG_INTERACTIVITYHIDE = 1 << 4, // TODO remove
 	GFLAG_DOOR              = 1 << 5,
 	GFLAG_INVISIBILITY      = 1 << 6,
 	GFLAG_NO_PHYS_IO_COL    = 1 << 7,

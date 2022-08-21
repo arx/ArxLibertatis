@@ -1231,9 +1231,7 @@ static void print_io_header(SaveBlock & save, const ARX_CHANGELEVEL_IO_SAVE & ai
 		std::cout << "Game flags:";
 		if(ais.gameFlags & GFLAG_INTERACTIVITY) std::cout << " interactivity";
 		if(ais.gameFlags & GFLAG_ISINTREATZONE) std::cout << " isintreatzone";
-		if(ais.gameFlags & GFLAG_WASINTREATZONE) std::cout << " wasintreatzone";
 		if(ais.gameFlags & GFLAG_NEEDINIT) std::cout << " needinit";
-		if(ais.gameFlags & GFLAG_INTERACTIVITYHIDE) std::cout << " interactivityhide";
 		if(ais.gameFlags & GFLAG_DOOR) std::cout << " door";
 		if(ais.gameFlags & GFLAG_INVISIBILITY) std::cout << " invisibility";
 		if(ais.gameFlags & GFLAG_NO_PHYS_IO_COL) std::cout << " no_phys_io_col";

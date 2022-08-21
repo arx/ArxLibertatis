@@ -270,15 +270,10 @@ public:
 		std::string interactivity = context.getWord();
 		
 		Entity * io = context.getEntity();
-		if(interactivity == "none") {
+		if(interactivity == "none" || interactivity == "hide") {
 			io->gameFlags &= ~GFLAG_INTERACTIVITY;
-			io->gameFlags &= ~GFLAG_INTERACTIVITYHIDE;
-		} else if(interactivity == "hide") {
-			io->gameFlags &= ~GFLAG_INTERACTIVITY;
-			io->gameFlags |= GFLAG_INTERACTIVITYHIDE;
 		} else {
 			io->gameFlags |= GFLAG_INTERACTIVITY;
-			io->gameFlags &= ~GFLAG_INTERACTIVITYHIDE;
 		}
 		
 		return Success;
