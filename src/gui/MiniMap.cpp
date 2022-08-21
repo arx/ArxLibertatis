@@ -478,11 +478,11 @@ Vec2f MiniMap::computePlayerPos(float zoom, size_t showLevel) {
 	const Vec2f of2 = m_levels[showLevel].m_ratio;
 	
 	Vec2f pos(0.f);
-	pos.x = ((m_player->pos.x + of.x - of2.x) * 0.01f * cas.x + of.x * ratio * m_mod.x) / m_mod.x;
-	pos.y = ((m_mapMaxY[showLevel] - of.y - of2.y) * 0.01f * cas.y
-	         - (m_player->pos.z + of.y - of2.y) * 0.01f * cas.y + of.y * ratio * m_mod.y) / m_mod.y;
+	pos.x = (m_player->pos.x + of.x - of2.x) * 0.01f * cas.x + of.x * ratio * m_mod.x;
+	pos.y = (m_mapMaxY[showLevel] - of.y - of2.y) * 0.01f * cas.y
+	         - (m_player->pos.z + of.y - of2.y) * 0.01f * cas.y + of.y * ratio * m_mod.y;
 	
-	return pos;
+	return pos / m_mod;
 }
 
 void MiniMap::drawBackground(size_t showLevel, Rect boundaries, Vec2f start, float zoom, float fadeBorder, bool invColor, float alpha) {
