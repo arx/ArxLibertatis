@@ -475,11 +475,10 @@ Vec2f MiniMap::worldToMapPos(Vec3f pos, float zoom, size_t showLevel) {
 	float ratio = zoom / 250.f;
 	
 	const Vec2f of = m_miniOffset[m_currentLevel];
-	const Vec2f of2 = m_levels[showLevel].m_ratio;
 	
 	Vec2f p;
-	p.x = pos.x + of.x - of2.x;
-	p.y = (m_mapMaxY[showLevel] - of.y - of2.y) - (pos.z + of.y - of2.y);
+	p.x = pos.x - m_levels[showLevel].m_ratio.x + of.x;
+	p.y = m_mapMaxY[showLevel] - pos.z - of.y - of.y;
 	
 	return p * 0.01f * cas / m_mod + of * ratio;
 }
