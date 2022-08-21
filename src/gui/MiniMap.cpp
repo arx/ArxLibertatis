@@ -91,13 +91,7 @@ void MiniMap::getData(size_t showLevel) {
 		m_levels[showLevel].m_texContainer = TextureContainer::Load(levelMap, TextureContainer::NoColorKey);
 		
 		if(m_levels[showLevel].m_texContainer) { // 4 pix/meter
-			
 			m_levels[showLevel].m_size = Vec2f(m_levels[showLevel].m_texContainer->m_size);
-			
-			for(MiniMapData & level : m_levels) {
-				level.m_offset = Vec2f(0.f);
-			}
-			
 		}
 		
 	}
@@ -230,7 +224,6 @@ void MiniMap::resetLevels() {
 	
 	for(MiniMapData & level : m_levels) {
 		level.m_texContainer = nullptr;
-		level.m_offset = Vec2f(0.f);
 		level.m_size = Vec2f(0.f);
 		// Sets the whole array to 0
 		memset(level.m_revealed, 0, sizeof(level.m_revealed));

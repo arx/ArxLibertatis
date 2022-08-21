@@ -78,9 +78,6 @@ public:
 		
 		TextureContainer * m_texContainer;
 		
-		//! Start of scene pos x
-		Vec2f m_offset;
-		
 		//! Bitmap width/height
 		Vec2f m_size;
 		
@@ -88,7 +85,6 @@ public:
 		
 		MiniMapData()
 			: m_texContainer(nullptr)
-			, m_offset(0.f)
 			, m_size(0.f)
 		{ }
 		

@@ -253,8 +253,8 @@ struct SavedMiniMap {
 	static const size_t MAX_Z = 50;
 	
 	u32 padding;
-	f32 offsetx;
-	f32 offsety;
+	f32 offsetx; // TODO remove
+	f32 offsety; // TODO remove
 	f32 xratio; // TODO remove
 	f32 yratio; // TODO remove
 	f32 width;
@@ -264,8 +264,6 @@ struct SavedMiniMap {
 	operator MiniMap::MiniMapData() const {
 		MiniMap::MiniMapData a;
 		a.m_texContainer = nullptr;
-		a.m_offset.x = offsetx;
-		a.m_offset.y = offsety;
 		a.m_size.x = width;
 		a.m_size.y = height;
 		static_assert(SavedMiniMap::MAX_X == MINIMAP_MAX_X, "array size mismatch");
@@ -276,8 +274,8 @@ struct SavedMiniMap {
 	
 	SavedMiniMap & operator=(const MiniMap::MiniMapData & b) {
 		padding = 0;
-		offsetx = b.m_offset.x;
-		offsety = b.m_offset.y;
+		offsetx = 0.f;
+		offsety = 0.f;
 		xratio = 0.f;
 		yratio = 0.f;
 		width = b.m_size.x;
