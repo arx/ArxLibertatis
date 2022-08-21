@@ -275,7 +275,7 @@ void MiniMap::showPlayerMiniMap(size_t showLevel) {
 		Vec2f start(0.f);
 		Vec2f playerPos(0.f);
 		if(showLevel == size_t(ARX_LEVELS_GetRealNum(m_currentLevel))) {
-			start = Vec2f(miniMapRect.center()) - computePlayerPos(miniMapZoom, showLevel);
+			start = Vec2f(miniMapRect.center()) - worldToMapPos(m_player->pos, miniMapZoom, showLevel);
 			playerPos = Vec2f(miniMapRect.center());
 		}
 		
@@ -307,7 +307,7 @@ void MiniMap::showBookMiniMap(size_t showLevel, Rect rect, float scale) {
 		Vec2f start(0.f);
 		Vec2f playerPos(0.f);
 		if(showLevel == size_t(ARX_LEVELS_GetRealNum(m_currentLevel))) {
-			start = Vec2f(rect.center()) - computePlayerPos(zoom, showLevel);
+			start = Vec2f(rect.center()) - worldToMapPos(m_player->pos, zoom, showLevel);
 			playerPos = Vec2f(rect.center());
 		}
 		
@@ -341,7 +341,7 @@ void MiniMap::showBookEntireMap(size_t showLevel, Rect rect, float scale) {
 	Vec2f playerPos(0.f, 0.f);
 	
 	if(showLevel == size_t(ARX_LEVELS_GetRealNum(m_currentLevel))) {
-		playerPos = computePlayerPos(zoom, showLevel);
+		playerPos = worldToMapPos(m_player->pos, zoom, showLevel);
 		playerPos += start;
 	}
 	
@@ -426,7 +426,7 @@ void MiniMap::revealPlayerPos(size_t showLevel) {
 	Vec2f start(140.f, 120.f);
 	Vec2f cas(zoom / MINIMAP_MAX_X, zoom / MINIMAP_MAX_Z);
 	
-	Vec2f playerPos = computePlayerPos(zoom, showLevel);
+	Vec2f playerPos = worldToMapPos(m_player->pos, zoom, showLevel);
 	Vec2i playerCell = Vec2i(playerPos.x / cas.x, playerPos.y / cas.y);
 	
 	if(   playerCell.x < 0
@@ -472,20 +472,10 @@ Vec2f MiniMap::worldToMapPos(Vec3f pos, float zoom, size_t showLevel) {
 	
 	Vec2f p(pos.x - m_levels[showLevel].m_ratio.x, m_mapMaxY[showLevel] - pos.z);
 	
-	Vec2f worldToMapScale = 0.01f / m_mod  / Vec2f(MINIMAP_MAX_X, MINIMAP_MAX_Z);
-	Vec2f mapOffsetScale = 1.f / 250.f + Vec2f(1.f, -2.f) * worldToMapScale;
-	
-	return (p * worldToMapScale + m_miniOffset[m_currentLevel] * mapOffsetScale) * zoom;
-}
-
-Vec2f MiniMap::computePlayerPos(float zoom, size_t showLevel) {
-	
-	Vec2f pos(m_player->pos.x - m_levels[showLevel].m_ratio.x, m_mapMaxY[showLevel] - m_player->pos.z);
-	
 	Vec2f worldToMapScale = 0.01f / m_mod / Vec2f(MINIMAP_MAX_X, MINIMAP_MAX_Z);
 	Vec2f mapOffsetScale = 1.f / 250.f + Vec2f(1.f, -2.f) * worldToMapScale;
 	
-	return (pos * worldToMapScale + m_miniOffset[m_currentLevel] * mapOffsetScale) * zoom;
+	return (p * worldToMapScale + m_miniOffset[m_currentLevel] * mapOffsetScale) * zoom;
 }
 
 void MiniMap::drawBackground(size_t showLevel, Rect boundaries, Vec2f start, float zoom, float fadeBorder, bool invColor, float alpha) {

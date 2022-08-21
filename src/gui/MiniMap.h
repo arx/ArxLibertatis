@@ -196,7 +196,6 @@ private:
 	int mapMarkerGetID(std::string_view name);
 	
 	Vec2f worldToMapPos(Vec3f pos, float zoom, size_t showLevel);
-	Vec2f computePlayerPos(float zoom, size_t showLevel);
 	void drawBackground(size_t showLevel, Rect boundaries, Vec2f start, float zoom,
 	                    float fadeBorder = 0.f, bool invColor = false, float alpha = 1.f);
 	void drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending);
