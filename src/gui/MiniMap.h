@@ -78,14 +78,10 @@ public:
 		
 		TextureContainer * m_texContainer;
 		
-		//! Bitmap width/height
-		Vec2f m_size;
-		
 		unsigned char m_revealed[MINIMAP_MAX_X][MINIMAP_MAX_Z];
 		
 		MiniMapData()
 			: m_texContainer(nullptr)
-			, m_size(0.f)
 		{ }
 		
 	};

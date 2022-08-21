@@ -257,15 +257,13 @@ struct SavedMiniMap {
 	f32 offsety; // TODO remove
 	f32 xratio; // TODO remove
 	f32 yratio; // TODO remove
-	f32 width;
-	f32 height;
+	f32 width; // TODO remove
+	f32 height; // TODO remove
 	u8 revealed[MAX_X][MAX_Z];
 	
 	operator MiniMap::MiniMapData() const {
 		MiniMap::MiniMapData a;
 		a.m_texContainer = nullptr;
-		a.m_size.x = width;
-		a.m_size.y = height;
 		static_assert(SavedMiniMap::MAX_X == MINIMAP_MAX_X, "array size mismatch");
 		static_assert(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z, "array size mismatch");
 		std::copy(&revealed[0][0], &revealed[0][0] + (SavedMiniMap::MAX_X * SavedMiniMap::MAX_Z), &a.m_revealed[0][0]);
@@ -278,8 +276,8 @@ struct SavedMiniMap {
 		offsety = 0.f;
 		xratio = 0.f;
 		yratio = 0.f;
-		width = b.m_size.x;
-		height = b.m_size.y;
+		width = b.m_texContainer ? float(b.m_texContainer->m_size.x) : 0.f;
+		height = b.m_texContainer ? float(b.m_texContainer->m_size.y) : 0.f;
 		static_assert(SavedMiniMap::MAX_X == MINIMAP_MAX_X, "array size mismatch");
 		static_assert(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z, "array size mismatch");
 		std::copy(&b.m_revealed[0][0], &b.m_revealed[0][0] + (SavedMiniMap::MAX_X * SavedMiniMap::MAX_Z), &revealed[0][0]);
