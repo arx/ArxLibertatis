@@ -473,9 +473,9 @@ Vec2f MiniMap::worldToMapPos(Vec3f pos, float zoom, size_t showLevel) {
 	Vec2f p(pos.x - m_levels[showLevel].m_ratio.x, m_mapMaxY[showLevel] - pos.z);
 	
 	Vec2f worldToMapScale = 0.01f / m_mod / Vec2f(MINIMAP_MAX_X, MINIMAP_MAX_Z);
-	Vec2f mapOffsetScale = 1.f / 250.f + Vec2f(1.f, -2.f) * worldToMapScale;
+	Vec2f worldToMapOffset = m_miniOffset[m_currentLevel] * (1.f / 250.f + Vec2f(1.f, -2.f) * worldToMapScale);
 	
-	return (p * worldToMapScale + m_miniOffset[m_currentLevel] * mapOffsetScale) * zoom;
+	return (p * worldToMapScale + worldToMapOffset) * zoom;
 }
 
 void MiniMap::drawBackground(size_t showLevel, Rect boundaries, Vec2f start, float zoom, float fadeBorder, bool invColor, float alpha) {
