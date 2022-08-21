@@ -278,7 +278,7 @@ void MiniMap::showPlayerMiniMap(size_t showLevel) {
 		Vec2f start(0.f);
 		Vec2f playerPos(0.f);
 		if(showLevel == size_t(ARX_LEVELS_GetRealNum(m_currentLevel))) {
-			start = Vec2f(miniMapRect.center()) - worldToMapPos(m_player->pos, miniMapZoom, showLevel);
+			start = Vec2f(miniMapRect.center()) - worldToMapPos(m_player->pos, miniMapZoom);
 			playerPos = Vec2f(miniMapRect.center());
 		}
 		
@@ -310,7 +310,7 @@ void MiniMap::showBookMiniMap(size_t showLevel, Rect rect, float scale) {
 		Vec2f start(0.f);
 		Vec2f playerPos(0.f);
 		if(showLevel == size_t(ARX_LEVELS_GetRealNum(m_currentLevel))) {
-			start = Vec2f(rect.center()) - worldToMapPos(m_player->pos, zoom, showLevel);
+			start = Vec2f(rect.center()) - worldToMapPos(m_player->pos, zoom);
 			playerPos = Vec2f(rect.center());
 		}
 		
@@ -344,7 +344,7 @@ void MiniMap::showBookEntireMap(size_t showLevel, Rect rect, float scale) {
 	Vec2f playerPos(0.f, 0.f);
 	
 	if(showLevel == size_t(ARX_LEVELS_GetRealNum(m_currentLevel))) {
-		playerPos = worldToMapPos(m_player->pos, zoom, showLevel);
+		playerPos = worldToMapPos(m_player->pos, zoom);
 		playerPos += start;
 	}
 	
@@ -429,7 +429,7 @@ void MiniMap::revealPlayerPos(size_t showLevel) {
 	Vec2f start(140.f, 120.f);
 	Vec2f cas(zoom / MINIMAP_MAX_X, zoom / MINIMAP_MAX_Z);
 	
-	Vec2f playerPos = worldToMapPos(m_player->pos, zoom, showLevel);
+	Vec2f playerPos = worldToMapPos(m_player->pos, zoom);
 	Vec2i playerCell = Vec2i(playerPos.x / cas.x, playerPos.y / cas.y);
 	
 	if(   playerCell.x < 0
@@ -471,7 +471,7 @@ void MiniMap::revealPlayerPos(size_t showLevel) {
 	
 }
 
-Vec2f MiniMap::worldToMapPos(Vec3f pos, float zoom, size_t showLevel) {
+Vec2f MiniMap::worldToMapPos(Vec3f pos, float zoom) {
 	return (Vec2f(pos.x, -pos.z) * g_worldToMapScale + m_worldToMapOffset) * zoom;
 }
 
@@ -685,7 +685,7 @@ void MiniMap::drawDetectedEntities(size_t showLevel, Vec2f start, float zoom) {
 			continue; // the player doesn't have enough skill to detect this NPC
 		}
 		
-		Vec2f fp = start + worldToMapPos(npc.pos + Vec3f(-100.f, 0.f, 200.f), zoom, showLevel);
+		Vec2f fp = start + worldToMapPos(npc.pos + Vec3f(-100.f, 0.f, 200.f), zoom);
 		
 		float d = fdist(Vec2f(m_player->pos.x, m_player->pos.z), Vec2f(npc.pos.x, npc.pos.z));
 		if(d > 800 || glm::abs(ents.player()->pos.y - npc.pos.y) > 250.f) {
