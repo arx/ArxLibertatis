@@ -605,7 +605,8 @@ void QuickSaveIconGui::hide() {
 	m_remainingTime = 0;
 }
 
-void QuickSaveIconGui::update() {
+void QuickSaveIconGui::update(const Rectf & parent) {
+	
 	if(m_remainingTime != 0) {
 		if(m_remainingTime > g_gameTime.lastFrameDuration()) {
 			m_remainingTime -= g_gameTime.lastFrameDuration();
@@ -613,6 +614,9 @@ void QuickSaveIconGui::update() {
 			m_remainingTime = 0;
 		}
 	}
+	
+	m_rect = createChild(parent, Anchor_TopLeft, Vec2f(48) * m_scale, Anchor_TopLeft);
+	
 }
 
 void QuickSaveIconGui::draw() {
@@ -630,8 +634,7 @@ void QuickSaveIconGui::draw() {
 	TextureContainer * tex = TextureContainer::LoadUI("graph/interface/icons/menu_main_save");
 	arx_assert(tex);
 	
-	Vec2f size = Vec2f(tex->size());
-	EERIEDrawBitmap(Rectf(Vec2f(0, 0), size.x, size.y), 0.f, tex, Color::gray(alpha));
+	EERIEDrawBitmap(m_rect, 0.f, tex, Color::gray(alpha));
 	
 }
 
@@ -1410,7 +1413,7 @@ void HudRoot::draw() {
 	changeLevelIconGui.update(Rectf(g_size));
 	memorizedRunesHud.update(changeLevelIconGui.rect());
 	
-	quickSaveIconGui.update();
+	quickSaveIconGui.update(Rectf(g_size));
 	
 	{
 		Rectf spacer;
@@ -1561,6 +1564,7 @@ void HudRoot::setScale(float scale) {
 	memorizedRunesHud.setScale(scale);
 	activeSpellsGui.setScale(scale);
 	
+	quickSaveIconGui.setScale(scale);
 	mecanismIcon.setScale(scale);
 	screenArrows.setScale(scale);
 	

@@ -163,7 +163,7 @@ public:
 	void draw();
 };
 
-class QuickSaveIconGui {
+class QuickSaveIconGui : public HudItem {
 	
 	//! Time in ms to show the icon
 	GameDuration m_duration;
@@ -173,7 +173,7 @@ class QuickSaveIconGui {
 public:
 	QuickSaveIconGui();
 	
-	void update();
+	void update(const Rectf & parent);
 	void draw();
 	void show();
 	void hide();
