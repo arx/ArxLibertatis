@@ -468,6 +468,23 @@ void MiniMap::revealPlayerPos(size_t showLevel) {
 	
 }
 
+Vec2f MiniMap::worldToMapPos(Vec3f pos, float zoom, size_t showLevel) {
+	
+	Vec2f cas(zoom / MINIMAP_MAX_X, zoom / MINIMAP_MAX_Z);
+	
+	float ratio = zoom / 250.f;
+	
+	const Vec2f of = m_miniOffset[m_currentLevel];
+	const Vec2f of2 = m_levels[showLevel].m_ratio;
+	
+	Vec2f p;
+	p.x = ((pos.x + of.x - of2.x) * 0.01f * cas.x + of.x * ratio * m_mod.x) / m_mod.x;
+	p.y = ((m_mapMaxY[showLevel] - of.y - of2.y) * 0.01f * cas.y
+	       - (pos.z + of.y - of2.y) * 0.01f * cas.y + of.y * ratio * m_mod.y) / m_mod.y;
+	
+	return p;
+}
+
 Vec2f MiniMap::computePlayerPos(float zoom, size_t showLevel) {
 	
 	Vec2f pos(m_player->pos.x - m_levels[showLevel].m_ratio.x, m_mapMaxY[showLevel] - m_player->pos.z);
@@ -659,17 +676,9 @@ void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) 
 
 void MiniMap::drawDetectedEntities(size_t showLevel, Vec2f start, float zoom) {
 	
-	Vec2f cas(zoom / MINIMAP_MAX_X, zoom / MINIMAP_MAX_Z);
-	
-	float ratio = zoom / 250.f;
-	
 	if(!m_pTexDetect) {
 		m_pTexDetect = TextureContainer::Load("graph/particles/flare");
 	}
-	
-	// Computes playerpos
-	const Vec2f of = m_miniOffset[m_currentLevel];
-	const Vec2f of2 = m_levels[showLevel].m_ratio;
 	
 	UseRenderState state(render2D().blendAdditive());
 	
@@ -696,12 +705,7 @@ void MiniMap::drawDetectedEntities(size_t showLevel, Vec2f start, float zoom) {
 			continue; // the player doesn't have enough skill to detect this NPC
 		}
 		
-		Vec2f fp = start;
-		
-		fp.x += ((npc.pos.x - 100 + of.x - of2.x) * 0.01f * cas.x
-		+ of.x * ratio * m_mod.x) / m_mod.x;
-		fp.y += ((m_mapMaxY[showLevel] - of.y - of2.y) * 0.01f * cas.y
-		- (npc.pos.z + 200 + of.y - of2.y) * 0.01f * cas.y + of.y * ratio * m_mod.y) / m_mod.y;
+		Vec2f fp = start + worldToMapPos(npc.pos + Vec3f(-100.f, 0.f, 200.f), zoom, showLevel);
 		
 		float d = fdist(Vec2f(m_player->pos.x, m_player->pos.z), Vec2f(npc.pos.x, npc.pos.z));
 		if(d > 800 || glm::abs(ents.player()->pos.y - npc.pos.y) > 250.f) {
@@ -716,8 +720,8 @@ void MiniMap::drawDetectedEntities(size_t showLevel, Vec2f start, float zoom) {
 		
 		Rectf rect(
 			fp,
-			5.f * ratio,
-			5.f * ratio
+			5.f * zoom / 250.f,
+			5.f * zoom / 250.f
 		);
 		EERIEDrawBitmap(rect, 0, m_pTexDetect, Color::red * col);
 	}
