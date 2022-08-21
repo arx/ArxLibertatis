@@ -188,6 +188,11 @@ void MiniMap::loadOffsets(PakReader * pakRes) {
 	m_miniOffset[1] = Vec2f(0, 0);
 	m_miniOffset[14] = Vec2f(130, 0);
 	m_miniOffset[15] = Vec2f(31, -3.5);
+	
+	for(Vec2f & offset : m_miniOffset) {
+		offset *= 1.f / 250.f + Vec2f(1.f, -2.f) * g_worldToMapScale;
+	}
+	
 }
 
 void MiniMap::reveal() {
@@ -472,9 +477,7 @@ Vec2f MiniMap::worldToMapPos(Vec3f pos, float zoom, size_t showLevel) {
 	
 	Vec2f p(pos.x - m_levels[showLevel].m_ratio.x, m_mapMaxY[showLevel] - pos.z);
 	
-	Vec2f worldToMapOffset = m_miniOffset[m_currentLevel] * (1.f / 250.f + Vec2f(1.f, -2.f) * g_worldToMapScale);
-	
-	return (p * g_worldToMapScale + worldToMapOffset) * zoom;
+	return (p * g_worldToMapScale + m_miniOffset[m_currentLevel]) * zoom;
 }
 
 void MiniMap::drawBackground(size_t showLevel, Rect boundaries, Vec2f start, float zoom, float fadeBorder, bool invColor, float alpha) {
