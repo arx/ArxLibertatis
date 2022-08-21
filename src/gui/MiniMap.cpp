@@ -472,13 +472,11 @@ Vec2f MiniMap::computePlayerPos(float zoom, size_t showLevel) {
 	
 	const Vec2f of = m_miniOffset[m_currentLevel];
 	
-	Vec2f pos(0.f);
-	pos.x = m_player->pos.x - m_levels[showLevel].m_ratio.x + of.x;
-	pos.y = m_mapMaxY[showLevel] - m_player->pos.z - of.y - of.y;
+	Vec2f pos(m_player->pos.x - m_levels[showLevel].m_ratio.x, m_mapMaxY[showLevel] - m_player->pos.z);
 	
 	Vec2f worldToMapScale = 0.01f / m_mod / Vec2f(MINIMAP_MAX_X, MINIMAP_MAX_Z);
 	
-	return (pos * worldToMapScale + of / 250.f) * zoom;
+	return (pos * worldToMapScale + of * Vec2f(1.f, -2.f) * worldToMapScale + of / 250.f) * zoom;
 }
 
 void MiniMap::drawBackground(size_t showLevel, Rect boundaries, Vec2f start, float zoom, float fadeBorder, bool invColor, float alpha) {
