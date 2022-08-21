@@ -478,10 +478,10 @@ Vec2f MiniMap::worldToMapPos(Vec3f pos, float zoom, size_t showLevel) {
 	const Vec2f of2 = m_levels[showLevel].m_ratio;
 	
 	Vec2f p;
-	p.x = (pos.x + of.x - of2.x) * 0.01f * cas.x;
-	p.y = (m_mapMaxY[showLevel] - of.y - of2.y) * 0.01f * cas.y - (pos.z + of.y - of2.y) * 0.01f * cas.y;
+	p.x = pos.x + of.x - of2.x;
+	p.y = (m_mapMaxY[showLevel] - of.y - of2.y) - (pos.z + of.y - of2.y);
 	
-	return (p + of * ratio * m_mod) / m_mod;
+	return p * 0.01f * cas / m_mod + of * ratio;
 }
 
 Vec2f MiniMap::computePlayerPos(float zoom, size_t showLevel) {
