@@ -81,9 +81,6 @@ public:
 		//! Start of scene pos x
 		Vec2f m_offset;
 		
-		//! Multiply x by ratioX to obtain real-world pos
-		Vec2f m_ratio;
-		
 		//! Bitmap width/height
 		Vec2f m_size;
 		
@@ -92,7 +89,6 @@ public:
 		MiniMapData()
 			: m_texContainer(nullptr)
 			, m_offset(0.f)
-			, m_ratio(0.f)
 			, m_size(0.f)
 		{ }
 		
@@ -116,6 +112,7 @@ public:
 		: m_currentLevel(0)
 		, m_entities(nullptr)
 		, m_activeBkg(nullptr)
+		, m_worldToMapOffset(0.f)
 		, m_pTexDetect(nullptr)
 		, m_mapMarkerTexCont(nullptr)
 		, m_player(nullptr)
@@ -162,7 +159,7 @@ private:
 	TileData * m_activeBkg;
 	
 	std::array<Vec2f, MAX_MINIMAP_LEVELS> m_miniOffset;
-	std::array<float, MAX_MINIMAP_LEVELS> m_mapMaxY;
+	Vec2f m_worldToMapOffset;
 	
 	TextureContainer * m_pTexDetect;
 	TextureContainer * m_mapMarkerTexCont;

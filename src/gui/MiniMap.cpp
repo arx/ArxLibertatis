@@ -94,30 +94,14 @@ void MiniMap::getData(size_t showLevel) {
 			
 			m_levels[showLevel].m_size = Vec2f(m_levels[showLevel].m_texContainer->m_size);
 			
-			float minX = std::numeric_limits<float>::max();
-			float maxX = std::numeric_limits<float>::min();
-			float minY = std::numeric_limits<float>::max();
-			float maxY = std::numeric_limits<float>::min();
-			
-			for(auto tile : m_activeBkg->tiles()) {
-				for(const EERIEPOLY & ep : tile.polygons()) {
-					minX = std::min(minX, ep.min.x);
-					maxX = std::max(maxX, ep.max.x);
-					minY = std::min(minY, ep.min.z);
-					maxY = std::max(maxY, ep.max.z);
-				}
-			}
-			
-			m_mapMaxY[showLevel] = maxY;
-			m_levels[showLevel].m_ratio.x = minX;
-			m_levels[showLevel].m_ratio.y = minY;
-			
 			for(MiniMapData & level : m_levels) {
 				level.m_offset = Vec2f(0.f);
 			}
 			
 		}
+		
 	}
+	
 }
 
 void MiniMap::validatePos() {
@@ -142,7 +126,26 @@ void MiniMap::validatePos() {
 
 void MiniMap::validatePlayerPos(int currentLevel, bool blockPlayerControls, ARX_INTERFACE_BOOK_MODE bookMode) {
 	
-	m_currentLevel = currentLevel;
+	if(m_currentLevel != currentLevel) {
+		
+		m_currentLevel = currentLevel;
+		
+		if(m_currentLevel >= 0 && size_t(m_currentLevel) < m_miniOffset.size()) {
+			float minX = std::numeric_limits<float>::max();
+			float maxZ = std::numeric_limits<float>::min();
+			for(auto tile : m_activeBkg->tiles()) {
+				for(const EERIEPOLY & ep : tile.polygons()) {
+					minX = std::min(minX, ep.min.x);
+					maxZ = std::max(maxZ, ep.max.z);
+				}
+			}
+			m_worldToMapOffset = Vec2f(-minX, maxZ) * g_worldToMapScale +
+			                     m_miniOffset[m_currentLevel] * (1.f / 250.f + Vec2f(1.f, -2.f) * g_worldToMapScale);
+		} else {
+			m_worldToMapOffset = Vec2f(0.f);
+		}
+		
+	}
 	
 	if(!blockPlayerControls) {
 		
@@ -189,10 +192,6 @@ void MiniMap::loadOffsets(PakReader * pakRes) {
 	m_miniOffset[14] = Vec2f(130, 0);
 	m_miniOffset[15] = Vec2f(31, -3.5);
 	
-	for(Vec2f & offset : m_miniOffset) {
-		offset *= 1.f / 250.f + Vec2f(1.f, -2.f) * g_worldToMapScale;
-	}
-	
 }
 
 void MiniMap::reveal() {
@@ -232,7 +231,6 @@ void MiniMap::resetLevels() {
 	for(MiniMapData & level : m_levels) {
 		level.m_texContainer = nullptr;
 		level.m_offset = Vec2f(0.f);
-		level.m_ratio = Vec2f(0.f);
 		level.m_size = Vec2f(0.f);
 		// Sets the whole array to 0
 		memset(level.m_revealed, 0, sizeof(level.m_revealed));
@@ -474,10 +472,7 @@ void MiniMap::revealPlayerPos(size_t showLevel) {
 }
 
 Vec2f MiniMap::worldToMapPos(Vec3f pos, float zoom, size_t showLevel) {
-	
-	Vec2f p(pos.x - m_levels[showLevel].m_ratio.x, m_mapMaxY[showLevel] - pos.z);
-	
-	return (p * g_worldToMapScale + m_miniOffset[m_currentLevel]) * zoom;
+	return (Vec2f(pos.x, -pos.z) * g_worldToMapScale + m_worldToMapOffset) * zoom;
 }
 
 void MiniMap::drawBackground(size_t showLevel, Rect boundaries, Vec2f start, float zoom, float fadeBorder, bool invColor, float alpha) {
