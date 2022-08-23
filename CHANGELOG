@@ -40,6 +40,7 @@ Modding:
 * Added the ^player_mana and and ^player_maxmana system variables to query the current and maximum player mana level
 * Added the ^spell* system variable to get the ID of the newest active spell cast by the given entity
 * Added the ^spelllevel* system variable to get the caster level of the player or the given spell
+* Added the ^realtime_year, ^realtime_month and ^realtime_day to get the current date
 * Added the spell ID as parameter 3 to the spellcast and spellend script events
 * Added the summoned entity ID as parameter 3 to the ouch script event
 * Added the weapon/summoned/spell ID as parameter 3 to the hit script event (feature request #1599)

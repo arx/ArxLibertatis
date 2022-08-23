@@ -52,6 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <exception>
 #include <limits>
 #include <sstream>
+#include <chrono>
 
 #include <boost/algorithm/string/predicate.hpp>
 
@@ -691,6 +692,30 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 					}
 					return TYPE_FLOAT;
 				}
+			}
+			
+			if(name == "^realtime_year") {
+				std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+				time_t tt = std::chrono::system_clock::to_time_t(now);
+				tm local_tm = *localtime(&tt);
+				*lcontent = static_cast<long>(local_tm.tm_year + 1900);
+				return TYPE_LONG;
+			}
+			
+			if(name == "^realtime_month") {
+				std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+				time_t tt = std::chrono::system_clock::to_time_t(now);
+				tm local_tm = *localtime(&tt);
+				*lcontent = static_cast<long>(local_tm.tm_mon + 1);
+				return TYPE_LONG;
+			}
+			
+			if(name == "^realtime_day") {
+				std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+				time_t tt = std::chrono::system_clock::to_time_t(now);
+				tm local_tm = *localtime(&tt);
+				*lcontent = static_cast<long>(local_tm.tm_mday);
+				return TYPE_LONG;
 			}
 			
 			if(boost::starts_with(name, "^repairprice_")) {
