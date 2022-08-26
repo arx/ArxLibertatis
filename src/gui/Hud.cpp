@@ -1195,8 +1195,10 @@ void DamagedEquipmentGui::update() {
 		Entity * io = entities.get(player.equiped[eq]);
 		if(io) {
 			float ratio = io->durability / io->max_durability;
-			if(ratio <= 0.5f) {
+			if(ratio < 1.0f) {
 				m_colors[i] = Color::rgb(1.f - ratio, ratio, 0);
+			} else {
+				m_colors[i] = Color::rgb(0, 1.f, 1.f);
 			}
 		}
 		
