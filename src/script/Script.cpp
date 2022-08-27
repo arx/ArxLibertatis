@@ -424,15 +424,19 @@ struct Date {
 
 static Date getSystemTime() {
 	
-	Date systemTime = { 0, 0, 0 };
+	Date s_frameSystemTime = { 0, 0, 0 };
+	PlatformInstant s_frameSystemTimeFrame = 0;
 	
-	std::time_t now = std::time(nullptr);
-	std::tm local_tm = *std::localtime(&now);
-	systemTime.year = static_cast<std::uint16_t>(local_tm.tm_year + 1900);
-	systemTime.month = static_cast<std::uint8_t>(local_tm.tm_mon + 1);
-	systemTime.day = static_cast<std::uint8_t>(local_tm.tm_mday);
+	if(s_frameSystemTimeFrame != g_platformTime.frameStart()) {
+		std::time_t now = std::time(nullptr);
+		std::tm local_tm = *std::localtime(&now);
+		s_frameSystemTime.year = static_cast<std::uint16_t>(local_tm.tm_year + 1900);
+		s_frameSystemTime.month = static_cast<std::uint8_t>(local_tm.tm_mon + 1);
+		s_frameSystemTime.day = static_cast<std::uint8_t>(local_tm.tm_mday);
+		s_frameSystemTimeFrame = g_platformTime.frameStart();
+	}
 	
-	return systemTime;
+	return s_frameSystemTime;
 }
 
 ValueType getSystemVar(const script::Context & context, std::string_view name,
