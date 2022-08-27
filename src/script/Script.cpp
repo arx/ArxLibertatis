@@ -416,6 +416,26 @@ static Spell * getSpellParam(std::string_view variable, size_t offset) {
 	return nullptr;
 }
 
+struct Date {
+	std::uint16_t year;
+	std::uint8_t month;
+	std::uint8_t day;
+};
+
+static Date getSystemTime() {
+	
+	Date systemTime = { 0, 0, 0 };
+	
+	std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+	time_t tt = std::chrono::system_clock::to_time_t(now);
+	std::tm local_tm = *std::localtime(&tt);
+	systemTime.year = static_cast<std::uint16_t>(local_tm.tm_year + 1900);
+	systemTime.month = static_cast<std::uint8_t>(local_tm.tm_mon + 1);
+	systemTime.day = static_cast<std::uint8_t>(local_tm.tm_mday);
+	
+	return systemTime;
+}
+
 ValueType getSystemVar(const script::Context & context, std::string_view name,
                        std::string & txtcontent, float * fcontent, long * lcontent) {
 	
@@ -695,26 +715,17 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			}
 			
 			if(name == "^realtime_year") {
-				std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-				time_t tt = std::chrono::system_clock::to_time_t(now);
-				tm local_tm = *localtime(&tt);
-				*lcontent = static_cast<long>(local_tm.tm_year + 1900);
+				*lcontent = getSystemTime().year;
 				return TYPE_LONG;
 			}
 			
 			if(name == "^realtime_month") {
-				std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-				time_t tt = std::chrono::system_clock::to_time_t(now);
-				tm local_tm = *localtime(&tt);
-				*lcontent = static_cast<long>(local_tm.tm_mon + 1);
+				*lcontent = getSystemTime().month;
 				return TYPE_LONG;
 			}
 			
 			if(name == "^realtime_day") {
-				std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-				time_t tt = std::chrono::system_clock::to_time_t(now);
-				tm local_tm = *localtime(&tt);
-				*lcontent = static_cast<long>(local_tm.tm_mday);
+				*lcontent = getSystemTime().day;
 				return TYPE_LONG;
 			}
 			
