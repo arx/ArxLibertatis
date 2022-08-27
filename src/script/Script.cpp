@@ -426,9 +426,8 @@ static Date getSystemTime() {
 	
 	Date systemTime = { 0, 0, 0 };
 	
-	std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-	time_t tt = std::chrono::system_clock::to_time_t(now);
-	std::tm local_tm = *std::localtime(&tt);
+	std::time_t now = std::time(nullptr);
+	std::tm local_tm = *std::localtime(&now);
 	systemTime.year = static_cast<std::uint16_t>(local_tm.tm_year + 1900);
 	systemTime.month = static_cast<std::uint8_t>(local_tm.tm_mon + 1);
 	systemTime.day = static_cast<std::uint8_t>(local_tm.tm_mday);
