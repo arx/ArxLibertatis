@@ -581,7 +581,7 @@ void damageProp(Entity & prop, float dmg, Entity * source, Spell * spell, Damage
 		prop.dmg_sum = 0.f;
 	}
 	
-	if(Random::getf(0.f, 100.f) > prop.durability) {
+	if(!prop.isInvulnerable() && Random::getf(0.f, 100.f) > prop.durability) {
 		prop.durability -= dmg * 0.5f;
 	}
 	
@@ -1421,7 +1421,7 @@ void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent)
 
 void ARX_DAMAGES_DurabilityCheck(Entity * io, float ratio)
 {
-	if(!io)
+	if(!io || io->isInvulnerable())
 		return;
 
 	if(Random::getf(0.f, 100.f) > io->durability) {

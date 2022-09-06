@@ -347,3 +347,9 @@ void Entity::destroyOne() {
 	}
 	
 }
+
+bool Entity::isInvulnerable() {
+	
+	return durability >= 100.f;
+	
+}
