@@ -1639,7 +1639,7 @@ void ArxGame::manageEntityDescription() {
 		ss << " (" << getLocalised("description_poisoned") << " " << temp->poisonous << ")";
 	}
 	
-	if((temp->ioflags & IO_ITEM) && temp->durability < 100.f) {
+	if((temp->ioflags & IO_ITEM) && !temp->isInvulnerable()) {
 		ss << " " << getLocalised("description_durability") << " "
 		   << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
 	}
