@@ -62,13 +62,17 @@ static void crashAssertHandler(const char * expr, const char * file, unsigned in
 	}
 	
 	std::ostringstream oss;
-	oss << "Assertion Failed at " << filename << ":" << line << ": " << expr << "\n";
+	if(line) {
+		oss << "Assertion Failed at " << filename << ":" << line << ": " << expr << "\n";
+	} else {
+		oss << "Assertion Failed in " << filename << ": " << expr << "\n";
+	}
 	if(msg) {
 		oss << "Message: " << msg << "\n";
 	}
 	oss << "\n";
 	
-	gCrashHandlerImpl->addText(oss.str().c_str());
+	gCrashHandlerImpl->addText(oss.str());
 	
 }
 
