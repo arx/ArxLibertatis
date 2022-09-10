@@ -21,6 +21,7 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <cstdio>
 
 #include "io/log/Logger.h"
 
@@ -46,7 +47,7 @@ void assertionFailed(const char * expr, const char * file, unsigned int line,
 		char formattedmsgbuf[4096];
 		va_list args;
 		va_start(args, msg);
-		vsnprintf(formattedmsgbuf, sizeof(formattedmsgbuf) - 1, msg, args);
+		std::vsnprintf(formattedmsgbuf, sizeof(formattedmsgbuf) - 1, msg, args);
 		va_end(args);
 		Logger(file, line, Logger::Critical) << "Message: " << formattedmsgbuf;
 		if(g_assertHandler) {
