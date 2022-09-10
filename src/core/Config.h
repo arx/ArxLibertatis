@@ -239,6 +239,8 @@ public:
 		
 		std::string debug; //!< Logger debug levels.
 		
+		std::string realtimeOverride;
+		
 	} misc;
 	
 	bool setActionKey(ControlAction actionId, size_t index, InputKeyId key);

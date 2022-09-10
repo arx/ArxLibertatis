@@ -67,6 +67,7 @@ constexpr const std::string_view
 	windowSize = BOOST_PP_STRINGIZE(ARX_DEFAULT_WIDTH) "x"
 	             BOOST_PP_STRINGIZE(ARX_DEFAULT_HEIGHT),
 	debugLevels,
+	realtimeOverride,
 	bufferUpload,
 	extensionOverride,
 	thumbnailSize = BOOST_PP_STRINGIZE(THUMBNAIL_DEFAULT_WIDTH) "x"
@@ -326,7 +327,8 @@ constexpr const std::string_view
 	forceToggle = "forcetoggle",
 	migration = "migration",
 	quicksaveSlots = "quicksave_slots",
-	debugLevels = "debug";
+	debugLevels = "debug",
+	realtimeOverride = "realtime_override";
 
 } // namespace Key
 
@@ -550,6 +552,7 @@ bool Config::save() {
 	writer.writeKey(Key::migration, misc.migration);
 	writer.writeKey(Key::quicksaveSlots, misc.quicksaveSlots);
 	writer.writeKey(Key::debugLevels, misc.debug);
+	writer.writeKey(Key::realtimeOverride, misc.realtimeOverride);
 	
 	return writer.flush();
 }
@@ -684,6 +687,7 @@ bool Config::init(const fs::path & file) {
 	misc.migration = MigrationStatus(reader.getKey(Section::Misc, Key::migration, Default::migration));
 	misc.quicksaveSlots = std::max(reader.getKey(Section::Misc, Key::quicksaveSlots, Default::quicksaveSlots), 1);
 	misc.debug = reader.getKey(Section::Misc, Key::debugLevels, Default::debugLevels);
+	misc.realtimeOverride = reader.getKey(Section::Misc, Key::realtimeOverride, Default::realtimeOverride);
 	
 	return loaded;
 }
