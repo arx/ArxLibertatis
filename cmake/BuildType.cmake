@@ -3,7 +3,10 @@ include(CompileCheck)
 
 if(NOT CMAKE_VERSION VERSION_LESS 2.8.6)
 	include(CheckCXXSymbolExists)
-	check_cxx_symbol_exists(_LIBCPP_VERSION "cstddef" IS_LIBCXX)
+	check_cxx_symbol_exists(_LIBCPP_VERSION "version" IS_LIBCXX)
+	if(IS_LIBCXX AND (DEBUG OR DEBUG_EXTRA))
+		check_cxx_symbol_exists(_LIBCPP_ENABLE_ASSERTIONS "version" ARX_HAVE_LIBCPP_ENABLE_ASSERTIONS)
+	endif()
 else()
 	set(IS_LIBCXX OFF)
 endif()
@@ -401,18 +404,34 @@ else(MSVC)
 		# add_cxxflag("-fsanitize=thread") does not work together with -fsanitize=address
 		add_cxxflag("-fsanitize=leak")
 		add_cxxflag("-fsanitize=undefined")
-		if(IS_LIBCXX)
-			add_definitions(-D_LIBCPP_DEBUG=1) # libc++
-			# libc++'s debug checks fail with -fsanitize=undefined
+		if(ARX_HAVE_LIBCPP_ENABLE_ASSERTIONS)
+			# libc++ 15+ - Full debug mode is now a compile-time option and all -D_LIBCPP_DEBUG=1 does is
+			# generate an #error if the library was not built in debug mode :|
+			add_definitions(-D_LIBCPP_ENABLE_ASSERTIONS=1)
+		elseif(IS_LIBCXX)
+			# older libc++
+			add_definitions(-D_LIBCPP_DEBUG=1)
 		else()
-			add_definitions(-D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -D_GLIBCXX_SANITIZE_VECTOR) # libstdc++
+			# libstdc++
+			add_definitions(-D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -D_GLIBCXX_SANITIZE_VECTOR)
 			set(disable_libstdcxx_debug "-U_GLIBCXX_DEBUG -U_GLIBCXX_DEBUG_PEDANTIC")
 		endif()
 	elseif(DEBUG)
-		if(IS_LIBCXX)
-			add_definitions(-D_LIBCPP_DEBUG=0) # 0 means light checks only, it does not mean no checks
+		if(ARX_HAVE_LIBCPP_ENABLE_ASSERTIONS)
+			# libc++ 15+
+			add_definitions(-D_LIBCPP_ENABLE_ASSERTIONS=1)
+		elseif(IS_LIBCXX)
+			# older libc++ - 0 means light checks only, it does not mean no checks
+			add_definitions(-D_LIBCPP_DEBUG=0)
 		else()
+			# libstdc++
 			add_definitions(-D_GLIBCXX_ASSERTIONS=1)
+		endif()
+	elseif(SET_OPTIMIZATION_FLAGS)
+		if(IS_LIBCXX)
+			add_cxxflag("-Wp,-D_LIBCPP_ENABLE_ASSERTIONS=0")
+		else()
+			add_cxxflag("-Wp,-U_GLIBCXX_ASSERTIONS")
 		endif()
 	endif()
 	
@@ -447,10 +466,6 @@ else(MSVC)
 			endif()
 			
 		endforeach(flag_var)
-		
-		if(NOT DEBUG AND NOT IS_LIBCXX)
-			add_cxxflag("-Wp,-U_GLIBCXX_ASSERTIONS")
-		endif()
 		
 		if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 			
