@@ -62,15 +62,17 @@ void assertionFailed(const char * expr, const char * file, unsigned int line,
 
 #endif // ARX_DEBUG
 
-// When building without exceptions, there's a chance the boost precompiled library are built with exception handling turned on... in that case
-// we would get an undefined symbol at link time.  In order to solve this, we define this symbol here:
-#if defined(BOOST_NO_EXCEPTIONS)
-
-namespace boost {
-	void throw_exception(const std::exception & e) {
-		arx_assert_msg(false, "Boost triggered an unhandled exception! %s", e.what());
-		ARX_UNUSED(e);
-	}
+// When building without exceptions, there's a chance the boost precompiled library are built with exception
+// handling turned on... in that case we would get an undefined symbol at link time.
+// In order to solve this, we define this symbol here:
+#ifdef BOOST_NO_EXCEPTIONS
+void boost::throw_exception(const std::exception & e) {
+	#ifdef ARX_DEBUG
+	assertionFailed(e.what(), "Boost", 0, nullptr);
+	arx_trap();
+	#else
+	ARX_UNUSED(e);
+	arx_unreachable();
+	#endif
 }
-
-#endif
+#endif // BOOST_NO_EXCEPTIONS
