@@ -477,6 +477,11 @@ else(MSVC)
 			endif()
 			
 			add_cxxflag("-ffast-math")
+			if(FLAG_FOUND)
+				# Prevent linking crtfastmath.o into shared libraries loaded by other applications
+				# that might not expect denormals to be disabled.
+				set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -fno-fast-math")
+			endif()
 			
 		endif()
 		
