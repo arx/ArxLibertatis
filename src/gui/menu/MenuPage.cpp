@@ -102,7 +102,7 @@ void MenuPage::addCorner(Widget * widget, Anchor anchor) {
 	
 	widget->setPosition(pos);
 	
-	m_children.add(widget);
+	m_children.add(std::unique_ptr<Widget>(widget));
 	
 }
 
@@ -115,12 +115,12 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 	
 	float height = widget->m_rect.height();
 	float whitespace = (widget->type() == WidgetType_Spacer) ? widget->m_rect.height() : 0.f;
-	for(Widget * child : m_children.widgets()) {
+	for(const Widget & child : m_children.widgets()) {
 		height += RATIO_Y(m_rowSpacing);
-		height += child->m_rect.height();
+		height += child.m_rect.height();
 		whitespace += RATIO_Y(m_rowSpacing);
-		if(child->type() == WidgetType_Spacer) {
-			whitespace += child->m_rect.height();
+		if(child.type() == WidgetType_Spacer) {
+			whitespace += child.m_rect.height();
 		}
 	}
 	
@@ -133,15 +133,15 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 	
 	float y = std::floor(m_content.center().y - height / 2.f);
 	
-	for(Widget * child : m_children.widgets()) {
-		child->setPosition(Vec2f(child->m_rect.left, y));
-		y += child->m_rect.height() * ((child->type() == WidgetType_Spacer) ? squish : 1.f);
+	for(Widget & child : m_children.widgets()) {
+		child.setPosition(Vec2f(child.m_rect.left, y));
+		y += child.m_rect.height() * ((child.type() == WidgetType_Spacer) ? squish : 1.f);
 		y += RATIO_Y(m_rowSpacing) * squish;
 	}
 	
 	widget->setPosition(Vec2f(x, y));
 	
-	m_children.add(widget);
+	m_children.add(std::unique_ptr<Widget>(widget));
 	
 }
 
@@ -174,9 +174,8 @@ void MenuPage::update(Vec2f pos) {
 		
 		bool isShortcutPressed = false;
 		
-		for(Widget * widget : m_children.widgets()) {
-			arx_assert(widget);
-			if(widget->shortcut() != ActionKey::UNUSED && GInput->isKeyPressed(widget->shortcut())) {
+		for(const Widget & widget : m_children.widgets()) {
+			if(widget.shortcut() != ActionKey::UNUSED && GInput->isKeyPressed(widget.shortcut())) {
 				isShortcutPressed = true;
 			}
 		}
@@ -187,19 +186,18 @@ void MenuPage::update(Vec2f pos) {
 		
 	} else {
 		
-		for(Widget * widget : m_children.widgets()) {
-			arx_assert(widget);
+		for(Widget & widget : m_children.widgets()) {
 			
-			if(m_focused && widget != m_focused) {
+			if(m_focused && &widget != m_focused) {
 				continue;
 			}
 			
-			if(widget->shortcut() != ActionKey::UNUSED && GInput->isKeyPressedNowUnPressed(widget->shortcut())) {
+			if(widget.shortcut() != ActionKey::UNUSED && GInput->isKeyPressedNowUnPressed(widget.shortcut())) {
 				
-				m_selected = widget;
+				m_selected = &widget;
 				
-				if(widget->click() && widget != m_focused) {
-					m_focused = widget;
+				if(widget.click() && &widget != m_focused) {
+					m_focused = &widget;
 				}
 				
 				return;

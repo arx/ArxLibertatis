@@ -19,40 +19,37 @@
 
 #include "gui/widget/WidgetContainer.h"
 
+#include <utility>
+
 #include "core/ArxGame.h"
 #include "graphics/DrawLine.h"
 
-WidgetContainer::~WidgetContainer() {
-	for(Widget * w : m_widgets) {
-		delete w;
-	}
-}
-
 void WidgetContainer::update() {
-	for(Widget * w : m_widgets) {
-		w->update();
+	for(Widget & widget : widgets()) {
+		widget.update();
 	}
 }
 
 void WidgetContainer::render(const Widget * selected) {
-	for(Widget * w : m_widgets) {
-		w->render(w == selected);
+	for(Widget & widget : widgets()) {
+		widget.render(&widget == selected);
 	}
 }
 
-void WidgetContainer::add(Widget * widget) {
-	m_widgets.push_back(widget);
+void WidgetContainer::add(std::unique_ptr<Widget> widget) {
+	arx_assert(widget);
+	m_widgets.emplace_back(std::move(widget));
 }
 
 Widget * WidgetContainer::getWidgetAt(const Vec2f & mousePos) const {
 	
-	for(Widget * widget : m_widgets) {
+	for(Widget & widget : widgets()) {
 		
-		if(!widget->isEnabled()) {
+		if(!widget.isEnabled()) {
 			continue;
 		}
 		
-		if(Widget * mouseOverWidget = widget->getWidgetAt(mousePos)) {
+		if(Widget * mouseOverWidget = widget.getWidgetAt(mousePos)) {
 			return mouseOverWidget;
 		}
 		
@@ -62,8 +59,8 @@ Widget * WidgetContainer::getWidgetAt(const Vec2f & mousePos) const {
 }
 
 void WidgetContainer::move(const Vec2f & offset) {
-	for(Widget * w : m_widgets) {
-		w->move(offset);
+	for(Widget & widget : widgets()) {
+		widget.move(offset);
 	}
 }
 
@@ -73,8 +70,8 @@ void WidgetContainer::drawDebug() {
 		return;
 	}
 	
-	for(Widget * w : m_widgets) {
-		drawLineRectangle(w->m_rect, 0.f, Color::red);
+	for(const Widget & widget : widgets()) {
+		drawLineRectangle(widget.m_rect, 0.f, Color::red);
 	}
 	
 }

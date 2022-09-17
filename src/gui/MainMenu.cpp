@@ -22,9 +22,11 @@
 #include <algorithm>
 #include <functional>
 #include <iomanip>
+#include <memory>
 #include <numeric>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 #include "audio/Audio.h"
@@ -1591,10 +1593,10 @@ protected:
 	
 	void reinitActionKeys() {
 		
-		for(Widget * widget : m_children.widgets()) {
-			if(widget->type() == WidgetType_Panel) {
-				PanelWidget * panel = static_cast<PanelWidget *>(widget);
-				for(Widget * child : panel->children()) {
+		for(Widget & widget : m_children.widgets()) {
+			if(widget.type() == WidgetType_Panel) {
+				PanelWidget & panel = static_cast<PanelWidget &>(widget);
+				for(Widget * child : panel.children()) {
 					if(child->type() == WidgetType_Keybind) {
 						KeybindWidget * keybind = static_cast<KeybindWidget *>(child);
 						keybind->setKey(config.actions[keybind->action()].key[keybind->index()]);
@@ -1830,7 +1832,7 @@ void MainMenu::init() {
 	float yOffset = RATIO_Y(50);
 	
 	{
-		TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_resumegame"));
+		auto txt = std::make_unique<TextWidget>(hFontMainMenu, getLocalised("system_menus_main_resumegame"));
 		txt->clicked = [](Widget * /* widget */) {
 			if(g_canResumeGame) {
 				ARXMenu_ResumeGame();
@@ -1839,12 +1841,12 @@ void MainMenu::init() {
 			}
 		};
 		txt->setPosition(pos);
-		m_widgets->add(txt);
-		m_resumeGame = txt;
+		m_resumeGame = txt.get();
+		m_widgets->add(std::move(txt));
 	}
 	pos.y += yOffset;
 	{
-		TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_newquest"));
+		auto txt = std::make_unique<TextWidget>(hFontMainMenu, getLocalised("system_menus_main_newquest"));
 		txt->clicked = [this](Widget * /* widget */) {
 			if(g_canResumeGame) {
 				requestPage(Page_NewQuestConfirm);
@@ -1856,37 +1858,37 @@ void MainMenu::init() {
 			}
 		};
 		txt->setPosition(pos);
-		m_widgets->add(txt);
+		m_widgets->add(std::move(txt));
 	}
 	pos.y += yOffset;
 	{
-		TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_editquest"));
+		auto txt = std::make_unique<TextWidget>(hFontMainMenu, getLocalised("system_menus_main_editquest"));
 		txt->setTargetPage(Page_LoadOrSave);
 		txt->setPosition(pos);
-		m_widgets->add(txt);
+		m_widgets->add(std::move(txt));
 	}
 	pos.y += yOffset;
 	{
-		TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_options"));
+		auto txt = std::make_unique<TextWidget>(hFontMainMenu, getLocalised("system_menus_main_options"));
 		txt->setTargetPage(Page_Options);
 		txt->setPosition(pos);
-		m_widgets->add(txt);
+		m_widgets->add(std::move(txt));
 	}
 	pos.y += yOffset;
 	{
-		TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_credits"));
+		auto txt = std::make_unique<TextWidget>(hFontMainMenu, getLocalised("system_menus_main_credits"));
 		txt->clicked = [](Widget * /* widget */) {
 			MenuFader_start(Fade_In, Mode_Credits);
 		};
 		txt->setPosition(pos);
-		m_widgets->add(txt);
+		m_widgets->add(std::move(txt));
 	}
 	pos.y += yOffset;
 	{
-		TextWidget * txt = new TextWidget(hFontMainMenu, getLocalised("system_menus_main_quit"));
+		auto txt = std::make_unique<TextWidget>(hFontMainMenu, getLocalised("system_menus_main_quit"));
 		txt->setTargetPage(Page_QuitConfirm);
 		txt->setPosition(pos);
-		m_widgets->add(txt);
+		m_widgets->add(std::move(txt));
 	}
 	pos.y += yOffset;
 	
@@ -1898,23 +1900,23 @@ void MainMenu::init() {
 			version += "\"";
 		}
 		float verPosX = g_size.right - 20 * g_sizeRatio.x - hFontControls->getTextSize(version).width();
-		TextWidget * txt = new TextWidget(hFontControls, version);
+		auto txt = std::make_unique<TextWidget>(hFontControls, version);
 		txt->setEnabled(false);
 		txt->forceDisplay(TextWidget::Disabled);
 		txt->setPosition(RATIO_2(Vec2f(verPosX / g_sizeRatio.x, 80)));
-		m_widgets->add(txt);
+		m_widgets->add(std::move(txt));
 	}
 	
 	{
-		TextWidget * txt;
+		std::unique_ptr<TextWidget> txt;
 		if(g_iconFont) {
-			txt = new TextWidget(g_iconFont, getLocalised("system_localization"));
+			txt = std::make_unique<TextWidget>(g_iconFont, getLocalised("system_localization"));
 		} else {
-			txt = new TextWidget(hFontMenu, "Language");
+			txt = std::make_unique<TextWidget>(hFontMenu, "Language");
 		}
 		txt->setTargetPage(Page_Localization);
 		txt->setPosition(Vec2f(g_size.bottomRight() - txt->font()->getTextSize(txt->text()).size()) - Vec2f(minSizeRatio() * 25.f, 0.f));
-		m_widgets->add(txt);
+		m_widgets->add(std::move(txt));
 	}
 	
 }

@@ -20,30 +20,30 @@
 #ifndef ARX_GUI_WIDGET_WIDGETCONTAINER_H
 #define ARX_GUI_WIDGET_WIDGETCONTAINER_H
 
+#include <memory>
 #include <vector>
 
 #include "gui/widget/Widget.h"
+#include "util/Range.h"
 
 class WidgetContainer {
 	
 public:
 	
-	~WidgetContainer();
-	
 	void update();
 	void render(const Widget * selected = nullptr);
 	
-	void add(Widget * widget);
+	void add(std::unique_ptr<Widget> widget);
 	Widget * getWidgetAt(const Vec2f & mousePos) const;
 	
 	void move(const Vec2f & offset);
 	void drawDebug();
 	
-	const std::vector<Widget *> & widgets() const { return m_widgets; }
+	auto widgets() const { return util::dereference(m_widgets); }
 	
 private:
 	
-	std::vector<Widget *> m_widgets;
+	std::vector<std::unique_ptr<Widget>> m_widgets;
 	
 };
 
