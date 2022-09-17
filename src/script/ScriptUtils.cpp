@@ -140,7 +140,7 @@ std::string Context::getWord() {
 	std::string word;
 	std::string var;
 	
-	if(m_pos != esdat.size() && esdat[m_pos] == '"') {
+	if(esdat[m_pos] == '"') {
 		
 		for(m_pos++; m_pos != esdat.size() && esdat[m_pos] != '"'; m_pos++) {
 			if(esdat[m_pos] == '\n') {
