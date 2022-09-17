@@ -37,7 +37,7 @@ public:
 	MainMenu & operator=(const MainMenu &) = delete;
 	
 	explicit MainMenu();
-	virtual ~MainMenu();
+	~MainMenu();
 	
 	void init();
 	void initWindowPages();
