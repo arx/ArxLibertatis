@@ -1593,7 +1593,7 @@ protected:
 	
 	void reinitActionKeys() {
 		
-		for(Widget & widget : m_children.widgets()) {
+		for(Widget & widget : children()) {
 			if(widget.type() == WidgetType_Panel) {
 				PanelWidget & panel = static_cast<PanelWidget &>(widget);
 				for(Widget & child : panel.children()) {

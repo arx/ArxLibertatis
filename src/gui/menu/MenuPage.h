@@ -67,11 +67,12 @@ public:
 	void unfocus();
 	
 	float m_rowSpacing;
-	WidgetContainer m_children;
 	
 	MENUSTATE id() const { return m_id; }
 	
 	void setSize(const Vec2f & size) { m_content = m_rect = Rectf(size.x, size.y); }
+	
+	auto children() { return m_children.widgets(); }
 	
 protected:
 	
@@ -109,6 +110,7 @@ private:
 	Widget * m_selected;
 	Widget * m_focused;
 	bool m_disableShortcuts;
+	WidgetContainer m_children;
 	
 };
 
