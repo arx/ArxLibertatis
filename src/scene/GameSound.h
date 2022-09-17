@@ -213,7 +213,7 @@ long ARX_SOUND_IsEnabled();
 void ARX_SOUND_SetListener(const Vec3f & position, const Vec3f & front, const Vec3f & up);
 
 audio::SampleHandle ARX_SOUND_Load(const res::path & name);
-void ARX_SOUND_Free(const audio::SampleHandle & sample);
+void ARX_SOUND_Free(audio::SampleHandle sample);
 
 void ARX_SOUND_PlaySFX(audio::SampleHandle sample_id, const Vec3f * position = nullptr, float pitch = 1.f);
 

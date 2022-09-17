@@ -673,7 +673,7 @@ audio::SampleHandle ARX_SOUND_Load(const res::path & name) {
 	return audio::createSample(sample_name.set_ext(ARX_SOUND_FILE_EXTENSION_WAV));
 }
 
-void ARX_SOUND_Free(const audio::SampleHandle & sample) {
+void ARX_SOUND_Free(audio::SampleHandle sample) {
 	if(g_soundInitialized && sample != audio::SampleHandle()) {
 		audio::deleteSample(sample);
 	}
