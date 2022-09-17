@@ -206,10 +206,6 @@ static void drawDebugZones() {
 				drawLine(points[i] + offset, points[(i + 1) % points.size()] + offset, color);
 				drawLine(points[i], points[i] + offset, color);
 			}
-		}
-		
-		// Display the name and controlling entity for close zones
-		if(zone.height > 0) {
 			center = (zone.bbmin + zone.bbmax) / 2.f;
 		} else if(!points.empty()) {
 			center /= float(points.size());
@@ -217,6 +213,7 @@ static void drawDebugZones() {
 			center = zone.pos;
 		}
 		
+		// Display the name and controlling entity for close zones
 		if(closerThan(center, player.pos, DebugTextMaxDistance)) {
 			drawTextAt(hFontDebug, center, zone.name, color * 0.5f + Color::gray(0.5f));
 			float offset = 0;
