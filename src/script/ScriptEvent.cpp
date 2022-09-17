@@ -324,9 +324,9 @@ ScriptResult ScriptEvent::send(const EERIE_SCRIPT * es, Entity * sender, Entity 
 				context.skipCommand();
 				res = script::Command::Failed;
 			} else if(context.getParameters().isPeekOnly()) {
-				res = it->second->peek(context);
+				res = command.peek(context);
 			} else {
-				res = it->second->execute(context);
+				res = command.execute(context);
 			}
 			
 			if(res == script::Command::AbortAccept) {
