@@ -372,11 +372,11 @@ void RaycastDebugDraw() {
 	RenderState nullState;
 	UseRenderState state(nullState);
 	
-	for(auto & ray: dbg_rays) {
+	for(const auto & ray: dbg_rays) {
 		drawLine(ray.first, ray.second, Color::magenta);
 	}
 	
-	for(auto & tile: dbg_tiles) {
+	for(const auto & tile: dbg_tiles) {
 		Vec3f foo = Vec3f(tile.x * 100.f, g_camera->pos.y + 80.f, tile.y * 100.f);
 		drawLine(foo, foo + Vec3f(100.f, 0.f, 0.f), Color::white);
 		drawLine(foo + Vec3f(100.f, 0.f, 0.f), foo + Vec3f(100.f, 0.f, 100.f), Color::white);
@@ -384,7 +384,7 @@ void RaycastDebugDraw() {
 		drawLine(foo, foo + Vec3f(0.f, 0.f, 100.f), Color::white);
 	}
 	
-	for(auto hit : dbg_hits) {
+	for(const auto & hit : dbg_hits) {
 		drawLineCross(hit.pos, hit.c, 2);
 		
 		Vec3f pp[4];
