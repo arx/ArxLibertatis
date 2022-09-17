@@ -65,10 +65,11 @@ static Vec2s lMaxSymbolDrawSize;
 //-----------------------------------------------------------------------------
 // Initializes Spell engine (Called once at DANAE startup)
 void ARX_SPELLS_Init_Rects() {
+	
 	lMaxSymbolDrawSize.x = std::numeric_limits<s16>::min();
 	lMaxSymbolDrawSize.y = std::numeric_limits<s16>::min();
-
-	for(RuneInfo & info : runeInfos) {
+	
+	for(const RuneInfo & info : runeInfos) {
 		
 		Vec2s iMin;
 		Vec2s iMax;
@@ -76,7 +77,9 @@ void ARX_SPELLS_Init_Rects() {
 		
 		Vec2s iSize = iMax - iMin;
 		lMaxSymbolDrawSize = glm::max(iSize, lMaxSymbolDrawSize);
+		
 	}
+	
 }
 
 static void updateIOLight(Entity * io) {
