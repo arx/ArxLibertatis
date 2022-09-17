@@ -34,7 +34,7 @@ void WidgetContainer::update() {
 	}
 }
 
-void WidgetContainer::render(Widget * selected) {
+void WidgetContainer::render(const Widget * selected) {
 	for(Widget * w : m_widgets) {
 		w->render(w == selected);
 	}

@@ -31,7 +31,7 @@ public:
 	virtual ~WidgetContainer();
 	
 	void update();
-	void render(Widget * selected = nullptr);
+	void render(const Widget * selected = nullptr);
 	
 	void add(Widget * widget);
 	Widget * getWidgetAt(const Vec2f & mousePos) const;
