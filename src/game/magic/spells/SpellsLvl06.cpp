@@ -167,7 +167,7 @@ void RiseDeadSpell::Update() {
 	
 	GameDuration tim = m_fissure.m_elapsed;
 	
-	if(tim > 3s && m_entity == EntityHandle() && !m_creationFailed) {
+	if(tim > 3s && m_entity == EntityHandle()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_ELECTRIC, &m_targetPos);
 		
 		Cylinder phys = Cylinder(m_targetPos, 50, -200);
