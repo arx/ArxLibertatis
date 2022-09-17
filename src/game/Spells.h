@@ -90,9 +90,9 @@ public:
 	void endByTarget(EntityHandle target, SpellType type) noexcept;
 	void endByType(SpellType type) noexcept;
 	
-	[[nodiscard]] Spell * getSpellByCaster(EntityHandle caster, SpellType type) noexcept;
-	[[nodiscard]] Spell * getSpellOnTarget(EntityHandle target, SpellType type) noexcept;
-	[[nodiscard]] float getTotalSpellCasterLevelOnTarget(EntityHandle target, SpellType type) noexcept;
+	[[nodiscard]] Spell * getSpellByCaster(EntityHandle caster, SpellType type) const noexcept;
+	[[nodiscard]] Spell * getSpellOnTarget(EntityHandle target, SpellType type) const noexcept;
+	[[nodiscard]] float getTotalSpellCasterLevelOnTarget(EntityHandle target, SpellType type) const noexcept;
 	
 	void replaceCaster(EntityHandle oldCaster, EntityHandle newCaster) noexcept;
 	void removeTarget(Entity * io) noexcept;

@@ -200,7 +200,7 @@ void SpellManager::endByCaster(EntityHandle caster, SpellType type) noexcept {
 	
 }
 
-Spell * SpellManager::getSpellByCaster(EntityHandle caster, SpellType type) noexcept {
+Spell * SpellManager::getSpellByCaster(EntityHandle caster, SpellType type) const noexcept {
 	
 	if(caster == EntityHandle()) {
 		return nullptr;
@@ -215,7 +215,7 @@ Spell * SpellManager::getSpellByCaster(EntityHandle caster, SpellType type) noex
 	return nullptr;
 }
 
-Spell * SpellManager::getSpellOnTarget(EntityHandle target, SpellType type) noexcept {
+Spell * SpellManager::getSpellOnTarget(EntityHandle target, SpellType type) const noexcept {
 	
 	if(target == EntityHandle()) {
 		return nullptr;
@@ -230,10 +230,10 @@ Spell * SpellManager::getSpellOnTarget(EntityHandle target, SpellType type) noex
 	return nullptr;
 }
 
-float SpellManager::getTotalSpellCasterLevelOnTarget(EntityHandle target, SpellType type) noexcept {
+float SpellManager::getTotalSpellCasterLevelOnTarget(EntityHandle target, SpellType type) const noexcept {
 	
 	float level = 0.f;
-	for(Spell & spell : ofType(type)) {
+	for(const Spell & spell : ofType(type)) {
 		if(std::find(spell.m_targets.begin(), spell.m_targets.end(), target) != spell.m_targets.end()) {
 			level += spell.m_level;
 		}
