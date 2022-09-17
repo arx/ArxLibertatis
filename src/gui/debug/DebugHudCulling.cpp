@@ -220,7 +220,7 @@ void debugHud_Culling() {
 	
 	// Draw statistics
 	int advance = hFontDebug->getMaxAdvance() * 18;
-	Vec2i textpos = Vec2i(g_size.bottomCenter()) - Vec2i(advance * std::size(labels) / 2, bottomMargin * 2);
+	Vec2i textpos = g_size.bottomCenter() - Vec2i(advance * std::size(labels) / 2, bottomMargin * 2);
 	for(size_t i = 0; i < std::size(labels); i++) {
 		arx_assert(i < std::size(colors) && i < std::size(sums));
 		std::ostringstream oss;
