@@ -93,7 +93,7 @@ void DebugBox::calcSizes() {
 			if(!first) {
 				bool numeric = true;
 				for(size_t u = 0; u < field.size(); ++u) {
-					if(!(field[u] >= 48 && field[u] <= 57)) {
+					if(field[u] < 48 || field[u] > 57) {
 						numeric = false;
 						break;
 					}
