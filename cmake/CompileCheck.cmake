@@ -57,6 +57,11 @@ function(check_compile RESULT FILE FLAG TYPE)
 	elseif(TYPE STREQUAL "compiler flag")
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FLAG}")
 	endif()
+	get_directory_property(compile_definitions DIRECTORY "${CMAKE_SOURCE_DIR}" COMPILE_DEFINITIONS)
+	set(compile_defs)
+	foreach(def IN LISTS compile_definitions)
+		list(APPEND compile_defs "-D${def}")
+	endforeach()
 	
 	# Check if we can compile and link a simple file with the new flags
 	try_compile(
@@ -66,6 +71,7 @@ function(check_compile RESULT FILE FLAG TYPE)
 		            "-DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}"
 		            "-DCMAKE_MODULE_LINKER_FLAGS:STRING=${CMAKE_MODULE_LINKER_FLAGS}"
 		            "-DLINK_LIBRARIES=${ARGV4}"
+		COMPILE_DEFINITIONS "${compile_defs}"
 		OUTPUT_VARIABLE ERRORLOG
 	)
 	
