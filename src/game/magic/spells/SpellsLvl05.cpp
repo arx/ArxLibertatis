@@ -473,7 +473,7 @@ void RepelUndeadSpell::Update() {
 
 PoisonProjectileSpell::~PoisonProjectileSpell() {
 	
-	for(CPoisonProjectile & projectile : util::dereference(m_projectiles)) {
+	for(const CPoisonProjectile & projectile : util::dereference(m_projectiles)) {
 		endLightDelayed(projectile.lLightId, 2s);
 	}
 	
@@ -564,7 +564,7 @@ void PoisonProjectileSpell::Launch() {
 
 void PoisonProjectileSpell::End() {
 	
-	for(CPoisonProjectile & projectile : util::dereference(m_projectiles)) {
+	for(const CPoisonProjectile & projectile : util::dereference(m_projectiles)) {
 		
 		endLightDelayed(projectile.lLightId, 2s);
 		
