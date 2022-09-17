@@ -52,7 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace audio {
 
-class Sample : public ResourceHandle {
+class Sample final : public ResourceHandle {
 	
 public:
 	
