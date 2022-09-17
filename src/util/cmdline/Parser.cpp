@@ -83,7 +83,7 @@ void parse(interpreter<std::string> & cli, int argc, char ** argv) {
 				if(sep != std::string::npos) {
 					// Re-insert remaining part of the token as an argument
 					*p = option.substr(sep + 1);
-					option = option.substr(0, sep);
+					option.resize(sep);
 				} else {
 					// Token fully consumed as an option
 					++p;
