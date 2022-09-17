@@ -177,7 +177,7 @@ extern std::vector<TREATZONE_IO> treatio;
 void TREATZONE_Clear();
 void TREATZONE_Release();
 void TREATZONE_AddIO(Entity * io, bool justCollide = false);
-void TREATZONE_RemoveIO(Entity * io);
+void TREATZONE_RemoveIO(const Entity * io);
 bool IsSameObject(Entity * io, Entity * ioo);
 void ARX_INTERACTIVE_ClearAllDynData();
 bool HaveCommonGroup(Entity * io, Entity * ioo);
