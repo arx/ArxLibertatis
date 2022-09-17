@@ -954,7 +954,7 @@ void PrecastSpellsGui::update() {
 	
 	for(size_t i = 0; i < Precast.size(); i++) {
 		
-		PRECAST_STRUCT & precastSlot = Precast[i];
+		const PRECAST_STRUCT & precastSlot = Precast[i];
 		
 		float val = intensity;
 		
@@ -1086,7 +1086,7 @@ void ActiveSpellsGui::draw() {
 	
 	UseRenderState state(render2D().blendAdditive());
 	
-	for(ActiveSpellIconSlot & slot : m_slots) {
+	for(const ActiveSpellIconSlot & slot : m_slots) {
 		slot.draw();
 	}
 }
