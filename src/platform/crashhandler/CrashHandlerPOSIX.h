@@ -24,7 +24,7 @@
 
 #include "platform/crashhandler/CrashHandlerImpl.h"
 
-class CrashHandlerPOSIX : public CrashHandlerImpl {
+class CrashHandlerPOSIX final : public CrashHandlerImpl {
 	
 public:
 	
