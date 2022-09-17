@@ -498,7 +498,7 @@ void IceProjectileSpell::Update() {
 	}
 	
 	for(size_t i = 0; i < std::min(m_icicles.size(), iMax + 1); i++) {
-		Icicle & icicle = m_icicles[i];
+		const Icicle & icicle = m_icicles[i];
 		
 		float t = Random::getf();
 		if(t < 0.01f) {
