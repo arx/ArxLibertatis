@@ -22,6 +22,7 @@
 #include <algorithm>
 #include <cstdio>
 #include <string>
+#include <string_view>
 #include <iomanip>
 #include <deque>
 #include <numeric>
@@ -401,7 +402,7 @@ void ShowFrameDurationPlot() {
 	Font * font = hFontDebug;
 	float lineOffset = font->getLineHeight() + 2;
 	
-	const std::string labels[3] = { "Average: ", "Worst: ", "Current: " };
+	const std::string_view labels[3] = { "Average: ", "Worst: ", "Current: " };
 	const Color colors[3] = { avgColor, worstColor, Color::white };
 	const float values[3] = { avg, worst, frameDurationPlotValues[0] };
 	
