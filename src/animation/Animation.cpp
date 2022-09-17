@@ -644,9 +644,10 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 								ARX_NPC_NeedStepSound(io, io->pos);
 							}
 						}
-					} else if(anim.frames[fr].stepSound) {
+					} else {
 						ARX_NPC_NeedStepSound(io, io->pos);
 					}
+					
 				}
 			}
 			
