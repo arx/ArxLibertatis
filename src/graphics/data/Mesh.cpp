@@ -628,61 +628,74 @@ bool FastSceneLoad(const res::path & partial_path, Vec3f & trans) {
 	
 	res::path file = "game" / partial_path / "fast.fts";
 	
-	std::string uncompressed;
 	
-	try {
-		
-		// Load the whole file
-		LogDebug("Loading " << file);
-		std::string buffer = g_resources->read(file);
-		if(buffer.empty()) {
-			LogError << "FTS: could not read " << file;
-			return false;
-		}
-		
-		const char * data = buffer.data();
-		const char * end = buffer.data() + buffer.size();
-		
-		// Read the file header
-		const UNIQUE_HEADER * uh = fts_read<UNIQUE_HEADER>(data, end);
-		if(uh->version != FTS_VERSION) {
-			LogError << "FTS version mismatch: got " << uh->version << ", expected "
-			         << FTS_VERSION << " in " << file;
-			return false;
-		}
-		progressBarAdvance();
-		LoadLevelScreen();
-		
-		// Skip .scn file list and initialize the scene data
-		(void)fts_read<UNIQUE_HEADER3>(data, end, uh->count);
-		arx_assert(g_tiles);
-		EERIE_PORTAL_Release();
-		AnchorData_ClearAll();
-		g_tiles->clear();
-		FreeRoomDistance();
-		progressBarAdvance();
-		LoadLevelScreen();
-		
-		// Decompress the actual scene data
-		uncompressed = blast(std::string_view(data, end - data), uh->uncompressedsize);
-		if(uncompressed.empty()) {
-			LogError << "Error decompressing scene data in " << file;
-			return false;
-		}
-		if(uncompressed.size() != size_t(uh->uncompressedsize)) {
-			LogWarning << "Unexpected decompressed FTS size: " << uncompressed.size()
-			           << " != " << uh->uncompressedsize << " in " << file;
-		}
-		progressBarAdvance(3.f);
-		LoadLevelScreen();
-		
-	} catch(const file_truncated_exception &) {
-		LogError << "Truncated FTS file " << file;
+	// Load the whole file
+	LogDebug("Loading " << file);
+	std::string buffer = g_resources->read(file);
+	if(buffer.empty()) {
+		LogError << "FTS: could not read " << file;
 		return false;
 	}
 	
+	const char * data = buffer.data();
+	const char * end = buffer.data() + buffer.size();
+	
+	size_t uncompressedSize = 0;
+	{
+		// Read the file header
+		if(size_t(end - data) < sizeof(UNIQUE_HEADER)) {
+			LogError << "Truncated FTS file " << file;
+			return false;
+		}
+		const UNIQUE_HEADER & uh = *reinterpret_cast<const UNIQUE_HEADER *>(data);
+		data += sizeof(UNIQUE_HEADER);
+		if(uh.version != FTS_VERSION) {
+			LogError << "FTS version mismatch: got " << uh.version << ", expected "
+			         << FTS_VERSION << " in " << file;
+			return false;
+		}
+		
+		// Skip .scn file list and initialize the scene data
+		if(size_t(end - data) < sizeof(UNIQUE_HEADER3) * uh.count) {
+			LogError << "Truncated FTS file " << file;
+			return false;
+		}
+		data += sizeof(UNIQUE_HEADER3) * uh.count;
+		
+		uncompressedSize = uh.uncompressedsize;
+	}
+	
+	progressBarAdvance();
+	LoadLevelScreen();
+	
+	{
+		buffer = blast(std::string_view(data, end - data), uncompressedSize);
+		if(buffer.empty()) {
+			LogError << "Error decompressing scene data in " << file;
+			return false;
+		}
+		if(buffer.size() != uncompressedSize) {
+			LogWarning << "Unexpected decompressed FTS size: " << buffer.size()
+			           << " != " << uncompressedSize << " in " << file;
+		}
+		data = buffer.data();
+		end = buffer.data() + buffer.size();
+	}
+	
+	progressBarAdvance(3.f);
+	LoadLevelScreen();
+	
+	arx_assert(g_tiles);
+	EERIE_PORTAL_Release();
+	AnchorData_ClearAll();
+	g_tiles->clear();
+	FreeRoomDistance();
+	
+	progressBarAdvance();
+	LoadLevelScreen();
+	
 	try {
-		return loadFastScene(file, uncompressed.data(), uncompressed.data() + uncompressed.size(), trans);
+		return loadFastScene(file, data, end, trans);
 	} catch(const file_truncated_exception &) {
 		LogError << "Truncated compressed data in FTS file " << file;
 		return false;
