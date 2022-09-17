@@ -397,10 +397,9 @@ static void Insertllight(std::array<EERIE_LIGHT *, llightsSize> & llights,
 	float dist = glm::distance(el->pos, pos);
 	
 	if(forPlayerColor) {
-		if(!(el->fallstart > 10.f && el->fallend > 100.f)) {
+		if(el->fallstart <= 10.f || el->fallend <= 100.f) {
 			return;
 		}
-		
 		dist -= el->fallstart;
 	}
 	
