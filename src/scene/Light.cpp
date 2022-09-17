@@ -641,8 +641,8 @@ void ApplyTileLights(EERIEPOLY * ep, Vec2s index) {
 		tempColor.g = c.g;
 		tempColor.b = c.b;
 		
-		Vec3f & position = ep->v[j].p;
-		Vec3f & normal = ep->nrml[j];
+		const Vec3f & position = ep->v[j].p;
+		const Vec3f & normal = ep->nrml[j];
 		
 		for(const EERIE_LIGHT & light : util::dereference(lights)) {
 			
