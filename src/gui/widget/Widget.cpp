@@ -41,7 +41,7 @@ bool Widget::click() {
 	
 	ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
 	
-	if(m_enabled && m_targetPage != NOP && g_mainMenu) {
+	if(m_targetPage != NOP && g_mainMenu) {
 		g_mainMenu->requestPage(m_targetPage);
 	}
 	
