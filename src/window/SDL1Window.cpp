@@ -132,7 +132,7 @@ bool SDL1Window::initializeFramework() {
 		
 	} else if(modes) {
 		for(; *modes; modes++) {
-			m_displayModes.push_back(Vec2i((*modes)->w, (*modes)->h));
+			m_displayModes.emplace_back(Vec2i((*modes)->w, (*modes)->h));
 		}
 	} else {
 		return false;
