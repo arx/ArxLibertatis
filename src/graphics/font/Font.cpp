@@ -183,9 +183,7 @@ bool Font::insertGlyph(Char character) {
 		arx_assert(unsigned(srcBitmap.pitch) == unsigned(srcBitmap.width));
 		
 		// Copy pixels
-		const unsigned char * src = srcBitmap.buffer;
-		unsigned char * dst = imgGlyph.getData();
-		std::memcpy(dst, src, size_t(glyph.size.x) * size_t(glyph.size.y));
+		std::memcpy(imgGlyph.getData(), srcBitmap.buffer, size_t(glyph.size.x) * size_t(glyph.size.y));
 		
 		Vec2i offset;
 		if(!m_textures->insertImage(imgGlyph, glyph.texture, offset)) {
