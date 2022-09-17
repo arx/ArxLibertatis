@@ -28,7 +28,7 @@ class WidgetContainer {
 	
 public:
 	
-	virtual ~WidgetContainer();
+	~WidgetContainer();
 	
 	void update();
 	void render(const Widget * selected = nullptr);
