@@ -259,15 +259,13 @@ static void ApplySPArm() {
 		
 		MakeSpCol();
 		
-		const char * text = "!! Toi aussi cherches les Cheats !!";
-		
 		switch (sp_arm) {
-			case 0: text = "------ZoliChapo------"; break;
-			case 1: text = "-----TiteBottine-----"; break;
-			case 2: text = "-----Roooo-La-La-----"; break;
-			default: return;
+			case 0: DisplayCheatText("------ZoliChapo------"); break;
+			case 1: DisplayCheatText("-----TiteBottine-----"); break;
+			case 2: DisplayCheatText("-----Roooo-La-La-----"); break;
+			default: arx_unreachable();
 		}
-		DisplayCheatText(text);
+		
 	}
 	
 	sp_arm++;
