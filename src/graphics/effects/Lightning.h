@@ -63,6 +63,9 @@ public:
 	explicit CLightning(Spell * spell);
 	~CLightning() override;
 	
+	CLightning(const CLightning &) = delete;
+	CLightning & operator=(const CLightning &) = delete;
+	
 	void Create(Vec3f aeFrom, Vec3f aeTo);
 	void Update(GameDuration timeDelta) override;
 	void Render() override;
