@@ -178,12 +178,12 @@ bool Font::insertGlyph(Char character) {
 		Image imgGlyph;
 		imgGlyph.create(size_t(glyph.size.x), size_t(glyph.size.y), Image::Format_A8);
 		
-		FT_Bitmap & srcBitmap = ftGlyph->bitmap;
+		const FT_Bitmap & srcBitmap = ftGlyph->bitmap;
 		arx_assert(srcBitmap.pitch >= 0);
 		arx_assert(unsigned(srcBitmap.pitch) == unsigned(srcBitmap.width));
 		
 		// Copy pixels
-		unsigned char * src = srcBitmap.buffer;
+		const unsigned char * src = srcBitmap.buffer;
 		unsigned char * dst = imgGlyph.getData();
 		std::memcpy(dst, src, size_t(glyph.size.x) * size_t(glyph.size.y));
 		
