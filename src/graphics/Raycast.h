@@ -26,8 +26,8 @@
 class Entity;
 
 enum RaycastFlag {
-	RaycastAnyHit,
-	RaycastIgnorePlayer,
+	RaycastAnyHit = (1 << 0),
+	RaycastIgnorePlayer = (1 << 1),
 };
 DECLARE_FLAGS(RaycastFlag, RaycastFlags)
 DECLARE_FLAGS_OPERATORS(RaycastFlags)
