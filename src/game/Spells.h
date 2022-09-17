@@ -98,7 +98,7 @@ public:
 	void removeTarget(Entity * io) noexcept;
 	
 	Spell & addSpell(std::unique_ptr<Spell> spell);
-	void freeSlot(Spell * spell);
+	void freeSlot(const Spell * spell);
 	
 	[[nodiscard]] auto begin() const noexcept { return util::entries(m_spells).begin(); }
 	[[nodiscard]] auto end() const noexcept { return util::entries(m_spells).end(); }

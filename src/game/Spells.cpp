@@ -278,7 +278,7 @@ Spell & SpellManager::addSpell(std::unique_ptr<Spell> spell) {
 	return *m_spells.back();
 }
 
-void SpellManager::freeSlot(Spell * spell) {
+void SpellManager::freeSlot(const Spell * spell) {
 	
 	for(std::unique_ptr<Spell> & entry : m_spells) {
 		if(entry.get() == spell) {
