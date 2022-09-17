@@ -179,7 +179,7 @@ bool ARX_PLAYER_IsInFightMode() {
 	
 	if(layer1.cur_anim) {
 		
-		auto & alist = entities.player()->anims;
+		const auto & alist = entities.player()->anims;
 		
 		if(   layer1.cur_anim == alist[ANIM_BARE_READY]
 		   || layer1.cur_anim == alist[ANIM_BARE_UNREADY]
