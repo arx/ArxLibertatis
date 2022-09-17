@@ -335,48 +335,52 @@ static void RK4Integrate(std::array<PhysicsParticle, N> & particles, float Delta
 	std::array<std::array<PhysicsParticle, N>, 5> m_TempSys;
 	
 	for(size_t jj = 0; jj < 4; jj++) {
-
+		
 		arx_assert(particles.size() == m_TempSys[jj + 1].size());
 		m_TempSys[jj + 1] = particles;
-
+		
 		if(jj == 3) {
 			halfDeltaT = DeltaTime;
 		}
-
+		
 		for(size_t kk = 0; kk < particles.size(); kk++) {
-
-			PhysicsParticle & source = particles[kk];
+			
+			const PhysicsParticle & source = particles[kk];
 			PhysicsParticle & accum1 = m_TempSys[jj + 1][kk];
 			PhysicsParticle & target = m_TempSys[0][kk];
-
+			
 			accum1.force = source.force * (source.mass * halfDeltaT);
 			accum1.velocity = source.velocity * halfDeltaT;
-
+			
 			// determine the new velocity for the particle over 1/2 time
 			target.velocity = source.velocity + accum1.force;
 			target.mass = source.mass;
-
+			
 			// set the new position
 			target.pos = source.pos + accum1.velocity;
+			
 		}
-
+		
 		ComputeForces(m_TempSys[0]); // compute the new forces
 	}
-
+	
 	for(size_t kk = 0; kk < particles.size(); kk++) {
+		
 		PhysicsParticle & particle = particles[kk];
 		
-		PhysicsParticle & accum1 = m_TempSys[1][kk];
-		PhysicsParticle & accum2 = m_TempSys[2][kk];
-		PhysicsParticle & accum3 = m_TempSys[3][kk];
-		PhysicsParticle & accum4 = m_TempSys[4][kk];
+		const PhysicsParticle & accum1 = m_TempSys[1][kk];
+		const PhysicsParticle & accum2 = m_TempSys[2][kk];
+		const PhysicsParticle & accum3 = m_TempSys[3][kk];
+		const PhysicsParticle & accum4 = m_TempSys[4][kk];
 		
 		Vec3f dv = accum1.force + ((accum2.force + accum3.force) * 2.f) + accum4.force;
 		Vec3f dp = accum1.velocity + ((accum2.velocity + accum3.velocity) * 2.f) + accum4.velocity;
 		
 		particle.velocity += (dv * sixthDeltaT);
 		particle.pos += (dp * sixthDeltaT * 1.2f); // TODO what is this 1.2 factor doing here ?
+		
 	}
+	
 }
 
 static bool IsObjectInField(const PHYSICS_BOX_DATA & pbox) {
@@ -462,7 +466,7 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 				step = 6;
 			}
 			
-			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
+			const std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
 			
 			if(io->gameFlags & GFLAG_PLATFORM) {
 				for(size_t kk = 0; kk < pbox.vert.size(); kk++) {
