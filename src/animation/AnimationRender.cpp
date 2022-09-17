@@ -471,7 +471,7 @@ static void Cedric_ApplyLighting(ShaderLight lights[], size_t lightsCount, EERIE
 		const glm::quat & quat = obj->bones[i].anim.quat;
 		/* Get light value for each vertex */
 		for(size_t vertexIndex : eobj->m_boneVertices[i]) {
-			Vec3f & position = eobj->vertexWorldPositions[vertexIndex].v;
+			const Vec3f & position = eobj->vertexWorldPositions[vertexIndex].v;
 			Vec3f normal = quat * eobj->vertexlist[vertexIndex].norm;
 			eobj->vertexColors[vertexIndex] = ApplyLight(lights, lightsCount, position, normal, colorMod);
 		}
@@ -737,7 +737,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ * eobj, const TransformInfo & t, Entity *
 
 		// HALO HANDLING START
 		if(io && (io->halo.flags & HALO_ACTIVE)) {
-			IO_HALO & halo = io->halo;
+			const IO_HALO & halo = io->halo;
 			AddFixedObjectHalo(face, t, halo, tvList, eobj);
 		}
 	}
@@ -1280,7 +1280,7 @@ static void Cedric_ConcatenateTM(Skeleton & rig, const TransformInfo & t) {
 		if(bone.father >= 0) { // Child bones
 			
 			size_t parentIndex = size_t(bone.father);
-			Bone & parent = rig.bones[parentIndex];
+			const Bone & parent = rig.bones[parentIndex];
 			// Rotation
 			bone.anim.quat = parent.anim.quat * bone.init.quat;
 			
