@@ -278,7 +278,7 @@ bool VisibleSphere(const Sphere & sphere) {
 
 static bool IsBBoxInFrustrum(const EERIE_3D_BBOX & bbox, const EERIE_FRUSTRUM & frustum) {
 	
-	Vec3f corners[] = {
+	const Vec3f corners[] = {
 		bbox.min,
 		Vec3f(bbox.max.x, bbox.min.y, bbox.min.z),
 		Vec3f(bbox.min.x, bbox.max.y, bbox.min.z),
@@ -375,7 +375,7 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 			}
 			
 			if(io) {
-				EERIE_FRUSTRUM_DATA & frustrums = g_rooms->visibility[room_num].frustrum;
+				const EERIE_FRUSTRUM_DATA & frustrums = g_rooms->visibility[room_num].frustrum;
 				// TODO also use the portals from intermediate rooms for clipping
 				if(FrustrumsClipSphere(frustrums, sphere) ||
 				   FrustrumsClipBBox3D(frustrums, io->bbox3D)
