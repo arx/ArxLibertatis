@@ -167,7 +167,7 @@ static void ReleaseAnim(EERIE_ANIM * ea) {
 		return;
 	}
 	
-	for(EERIE_FRAME & frame : ea->frames) {
+	for(const EERIE_FRAME & frame : ea->frames) {
 		ARX_SOUND_Free(frame.sample);
 	}
 	
