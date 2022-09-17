@@ -69,7 +69,7 @@ static constexpr float PATHFINDER_DISTANCE_MAX = 5000.0f;
 // Pathfinder Definitions
 static constexpr PlatformDuration PATHFINDER_UPDATE_INTERVAL = 10ms;
 
-class PathFinderThread : public StoppableThread {
+class PathFinderThread final : public StoppableThread {
 	
 	std::mutex m_mutex;
 	std::list<PATHFINDER_REQUEST> m_queue;
