@@ -1813,14 +1813,12 @@ MainMenu::MainMenu()
 	, m_window(nullptr)
 	, m_requestedPage(Page_None)
 	, m_background(nullptr)
-	, m_widgets(new WidgetContainer())
 	, m_resumeGame(nullptr)
 	, m_selected(nullptr)
 { }
 
 MainMenu::~MainMenu() {
 	delete m_window;
-	delete m_widgets;
 	delete m_background;
 }
 
@@ -1842,7 +1840,7 @@ void MainMenu::init() {
 		};
 		txt->setPosition(pos);
 		m_resumeGame = txt.get();
-		m_widgets->add(std::move(txt));
+		m_widgets.add(std::move(txt));
 	}
 	pos.y += yOffset;
 	{
@@ -1858,21 +1856,21 @@ void MainMenu::init() {
 			}
 		};
 		txt->setPosition(pos);
-		m_widgets->add(std::move(txt));
+		m_widgets.add(std::move(txt));
 	}
 	pos.y += yOffset;
 	{
 		auto txt = std::make_unique<TextWidget>(hFontMainMenu, getLocalised("system_menus_main_editquest"));
 		txt->setTargetPage(Page_LoadOrSave);
 		txt->setPosition(pos);
-		m_widgets->add(std::move(txt));
+		m_widgets.add(std::move(txt));
 	}
 	pos.y += yOffset;
 	{
 		auto txt = std::make_unique<TextWidget>(hFontMainMenu, getLocalised("system_menus_main_options"));
 		txt->setTargetPage(Page_Options);
 		txt->setPosition(pos);
-		m_widgets->add(std::move(txt));
+		m_widgets.add(std::move(txt));
 	}
 	pos.y += yOffset;
 	{
@@ -1881,14 +1879,14 @@ void MainMenu::init() {
 			MenuFader_start(Fade_In, Mode_Credits);
 		};
 		txt->setPosition(pos);
-		m_widgets->add(std::move(txt));
+		m_widgets.add(std::move(txt));
 	}
 	pos.y += yOffset;
 	{
 		auto txt = std::make_unique<TextWidget>(hFontMainMenu, getLocalised("system_menus_main_quit"));
 		txt->setTargetPage(Page_QuitConfirm);
 		txt->setPosition(pos);
-		m_widgets->add(std::move(txt));
+		m_widgets.add(std::move(txt));
 	}
 	pos.y += yOffset;
 	
@@ -1904,7 +1902,7 @@ void MainMenu::init() {
 		txt->setEnabled(false);
 		txt->forceDisplay(TextWidget::Disabled);
 		txt->setPosition(RATIO_2(Vec2f(verPosX / g_sizeRatio.x, 80)));
-		m_widgets->add(std::move(txt));
+		m_widgets.add(std::move(txt));
 	}
 	
 	{
@@ -1916,7 +1914,7 @@ void MainMenu::init() {
 		}
 		txt->setTargetPage(Page_Localization);
 		txt->setPosition(Vec2f(g_size.bottomRight() - txt->font()->getTextSize(txt->text()).size()) - Vec2f(minSizeRatio() * 25.f, 0.f));
-		m_widgets->add(std::move(txt));
+		m_widgets.add(std::move(txt));
 	}
 	
 }
@@ -1927,7 +1925,7 @@ void MainMenu::update() {
 		m_resumeGame->setEnabled(g_canResumeGame || !savegames.empty());
 	}
 	
-	m_selected = m_widgets->getWidgetAt(Vec2f(GInput->getMousePosition()));
+	m_selected = m_widgets.getWidgetAt(Vec2f(GInput->getMousePosition()));
 	
 	if(m_selected && GInput->getMouseButton(Mouse::Button_0)) {
 		m_selected->click();
@@ -1943,7 +1941,7 @@ void MainMenu::update() {
 		m_window->setCurrentPage(m_requestedPage);
 	}
 	
-	m_widgets->update();
+	m_widgets.update();
 	
 	if(m_selected) {
 		pMenuCursor->SetMouseOver();
@@ -1962,9 +1960,9 @@ void MainMenu::render() {
 		EERIEDrawBitmap(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.999f, m_background, Color::white);
 	}
 	
-	m_widgets->render(m_selected);
+	m_widgets.render(m_selected);
 	
-	m_widgets->drawDebug();
+	m_widgets.drawDebug();
 	
 	if(m_window) {
 		m_window->render();

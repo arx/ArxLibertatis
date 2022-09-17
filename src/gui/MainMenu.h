@@ -58,7 +58,7 @@ private:
 	MENUSTATE m_requestedPage;
 	
 	TextureContainer * m_background;
-	WidgetContainer * m_widgets;
+	WidgetContainer m_widgets;
 	
 	TextWidget * m_resumeGame;
 	
