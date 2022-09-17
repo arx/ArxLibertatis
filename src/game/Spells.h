@@ -115,7 +115,7 @@ public:
 		});
 	}
 	
-	Spell * getById(std::string_view idString) const noexcept;
+	[[nodiscard]] Spell * getById(std::string_view idString) const noexcept;
 	
 private:
 	
