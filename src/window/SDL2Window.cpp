@@ -212,7 +212,7 @@ bool SDL2Window::initializeFramework() {
 		for(int i = 0; i < modes; i++) {
 			SDL_DisplayMode mode;
 			if(SDL_GetDisplayMode(display, i, &mode) >= 0) {
-				m_displayModes.push_back(DisplayMode(Vec2i(mode.w, mode.h), mode.refresh_rate));
+				m_displayModes.emplace_back(Vec2i(mode.w, mode.h), mode.refresh_rate);
 			}
 		}
 	}
