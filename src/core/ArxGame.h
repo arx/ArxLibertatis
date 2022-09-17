@@ -52,7 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "window/Window.h"
 
-class ArxGame : public Application, public Window::Listener, public Renderer::Listener {
+class ArxGame final : public Application, public Window::Listener, public Renderer::Listener {
 	
 protected:
 	
