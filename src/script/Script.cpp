@@ -428,12 +428,46 @@ static Date getSystemTime() {
 	PlatformInstant s_frameSystemTimeFrame = 0;
 	
 	if(s_frameSystemTimeFrame != g_platformTime.frameStart()) {
-		std::time_t now = std::time(nullptr);
-		std::tm local_tm = *std::localtime(&now);
-		s_frameSystemTime.year = static_cast<std::uint16_t>(local_tm.tm_year + 1900);
-		s_frameSystemTime.month = static_cast<std::uint8_t>(local_tm.tm_mon + 1);
-		s_frameSystemTime.day = static_cast<std::uint8_t>(local_tm.tm_mday);
-		s_frameSystemTimeFrame = g_platformTime.frameStart();
+		if(config.misc.realtimeOverride.empty()) {
+			std::time_t now = std::time(nullptr);
+			std::tm local_tm = *std::localtime(&now);
+			s_frameSystemTime.year = static_cast<std::uint16_t>(local_tm.tm_year + 1900);
+			s_frameSystemTime.month = static_cast<std::uint8_t>(local_tm.tm_mon + 1);
+			s_frameSystemTime.day = static_cast<std::uint8_t>(local_tm.tm_mday);
+			s_frameSystemTimeFrame = g_platformTime.frameStart();
+		} else {
+			size_t begin = config.misc.realtimeOverride.find_first_of("123456789");
+			if(begin == std::string::npos) {
+				s_frameSystemTime = { 2002, 6, 28 };
+			} else {
+				size_t end = config.misc.realtimeOverride.find_first_not_of("0123456789", begin + 1);
+				if(end == std::string::npos) {
+					end = config.misc.realtimeOverride.size();
+				}
+				s_frameSystemTime.year = util::parseInt(std::string_view(config.misc.realtimeOverride).substr(begin, end - begin));
+				begin = config.misc.realtimeOverride.find_first_of("123456789", end);
+				if(begin == std::string::npos) {
+					s_frameSystemTime.month = 1;
+					s_frameSystemTime.day = 1;
+				} else {
+					end = config.misc.realtimeOverride.find_first_not_of("0123456789", begin + 1);
+					if(end == std::string::npos) {
+						end = config.misc.realtimeOverride.size();
+					}
+					s_frameSystemTime.month = util::parseInt(std::string_view(config.misc.realtimeOverride).substr(begin, end - begin));
+					begin = config.misc.realtimeOverride.find_first_of("123456789", end);
+					if(begin == std::string::npos) {
+						s_frameSystemTime.day = 1;
+					} else {
+						end = config.misc.realtimeOverride.find_first_not_of("0123456789", begin + 1);
+						if(end == std::string::npos) {
+							end = config.misc.realtimeOverride.size();
+						}
+						s_frameSystemTime.day = util::parseInt(std::string_view(config.misc.realtimeOverride).substr(begin, end - begin));
+					}
+				}
+			}
+		}
 	}
 	
 	return s_frameSystemTime;
