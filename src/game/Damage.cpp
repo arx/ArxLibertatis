@@ -120,7 +120,7 @@ struct DAMAGE_INFO {
 
 static std::vector<DAMAGE_INFO> g_damages;
 
-void damageClearSpell(Spell * spell) {
+void damageClearSpell(const Spell * spell) {
 	for(DAMAGE_INFO & damage : g_damages) {
 		if(damage.spell == spell) {
 			damage.spell = nullptr;

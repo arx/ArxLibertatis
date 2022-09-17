@@ -124,7 +124,7 @@ struct DamageParameters {
 	
 };
 
-void damageClearSpell(Spell * spell);
+void damageClearSpell(const Spell * spell);
 
 DamageHandle DamageCreate(Spell * spell, const DamageParameters & params);
 DamageParameters & damageGet(Spell * spell, DamageHandle & handle);
