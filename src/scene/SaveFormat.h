@@ -538,7 +538,7 @@ struct SavedSpellcastData {
 	operator IO_SPELLCAST_DATA() const {
 		IO_SPELLCAST_DATA a;
 		a.castingspell = (castingspell < 0) ? SPELL_NONE : SpellType(castingspell); // TODO save/load enum
-		arx_assert(a.symb.size() == 4);
+		arx_assert(a.symb.size() == std::size(symb));
 		a.symb[0] = Rune(symb[0]); // TODO save/load enum
 		a.symb[1] = Rune(symb[1]);
 		a.symb[2] = Rune(symb[2]);
@@ -552,8 +552,11 @@ struct SavedSpellcastData {
 	
 	SavedSpellcastData & operator=(const IO_SPELLCAST_DATA & b) {
 		castingspell = (b.castingspell == SPELL_NONE) ? -1 : b.castingspell;
-		arx_assert(b.symb.size() == 4);
-		std::copy(b.symb.begin(), b.symb.end(), symb);
+		arx_assert(b.symb.size() == std::size(symb));
+		symb[0] = u8(b.symb[0]); // TODO save/load enum
+		symb[1] = u8(b.symb[1]);
+		symb[2] = u8(b.symb[2]);
+		symb[3] = u8(b.symb[3]);
 		spell_flags = b.spell_flags;
 		spell_level = b.spell_level;
 		target = b.target.handleData();
