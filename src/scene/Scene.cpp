@@ -278,7 +278,7 @@ bool VisibleSphere(const Sphere & sphere) {
 
 static bool IsBBoxInFrustrum(const EERIE_3D_BBOX & bbox, const EERIE_FRUSTRUM & frustum) {
 	
-	const Vec3f corners[] = {
+	const std::array<Vec3f, 8> corners = {
 		bbox.min,
 		Vec3f(bbox.max.x, bbox.min.y, bbox.min.z),
 		Vec3f(bbox.min.x, bbox.max.y, bbox.min.z),
