@@ -449,7 +449,9 @@ void ScriptEvent::autocomplete(std::string_view prefix, AutocompleteHandler hand
 	
 	for(const auto & v : commands) {
 		if(boost::starts_with(v.first, cmd)) {
-			if(!handler(context, std::string(v.first) += " ")) {
+			std::string command(v.first);
+			command += " ";
+			if(!handler(context, command)) {
 				return;
 			}
 		}
