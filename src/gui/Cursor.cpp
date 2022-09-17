@@ -284,11 +284,10 @@ void ARX_INTERFACE_RenderCursor(bool flag) {
 	float iconScale = g_hudRoot.getScale();
 	float cursorScale = getInterfaceScale(config.interface.cursorScale, config.interface.cursorScaleInteger);
 	
-	if(SpecialCursor || !PLAYER_MOUSELOOK_ON || g_draggedEntity
-	   || (FlyingOverIO && PLAYER_MOUSELOOK_ON && !g_cursorOverBook && eMouseState != MOUSE_IN_NOTE
+	if(SpecialCursor || !PLAYER_MOUSELOOK_ON || g_draggedEntity || MAGICMODE
+	   || (FlyingOverIO && !g_cursorOverBook && eMouseState != MOUSE_IN_NOTE
 	       && (FlyingOverIO->ioflags & IO_ITEM) && (FlyingOverIO->gameFlags & GFLAG_INTERACTIVITY)
-	       && config.input.autoReadyWeapon != AlwaysAutoReadyWeapon)
-	   || (MAGICMODE && PLAYER_MOUSELOOK_ON)) {
+	       && config.input.autoReadyWeapon != AlwaysAutoReadyWeapon)) {
 		
 		Vec2f mousePos = Vec2f(DANAEMouse);
 		
