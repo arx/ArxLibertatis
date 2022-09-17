@@ -339,7 +339,8 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		// Create one bone for each vertex group and assign vertices to the inner-most group
 		std::vector<bool> vertexAssigned(eobj->vertexlist.size(), false);
 		for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
-			VertexGroup & group = eobj->grouplist[i];
+			
+			const VertexGroup & group = eobj->grouplist[i];
 			Bone & bone = eobj->m_skeleton->bones[i];
 			std::vector<u32> & vertices = eobj->m_boneVertices[i];
 			
@@ -378,7 +379,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		// Calculate relative bone positions
 		for(Bone & bone : eobj->m_skeleton->bones) {
 			if(bone.father >= 0) {
-				Bone & parent = eobj->m_skeleton->bones[size_t(bone.father)];
+				const Bone & parent = eobj->m_skeleton->bones[size_t(bone.father)];
 				bone.transinit_global = bone.init.trans = bone.anim.trans - parent.anim.trans;
 			} else {
 				bone.transinit_global = bone.init.trans = bone.anim.trans;
