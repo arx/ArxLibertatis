@@ -42,7 +42,7 @@ public:
 	
 	typedef Enum_ Enum;
 	
-	/* implicit */ constexpr Flags(Enum flag) noexcept : m_flags(flag) { }
+	/* implicit */ constexpr Flags(Enum flag) noexcept : m_flags(flag) { arx_assert(Enum(m_flags) == flag); }
 	
 	/* implicit */ constexpr Flags(Zero /* zero */ = 0) noexcept : m_flags(0) { }
 	
@@ -56,21 +56,23 @@ public:
 	}
 	
 	[[nodiscard]] constexpr bool has(Enum flag) const noexcept {
-		return !!(m_flags & u32(flag));
+		return hasAny(flag);
+	}
+	
+	[[nodiscard]] constexpr bool hasAny(Flags o) const noexcept {
+		return !!(*this & o);
 	}
 	
 	[[nodiscard]] constexpr bool hasAll(Flags o) const noexcept {
-		return (m_flags & o.m_flags) == o.m_flags;
+		return (*this & o) == o;
 	}
 	
-	[[nodiscard]] constexpr Flags except(Enum flag) const noexcept {
-		Flags r;
-		r.m_flags = m_flags & ~u32(flag);
-		return r;
+	[[nodiscard]] constexpr Flags except(Flags o) const noexcept {
+		return *this & ~o;
 	}
 	
-	constexpr void remove(Enum flag) noexcept {
-		m_flags &= ~u32(flag);
+	constexpr void remove(Flags o) noexcept {
+		*this &= ~o;
 	}
 	
 	[[nodiscard]] constexpr operator u32() const noexcept {
@@ -121,36 +123,27 @@ public:
 	}
 	
 	[[nodiscard]] constexpr Flags operator&(Enum flag) const noexcept {
-		Flags r;
-		r.m_flags = m_flags & u32(flag);
-		return r;
+		return *this & Flags(flag);
 	}
 	
 	[[nodiscard]] constexpr Flags operator|(Enum flag) const noexcept {
-		Flags r;
-		r.m_flags = m_flags | u32(flag);
-		return r;
+		return *this | Flags(flag);
 	}
 	
 	[[nodiscard]] constexpr Flags operator^(Enum flag) const noexcept {
-		Flags r;
-		r.m_flags = m_flags ^ u32(flag);
-		return r;
+		return *this ^ Flags(flag);
 	}
 	
 	constexpr Flags & operator&=(Enum flag) noexcept {
-		m_flags &= u32(flag);
-		return *this;
+		return *this &= Flags(flag);
 	}
 	
 	constexpr Flags & operator|=(Enum flag) noexcept {
-		m_flags |= u32(flag);
-		return *this;
+		return *this |= Flags(flag);
 	}
 	
 	constexpr Flags & operator^=(Enum flag) noexcept {
-		m_flags ^= u32(flag);
-		return *this;
+		return *this ^= Flags(flag);
 	}
 	
 	[[nodiscard]] static constexpr Flags all() noexcept {
@@ -166,7 +159,9 @@ public:
  * \param Enum should be an enum with values that have exactly one bit set.
  * \param Flagname is the name for the flag type to be defined.
  */
-#define DECLARE_FLAGS(Enum, Flagname) typedef Flags<Enum> Flagname;
+#define DECLARE_FLAGS(Enum, Flagname) typedef Flags<Enum> Flagname; \
+	static_assert(std::is_trivially_copyable_v<Flagname>); /* can be passed in registers in sane ABIs */ \
+	static_assert(std::is_standard_layout_v<Flagname>); \
 
 /*!
  * Declare overloaded operators for a given flag type.
