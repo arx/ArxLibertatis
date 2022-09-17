@@ -160,7 +160,8 @@ void createFireParticles(Vec3f pos, int perPos, int delay);
 
 void createObjFireParticles(const EERIE_3DOBJ * obj, int particlePositions, int perPos, int delay);
 
-void LaunchFireballBoom(const Vec3f & poss, float level, Vec3f * direction = nullptr, Color3f * rgb = nullptr);
+void LaunchFireballBoom(const Vec3f & poss, float level, Vec3f * direction = nullptr,
+                        const Color3f * rgb = nullptr);
 void spawnFireHitParticle(const Vec3f & poss, long type);
 void spawn2DFireParticle(const Vec2f & pos, float scale);
 

@@ -638,7 +638,7 @@ void SpawnFireballTail(const Vec3f & poss, const Vec3f & vecto, float level, lon
 	}
 }
 
-void LaunchFireballBoom(const Vec3f & poss, float level, Vec3f * direction, Color3f * rgb) {
+void LaunchFireballBoom(const Vec3f & poss, float level, Vec3f * direction, const Color3f * rgb) {
 	
 	level *= 1.6f;
 	
