@@ -591,8 +591,8 @@ std::vector<std::string> getPreferredLocales() {
 	
 	WideString buffer;
 	
-	LCID locales[] = { installerLanguage, GetThreadLocale(), LOCALE_USER_DEFAULT, LOCALE_SYSTEM_DEFAULT };
-	LCTYPE types[] = { LOCALE_SNAME, LOCALE_SPARENT, LOCALE_SISO639LANGNAME };
+	const LCID locales[] = { installerLanguage, GetThreadLocale(), LOCALE_USER_DEFAULT, LOCALE_SYSTEM_DEFAULT };
+	const LCTYPE types[] = { LOCALE_SNAME, LOCALE_SPARENT, LOCALE_SISO639LANGNAME };
 	for(LCID locale : locales) {
 		if(!locale) {
 			continue;
@@ -641,7 +641,7 @@ std::vector<std::string> getPreferredLocales() {
 		}
 	}
 	
-	const char * variables[] = { "LC_ALL", "LC_MESSAGES", "LANG" };
+	const char * const variables[] = { "LC_ALL", "LC_MESSAGES", "LANG" };
 	for(const char * variable : variables) {
 		const char * value = std::getenv(variable);
 		if(value) {
