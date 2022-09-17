@@ -41,7 +41,8 @@ class WinHTTPSession final : public Session {
 	HINTERNET m_connection;
 	
 	HINTERNET setup(const Request & request, LPCWSTR method);
-	Response * receive(HINTERNET wrequest, const Request & request, std::basic_string<WCHAR> & url);
+	Response * receive(HINTERNET wrequest, const Request & request,
+	                   const std::basic_string<WCHAR> & redirect);
 	
 public:
 	
@@ -132,7 +133,7 @@ HINTERNET WinHTTPSession::setup(const Request & request, LPCWSTR method) {
 }
 
 Response * WinHTTPSession::receive(HINTERNET wrequest, const Request & request,
-                                   std::basic_string<WCHAR> & redirect) {
+                                   const std::basic_string<WCHAR> & redirect) {
 	
 	
 	
