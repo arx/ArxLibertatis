@@ -152,7 +152,7 @@ class PathFinder::ClosedNodeList {
 public:
 	
 	~ClosedNodeList() {
-		for(NodeList::value_type & entry : nodes) {
+		for(const auto & entry : nodes) {
 			delete entry.second;
 		}
 	}
