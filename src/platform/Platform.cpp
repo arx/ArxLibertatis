@@ -21,9 +21,12 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <version>
 #include <cstdio>
 
 #include "io/log/Logger.h"
+
+#include "Configure.h"
 
 #if ARX_PLATFORM == ARX_PLATFORM_UNKNOWN
 #warning "Unknown target platform"
@@ -60,6 +63,26 @@ void assertionFailed(const char * expr, const char * file, unsigned int line,
 	}
 	
 }
+
+#if ARX_HAVE_LIBCPP_VERBOSE_ABORT
+void std::__libcpp_verbose_abort(char const * format, ...) {
+	char message[4096];
+	va_list args;
+	va_start(args, format);
+	std::vsnprintf(message, sizeof(message) - 1, format, args);
+	va_end(args);
+	assertionFailed(message, "libc++", 0, nullptr);
+	arx_trap();
+}
+#endif
+
+#if ARX_HAVE_GLIBCXX_ASSERT_FAIL
+_GLIBCXX_NORETURN void std::__glibcxx_assert_fail(const char * file, int line, const char * function,
+                                                  const char * condition) _GLIBCXX_NOEXCEPT {
+	assertionFailed(condition, file ? file : "libstdc++", line, function ? "in %s" : nullptr,  function);
+	arx_trap();
+}
+#endif
 
 #endif // ARX_DEBUG
 

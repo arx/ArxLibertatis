@@ -106,6 +106,10 @@
 #cmakedefine01 ARX_HAVE_PMMINTRIN
 #cmakedefine01 ARX_HAVE_BUILTIN_IA32_FXSAVE
 
+// Assert intercepts
+#cmakedefine01 ARX_HAVE_LIBCPP_VERBOSE_ABORT
+#cmakedefine01 ARX_HAVE_GLIBCXX_ASSERT_FAIL
+
 // Build system
 #cmakedefine01 UNITY_BUILD
 

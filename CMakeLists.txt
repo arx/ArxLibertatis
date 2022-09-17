@@ -918,6 +918,19 @@ else(MSVC)
 		
 	endif()
 	
+	if(DEBUG)
+		if(ARX_HAVE_LIBCPP_ENABLE_ASSERTIONS)
+			check_compile(ARX_HAVE_LIBCPP_VERBOSE_ABORT "${BUILTIN_CHECK_DIR}/intercept-libcpp_verbose_abort.cpp"
+			              "__libcpp_verbose_abort" "interceptable")
+			if(ARX_HAVE_LIBCPP_VERBOSE_ABORT)
+				add_definitions(-D_LIBCPP_AVAILABILITY_CUSTOM_VERBOSE_ABORT_PROVIDED)
+			endif()
+		elseif(NOT IS_LIBCXX)
+			check_compile(ARX_HAVE_GLIBCXX_ASSERT_FAIL "${BUILTIN_CHECK_DIR}/intercept-glibcxx_assert_fail.cpp"
+			              "__glibcxx_assert_fail" "interceptable")
+		endif()
+	endif()
+	
 endif(MSVC)
 
 
