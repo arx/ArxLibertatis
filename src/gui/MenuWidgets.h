@@ -78,7 +78,7 @@ public:
 	MenuWindow & operator=(const MenuWindow &) = delete;
 	
 	MenuWindow();
-	virtual ~MenuWindow();
+	~MenuWindow();
 	
 	void add(MenuPage * page);
 	void update();
