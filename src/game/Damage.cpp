@@ -1481,7 +1481,7 @@ float ARX_DAMAGES_ComputeRepairPrice(const Entity * torepair, const Entity * bla
 
 void ARX_DAMAGES_DrawDebug() {
 	
-	for(DAMAGE_INFO & damage : g_damages) {
+	for(const DAMAGE_INFO & damage : g_damages) {
 		if(damage.exist) {
 			drawLineSphere(Sphere(damage.params.pos, damage.params.radius), Color::red);
 		}
