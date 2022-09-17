@@ -270,16 +270,18 @@ SampleHandle createSample(const res::path & name) {
 	
 	Sample * sample = new Sample(name);
 	
-	SampleHandle sampleHandle;
-	if(sample->load() || (sampleHandle = g_samples.add(sample)) == SampleHandle()) {
+	if(sample->load()) {
 		delete sample;
-		LogDebug("createSample " << sampleHandle << " " << name << " failed !");
+		LogDebug("createSample " << name << " failed !");
+		return SampleHandle();
 	} else {
+		SampleHandle sampleHandle = g_samples.add(sample);
+		arx_assert(sampleHandle != SampleHandle());
 		sample->reference();
-		LogDebug("createSample " << sampleHandle << " " << name << " len " << sample->getLength());
+		LogDebug("createSample " << name << " -> " << sampleHandle << " len " << sample->getLength());
+		return sampleHandle;
 	}
 	
-	return sampleHandle;
 }
 
 AmbianceId createAmbiance(const res::path & name, PlayingAmbianceType type) {
