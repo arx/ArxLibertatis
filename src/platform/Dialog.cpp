@@ -420,7 +420,7 @@ static bool showDialog(DialogType type, const std::string & message,
 	usingKDE = usingKDE || (getenv("KDE_SESSION_UID") != nullptr);
 	usingKDE = usingKDE || (getenv("KDE_SESSION_VERSION") != nullptr);
 	
-	dialogCommand_t commands[] = {
+	const dialogCommand_t commands[] = {
 		usingKDE ? &kdialogCommand : &zenityCommand,
 		usingKDE ? &zenityCommand : &kdialogCommand,
 		&gxmessageCommand,
