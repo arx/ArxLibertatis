@@ -834,7 +834,7 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity * io,
 	return false;
 }
 
-bool CheckEverythingInSphere(const Sphere & sphere, Entity * source, Entity * target,
+bool CheckEverythingInSphere(const Sphere & sphere, const Entity * source, Entity * target,
                              std::vector<Entity *> & sphereContent) {
 	
 	if(target) {
