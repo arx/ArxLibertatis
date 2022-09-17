@@ -24,6 +24,8 @@
 #include "graphics/Renderer.h"
 #include "graphics/texture/Texture.h"
 #include "io/log/Logger.h"
+#include "util/Range.h"
+
 
 PackedTexture::PackedTexture(size_t textureSize, Image::Format textureFormat)
 	: m_textureSize(textureSize)
@@ -35,10 +37,10 @@ void PackedTexture::clear() {
 }
 
 void PackedTexture::upload() {
-	for(auto & tree : m_textures) {
-		if(tree->dirty) {
-			tree->texture->upload();
-			tree->dirty = false;
+	for(auto & tree : util::dereference(m_textures)) {
+		if(tree.dirty) {
+			tree.texture->upload();
+			tree.dirty = false;
 		}
 	}
 }
