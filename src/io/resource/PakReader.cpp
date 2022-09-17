@@ -140,11 +140,7 @@ size_t UncompressedFileHandle::read(void * buf, size_t size) {
 	
 	m_file.m_archive.seekg(m_file.m_offset + m_offset);
 	
-	if(m_file.m_size < m_offset + size) {
-		size = (m_offset > m_file.m_size) ? 0 : (m_file.m_size - m_offset);
-	}
-	
-	fs::read(m_file.m_archive, buf, size);
+	fs::read(m_file.m_archive, buf, std::min(size, m_file.m_size - m_offset));
 	
 	size_t nread = m_file.m_archive.gcount();
 	m_offset += nread;
