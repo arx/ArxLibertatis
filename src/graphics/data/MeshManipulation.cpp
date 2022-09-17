@@ -223,7 +223,7 @@ static void ObjectAddAction(EERIE_3DOBJ * obj, std::string_view name, const EERI
 		}
 	}
 	
-	obj->actionlist.emplace_back(EERIE_ACTIONLIST());
+	obj->actionlist.emplace_back();
 	
 	EERIE_ACTIONLIST & action = obj->actionlist.back();
 	
