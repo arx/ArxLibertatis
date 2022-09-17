@@ -1337,16 +1337,15 @@ void ArxGame::manageKeyMouse() {
 							break;
 						}
 						
-						if(bOk) {
-							if(!(FlyingOverIO->_itemdata->playerstacksize <= 1 && FlyingOverIO->_itemdata->count > 1)) {
-								SendIOScriptEvent(entities.player(), FlyingOverIO, SM_INVENTORYUSE);
-								if(config.input.autoReadyWeapon == AlwaysAutoReadyWeapon || !config.input.mouseLookToggle) {
-									TRUE_PLAYER_MOUSELOOK_ON = false;
-								}
+						if(bOk && (FlyingOverIO->_itemdata->playerstacksize > 1 || FlyingOverIO->_itemdata->count <= 1)) {
+							SendIOScriptEvent(entities.player(), FlyingOverIO, SM_INVENTORYUSE);
+							if(config.input.autoReadyWeapon == AlwaysAutoReadyWeapon || !config.input.mouseLookToggle) {
+								TRUE_PLAYER_MOUSELOOK_ON = false;
 							}
 						}
+						
 					}
-
+					
 					if(config.input.autoReadyWeapon != AlwaysAutoReadyWeapon && config.input.mouseLookToggle) {
 						EERIEMouseButton &= ~2;
 					}
