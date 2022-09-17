@@ -26,7 +26,7 @@
 #include "platform/WindowsUtils.h"
 #include "platform/crashhandler/CrashHandlerImpl.h"
 
-class CrashHandlerWindows : public CrashHandlerImpl {
+class CrashHandlerWindows final : public CrashHandlerImpl {
 	
 public:
 	
