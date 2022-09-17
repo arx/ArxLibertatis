@@ -21,12 +21,15 @@
 
 #include <stdio.h>
 #include <stdarg.h>
-#include <version>
 #include <cstdio>
 
-#include "io/log/Logger.h"
-
 #include "Configure.h"
+
+#if ARX_HAVE_LIBCPP_VERBOSE_ABORT || ARX_HAVE_GLIBCXX_ASSERT_FAIL
+#include <version>
+#endif
+
+#include "io/log/Logger.h"
 
 #if ARX_PLATFORM == ARX_PLATFORM_UNKNOWN
 #warning "Unknown target platform"
