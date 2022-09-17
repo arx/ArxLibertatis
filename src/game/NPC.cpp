@@ -2159,12 +2159,13 @@ static void ManageNPCMovement_End(Entity * io) {
 			}
 			
 			// If not blocked and not Flee-Pathfinding
-			if(!(io->_npcdata->pathfind.listnb <= 0 && (io->_npcdata->behavior & BEHAVIOUR_FLEE))
-				|| (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
-				|| (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)
-			) {
+			if(io->_npcdata->pathfind.listnb > 0 ||
+			   !(io->_npcdata->behavior & BEHAVIOUR_FLEE) ||
+			   (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) ||
+			   (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)) {
+				
 				ANIM_HANDLE * desiredanim = nullptr;
-
+				
 				if(dis <= RUN_WALK_RADIUS
 				   && (io->_npcdata->behavior & BEHAVIOUR_FIGHT)
 				   && layer0.cur_anim != alist[ANIM_RUN]
