@@ -2715,7 +2715,7 @@ void ManageIgnition(Entity & io) {
 		return;
 	}
 	
-	bool addParticles = !(&io == g_draggedEntity && g_dragStatus != EntityDragStatus_OnGround);
+	bool addParticles = (&io != g_draggedEntity || g_dragStatus == EntityDragStatus_OnGround);
 	
 	// Torch Management
 	Entity * plw = entities.get(player.equiped[EQUIP_SLOT_WEAPON]);
