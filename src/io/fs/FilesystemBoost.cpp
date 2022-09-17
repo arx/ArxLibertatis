@@ -103,7 +103,7 @@ bool remove(const path & p) {
 
 bool remove_directory(const path & p) {
 	FileType type = get_type(p);
-	if(type == DoesNotExist || type != Directory) {
+	if(type != Directory) {
 		return type == DoesNotExist;
 	}
 	boost::system::error_code ec;
