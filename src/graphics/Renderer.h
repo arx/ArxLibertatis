@@ -430,6 +430,9 @@ public:
 		GRenderer->setRenderState(state);
 	}
 	
+	UseRenderState(const UseRenderState &) = delete;
+	UseRenderState & operator=(const UseRenderState &) = delete;
+	
 	~UseRenderState() {
 		GRenderer->setRenderState(m_old);
 	}
@@ -470,6 +473,9 @@ public:
 		GRenderer->GetTextureStage(0)->setMinFilter(filter);
 		GRenderer->GetTextureStage(0)->setMagFilter(filter);
 	}
+	
+	UseTextureState(const UseTextureState &) = delete;
+	UseTextureState & operator=(const UseTextureState &) = delete;
 	
 	~UseTextureState() {
 		GRenderer->GetTextureStage(0)->setWrapMode(m_oldWrapMode);
