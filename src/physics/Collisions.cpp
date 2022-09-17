@@ -539,7 +539,7 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, lo
 		Sphere sp;
 		
 		if(In3DBBoxTolerance(cyl.origin, io->bbox3D, cyl.radius + 30.f)) {
-			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
+			const std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
 			
 			if(io->obj->grouplist.size() > 10) {
 				bool dealt = false;
@@ -798,7 +798,7 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity * io,
 	
 	if(closerThan(io->pos, sphere.origin, sr180)) {
 		long amount = 1;
-		std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
+		const std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
 		
 		if(io->obj->grouplist.size() > 4) {
 			for(size_t ii = 0; ii < io->obj->grouplist.size(); ii++) {
@@ -983,7 +983,7 @@ bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flag
 
 		if(closerThan(io->pos, sphere.origin, sr180)) {
 			long amount = 1;
-			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
+			const std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
 
 			if(io->obj->grouplist.size() > 4) {
 				for(size_t ii = 0; ii < io->obj->grouplist.size(); ii++) {
@@ -1033,7 +1033,7 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 	) {
 		if(closerThan(entity.pos, sphere.origin, sr180)) {
 			
-			std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
+			const std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
 			
 			if(entity.obj->grouplist.size() > 10) {
 				long count = 0;
