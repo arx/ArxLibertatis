@@ -371,7 +371,8 @@ void ShowFrameDurationPlot() {
 	
 	frameDurationPlotValues.push_front(toMs(g_platformTime.lastFrameDuration()));
 	
-	float avg = std::accumulate(frameDurationPlotValues.begin(), frameDurationPlotValues.end(), 0.f) / frameDurationPlotValues.size();
+	float avg = std::accumulate(frameDurationPlotValues.begin(), frameDurationPlotValues.end(), 0.f);
+	avg /= float(frameDurationPlotValues.size());
 	float worst = *std::max_element(frameDurationPlotValues.begin(), frameDurationPlotValues.end());
 	
 	const float OFFSET_Y = 80.f;
