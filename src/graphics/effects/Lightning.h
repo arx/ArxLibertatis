@@ -77,7 +77,7 @@ public:
 private:
 	
 	Spell * m_spell;
-	float fTotoro;
+	u32 fTotoro;
 	float fMySize;
 	int m_lNbSegments;
 	float m_invNbSegments;
