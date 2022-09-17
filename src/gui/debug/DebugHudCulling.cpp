@@ -76,8 +76,8 @@ void debugHud_Culling() {
 	int bottomMargin = hFontDebug->getLineHeight();
 	float scale = std::floor(std::min(float(g_size.width()) / float(size.x),
 	                                  (float(g_size.height() - bottomMargin)) / float(size.y)));
-	Vec2f offset(std::floor(g_size.center().x - scale * size.x / 2.f - (min.x - 1) * scale),
-	             std::floor(g_size.center().y - scale * size.y / 2.f + (max.y + 2) * scale - float(bottomMargin)));
+	Vec2f offset(std::floor(float(g_size.center().x) - scale * size.x / 2.f - (min.x - 1) * scale),
+	             std::floor(float(g_size.center().y) - scale * size.y / 2.f + (max.y + 2) * scale - float(bottomMargin)));
 	
 	// Draw active and/or non-empty tiles
 	for(auto tile : g_tiles->tiles()) {
