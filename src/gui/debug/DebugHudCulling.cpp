@@ -19,8 +19,9 @@
 
 #include "gui/debug/DebugHudCulling.h"
 
-#include <algorithm>
 #include <cmath>
+#include <algorithm>
+#include <array>
 #include <limits>
 #include <sstream>
 
@@ -105,8 +106,8 @@ void debugHud_Culling() {
 			if(portal.useportal == 1) {
 				color = Color::green;
 			}
-			Vec2f pos[4];
-			for(int j = 0; j < 4; j++) {
+			std::array<Vec2f, 4> pos;
+			for(size_t j = 0; j < std::size(pos); j++) {
 				pos[j] = offset + worldToDebug * portal.p[j];
 			}
 			drawLine(pos[0], pos[1], 0.01f, color);
@@ -118,15 +119,15 @@ void debugHud_Culling() {
 	
 	// Draw the camera frustum (minus near plane)
 	{
-		const Vec3f frustum[5] = {
+		const std::array<Vec3f, 5> frustum = {
 			screenToWorldSpace(Vec2f(g_size.topLeft()), g_camera->cdepth * fZFogEnd),
 			screenToWorldSpace(Vec2f(g_size.topRight()), g_camera->cdepth * fZFogEnd),
 			screenToWorldSpace(Vec2f(g_size.bottomRight()), g_camera->cdepth * fZFogEnd),
 			screenToWorldSpace(Vec2f(g_size.bottomLeft()), g_camera->cdepth * fZFogEnd),
 			g_camera->m_pos
 		};
-		Vec2f p[5];
-		for(size_t i = 0; i < 5; i++) {
+		std::array<Vec2f, 5> p;
+		for(size_t i = 0; i < std::size(p); i++) {
 			p[i] = offset + worldToDebug * frustum[i];
 		}
 		drawLine(p[0], p[1], 0.01f, Color::blue);
@@ -139,7 +140,7 @@ void debugHud_Culling() {
 		drawLine(p[3], p[4], 0.01f, Color::blue);
 	}
 	
-	const Color colors[] = {
+	const std::array<Color, 6> colors = {
 		Color::gray(0.75f),
 		Color::red,
 		Color::magenta,
@@ -147,8 +148,8 @@ void debugHud_Culling() {
 		Color::green,
 		Color::cyan
 	};
-	size_t sums[] = { 0, 0, 0, 0, 0, 0 };
-	const std::string_view labels[] = {
+	std::array<size_t, 6> sums = { 0, 0, 0, 0, 0, 0 };
+	const std::array<std::string_view, 6> labels = {
 		"Inactive",
 		"View",
 		"Occluded",
