@@ -86,7 +86,7 @@ public:
 	bool isClosing() const;
 	void resetPos();
 	
-	bool isSlotVisible(InventoryPos pos);
+	[[nodiscard]] bool isSlotVisible(InventoryPos pos) const noexcept;
 	
 private:
 	

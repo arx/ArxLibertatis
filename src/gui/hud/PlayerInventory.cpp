@@ -588,7 +588,7 @@ void PlayerInventoryHud::setCurrentBag(short bag) {
 	}
 }
 
-bool PlayerInventoryHud::isSlotVisible(InventoryPos pos) {
+bool PlayerInventoryHud::isSlotVisible(InventoryPos pos) const noexcept {
 	
 	if(pos.io != EntityHandle_Player) {
 		// Slot is not in the player inventory
