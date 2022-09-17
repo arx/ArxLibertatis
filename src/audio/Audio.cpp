@@ -313,13 +313,16 @@ EnvId createEnvironment(const res::path & name) {
 	std::scoped_lock lock(g_mutex);
 	
 	Environment * env = new Environment(name);
-	EnvId e_id = EnvId();
-	if(env->load() || (e_id = g_environments.add(env)) == EnvId()) {
+	if(env->load()) {
 		delete env;
 		LogError << "Environment " << name << " not found";
+		return EnvId();
 	}
 	
-	return e_id;
+	EnvId environmentId = g_environments.add(env);
+	arx_assert(environmentId != EnvId());
+	
+	return environmentId;
 }
 
 // Resource destruction
