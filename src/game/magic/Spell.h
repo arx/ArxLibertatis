@@ -158,8 +158,8 @@ public:
 		m_duration = 0;
 	}
 	
-	std::string_view className() const noexcept;
-	std::string idString() const noexcept;
+	[[nodiscard]] std::string_view className() const noexcept;
+	[[nodiscard]] std::string idString() const noexcept;
 	
 	SpellHandle m_thisHandle;
 	s32 m_instance;
