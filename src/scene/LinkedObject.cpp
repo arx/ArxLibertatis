@@ -62,7 +62,7 @@ void EERIE_LINKEDOBJ_ReleaseData(EERIE_3DOBJ * obj) {
 	obj->linked.clear();
 }
 
-void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tounlink) {
+void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, const EERIE_3DOBJ * tounlink) {
 	
 	if(!obj || !tounlink)
 		return;
