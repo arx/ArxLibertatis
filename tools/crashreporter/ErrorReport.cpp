@@ -315,7 +315,7 @@ void ErrorReport::AddFile(const QString & fileName) {
 	
 	// Do not include files that can't be found, and empty files...
 	if(file.exists() && file.size() != 0) {
-		m_AttachedFiles.push_back(File(fileName, true));
+		m_AttachedFiles.emplace_back(fileName, true);
 	}
 	
 }
