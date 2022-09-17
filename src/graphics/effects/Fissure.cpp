@@ -391,7 +391,7 @@ void CRiseDead::Render() {
 		}
 	} else if(m_elapsed < m_durationIntro + m_durationRender) {
 		// Do nothing, just render
-	} else if(m_elapsed < m_duration) {
+	} else {
 		// Close it all
 		sizeF = iSize - (iSize) * ((m_elapsed - (m_durationIntro + m_durationRender)) / m_durationOuttro);
 	}
@@ -676,7 +676,7 @@ void CSummonCreature::Render() {
 		}
 	} else if(m_elapsed < m_durationIntro + m_durationRender) {
 		// Do nothing, just render
-	} else if(m_elapsed < m_duration) {
+	} else {
 		// Close it all
 		sizeF = iSize - (iSize) * ((m_elapsed - (m_durationIntro + m_durationRender)) / m_durationOuttro);
 	}
