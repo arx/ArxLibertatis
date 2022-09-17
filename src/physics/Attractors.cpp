@@ -89,8 +89,7 @@ bool ARX_SPECIAL_ATTRACTORS_Add(EntityHandle ionum, float power, float radius) {
 		ARX_SPECIAL_ATTRACTORS_Remove(ionum);
 	}
 	
-	long tst;
-	if((tst = ARX_SPECIAL_ATTRACTORS_Exist(ionum)) != -1) {
+	if(long tst = ARX_SPECIAL_ATTRACTORS_Exist(ionum); tst != -1) {
 		attractors[tst].power = power;
 		attractors[tst].radius = radius;
 		return false;
