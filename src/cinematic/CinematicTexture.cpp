@@ -215,7 +215,7 @@ void CinematicGrid::FreeGrille() {
 	m_uvs.clear();
 	m_inds.clear();
 	
-	for(C_INDEXED & mat : m_mats) {
+	for(const C_INDEXED & mat : m_mats) {
 		delete mat.tex;
 	}
 	
