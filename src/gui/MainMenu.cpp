@@ -94,30 +94,30 @@ public:
 		reserveBottom();
 		
 		{
-			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_editquest_confirm"));
+			auto txt = std::make_unique<TextWidget>(hFontMenu, getLocalised("system_menus_main_editquest_confirm"));
 			txt->setEnabled(false);
-			addCenter(txt);
+			addCenter(std::move(txt));
 		}
 		
 		{
-			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_newquest_confirm"));
+			auto txt = std::make_unique<TextWidget>(hFontMenu, getLocalised("system_menus_main_newquest_confirm"));
 			txt->setEnabled(false);
-			addCenter(txt);
+			addCenter(std::move(txt));
 		}
 		
 		{
-			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_yes"));
+			auto txt = std::make_unique<TextWidget>(hFontMenu, getLocalised("system_yes"));
 			txt->clicked = [](Widget * /* widget */) {
 				ARXMenu_NewQuest();
 			};
-			addCorner(txt, BottomRight);
+			addCorner(std::move(txt), BottomRight);
 		}
 		
 		{
-			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_no"));
+			auto txt = std::make_unique<TextWidget>(hFontMenu, getLocalised("system_no"));
 			txt->setTargetPage(Page_None);
 			txt->setShortcut(Keyboard::Key_Escape);
-			addCorner(txt, BottomLeft);
+			addCorner(std::move(txt), BottomLeft);
 		}
 		
 	}
@@ -140,45 +140,45 @@ public:
 		reserveBottom();
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(buttonSize(48, 48), "graph/interface/icons/menu_main_save");
+			auto cb = std::make_unique<ButtonWidget>(buttonSize(48, 48), "graph/interface/icons/menu_main_save");
 			cb->setEnabled(false);
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		{
 			std::string_view text = getLocalised("system_menu_editquest_newsavegame");
-			TextInputWidget * txt = new TextInputWidget(hFontMenu, text, m_rect);
+			auto txt = std::make_unique<TextInputWidget>(hFontMenu, text, m_rect);
 			txt->setMaxLength(255); // Don't allow the user to enter names that cannot be stored in save files
 			txt->unfocused = [this](TextInputWidget * /* widget */) {
 				if(m_textbox->text().empty()) {
 					setSaveHandle(m_savegame);
 				}
 			};
-			addCenter(txt);
-			m_textbox = txt;
+			m_textbox = txt.get();
+			addCenter(std::move(txt));
 		}
 		
 		// Delete button
 		{
-			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_editquest_delete"));
+			auto txt = std::make_unique<TextWidget>(hFontMenu, getLocalised("system_menus_main_editquest_delete"));
 			txt->clicked = [this](Widget * /* widget */) {
 				g_mainMenu->bReInitAll = true;
 				savegames.remove(m_savegame);
 			};
 			txt->setTargetPage(Page_Save);
 			txt->setEnabled(m_savegame != SavegameHandle());
-			addCorner(txt, TopRight);
+			addCorner(std::move(txt), TopRight);
 		}
 		
 		// Save button
 		{
-			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_editquest_save"));
+			auto txt = std::make_unique<TextWidget>(hFontMenu, getLocalised("system_menus_main_editquest_save"));
 			txt->clicked = [this](Widget * /* widget */) {
 				m_textbox->unfocus();
 				savegames.save(m_textbox->text(), m_savegame, savegame_thumbnail);
 			};
 			txt->setTargetPage(Page_None);
-			addCorner(txt, BottomRight);
+			addCorner(std::move(txt), BottomRight);
 		}
 		
 		addBackButton(Page_Save);
@@ -238,9 +238,9 @@ public:
 		reserveBottom();
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(buttonSize(48, 48), "graph/interface/icons/menu_main_load");
+			auto cb = std::make_unique<ButtonWidget>(buttonSize(48, 48), "graph/interface/icons/menu_main_load");
 			cb->setEnabled(false);
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		// TODO make this list scrollable
@@ -265,26 +265,26 @@ public:
 		size_t quicksaveNum = 0;
 		for(SavegameHandle save : savegames) {
 			if(savegames[save].quicksave) {
-				SaveSlotWidget * txt = new SaveSlotWidget(save, ++quicksaveNum, hFontControls, m_rect);
+				auto txt = std::make_unique<SaveSlotWidget>(save, ++quicksaveNum, hFontControls, m_rect);
 				txt->clicked = saveClicked;
 				txt->doubleClicked = saveDoubleClicked;
-				addCenter(txt);
+				addCenter(std::move(txt));
 			}
 		}
 		
 		// Show regular saves.
 		for(SavegameHandle save : savegames) {
 			if(!savegames[save].quicksave) {
-				SaveSlotWidget * txt = new SaveSlotWidget(save, 0, hFontControls, m_rect);
+				auto txt = std::make_unique<SaveSlotWidget>(save, 0, hFontControls, m_rect);
 				txt->clicked = saveClicked;
 				txt->doubleClicked = saveDoubleClicked;
-				addCenter(txt);
+				addCenter(std::move(txt));
 			}
 		}
 		
 		// Delete button
 		{
-			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_editquest_delete"));
+			auto txt = std::make_unique<TextWidget>(hFontMenu, getLocalised("system_menus_main_editquest_delete"));
 			txt->clicked = [this](Widget * /* widget */) {
 				if(m_selected && m_selected->savegame() != SavegameHandle()) {
 					g_mainMenu->bReInitAll = true;
@@ -293,13 +293,13 @@ public:
 				}
 			};
 			txt->setTargetPage(Page_Load);
-			addCorner(txt, TopRight);
-			pDeleteConfirm = txt;
+			pDeleteConfirm = txt.get();
+			addCorner(std::move(txt), TopRight);
 		}
 		
 		// Load button
 		{
-			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_editquest_load"));
+			auto txt = std::make_unique<TextWidget>(hFontMenu, getLocalised("system_menus_main_editquest_load"));
 			txt->clicked = [this](Widget * /* widget */) {
 				if(m_selected && m_selected->savegame() != SavegameHandle()) {
 					ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
@@ -310,8 +310,8 @@ public:
 				}
 			};
 			txt->setTargetPage(Page_None);
-			addCorner(txt, BottomRight);
-			pLoadConfirm = txt;
+			pLoadConfirm = txt.get();
+			addCorner(std::move(txt), BottomRight);
 		}
 		
 		addBackButton(Page_LoadOrSave);
@@ -356,9 +356,9 @@ public:
 		reserveBottom();
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(buttonSize(48, 48), "graph/interface/icons/menu_main_save");
+			auto cb = std::make_unique<ButtonWidget>(buttonSize(48, 48), "graph/interface/icons/menu_main_save");
 			cb->setEnabled(false);
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		std::function<void(Widget * widget)> saveClicked = [](Widget * widget) {
@@ -373,29 +373,29 @@ public:
 		size_t quicksaveNum = 0;
 		for(SavegameHandle save : savegames) {
 			if(savegames[save].quicksave) {
-				SaveSlotWidget * txt = new SaveSlotWidget(save, ++quicksaveNum, hFontControls, m_rect);
+				auto txt = std::make_unique<SaveSlotWidget>(save, ++quicksaveNum, hFontControls, m_rect);
 				txt->clicked = saveClicked;
 				txt->setTargetPage(Page_SaveConfirm);
 				txt->setEnabled(false);
-				addCenter(txt);
+				addCenter(std::move(txt));
 			}
 		}
 		
 		// Show regular saves.
 		for(SavegameHandle save : savegames) {
 			if(!savegames[save].quicksave) {
-				SaveSlotWidget * txt = new SaveSlotWidget(save, 0, hFontControls, m_rect);
+				auto txt = std::make_unique<SaveSlotWidget>(save, 0, hFontControls, m_rect);
 				txt->clicked = saveClicked;
 				txt->setTargetPage(Page_SaveConfirm);
-				addCenter(txt);
+				addCenter(std::move(txt));
 			}
 		}
 		
 		for(size_t i = savegames.size(); i <= 15; i++) {
-			SaveSlotWidget * txt = new SaveSlotWidget(SavegameHandle(), i, hFontControls, m_rect);
+			auto txt = std::make_unique<SaveSlotWidget>(SavegameHandle(), i, hFontControls, m_rect);
 			txt->clicked = saveClicked;
 			txt->setTargetPage(Page_SaveConfirm);
-			addCenter(txt);
+			addCenter(std::move(txt));
 		}
 		
 		addBackButton(Page_LoadOrSave);
@@ -423,15 +423,17 @@ public:
 		reserveBottom();
 		
 		{
-			m_loadButton = new TextWidget(hFontMenu, getLocalised("system_menus_main_editquest_load"));
-			m_loadButton->setTargetPage(Page_Load);
-			addCenter(m_loadButton);
+			auto load = std::make_unique<TextWidget>(hFontMenu, getLocalised("system_menus_main_editquest_load"));
+			load->setTargetPage(Page_Load);
+			m_loadButton = load.get();
+			addCenter(std::move(load));
 		}
 		
 		{
-			m_saveButton = new TextWidget(hFontMenu, getLocalised("system_menus_main_editquest_save"));
-			m_saveButton->setTargetPage(Page_Save);
-			addCenter(m_saveButton);
+			auto save = std::make_unique<TextWidget>(hFontMenu, getLocalised("system_menus_main_editquest_save"));
+			save->setTargetPage(Page_Save);
+			m_saveButton = save.get();
+			addCenter(std::move(save));
 		}
 		
 		addBackButton(Page_None);
@@ -460,39 +462,39 @@ public:
 		reserveBottom();
 		
 		{
-			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_options_localization"));
+			auto txt = std::make_unique<TextWidget>(hFontMenu, getLocalised("system_menus_options_localization"));
 			txt->setTargetPage(Page_Localization);
-			addCenter(txt);
+			addCenter(std::move(txt));
 		}
 		
 		{
-			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_options_video"));
+			auto txt = std::make_unique<TextWidget>(hFontMenu, getLocalised("system_menus_options_video"));
 			txt->setTargetPage(Page_OptionsVideo);
-			addCenter(txt);
+			addCenter(std::move(txt));
 		}
 		
 		{
-			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_options_render"));
+			auto txt = std::make_unique<TextWidget>(hFontMenu, getLocalised("system_menus_options_render"));
 			txt->setTargetPage(Page_OptionsRender);
-			addCenter(txt);
+			addCenter(std::move(txt));
 		}
 		
 		{
-			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_options_interface"));
+			auto txt = std::make_unique<TextWidget>(hFontMenu, getLocalised("system_menus_options_interface"));
 			txt->setTargetPage(Page_OptionsInterface);
-			addCenter(txt);
+			addCenter(std::move(txt));
 		}
 		
 		{
-			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_options_audio"));
+			auto txt = std::make_unique<TextWidget>(hFontMenu, getLocalised("system_menus_options_audio"));
 			txt->setTargetPage(Page_OptionsAudio);
-			addCenter(txt);
+			addCenter(std::move(txt));
 		}
 		
 		{
-			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_options_input"));
+			auto txt = std::make_unique<TextWidget>(hFontMenu, getLocalised("system_menus_options_input"));
 			txt->setTargetPage(Page_OptionsInput);
-			addCenter(txt);
+			addCenter(std::move(txt));
 		}
 		
 		addBackButton(Page_None);
@@ -519,23 +521,23 @@ public:
 		
 		reserveBottom();
 		
-		addCenter(new Spacer(hFontMainMenu->getLineHeight()));
+		addCenter(std::make_unique<Spacer>(hFontMainMenu->getLineHeight()));
 		
 		{
-			TextWidget * txt;
+			std::unique_ptr<TextWidget> txt;
 			if(g_iconFont) {
-				txt = new TextWidget(g_iconFont, getLocalised("system_localization_text"));
+				txt = std::make_unique<TextWidget>(g_iconFont, getLocalised("system_localization_text"));
 			} else {
-				txt = new TextWidget(hFontMenu, "Text");
+				txt = std::make_unique<TextWidget>(hFontMenu, "Text");
 			}
 			txt->setEnabled(false);
-			addCenter(txt);
+			addCenter(std::move(txt));
 		}
 		
 		{
 			m_textLanguages.clear();
-			m_textLanguageSlider = new CycleTextWidget(sliderSize(), hFontMainMenu, "");
-			m_textLanguageSlider->valueChanged = [this](int pos, std::string_view /* string */) {
+			auto slider = std::make_unique<CycleTextWidget>(sliderSize(), hFontMainMenu, "");
+			slider->valueChanged = [this](int pos, std::string_view /* string */) {
 				if(size_t(pos) >= m_textLanguages.size() || config.interface.language == m_textLanguages[size_t(pos)]) {
 					return;
 				}
@@ -548,33 +550,34 @@ public:
 			};
 			Languages languages = getAvailableTextLanguages();
 			for(const Languages::value_type & language : languages) {
-				m_textLanguageSlider->addEntry(language.second.name);
+				slider->addEntry(language.second.name);
 				if(m_textLanguages.empty() || config.interface.language == language.first) {
-					m_textLanguageSlider->selectLast();
+					slider->selectLast();
 				}
 				m_textLanguages.push_back(language.first);
 			}
-			m_textLanguageSlider->setEnabled(m_textLanguages.size() > 1);
-			addCenter(m_textLanguageSlider);
+			slider->setEnabled(m_textLanguages.size() > 1);
+			m_textLanguageSlider = slider.get();
+			addCenter(std::move(slider));
 		}
 		
-		addCenter(new Spacer(hFontMainMenu->getLineHeight()));
+		addCenter(std::make_unique<Spacer>(hFontMainMenu->getLineHeight()));
 		
 		{
-			TextWidget * txt;
+			std::unique_ptr<TextWidget> txt;
 			if(g_iconFont) {
-				txt = new TextWidget(g_iconFont, getLocalised("system_localization_audio"));
+				txt = std::make_unique<TextWidget>(g_iconFont, getLocalised("system_localization_audio"));
 			} else {
-				txt = new TextWidget(hFontMenu, "Audio");
+				txt = std::make_unique<TextWidget>(hFontMenu, "Audio");
 			}
 			txt->setEnabled(false);
-			addCenter(txt);
+			addCenter(std::move(txt));
 		}
 		
 		{
 			m_audioLanguages.clear();
-			m_audioLanguageSlider = new CycleTextWidget(sliderSize(), hFontMainMenu, "");
-			m_audioLanguageSlider->valueChanged = [this](int pos, std::string_view /* string */) {
+			auto slider = std::make_unique<CycleTextWidget>(sliderSize(), hFontMainMenu, "");
+			slider->valueChanged = [this](int pos, std::string_view /* string */) {
 				if(size_t(pos) >= m_audioLanguages.size() || config.audio.language == m_audioLanguages[size_t(pos)]) {
 					return;
 				}
@@ -583,17 +586,18 @@ public:
 			};
 			Languages languages = getAvailableAudioLanguages();
 			for(const Languages::value_type & language : languages) {
-				m_audioLanguageSlider->addEntry(language.second.name);
+				slider->addEntry(language.second.name);
 				if(m_audioLanguages.empty() || config.audio.language == language.first) {
-					m_audioLanguageSlider->selectLast();
+					slider->selectLast();
 				}
 				m_audioLanguages.push_back(language.first);
 			}
-			m_audioLanguageSlider->setEnabled(m_audioLanguages.size() > 1);
-			addCenter(m_audioLanguageSlider);
+			slider->setEnabled(m_audioLanguages.size() > 1);
+			m_audioLanguageSlider = slider.get();
+			addCenter(std::move(slider));
 		}
 		
-		addCenter(new Spacer(hFontMainMenu->getLineHeight()));
+		addCenter(std::make_unique<Spacer>(hFontMainMenu->getLineHeight()));
 		
 		addBackButton(Page_Options);
 		
@@ -632,7 +636,7 @@ public:
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_videos_full_screen");
-			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
+			auto cb = std::make_unique<CheckboxWidget>(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.video.fullscreen);
 			cb->stateChanged = [this](bool checked) {
 				m_fullscreen = checked;
@@ -641,14 +645,14 @@ public:
 				updateMinimizeOnFocusLostStateCheckbox();
 				updateApplyButton();
 			};
-			addCenter(cb);
-			m_fullscreenCheckbox = cb;
+			m_fullscreenCheckbox = cb.get();
+			addCenter(std::move(cb));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_video_resolution");
-			m_resolutionSlider = new CycleTextWidget(sliderSize(), hFontMenu, label, hFontControls);
-			m_resolutionSlider->valueChanged = [this](int pos, std::string_view /* string */) {
+			auto slider = std::make_unique<CycleTextWidget>(sliderSize(), hFontMenu, label, hFontControls);
+			slider->valueChanged = [this](int pos, std::string_view /* string */) {
 				const RenderWindow::DisplayModes & modes = mainApp->getWindow()->getDisplayModes();
 				if(size_t(pos) < modes.size()) {
 					m_mode = modes[size_t(pos)];
@@ -657,7 +661,7 @@ public:
 				}
 				updateApplyButton();
 			};
-			m_resolutionSlider->setEnabled(config.video.fullscreen);
+			slider->setEnabled(config.video.fullscreen);
 			
 			for(const DisplayMode & mode : mainApp->getWindow()->getDisplayModes()) {
 				
@@ -674,53 +678,54 @@ public:
 					ss << " (" << aspect.x << ':' << aspect.y << ')';
 				}
 				
-				m_resolutionSlider->addEntry(ss.str());
+				slider->addEntry(ss.str());
 				if(mode == config.video.mode) {
-					m_resolutionSlider->selectLast();
+					slider->selectLast();
 				}
 				
 			}
 			
-			m_resolutionSlider->addEntry(getLocalised("system_menus_options_video_resolution_desktop"));
+			slider->addEntry(getLocalised("system_menus_options_video_resolution_desktop"));
 			if(config.video.mode.resolution == Vec2i(0)) {
-				m_resolutionSlider->selectLast();
+				slider->selectLast();
 			}
 			
-			addCenter(m_resolutionSlider);
+			m_resolutionSlider = slider.get();
+			addCenter(std::move(slider));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_video_gamma");
-			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
+			auto sld = std::make_unique<SliderWidget>(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [this](int value) {
 				if(m_gammaSlider->isEnabled()) {
 					ARXMenu_Options_Video_SetGamma(float(value));
 				}
 			};
-			addCenter(sld);
-			m_gammaSlider = sld;
+			m_gammaSlider = sld.get();
+			addCenter(std::move(sld));
 			updateGammaSlider();
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_videos_minimize_on_focus_lost");
-			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
+			auto cb = std::make_unique<CheckboxWidget>(checkboxSize(), hFontMenu, label);
 			cb->stateChanged = [this](bool checked) {
 				if(m_minimizeOnFocusLostCheckbox->isEnabled()) {
 					config.window.minimizeOnFocusLost = checked;
 					mainApp->getWindow()->setMinimizeOnFocusLost(config.window.minimizeOnFocusLost);
 				}
 			};
-			addCenter(cb);
-			m_minimizeOnFocusLostCheckbox = cb;
+			m_minimizeOnFocusLostCheckbox = cb.get();
+			addCenter(std::move(cb));
 			updateMinimizeOnFocusLostStateCheckbox();
 		}
 		
-		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
+		addCenter(std::make_unique<Spacer>(hFontMenu->getLineHeight() / 2));
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_video_vsync");
-			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
+			auto cb = std::make_unique<CycleTextWidget>(sliderSize(), hFontMenu, label);
 			cb->valueChanged = [](int pos, std::string_view /* string */) {
 				config.video.vsync = pos > 1 ? -1 : pos;
 				mainApp->getWindow()->setVSync(config.video.vsync);
@@ -734,12 +739,12 @@ public:
 				cb->addEntry(getLocalised("system_menus_options_video_vsync_auto"));
 				cb->setValue(config.video.vsync < 0 ? 2 : config.video.vsync);
 			}
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_video_fps_limit");
-			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
+			auto cb = std::make_unique<CycleTextWidget>(sliderSize(), hFontMenu, label);
 			cb->valueChanged = [](int pos, std::string_view string) {
 				if(pos == 0) {
 					config.video.fpsLimit = 0;
@@ -786,45 +791,45 @@ public:
 					cb->selectLast();
 				}
 			}
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
-		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
+		addCenter(std::make_unique<Spacer>(hFontMenu->getLineHeight() / 2));
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_video_fov");
-			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
+			auto sld = std::make_unique<SliderWidget>(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) noexcept {
 				config.video.fov = 50.f + float(value) * 5.f;
 			};
 			sld->setValue(glm::clamp(int((config.video.fov - 50.f) / 5.f), 0, 10));
-			addCenter(sld);
+			addCenter(std::move(sld));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_videos_view_bobbing");
-			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
+			auto cb = std::make_unique<CheckboxWidget>(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.video.viewBobbing);
 			cb->stateChanged = [](bool checked) noexcept {
 				config.video.viewBobbing = checked;
 			};
-			addCenter(cb);
-			m_fullscreenCheckbox = cb;
+			m_fullscreenCheckbox = cb.get();
+			addCenter(std::move(cb));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_videos_screen_shake");
-			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
+			auto cb = std::make_unique<CheckboxWidget>(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.video.screenShake);
 			cb->stateChanged = [](bool checked) noexcept {
 				config.video.screenShake = checked;
 			};
-			addCenter(cb);
-			m_fullscreenCheckbox = cb;
+			m_fullscreenCheckbox = cb.get();
+			addCenter(std::move(cb));
 		}
 		
 		{
-			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_video_apply"));
+			auto txt = std::make_unique<TextWidget>(hFontMenu, getLocalised("system_menus_video_apply"));
 			txt->clicked = [this](Widget * /* widget */) {
 				
 				config.video.mode = m_mode;
@@ -849,8 +854,8 @@ public:
 				
 			};
 			txt->setEnabled(false);
-			addCorner(txt, BottomRight);
-			m_applyButton = txt;
+			m_applyButton = txt.get();
+			addCorner(std::move(txt), BottomRight);
 		}
 		
 		addBackButton(Page_Options);
@@ -913,7 +918,7 @@ public:
 		// Renderer selection
 		{
 			std::string_view label = getLocalised("system_menus_options_video_renderer");
-			CycleTextWidget * slider = new CycleTextWidget(sliderSize(), hFontMenu, label);
+			auto slider = std::make_unique<CycleTextWidget>(sliderSize(), hFontMenu, label);
 			slider->valueChanged = [](int pos, std::string_view /* string */) {
 				switch(pos) {
 					case 0:  config.video.renderer = "auto"; break;
@@ -927,14 +932,14 @@ public:
 			if(config.video.renderer == "OpenGL") {
 				slider->selectLast();
 			}
-			addCenter(slider);
+			addCenter(std::move(slider));
 		}
 		
-		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
+		addCenter(std::make_unique<Spacer>(hFontMenu->getLineHeight() / 2));
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_detail");
-			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
+			auto cb = std::make_unique<CycleTextWidget>(sliderSize(), hFontMenu, label);
 			cb->valueChanged = [](int pos, std::string_view /* string */) {
 				ARXMenu_Options_Video_SetDetailsQuality(pos);
 			};
@@ -942,44 +947,44 @@ public:
 			cb->addEntry(getLocalised("system_menus_options_video_texture_med"));
 			cb->addEntry(getLocalised("system_menus_options_video_texture_high"));
 			cb->setValue(config.video.levelOfDetail);
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_video_brouillard");
-			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
+			auto sld = std::make_unique<SliderWidget>(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) {
 				ARXMenu_Options_Video_SetFogDistance(value);
 			};
 			sld->setValue(int(config.video.fogDistance));
-			addCenter(sld);
+			addCenter(std::move(sld));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_video_antialiasing");
-			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
+			auto cb = std::make_unique<CheckboxWidget>(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.video.antialiasing);
 			cb->stateChanged = [this](bool checked) {
 				config.video.antialiasing = checked;
 				setAlphaCutoutAntialisingState();
 			};
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_video_colorkey_antialiasing");
-			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
+			auto cb = std::make_unique<CheckboxWidget>(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.video.colorkeyAntialiasing);
 			cb->stateChanged = [](bool checked) {
 				config.video.colorkeyAntialiasing = checked;
 				GRenderer->reloadColorKeyTextures();
 			};
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_video_alpha_cutout_antialising");
-			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
+			auto cb = std::make_unique<CycleTextWidget>(sliderSize(), hFontMenu, label);
 			cb->valueChanged = [](int pos, std::string_view /* string */) noexcept {
 				config.video.alphaCutoutAntialiasing = pos;
 			};
@@ -991,14 +996,14 @@ public:
 			if(maxAA >= Renderer::CrispAlphaCutoutAA) {
 				cb->addEntry(getLocalised("system_menus_options_video_alpha_cutout_antialising_crisp"));
 			}
-			m_alphaCutoutAntialiasingCycleText = cb;
+			m_alphaCutoutAntialiasingCycleText = cb.get();
 			setAlphaCutoutAntialisingState();
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_video_texture_filter_anisotropic");
-			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
+			auto cb = std::make_unique<CycleTextWidget>(sliderSize(), hFontMenu, label);
 			cb->valueChanged = [](int pos, std::string_view string) {
 				int anisotropy = 1;
 				if(pos > 0) {
@@ -1047,7 +1052,7 @@ public:
 			}
 			cb->setValue(selected);
 			cb->setEnabled(maxAnisotropy > 1);
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		addBackButton(Page_Options);
@@ -1092,27 +1097,27 @@ public:
 		{
 			std::string_view label = getLocalised("system_menus_options_video_crosshair");
 			label = getLocalised("system_menus_options_interface_crosshair", label);
-			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
+			auto cb = std::make_unique<CheckboxWidget>(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.showCrosshair);
 			cb->stateChanged = [](bool checked) noexcept {
 				config.interface.showCrosshair = checked;
 			};
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_interface_limit_speech_width");
-			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
+			auto cb = std::make_unique<CheckboxWidget>(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.limitSpeechWidth);
 			cb->stateChanged = [](bool checked) noexcept {
 				config.interface.limitSpeechWidth = checked;
 			};
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_interface_cinematic_widescreen_mode");
-			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label, hFontControls);
+			auto cb = std::make_unique<CycleTextWidget>(sliderSize(), hFontMenu, label, hFontControls);
 			cb->valueChanged = [](int pos, std::string_view /* string */) noexcept {
 				config.interface.cinematicWidescreenMode = CinematicWidescreenMode(pos);
 			};
@@ -1120,99 +1125,99 @@ public:
 			cb->addEntry(getLocalised("system_menus_options_interface_hard_edges"));
 			cb->addEntry(getLocalised("system_menus_options_interface_fade_edges"));
 			cb->setValue(config.interface.cinematicWidescreenMode);
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
-		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
+		addCenter(std::make_unique<Spacer>(hFontMenu->getLineHeight() / 2));
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_interface_hud_scale");
-			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
+			auto sld = std::make_unique<SliderWidget>(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) {
 				config.interface.hudScale = float(value) * 0.1f;
 				g_hudRoot.recalcScale();
 			};
 			sld->setValue(int(config.interface.hudScale * 10.f));
-			addCenter(sld);
+			addCenter(std::move(sld));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_interface_hud_scale_integer");
-			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
+			auto cb = std::make_unique<CheckboxWidget>(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.hudScaleInteger);
 			cb->stateChanged = [](bool checked ) {
 				config.interface.hudScaleInteger = checked;
 				g_hudRoot.recalcScale();
 			};
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_interface_book_scale");
-			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
+			auto sld = std::make_unique<SliderWidget>(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) noexcept {
 				config.interface.bookScale = float(value) * 0.1f;
 			};
 			sld->setValue(int(config.interface.bookScale * 10.f));
-			addCenter(sld);
+			addCenter(std::move(sld));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_interface_book_scale_integer");
-			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
+			auto cb = std::make_unique<CheckboxWidget>(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.bookScaleInteger);
 			cb->stateChanged = [](bool checked) noexcept {
 				config.interface.bookScaleInteger = checked;
 			};
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_interface_cursor_scale");
-			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
+			auto sld = std::make_unique<SliderWidget>(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) noexcept {
 				config.interface.cursorScale = float(value) * 0.1f;
 			};
 			sld->setValue(int(config.interface.cursorScale * 10.f));
-			addCenter(sld);
+			addCenter(std::move(sld));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_interface_cursor_scale_integer");
-			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
+			auto cb = std::make_unique<CheckboxWidget>(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.interface.cursorScaleInteger);
 			cb->stateChanged = [](bool checked) noexcept {
 				config.interface.cursorScaleInteger = checked;
 			};
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_interface_scale_filter");
-			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
+			auto cb = std::make_unique<CycleTextWidget>(sliderSize(), hFontMenu, label);
 			cb->valueChanged = [](int pos, std::string_view /* string */) noexcept {
 				config.interface.scaleFilter = UIScaleFilter(pos);
 			};
 			cb->addEntry(getLocalised("system_menus_options_video_filter_nearest"));
 			cb->addEntry(getLocalised("system_menus_options_video_filter_bilinear"));
 			cb->setValue(config.interface.scaleFilter);
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_interface_font_size");
-			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
+			auto sld = std::make_unique<SliderWidget>(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) {
 				config.interface.fontSize = 0.75f + float(value) / 20.f;
 				ARX_Text_Init();
 			};
 			sld->setValue(int(glm::clamp((config.interface.fontSize - 0.75f) * 20.f + 0.5f, 0.f, 10.f)));
-			addCenter(sld);
+			addCenter(std::move(sld));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_interface_font_weight");
-			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
+			auto cb = std::make_unique<CycleTextWidget>(sliderSize(), hFontMenu, label);
 			cb->valueChanged = [](int pos, std::string_view /* string */) {
 				config.interface.fontWeight = pos;
 				ARX_Text_Init();
@@ -1224,7 +1229,7 @@ public:
 			cb->addEntry(getLocalised("system_menus_options_interface_font_weight_4"));
 			cb->addEntry(getLocalised("system_menus_options_interface_font_weight_5"));
 			cb->setValue(config.interface.fontWeight);
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		addBackButton(Page_Options);
@@ -1249,7 +1254,7 @@ public:
 		// Audio backend selection
 		{
 			std::string_view label = getLocalised("system_menus_options_audio_device");
-			CycleTextWidget * slider = new CycleTextWidget(sliderSize(), hFontMenu, label, hFontControls);
+			auto slider = std::make_unique<CycleTextWidget>(sliderSize(), hFontMenu, label, hFontControls);
 			slider->valueChanged = [](int pos, std::string_view string) {
 				ARXMenu_Options_Audio_SetDevice((pos == 0) ? "auto" : string);
 			};
@@ -1261,54 +1266,54 @@ public:
 					slider->selectLast();
 				}
 			}
-			addCenter(slider);
+			addCenter(std::move(slider));
 		}
 		
-		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
+		addCenter(std::make_unique<Spacer>(hFontMenu->getLineHeight() / 2));
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_audio_master_volume");
-			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
+			auto sld = std::make_unique<SliderWidget>(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) {
 				ARXMenu_Options_Audio_SetMasterVolume(value);
 			};
 			sld->setValue(int(config.audio.volume)); // TODO use float sliders
-			addCenter(sld);
+			addCenter(std::move(sld));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_audio_effects_volume");
-			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
+			auto sld = std::make_unique<SliderWidget>(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) {
 				ARXMenu_Options_Audio_SetSfxVolume(value);
 			};
 			sld->setValue(int(config.audio.sfxVolume));
-			addCenter(sld);
+			addCenter(std::move(sld));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_audio_speech_volume");
-			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
+			auto sld = std::make_unique<SliderWidget>(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) {
 				ARXMenu_Options_Audio_SetSpeechVolume(value);
 			};
 			sld->setValue(int(config.audio.speechVolume));
-			addCenter(sld);
+			addCenter(std::move(sld));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_audio_ambiance_volume");
-			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
+			auto sld = std::make_unique<SliderWidget>(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) {
 				ARXMenu_Options_Audio_SetAmbianceVolume(value);
 			};
 			sld->setValue(int(config.audio.ambianceVolume));
-			addCenter(sld);
+			addCenter(std::move(sld));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_audio_mute_on_focus_lost");
-			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
+			auto cb = std::make_unique<CheckboxWidget>(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.audio.muteOnFocusLost);
 			cb->stateChanged = [](bool checked) {
 				config.audio.muteOnFocusLost = checked;
@@ -1316,14 +1321,14 @@ public:
 					ARXMenu_Options_Audio_SetMuted(config.audio.muteOnFocusLost);
 				}
 			};
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
-		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
+		addCenter(std::make_unique<Spacer>(hFontMenu->getLineHeight() / 2));
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_audio_eax");
-			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
+			auto cb = std::make_unique<CheckboxWidget>(checkboxSize(), hFontMenu, label);
 			if(audio::isReverbSupported()) {
 				cb->setChecked(config.audio.eax);
 			} else {
@@ -1333,13 +1338,13 @@ public:
 				config.audio.eax = checked;
 				ARX_SOUND_SetReverb(config.audio.eax);
 			};
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		audio::HRTFStatus hrtf = audio::getHRTFStatus();
 		if(hrtf != audio::HRTFUnavailable) {
 			std::string_view label = getLocalised("system_menus_options_audio_hrtf");
-			CycleTextWidget * slider = new CycleTextWidget(sliderSize(), hFontMenu, label);
+			auto slider = std::make_unique<CycleTextWidget>(sliderSize(), hFontMenu, label);
 			slider->valueChanged = [](int pos, std::string_view /* string */) {
 				switch(pos) {
 					case 0: config.audio.hrtf = audio::HRTFDisable; break;
@@ -1364,7 +1369,7 @@ public:
 			if(hrtf == audio::HRTFRequired || hrtf == audio::HRTFForbidden) {
 				slider->setEnabled(false);
 			}
-			addCenter(slider);
+			addCenter(std::move(slider));
 		}
 		
 		addBackButton(Page_Options);
@@ -1388,27 +1393,27 @@ public:
 		{
 			std::string label(getLocalised("system_menus_options_input_customize_controls"));
 			label += "…";
-			TextWidget * txt = new TextWidget(hFontMenu, label);
+			auto txt = std::make_unique<TextWidget>(hFontMenu, label);
 			txt->setTargetPage(Page_OptionsInputCustomizeKeys1);
-			addCenter(txt, false);
+			addCenter(std::move(txt), false);
 		}
 		
-		addCenter(new Spacer(hFontMenu->getLineHeight() / 2));
+		addCenter(std::make_unique<Spacer>(hFontMenu->getLineHeight() / 2));
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_input_invert_mouse");
-			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
+			auto cb = std::make_unique<CheckboxWidget>(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.invertMouse);
 			cb->stateChanged = [](bool checked) {
 				config.input.invertMouse = checked;
 				GInput->setInvertMouseY(config.input.invertMouse);
 			};
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_auto_ready_weapon");
-			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
+			auto cb = std::make_unique<CycleTextWidget>(sliderSize(), hFontMenu, label);
 			cb->valueChanged = [](int pos, std::string_view /* string */) noexcept {
 				config.input.autoReadyWeapon = AutoReadyWeapon(pos);
 			};
@@ -1416,106 +1421,106 @@ public:
 			cb->addEntry(getLocalised("system_menus_options_auto_ready_weapon_enemies"));
 			cb->addEntry(getLocalised("system_menus_options_auto_ready_weapon_always"));
 			cb->setValue(int(config.input.autoReadyWeapon));
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_input_mouse_look_toggle");
-			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
+			auto cb = std::make_unique<CheckboxWidget>(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.mouseLookToggle);
 			cb->stateChanged = [](bool checked) noexcept {
 				config.input.mouseLookToggle = checked;
 			};
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_input_mouse_sensitivity");
-			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
+			auto sld = std::make_unique<SliderWidget>(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) {
 				config.input.mouseSensitivity = glm::clamp(value, 0, 10);
 				GInput->setMouseSensitivity(config.input.mouseSensitivity);
 			};
 			sld->setValue(config.input.mouseSensitivity);
-			addCenter(sld);
+			addCenter(std::move(sld));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_input_mouse_acceleration");
-			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
+			auto sld = std::make_unique<SliderWidget>(sliderSize(), hFontMenu, label);
 			sld->valueChanged = [](int value) {
 				config.input.mouseAcceleration = glm::clamp(value, 0, 10);
 				GInput->setMouseAcceleration(config.input.mouseAcceleration);
 			};
 			sld->setValue(config.input.mouseAcceleration);
-			addCenter(sld);
+			addCenter(std::move(sld));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_raw_mouse_input");
-			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
+			auto cb = std::make_unique<CheckboxWidget>(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.rawMouseInput);
 			cb->stateChanged = [](bool checked) {
 				config.input.rawMouseInput = checked;
 				GInput->setRawMouseInput(config.input.rawMouseInput);
 			};
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_autodescription");
-			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
+			auto cb = std::make_unique<CheckboxWidget>(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.autoDescription);
 			cb->stateChanged = [](bool checked) noexcept {
 				config.input.autoDescription = checked;
 			};
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_options_misc_quicksave_slots");
-			SliderWidget * sld = new SliderWidget(sliderSize(), hFontMenu, label);
+			auto sld = std::make_unique<SliderWidget>(sliderSize(), hFontMenu, label);
 			sld->setMinimum(1);
 			sld->valueChanged = [](int value) noexcept {
 				config.misc.quicksaveSlots = value;
 			};
 			sld->setValue(config.misc.quicksaveSlots);
-			addCenter(sld);
+			addCenter(std::move(sld));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_border_turning");
-			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
+			auto cb = std::make_unique<CheckboxWidget>(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.borderTurning);
 			cb->stateChanged = [](bool checked) noexcept {
 				config.input.borderTurning = checked;
 			};
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_alt_rune_recognition");
-			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
+			auto cb = std::make_unique<CheckboxWidget>(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.useAltRuneRecognition);
 			cb->stateChanged = [](bool checked) noexcept {
 				config.input.useAltRuneRecognition = checked;
 			};
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_alt_bow_aim");
-			CheckboxWidget * cb = new CheckboxWidget(checkboxSize(), hFontMenu, label);
+			auto cb = std::make_unique<CheckboxWidget>(checkboxSize(), hFontMenu, label);
 			cb->setChecked(config.input.improvedBowAim);
 			cb->stateChanged = [](bool checked) noexcept {
 				config.input.improvedBowAim = checked;
 			};
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		{
 			std::string_view label = getLocalised("system_menus_quick_level_transition");
-			CycleTextWidget * cb = new CycleTextWidget(sliderSize(), hFontMenu, label);
+			auto cb = std::make_unique<CycleTextWidget>(sliderSize(), hFontMenu, label);
 			cb->valueChanged = [](int pos, std::string_view /* string */) noexcept {
 				config.input.quickLevelTransition = QuickLevelTransition(pos);
 			};
@@ -1523,15 +1528,15 @@ public:
 			cb->addEntry(getLocalised("system_menus_quick_level_transition_jump"));
 			cb->addEntry(getLocalised("system_menus_quick_level_transition_immediate"));
 			cb->setValue(int(config.input.quickLevelTransition));
-			addCenter(cb);
+			addCenter(std::move(cb));
 		}
 		
 		addBackButton(Page_Options);
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(buttonSize(16, 16), "graph/interface/menus/next");
+			auto cb = std::make_unique<ButtonWidget>(buttonSize(16, 16), "graph/interface/menus/next");
 			cb->setTargetPage(Page_OptionsInputCustomizeKeys1);
-			addCorner(cb, BottomRight);
+			addCorner(std::move(cb), BottomRight);
 		}
 		
 	}
@@ -1557,7 +1562,7 @@ protected:
 	
 	void addControlRow(ControlAction controlAction, std::string_view text) {
 		
-		PanelWidget * panel = new PanelWidget;
+		auto panel = std::make_unique<PanelWidget>();
 		
 		{
 			auto txt = std::make_unique<TextWidget>(hFontControls, getLocalised(text));
@@ -1587,7 +1592,7 @@ protected:
 			panel->add(std::move(keybind));
 		}
 		
-		addCenter(panel, false);
+		addCenter(std::move(panel), false);
 		
 	}
 	
@@ -1660,17 +1665,18 @@ public:
 		addBackButton(Page_OptionsInput);
 		
 		{
-			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_options_input_customize_default"));
+			std::string_view label = getLocalised("system_menus_options_input_customize_default");
+			auto txt = std::make_unique<TextWidget>(hFontMenu, label);
 			txt->clicked = [this](Widget * /* widget */) {
 				resetActionKeys();
 			};
-			addCorner(txt, BottomCenter);
+			addCorner(std::move(txt), BottomCenter);
 		}
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(buttonSize(16, 16), "graph/interface/menus/next");
+			auto cb = std::make_unique<ButtonWidget>(buttonSize(16, 16), "graph/interface/menus/next");
 			cb->setTargetPage(Page_OptionsInputCustomizeKeys2);
-			addCorner(cb, BottomRight);
+			addCorner(std::move(cb), BottomRight);
 		}
 		
 		reinitActionKeys();
@@ -1723,11 +1729,12 @@ public:
 		addBackButton(Page_OptionsInputCustomizeKeys1);
 		
 		{
-			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_options_input_customize_default"));
+			std::string_view label = getLocalised("system_menus_options_input_customize_default");
+			auto txt = std::make_unique<TextWidget>(hFontMenu, label);
 			txt->clicked = [this](Widget * /* widget */) {
 				resetActionKeys();
 			};
-			addCorner(txt, BottomCenter);
+			addCorner(std::move(txt), BottomCenter);
 		}
 		
 		reinitActionKeys();
@@ -1749,30 +1756,30 @@ public:
 		reserveBottom();
 		
 		{
-			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_quit"));
+			auto txt = std::make_unique<TextWidget>(hFontMenu, getLocalised("system_menus_main_quit"));
 			txt->setEnabled(false);
-			addCenter(txt);
+			addCenter(std::move(txt));
 		}
 		
 		{
-			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_main_editquest_confirm"));
+			auto txt = std::make_unique<TextWidget>(hFontMenu, getLocalised("system_menus_main_editquest_confirm"));
 			txt->setEnabled(false);
-			addCenter(txt);
+			addCenter(std::move(txt));
 		}
 		
 		{
-			TextWidget * yes = new TextWidget(hFontMenu, getLocalised("system_yes"));
+			auto yes = std::make_unique<TextWidget>(hFontMenu, getLocalised("system_yes"));
 			yes->clicked = [](Widget * /* widget */) {
 				MenuFader_start(Fade_In, Mode_InGame);
 			};
-			addCorner(yes, BottomRight);
+			addCorner(std::move(yes), BottomRight);
 		}
 		
 		{
-			TextWidget * no = new TextWidget(hFontMenu, getLocalised("system_no"));
+			auto no = std::make_unique<TextWidget>(hFontMenu, getLocalised("system_no"));
 			no->setTargetPage(Page_None);
 			no->setShortcut(Keyboard::Key_Escape);
-			addCorner(no, BottomLeft);
+			addCorner(std::move(no), BottomLeft);
 		}
 		
 	}

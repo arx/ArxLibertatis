@@ -43,8 +43,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/menu/MenuPage.h"
 
-#include <algorithm>
 #include <cmath>
+#include <algorithm>
+#include <utility>
 
 #include "core/Core.h"
 #include "graphics/DrawLine.h"
@@ -63,7 +64,9 @@ MenuPage::MenuPage(MENUSTATE id)
 	, m_disableShortcuts(false)
 { }
 
-void MenuPage::addCorner(Widget * widget, Anchor anchor) {
+void MenuPage::addCorner(std::unique_ptr<Widget> widget, Anchor anchor) {
+	
+	arx_assert(widget);
 	
 	Vec2f pos(0.f);
 	
@@ -102,11 +105,13 @@ void MenuPage::addCorner(Widget * widget, Anchor anchor) {
 	
 	widget->setPosition(pos);
 	
-	m_children.add(std::unique_ptr<Widget>(widget));
+	m_children.add(std::move(widget));
 	
 }
 
-void MenuPage::addCenter(Widget * widget, bool centerX) {
+void MenuPage::addCenter(std::unique_ptr<Widget> widget, bool centerX) {
+	
+	arx_assert(widget);
 	
 	float x = m_content.left;
 	if(centerX) {
@@ -141,16 +146,16 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 	
 	widget->setPosition(Vec2f(x, y));
 	
-	m_children.add(std::unique_ptr<Widget>(widget));
+	m_children.add(std::move(widget));
 	
 }
 
 void MenuPage::addBackButton(MENUSTATE page) {
 	
-	ButtonWidget * cb = new ButtonWidget(buttonSize(16, 16), "graph/interface/menus/back");
+	auto cb = std::make_unique<ButtonWidget>(buttonSize(16, 16), "graph/interface/menus/back");
 	cb->setTargetPage(page);
 	cb->setShortcut(Keyboard::Key_Escape);
-	addCorner(cb, BottomLeft);
+	addCorner(std::move(cb), BottomLeft);
 	
 }
 
