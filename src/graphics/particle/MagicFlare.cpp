@@ -88,10 +88,11 @@ void MagicFlareLoadTextures() {
 
 static short shinum = 1;
 
-void MagicFlareReleaseEntity(Entity * io) {
+void MagicFlareReleaseEntity(const Entity * entity) {
 	for(size_t i = 0; i < g_magicFlaresMax; i++) {
-		if(g_magicFlares[i].exist && g_magicFlares[i].io == io)
+		if(g_magicFlares[i].exist && g_magicFlares[i].io == entity) {
 			g_magicFlares[i].io = nullptr;
+		}
 	}
 }
 

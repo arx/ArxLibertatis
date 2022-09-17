@@ -26,7 +26,7 @@ class Entity;
 
 void MagicFlareLoadTextures();
 
-void MagicFlareReleaseEntity(Entity * io);
+void MagicFlareReleaseEntity(const Entity * entity);
 long MagicFlareCountNonFlagged();
 
 void ARX_MAGICAL_FLARES_FirstInit();
