@@ -152,13 +152,13 @@ void CLightning::BuildS(LIGHTNING * lightingInfo) {
 		avect = av;
 		
 		float ts = Random::getf();
-		av *= ts * (m_fLengthMax - m_fLengthMin) * lightingInfo->anb * m_invNbSegments + m_fLengthMin;
+		av *= ts * (m_fLengthMax - m_fLengthMin) * float(lightingInfo->anb) * m_invNbSegments + m_fLengthMin;
 		
 		astart += av;
 		lightingInfo->eStart = astart;
 		
 		m_nodes[i].pos = lightingInfo->eStart;
-		m_nodes[i].size = m_nodes[0].size * lightingInfo->anb * m_invNbSegments;
+		m_nodes[i].size = m_nodes[0].size * float(lightingInfo->anb) * m_invNbSegments;
 		m_nodes[i].parent = lightingInfo->aParent;
 		
 		int anb = lightingInfo->anb;
