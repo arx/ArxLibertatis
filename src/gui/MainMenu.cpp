@@ -1560,9 +1560,9 @@ protected:
 		PanelWidget * panel = new PanelWidget;
 		
 		{
-			TextWidget * txt = new TextWidget(hFontControls, getLocalised(text));
+			auto txt = std::make_unique<TextWidget>(hFontControls, getLocalised(text));
 			txt->setEnabled(false);
-			panel->add(txt);
+			panel->add(std::move(txt));
 		}
 		
 		std::function<void(KeybindWidget * keybind)> keyChanged = [this](KeybindWidget * keybind) {
@@ -1581,10 +1581,10 @@ protected:
 		};
 		
 		for(size_t i = 0; i < 2; i++) {
-			KeybindWidget * keybind = new KeybindWidget(controlAction, i, hFontControls);
+			auto keybind = std::make_unique<KeybindWidget>(controlAction, i, hFontControls);
 			keybind->keyChanged = keyChanged;
 			keybind->setPosition(RATIO_2(Vec2f(150.f + 95.f * float(i), 0.f)));
-			panel->add(keybind);
+			panel->add(std::move(keybind));
 		}
 		
 		addCenter(panel, false);
@@ -1596,10 +1596,10 @@ protected:
 		for(Widget & widget : m_children.widgets()) {
 			if(widget.type() == WidgetType_Panel) {
 				PanelWidget & panel = static_cast<PanelWidget &>(widget);
-				for(Widget * child : panel.children()) {
-					if(child->type() == WidgetType_Keybind) {
-						KeybindWidget * keybind = static_cast<KeybindWidget *>(child);
-						keybind->setKey(config.actions[keybind->action()].key[keybind->index()]);
+				for(Widget & child : panel.children()) {
+					if(child.type() == WidgetType_Keybind) {
+						KeybindWidget & keybind = static_cast<KeybindWidget &>(child);
+						keybind.setKey(config.actions[keybind.action()].key[keybind.index()]);
 					}
 				}
 			}

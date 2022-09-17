@@ -20,27 +20,27 @@
 #ifndef ARX_GUI_WIDGET_PANELWIDGET_H
 #define ARX_GUI_WIDGET_PANELWIDGET_H
 
+#include <memory>
 #include <vector>
 
 #include "gui/widget/Widget.h"
 #include "platform/Platform.h"
+#include "util/Range.h"
 
 class PanelWidget final : public Widget {
 	
 public:
 	
-	~PanelWidget() override;
-	
 	void move(const Vec2f & offset) override;
 	
-	void add(Widget * widget);
+	void add(std::unique_ptr<Widget> widget);
 	
 	void update() override;
 	void render(bool mouseOver = false) override;
 	
 	Widget * getWidgetAt(const Vec2f & mousePos) override;
 	
-	const std::vector<Widget *> & children() const { return m_children; }
+	auto children() const { return util::dereference(m_children); }
 	
 	WidgetType type() const override {
 		return WidgetType_Panel;
@@ -48,7 +48,7 @@ public:
 	
 private:
 	
-	std::vector<Widget *> m_children;
+	std::vector<std::unique_ptr<Widget>> m_children;
 	
 };
 

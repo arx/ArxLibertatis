@@ -19,35 +19,33 @@
 
 #include "gui/widget/PanelWidget.h"
 
-#include "input/Input.h"
+#include <utility>
 
-PanelWidget::~PanelWidget() {
-	for(Widget * w : m_children) {
-		delete w;
-	}
-}
+#include "input/Input.h"
 
 void PanelWidget::move(const Vec2f & offset) {
 	
 	m_rect.move(offset.x, offset.y);
 	
-	for(Widget * w : m_children) {
-		w->move(offset);
+	for(Widget & widget : children()) {
+		widget.move(offset);
 	}
 	
 }
 
-void PanelWidget::add(Widget * widget) {
+void PanelWidget::add(std::unique_ptr<Widget> widget) {
 	
-	m_children.push_back(widget);
+	arx_assert(widget);
 	
-	if(m_children.size() == 1) {
+	if(m_children.size() == 0) {
 		m_rect = widget->m_rect;
 	} else {
 		m_rect = m_rect | widget->m_rect;
 	}
 	
 	widget->move(Vec2f(0, ((m_rect.height() - widget->m_rect.bottom) / 2)));
+	
+	m_children.emplace_back(std::move(widget));
 	
 }
 
@@ -56,27 +54,27 @@ void PanelWidget::update() {
 	m_rect.right = m_rect.left;
 	m_rect.bottom = m_rect.top;
 	
-	for(Widget * w : m_children) {
-		w->update();
-		m_rect.right = std::max(m_rect.right, w->m_rect.right);
-		m_rect.bottom = std::max(m_rect.bottom, w->m_rect.bottom);
+	for(Widget & widget : children()) {
+		widget.update();
+		m_rect.right = std::max(m_rect.right, widget.m_rect.right);
+		m_rect.bottom = std::max(m_rect.bottom, widget.m_rect.bottom);
 	}
 	
 }
 
 void PanelWidget::render(bool /* mouseOver */) {
 	const Vec2f cursor = Vec2f(GInput->getMousePosition());
-	for(Widget * w : m_children) {
-		w->render(w->m_rect.contains(cursor));
+	for(Widget & widget : children()) {
+		widget.render(widget.m_rect.contains(cursor));
 	}
 }
 
 Widget * PanelWidget::getWidgetAt(const Vec2f & mousePos) {
 	
 	if(m_rect.contains(mousePos)) {
-		for(Widget * w : m_children) {
-			if(w->isEnabled() && w->m_rect.contains(mousePos)) {
-				return w;
+		for(Widget & widget : children()) {
+			if(widget.isEnabled() && widget.m_rect.contains(mousePos)) {
+				return &widget;
 			}
 		}
 	}
