@@ -95,7 +95,7 @@ bool ARX_SPEECH_playerNotSpeaking() {
 	return bOk;
 }
 
-bool ARX_SPEECH_isEntitySpeaking(Entity * entity) {
+bool ARX_SPEECH_isEntitySpeaking(const Entity * entity) {
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
 		if(g_aspeech[i].exist && entity == g_aspeech[i].io) {
 			return true;
@@ -168,10 +168,10 @@ static void ARX_SPEECH_Release(long i) {
 	}
 }
 
-void ARX_SPEECH_ReleaseIOSpeech(Entity * io) {
+void ARX_SPEECH_ReleaseIOSpeech(const Entity * entity) {
 	
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
-		if(g_aspeech[i].exist && g_aspeech[i].io == io) {
+		if(g_aspeech[i].exist && g_aspeech[i].io == entity) {
 			ARX_SPEECH_Release(i);
 		}
 	}
@@ -183,7 +183,7 @@ void ARX_SPEECH_Reset() {
 	}
 }
 
-void ARX_SPEECH_ClearIOSpeech(Entity * entity) {
+void ARX_SPEECH_ClearIOSpeech(const Entity * entity) {
 	
 	if(!entity) {
 		return;
