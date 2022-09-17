@@ -143,20 +143,20 @@ void OpenGLInfo::parseOverrideConfig(std::string_view string) {
 				} else if(token == "-*" || token == "-") {
 					m_versionOverride = m_version;
 				} else if(dot != std::string_view::npos) {
-					s32 major = util::toInt(token.substr(offset, dot - offset)).value();
-					s32 minor = util::toInt(token.substr(dot + 1)).value();
+					s32 major = util::toInt(token.substr(offset, dot - offset)).value_or(-1);
+					s32 minor = util::toInt(token.substr(dot + 1)).value_or(-1);
 					if(minor < 0 || minor > 10 || major < 0 || major > s32(std::numeric_limits<u32>::max() / 10)) {
 						throw std::exception();
 					}
 					m_versionOverride = u32(major) * 10 + u32(minor);
 				} else if(token.length() - offset > 1) {
-					s32 version = util::toInt(token.substr(offset)).value();
+					s32 version = util::toInt(token.substr(offset)).value_or(-1);
 					if(version < 0) {
 						throw std::exception();
 					}
 					m_versionOverride = u32(version);
 				} else {
-					s32 major = util::toInt(token.substr(offset)).value();
+					s32 major = util::toInt(token.substr(offset)).value_or(-1);
 					if(major < 0 || major > s32(std::numeric_limits<u32>::max() / 10)) {
 						throw std::exception();
 					}
