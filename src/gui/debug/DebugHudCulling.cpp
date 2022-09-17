@@ -118,7 +118,7 @@ void debugHud_Culling() {
 	
 	// Draw the camera frustum (minus near plane)
 	{
-		Vec3f frustum[5] = {
+		const Vec3f frustum[5] = {
 			screenToWorldSpace(Vec2f(g_size.topLeft()), g_camera->cdepth * fZFogEnd),
 			screenToWorldSpace(Vec2f(g_size.topRight()), g_camera->cdepth * fZFogEnd),
 			screenToWorldSpace(Vec2f(g_size.bottomRight()), g_camera->cdepth * fZFogEnd),
@@ -148,7 +148,7 @@ void debugHud_Culling() {
 		Color::cyan
 	};
 	size_t sums[] = { 0, 0, 0, 0, 0, 0 };
-	std::string_view labels[] = {
+	const std::string_view labels[] = {
 		"Inactive",
 		"View",
 		"Occluded",
@@ -191,7 +191,7 @@ void debugHud_Culling() {
 			// Further, linked entities, do not have a valid position.
 			Vec2f pos = glm::floor(offset + worldToDebug * entity.pos);
 			if(entity.show == SHOW_FLAG_LINKED || entity.show == SHOW_FLAG_ON_PLAYER) {
-				for(Entity & other : entities.inScene(~(IO_CAMERA | IO_MARKER))) {
+				for(const Entity & other : entities.inScene(~(IO_CAMERA | IO_MARKER))) {
 					if(other != entity) {
 						bool found = false;
 						for(const EERIE_LINKED & link : other.obj->linked) {
