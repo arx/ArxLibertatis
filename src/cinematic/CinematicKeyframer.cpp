@@ -520,8 +520,8 @@ float GetTimeKeyFramer() {
 	float t = 0.f;
 	
 	for(size_t i = 0; i + 1 < CKTrack->key.size(); i++) {
-		CinematicKeyframe & k = CKTrack->key[i];
-		CinematicKeyframe & next = CKTrack->key[i + 1];
+		const CinematicKeyframe & k = CKTrack->key[i];
+		const CinematicKeyframe & next = CKTrack->key[i + 1];
 		t += float(next.frame - k.frame) / (CKTrack->fps * k.speedtrack);
 	}
 	
