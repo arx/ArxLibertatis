@@ -171,7 +171,8 @@ void iterated_hash<T>::update(const char * input, size_t length) {
 	
 	hash_word old_count_lo = count_lo;
 	
-	if((count_lo = old_count_lo + hash_word(length)) < old_count_lo) {
+	count_lo = old_count_lo + hash_word(length);
+	if(count_lo < old_count_lo) {
 		count_hi++; // carry from low to high
 	}
 	
