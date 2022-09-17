@@ -297,7 +297,7 @@ static void drawDebugPathFinding() {
 	}
 	
 	// Highlight active paths
-	for(Entity & npc : entities(IO_NPC)) {
+	for(const Entity & npc : entities(IO_NPC)) {
 		
 		const IO_PATHFIND & pathfind = npc._npcdata->pathfind;
 		if(pathfind.listnb <= 0 || !pathfind.list) {
