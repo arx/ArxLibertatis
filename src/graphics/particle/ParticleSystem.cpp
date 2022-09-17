@@ -125,10 +125,9 @@ void ParticleSystem::SetParams(const ParticleParams & params) {
 	Vec3f eVect(m_parameters.m_direction.x, -m_parameters.m_direction.y, m_parameters.m_direction.z);
 	GenerateMatrixUsingVector(eMat, eVect, 0);
 	
-	{
-		ParticleParams::TextureInfo & texInfo = m_parameters.m_texture;
-		SetTexture(texInfo.m_texName, texInfo.m_texNb, texInfo.m_texTime);
-	}
+	const ParticleParams::TextureInfo & texInfo = m_parameters.m_texture;
+	SetTexture(texInfo.m_texName, texInfo.m_texNb, texInfo.m_texTime);
+	
 }
 
 void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime) {
