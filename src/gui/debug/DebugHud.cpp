@@ -400,11 +400,11 @@ void ShowFrameDurationPlot() {
 
 	Font * font = hFontDebug;
 	float lineOffset = font->getLineHeight() + 2;
-
-	std::string labels[3] = { "Average: ", "Worst: ", "Current: " };
-	Color colors[3] = { avgColor, worstColor, Color::white };
-	float values[3] = { avg, worst, frameDurationPlotValues[0] };
-
+	
+	const std::string labels[3] = { "Average: ", "Worst: ", "Current: " };
+	const Color colors[3] = { avgColor, worstColor, Color::white };
+	const float values[3] = { avg, worst, frameDurationPlotValues[0] };
+	
 	std::string texts[3];
 	float widths[3];
 	static float labelWidth = 0.f;
