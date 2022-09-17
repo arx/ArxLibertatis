@@ -538,13 +538,15 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 	
 	Sample * sample = new Sample(path);
 	
-	SampleHandle sampleHandle;
-	if(sample->load() || (sampleHandle = g_samples.add(sample)) == SampleHandle()) {
+	if(sample->load()) {
 		LogError << "Ambiance \"" << ambiance->getName()
 		         << "\": missing sample \"" << path << '"';
 		delete sample;
 		return AAL_ERROR_FILEIO;
 	}
+	
+	SampleHandle sampleHandle = g_samples.add(sample);
+	arx_assert(sampleHandle != SampleHandle());
 	
 	sample->reference();
 	
