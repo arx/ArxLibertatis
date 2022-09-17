@@ -108,9 +108,9 @@ public:
 	
 	[[nodiscard]] bool isVisible() const noexcept;
 	[[nodiscard]] bool isOpen() const noexcept;
-	[[nodiscard]] bool isOpen(Entity * container) const noexcept;
+	[[nodiscard]] bool isOpen(const Entity * container) const noexcept;
 	
-	void clear(Entity * container);
+	void clear(const Entity * container);
 	
 	void updateFader();
 	

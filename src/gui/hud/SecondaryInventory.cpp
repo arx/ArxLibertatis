@@ -479,11 +479,11 @@ bool SecondaryInventoryHud::isOpen() const noexcept {
 }
 
 
-bool SecondaryInventoryHud::isOpen(Entity * container) const noexcept {
+bool SecondaryInventoryHud::isOpen(const Entity * container) const noexcept {
 	return (isOpen() && m_container == container);
 }
 
-void SecondaryInventoryHud::clear(Entity * container) {
+void SecondaryInventoryHud::clear(const Entity * container) {
 	
 	if(m_container == container) {
 		m_container = nullptr;
