@@ -90,7 +90,7 @@ bool SDL1Window::initializeFramework() {
 		
 		// Any mode is supported, add some standard modes.
 		
-		Vec2i standardModes[] = {
+		const Vec2i standardModes[] = {
 			
 			// 4:3
 			Vec2i(640, 480), // VGA
