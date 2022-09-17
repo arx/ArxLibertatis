@@ -309,7 +309,7 @@ void MagicMissileSpell::Update() {
 	
 	{
 		long nbmissiles = 0;
-		for(CMagicMissile & missile : util::dereference(m_missiles)) {
+		for(const CMagicMissile & missile : util::dereference(m_missiles)) {
 			if(missile.bMove) {
 				nbmissiles++;
 			}
