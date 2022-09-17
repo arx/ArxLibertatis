@@ -305,7 +305,7 @@ protected:
 };
 
 template <class Vertex>
-class GLShadowVertexBuffer : public GLVertexBuffer<Vertex> {
+class GLShadowVertexBuffer final : public GLVertexBuffer<Vertex> {
 	
 	typedef GLVertexBuffer<Vertex> Base;
 	
