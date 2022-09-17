@@ -291,17 +291,19 @@ AmbianceId createAmbiance(const res::path & name, PlayingAmbianceType type) {
 	std::scoped_lock lock(g_mutex);
 	
 	Ambiance * ambiance = new Ambiance(name);
-	AmbianceId a_id = AmbianceId();
-	if(ambiance->load() || (a_id = g_ambiances.add(ambiance)) == AmbianceId()) {
+	if(ambiance->load()) {
 		delete ambiance;
 		LogError << "Ambiance " << name << " not found";
 		return AmbianceId();
 	}
 	
+	AmbianceId ambianceId = g_ambiances.add(ambiance);
+	arx_assert(ambianceId != AmbianceId());
+	
 	LogDebug("createAmbiance " << ambiance->getName() << " " << int(type));
 	ambiance->setType(type);
 	
-	return a_id;
+	return ambianceId;
 }
 
 EnvId createEnvironment(const res::path & name) {
