@@ -22,6 +22,7 @@
 
 #include <sstream>
 #include <string>
+#include <string_view>
 
 #include "platform/Platform.h"
 
@@ -83,7 +84,7 @@ public:
 	
 private:
 	
-	static void log(const char * file, int line, LogLevel level, const std::string & str);
+	static void log(const char * file, int line, LogLevel level, std::string_view str);
 	
 	const char * const file;
 	const int line;

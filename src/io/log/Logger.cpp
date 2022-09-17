@@ -152,7 +152,7 @@ bool Logger::isEnabled(const char * file, LogLevel level) {
 	return (LogManager::getSource(file)->level <= level);
 }
 
-void Logger::log(const char * file, int line, LogLevel level, const std::string & str) {
+void Logger::log(const char * file, int line, LogLevel level, std::string_view str) {
 	
 	if(level == None) {
 		return;
