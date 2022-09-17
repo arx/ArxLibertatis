@@ -252,10 +252,10 @@ void ARX_INTERFACE_RenderCursor(bool flag) {
 		return;
 	}
 	
-	if(!(flag || (!BLOCK_PLAYER_CONTROLS && PLAYER_INTERFACE_SHOW))) {
+	if(!flag && (BLOCK_PLAYER_CONTROLS || !PLAYER_INTERFACE_SHOW)) {
 		return;
 	}
-		
+	
 	if(COMBINE || COMBINEGOLD) {
 		if(SpecialCursor == CURSOR_INTERACTION_ON)
 			SpecialCursor = CURSOR_COMBINEON;
