@@ -192,7 +192,7 @@ bool CrashHandlerWindows::registerThreadCrashHandlersImpl() {
 	threadHandlers.m_unexpectedHandler = set_unexpected(UnexpectedHandler);
 	
 	// Catch a floating point error
-	threadHandlers.m_SIGFPEHandler = signal(SIGFPE, (signal_handler)SIGFPEHandler);
+	threadHandlers.m_SIGFPEHandler = signal(SIGFPE, reinterpret_cast<signal_handler>(SIGFPEHandler));
 	
 	// Catch an illegal instruction
 	threadHandlers.m_SIGILLHandler = signal(SIGILL, SignalHandler);
