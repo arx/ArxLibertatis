@@ -32,6 +32,7 @@ Modding:
 * Added support for level numbers above 27
 * Added support for script event parameters above 3 (e.g. ^$param4)
 * Added support for having more than 20 spells active
+* Added support for uncompressed .fts files
 * Added the ^angleto_… system variable returning the the direction to another entity
 * Added the ^caster* system variable to get the caster of the given spell or summoned entity
 * Added the ^class* system variable to get the class name of the given entity or spell
