@@ -236,7 +236,7 @@ path & path::set_basename(std::string_view basename) {
 		pathstr = basename;
 		pathstr += pathstr.substr(extpos);
 	} else {
-		pathstr = pathstr.substr(0, dirpos + 1);
+		pathstr.resize(dirpos + 1);
 		pathstr += basename;
 		pathstr += pathstr.substr(extpos);
 	}
