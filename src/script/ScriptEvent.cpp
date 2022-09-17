@@ -319,7 +319,7 @@ ScriptResult ScriptEvent::send(const EERIE_SCRIPT * es, Entity * sender, Entity 
 			if(command.getEntityFlags()
 			   && (command.getEntityFlags() != script::Command::AnyEntity
 			       && !(command.getEntityFlags() & long(entity->ioflags)))) {
-				ScriptEventWarning << "Command " << command.getName() << " needs an IO of type "
+				ScriptEventWarning << "Command " << command.getName() << " needs an entity of type "
 				                   << command.getEntityFlags();
 				context.skipCommand();
 				res = script::Command::Failed;
