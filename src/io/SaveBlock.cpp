@@ -559,7 +559,7 @@ bool SaveBlock::save(std::string && name, const char * data, size_t size) {
 		}
 	}
 	
-	file->chunks.push_back(File::Chunk(remaining, m_totalSize));
+	file->chunks.emplace_back(remaining, m_totalSize);
 	m_handle.seekp(m_totalSize + 4);
 	m_handle.write(p, remaining);
 	m_totalSize += remaining, m_usedSize += remaining, m_chunkCount++;
