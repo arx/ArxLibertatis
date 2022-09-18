@@ -1600,10 +1600,10 @@ protected:
 		
 		for(Widget & widget : children()) {
 			if(widget.type() == WidgetType_Panel) {
-				PanelWidget & panel = static_cast<PanelWidget &>(widget);
+				auto & panel = static_cast<PanelWidget &>(widget);
 				for(Widget & child : panel.children()) {
 					if(child.type() == WidgetType_Keybind) {
-						KeybindWidget & keybind = static_cast<KeybindWidget &>(child);
+						auto & keybind = static_cast<KeybindWidget &>(child);
 						keybind.setKey(config.actions[keybind.action()].key[keybind.index()]);
 					}
 				}
