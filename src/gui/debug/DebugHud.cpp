@@ -20,6 +20,7 @@
 #include "gui/debug/DebugHud.h"
 
 #include <algorithm>
+#include <array>
 #include <cstdio>
 #include <string>
 #include <string_view>
@@ -402,9 +403,9 @@ void ShowFrameDurationPlot() {
 	Font * font = hFontDebug;
 	float lineOffset = font->getLineHeight() + 2;
 	
-	const std::string_view labels[3] = { "Average: ", "Worst: ", "Current: " };
-	const Color colors[3] = { avgColor, worstColor, Color::white };
-	const float values[3] = { avg, worst, frameDurationPlotValues[0] };
+	const std::array<std::string_view, 3> labels = { "Average: ", "Worst: ", "Current: " };
+	const std::array<Color, 3> colors = { avgColor, worstColor, Color::white };
+	const std::array<float, 3> values = { avg, worst, frameDurationPlotValues[0] };
 	
 	std::string texts[3];
 	float widths[3];
