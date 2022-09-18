@@ -418,8 +418,8 @@ void TREATZONE_RemoveIO(const Entity * io) {
 
 void TREATZONE_AddIO(Entity * io, bool justCollide) {
 	
-	for(size_t i = 0; i < treatio.size(); i++) {
-		if(treatio[i].io == io) {
+	for(const auto & entry : treatio) {
+		if(entry.io == io) {
 			return;
 		}
 	}
