@@ -574,12 +574,12 @@ void spellRecognitionInit() {
 // Resets Spell Recognition
 void ARX_SPELLS_ResetRecognition() {
 	
-	for(size_t i = 0; i < MAX_SPELL_SYMBOLS; i++) {
-		SpellSymbol[i] = RUNE_NONE;
+	for(Rune & rune : SpellSymbol) {
+		rune = RUNE_NONE;
 	}
 	
-	for(size_t i = 0; i < 6; i++) {
-		player.SpellToMemorize.iSpellSymbols[i] = RUNE_NONE;
+	for(Rune & rune : player.SpellToMemorize.iSpellSymbols) {
+		rune = RUNE_NONE;
 	}
 	
 	CurrSpellSymbol = 0;
