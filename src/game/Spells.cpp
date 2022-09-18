@@ -833,14 +833,12 @@ bool ARX_SPELLS_Launch(SpellType typ, Entity & source, SpellcastFlags flags, lon
 	}
 	
 	if(source == *entities.player() && !(flags & SPELLCAST_FLAG_NOCHECKCANCAST)) {
-		for(size_t i = 0; i < MAX_SPELL_SYMBOLS; i++) {
-			if(SpellSymbol[i] != RUNE_NONE) {
-				if(!player.hasRune(SpellSymbol[i])) {
-					ARX_SOUND_PlaySpeech("player_cantcast");
-					CurrSpellSymbol = 0;
-					ARX_SPELLS_ResetRecognition();
-					return false;
-				}
+		for(Rune rune : SpellSymbol) {
+			if(rune != RUNE_NONE && !player.hasRune(rune)) {
+				ARX_SOUND_PlaySpeech("player_cantcast");
+				CurrSpellSymbol = 0;
+				ARX_SPELLS_ResetRecognition();
+				return false;
 			}
 		}
 	}
