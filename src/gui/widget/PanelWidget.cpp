@@ -37,7 +37,7 @@ void PanelWidget::add(std::unique_ptr<Widget> widget) {
 	
 	arx_assert(widget);
 	
-	if(m_children.size() == 0) {
+	if(m_children.empty()) {
 		m_rect = widget->m_rect;
 	} else {
 		m_rect = m_rect | widget->m_rect;
