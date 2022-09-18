@@ -219,36 +219,24 @@ void TreatBackgroundDynlights() {
 		
 	}
 	
-	for(size_t i = 0; i < g_dynamicLightsMax; i++) {
-		EERIE_LIGHT * el = &g_dynamicLights[i];
-
-		if(el->m_exists && el->duration != 0) {
-			const GameDuration elapsed = g_gameTime.now() - el->creationTime;
-			const GameDuration duration = el->duration;
-
-			if(elapsed >= duration) {
-				float sub = g_gameTime.lastFrameDuration() / 1s;
-
-				el->rgb.r -= sub;
-				el->rgb.g -= sub;
-				el->rgb.b -= sub;
-
-				if(el->rgb.r < 0)
-					el->rgb.r = 0.f;
-
-				if(el->rgb.g < 0)
-					el->rgb.g = 0.f;
-
-				if(el->rgb.b < 0)
-					el->rgb.b = 0.f;
-
-				if(el->rgb.r + el->rgb.g + el->rgb.b == 0) {
-					el->m_exists = false;
-					el->duration = 0;
-				}
-			}
+	for(EERIE_LIGHT & light : g_dynamicLights) {
+		
+		if(!light.m_exists || light.duration == 0 || g_gameTime.now() - light.creationTime < light.duration) {
+			continue;
 		}
+		
+		float sub = g_gameTime.lastFrameDuration() / 1s;
+		light.rgb.r = std::max(light.rgb.r - sub, 0.f);
+		light.rgb.g = std::max(light.rgb.g - sub, 0.f);
+		light.rgb.b = std::max(light.rgb.b - sub, 0.f);
+		
+		if(light.rgb == Color3f::black) {
+			light.m_exists = false;
+			light.duration = 0;
+		}
+		
 	}
+	
 }
 
 void PrecalcDynamicLighting(const Vec3f & camPos, float camDepth) {
