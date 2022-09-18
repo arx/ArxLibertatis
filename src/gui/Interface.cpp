@@ -1357,16 +1357,15 @@ void ArxGame::manageKeyMouse() {
 			}
 		}
 		
-		if(eMouseState == MOUSE_IN_WORLD ||
-		   (eMouseState == MOUSE_IN_BOOK &&
-		    (!g_cursorOverBook || g_playerBook.currentPage() == BOOKMODE_MINIMAP))) {
-			if(!config.input.mouseLookToggle &&
-			   TRUE_PLAYER_MOUSELOOK_ON &&
-			   !(EERIEMouseButton & 2) &&
-			   !SPECIAL_DRAW_WEAPON &&
-			   !GInput->actionPressed(CONTROLS_CUST_FREELOOK)) {
-				TRUE_PLAYER_MOUSELOOK_ON = false;
-			}
+		if((eMouseState == MOUSE_IN_WORLD ||
+		    (eMouseState == MOUSE_IN_BOOK &&
+		     (!g_cursorOverBook || g_playerBook.currentPage() == BOOKMODE_MINIMAP))) &&
+		   !config.input.mouseLookToggle &&
+		   TRUE_PLAYER_MOUSELOOK_ON &&
+		   !(EERIEMouseButton & 2) &&
+		   !SPECIAL_DRAW_WEAPON &&
+		   !GInput->actionPressed(CONTROLS_CUST_FREELOOK)) {
+			TRUE_PLAYER_MOUSELOOK_ON = false;
 		}
 		
 		PLAYER_MOUSELOOK_ON = TRUE_PLAYER_MOUSELOOK_ON;
