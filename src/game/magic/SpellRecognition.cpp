@@ -563,10 +563,10 @@ static void addSpell(const Rune symbols[MAX_SPELL_SYMBOLS], SpellType spell, std
 
 void spellRecognitionInit() {
 	
-	for(size_t i = 0; i < std::size(allSpells); i++) {
-		addSpell(allSpells[i].symbols, allSpells[i].spell, allSpells[i].name);
+	for(const auto & spell : allSpells) {
+		addSpell(spell.symbols, spell.spell, spell.name);
 	}
-
+	
 	plist.reserve(MAX_POINTS);
 }
 
