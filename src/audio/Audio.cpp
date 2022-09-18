@@ -248,7 +248,7 @@ MixerId createMixer(MixerId parent) {
 	std::scoped_lock lock(g_mutex);
 	
 	if(!g_mixers.isValid(parent)) {
-		return MixerId();
+		return { };
 	}
 	
 	Mixer * parentMixer = g_mixers[parent];
@@ -273,7 +273,7 @@ SampleHandle createSample(const res::path & name) {
 	if(sample->load()) {
 		delete sample;
 		LogDebug("createSample " << name << " failed !");
-		return SampleHandle();
+		return { };
 	} else {
 		SampleHandle sampleHandle = g_samples.add(sample);
 		arx_assert(sampleHandle != SampleHandle());
@@ -294,7 +294,7 @@ AmbianceId createAmbiance(const res::path & name, PlayingAmbianceType type) {
 	if(ambiance->load()) {
 		delete ambiance;
 		LogError << "Ambiance " << name << " not found";
-		return AmbianceId();
+		return { };
 	}
 	
 	AmbianceId ambianceId = g_ambiances.add(ambiance);
@@ -316,7 +316,7 @@ EnvId createEnvironment(const res::path & name) {
 	if(env->load()) {
 		delete env;
 		LogError << "Environment " << name << " not found";
-		return EnvId();
+		return { };
 	}
 	
 	EnvId environmentId = g_environments.add(env);
@@ -376,7 +376,7 @@ AmbianceId getAmbiance(const res::path & name) {
 		}
 	}
 	
-	return AmbianceId();
+	return { };
 }
 
 EnvId getEnvironment(const res::path & name) {
@@ -392,7 +392,7 @@ EnvId getEnvironment(const res::path & name) {
 		}
 	}
 	
-	return EnvId();
+	return { };
 }
 
 // Listener settings
