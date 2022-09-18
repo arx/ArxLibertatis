@@ -1420,14 +1420,16 @@ void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent)
 
 }
 
-void ARX_DAMAGES_DurabilityCheck(Entity * io, float ratio)
-{
-	if(!io || io->isInvulnerable())
+void ARX_DAMAGES_DurabilityCheck(Entity * io, float ratio) {
+	
+	if(!io || io->isInvulnerable()) {
 		return;
-
+	}
+	
 	if(Random::getf(0.f, 100.f) > io->durability) {
 		ARX_DAMAGES_DurabilityLoss(io, ratio);
 	}
+	
 }
 
 void ARX_DAMAGES_DurabilityLoss(Entity * io, float loss) {
