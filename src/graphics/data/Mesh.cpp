@@ -805,8 +805,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			}
 			polygon.v[0].w = dist;
 			
-			for(int l = 0; l < 4; l++) {
-				polygon.uslInd[l] = 0;
+			for(auto & index : polygon.uslInd) {
+				index = 0;
 			}
 			
 		}
