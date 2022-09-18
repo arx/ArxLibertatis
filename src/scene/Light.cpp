@@ -352,11 +352,10 @@ EERIE_LIGHT * dynLightCreate() {
 	return lightHandleGet(handle);
 }
 
-
 void ClearDynLights() {
 	
-	for(size_t i = 0; i < g_dynamicLightsMax; i++) {
-		g_dynamicLights[i].m_exists = false;
+	for(EERIE_LIGHT & light : g_dynamicLights) {
+		light.m_exists = false;
 	}
 	
 	for(EERIE_LIGHT & light : g_staticLights) {
@@ -367,8 +366,6 @@ void ClearDynLights() {
 	g_culledStaticLightsCount = 0;
 	
 }
-
-
 
 static size_t MAX_LLIGHTS = llightsSize;
 
