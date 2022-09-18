@@ -117,15 +117,14 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 			   || IsNearSelection(from, face.vid[1], num)
 			   || IsNearSelection(from, face.vid[2], num)) {
 				
-				for(long j = 0; j < 3; j++) {
+				for(short vertex : face.vid) {
 					if(count < nouvo->vertexlist.size()) {
-						nouvo->vertexlist[count] = from->vertexlist[face.vid[j]];
-						nouvo->vertexlist[count].v = from->vertexWorldPositions[face.vid[j]].v;
-						nouvo->vertexlist[count].v -= ioo->pos;
+						nouvo->vertexlist[count] = from->vertexlist[vertex];
+						nouvo->vertexlist[count].v = from->vertexWorldPositions[vertex].v - ioo->pos;
 						nouvo->vertexWorldPositions[count] = nouvo->vertexlist[count];
-						equival[face.vid[j]] = count;
+						equival[vertex] = count;
 					} else {
-						equival[face.vid[j]] = -1;
+						equival[vertex] = -1;
 					}
 					count++;
 				}
