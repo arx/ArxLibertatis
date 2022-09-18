@@ -414,7 +414,7 @@ std::string getOSName() {
 	#elif ARX_PLATFORM == ARX_PLATFORM_UNIX
 	return "UNIX";
 	#else
-	return std::string();
+	return { };
 	#endif
 }
 
@@ -423,7 +423,7 @@ std::string getOSCompatName() {
 	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	return getWindowsCompatVersionName();
 	#else
-	return std::string();
+	return { };
 	#endif
 }
 
@@ -497,7 +497,7 @@ std::string getOSArchitecture() {
 	}
 	#endif
 	
-	return std::string();
+	return { };
 	
 	#endif
 	
@@ -712,7 +712,7 @@ std::string getOSDistribution() {
 	
 	#endif // ARX_PLATFORM == ARX_PLATFORM_LINUX
 	
-	return std::string();
+	return { };
 }
 
 #if ARX_HAVE_CONFSTR && (defined(_CS_GNU_LIBC_VERSION) || defined(_CS_GNU_LIBPTHREAD_VERSION))
@@ -720,17 +720,17 @@ static std::string getCLibraryConfigString(int name) {
 	
 	size_t len = confstr(name, nullptr, 0);
 	if(len == 0) {
-		return std::string();
+		return { };
 	}
 	
 	std::vector<char> buffer;
 	buffer.resize(len);
 	len = confstr(name, &buffer.front(), buffer.size());
 	if(len == 0) {
-		return std::string();
+		return { };
 	}
 	
-	return std::string(&*buffer.begin(), &*--buffer.end());
+	return { &*buffer.begin(), &*--buffer.end() };
 	
 }
 #endif
@@ -746,7 +746,7 @@ std::string getCLibraryVersion() {
 	#elif defined(__UCLIBC__)
 	return "uClibc";
 	#else
-	return std::string();
+	return { };
 	#endif
 	
 }
@@ -756,7 +756,7 @@ std::string getThreadLibraryVersion() {
 	#if ARX_HAVE_CONFSTR && defined(_CS_GNU_LIBPTHREAD_VERSION)
 	return getCLibraryConfigString(_CS_GNU_LIBPTHREAD_VERSION);
 	#else
-	return std::string();
+	return { };
 	#endif
 	
 }
