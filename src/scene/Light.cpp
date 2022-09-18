@@ -313,8 +313,8 @@ void endLightDelayed(LightHandle handle, GameDuration delay) {
 }
 
 void resetDynLights() {
-	for(size_t i = 0; i < g_dynamicLightsMax; i++) {
-		g_dynamicLights[i].m_exists = false;
+	for(EERIE_LIGHT & light : g_dynamicLights) {
+		light.m_exists = false;
 	}
 }
 
