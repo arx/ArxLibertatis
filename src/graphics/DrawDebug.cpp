@@ -768,8 +768,8 @@ void debug::drawRay(Vec3f start, Vec3f dir, Color color, PlatformDuration durati
 }
 
 static void updateAndRenderDebugDrawables() {
-	for(size_t i = 0; i < debugRays.size(); i++) {
-		const DebugRay & ray = debugRays[i];
+	
+	for(const DebugRay & ray : debugRays) {
 		drawLine(ray.start, ray.dir, ray.color);
 	}
 	
@@ -782,6 +782,7 @@ static void updateAndRenderDebugDrawables() {
 			i--;
 		}
 	}
+	
 }
 
 
