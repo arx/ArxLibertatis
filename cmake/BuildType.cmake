@@ -3,7 +3,7 @@ include(CompileCheck)
 
 if(NOT CMAKE_VERSION VERSION_LESS 2.8.6)
 	include(CheckCXXSymbolExists)
-	check_cxx_symbol_exists(_LIBCPP_VERSION "version" IS_LIBCXX)
+	check_cxx_symbol_exists(_LIBCPP_VERSION "cstddef" IS_LIBCXX)
 	if(IS_LIBCXX AND (DEBUG OR DEBUG_EXTRA))
 		check_cxx_symbol_exists(_LIBCPP_ENABLE_ASSERTIONS "version" ARX_HAVE_LIBCPP_ENABLE_ASSERTIONS)
 	endif()
