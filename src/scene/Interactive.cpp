@@ -248,34 +248,34 @@ void ARX_INTERACTIVE_Detach(EntityHandle n_source, EntityHandle n_target)
 	EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, source->obj);
 }
 
-void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state)
-{
+void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state) {
+	
 	ARX_PROFILE_FUNC();
 	
-	if(!io || HERO_SHOW_1ST == state)
+	if(!io || HERO_SHOW_1ST == state) {
 		return;
-
+	}
+	
 	HERO_SHOW_1ST = state;
 	ObjSelection grp = EERIE_OBJECT_GetSelection(io->obj, "1st");
-
+	
 	if(grp != ObjSelection()) {
-		for(size_t nn = 0; nn < io->obj->facelist.size(); nn++) {
-			EERIE_FACE * ef = &io->obj->facelist[nn];
-
-			for(long jj = 0; jj < 3; jj++) {
-				if(IsInSelection(io->obj, ef->vid[jj], grp)) {
-					if(state)
-						ef->facetype |= POLY_HIDE;
-					else
-						ef->facetype &= ~POLY_HIDE;
-
+		for(EERIE_FACE & face : io->obj->facelist) {
+			for(short vertex : face.vid) {
+				if(IsInSelection(io->obj, vertex, grp)) {
+					if(state) {
+						face.facetype |= POLY_HIDE;
+					} else {
+						face.facetype &= ~POLY_HIDE;
+					}
 					break;
 				}
 			}
 		}
 	}
-
+	
 	ARX_INTERACTIVE_HideGore(entities.player(), 1);
+	
 }
 
 void ARX_INTERACTIVE_RemoveGoreOnIO(Entity * io) {
