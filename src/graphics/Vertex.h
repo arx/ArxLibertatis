@@ -91,6 +91,13 @@ struct TexturedVertex {
 		, uv(_uv)
 	{ }
 	
+	TexturedVertex(const Vec4f & _p, ColorRGBA _color, Vec2f _uv)
+		: p(_p)
+		, w(_p.w)
+		, color(_color)
+		, uv(_uv)
+	{ }
+	
 };
 
 template <class Vertex>
