@@ -19,6 +19,7 @@
 
 #include "graphics/effects/BlobShadow.h"
 
+#include <array>
 #include <vector>
 
 #include "game/Entity.h"
@@ -51,6 +52,44 @@ static void AddToShadowBatch(TexturedVertexUntransformed * _pVertex1, TexturedVe
 	g_shadowBatch.push_back(pPointAdd[2]);
 }
 
+static void addShadowBlob(const Entity & entity, size_t vertex, float scale, bool isGroup) {
+	
+	Vec3f pos = entity.obj->vertexWorldPositions[vertex].v;
+	
+	EERIEPOLY * ep = CheckInPoly(pos);
+	if(!ep) {
+		return;
+	}
+	
+	Vec3f in;
+	in.y = ep->min.y - 3.f;
+	
+	float strength = (isGroup ? 0.8f : 0.5f) - glm::abs(pos.y - in.y) * 0.002f;
+	strength = isGroup ? (strength * scale - entity.invisibility) : (strength - entity.invisibility) * scale;
+	if(strength <= 0.f) {
+		return;
+	}
+	
+	float size = (isGroup ? 44.f :  16.f) * scale;
+	in.x = pos.x - size * 0.5f;
+	in.z = pos.z - size * 0.5f;
+	
+	ColorRGBA color = Color::gray(strength).toRGB();
+	
+	std::array<TexturedVertexUntransformed, 4> ltv = { {
+		{ in,                        color, Vec2f(0.3f, 0.3f) },
+		{ in + Vec3f(size, 0, 0),    color, Vec2f(0.7f, 0.3f) },
+		{ in + Vec3f(size, 0, size), color, Vec2f(0.7f, 0.7f) },
+		{ in + Vec3f(0,    0, size), color, Vec2f(0.3f, 0.7f) }
+	} };
+	
+	if(isGroup || (ltv[0].p.z > 0.f && ltv[1].p.z > 0.f && ltv[2].p.z > 0.f)) {
+		AddToShadowBatch(&ltv[0], &ltv[2], &ltv[1]);
+		AddToShadowBatch(&ltv[0], &ltv[3], &ltv[2]);
+	}
+	
+}
+
 void ARXDRAW_DrawInterShadows() {
 	
 	ARX_PROFILE_FUNC();
@@ -63,7 +102,7 @@ void ARXDRAW_DrawInterShadows() {
 			continue;
 		}
 		
-		Entity & entity = *entry.io;
+		const Entity & entity = *entry.io;
 		if(!entity.obj || (entity.ioflags & IO_JUST_COLLIDE) || (entity.ioflags & IO_NOSHADOW)
 		   || (entity.ioflags & IO_GOLD) || entity.show != SHOW_FLAG_IN_SCENE) {
 			continue;
@@ -73,87 +112,16 @@ void ARXDRAW_DrawInterShadows() {
 			continue;
 		}
 		
-		TexturedVertexUntransformed ltv[4];
-		ltv[0] = TexturedVertexUntransformed(Vec3f(0, 0, 0.001f), ColorRGBA(0), Vec2f(0.3f, 0.3f));
-		ltv[1] = TexturedVertexUntransformed(Vec3f(0, 0, 0.001f), ColorRGBA(0), Vec2f(0.7f, 0.3f));
-		ltv[2] = TexturedVertexUntransformed(Vec3f(0, 0, 0.001f), ColorRGBA(0), Vec2f(0.7f, 0.7f));
-		ltv[3] = TexturedVertexUntransformed(Vec3f(0, 0, 0.001f), ColorRGBA(0), Vec2f(0.3f, 0.7f));
-		
 		if(entity.obj->grouplist.size() <= 1) {
 			for(size_t k = 0; k < entity.obj->vertexlist.size(); k += 9) {
-				
-				Vec3f pos = entity.obj->vertexWorldPositions[k].v;
-				
-				EERIEPOLY * ep = CheckInPoly(pos);
-				if(!ep) {
-					continue;
-				}
-				
-				Vec3f in;
-				in.y = ep->min.y - 3.f;
-				float r = 0.5f - glm::abs(pos.y - in.y) * 0.002f;
-				r -= entity.invisibility;
-				r *= entity.scale;
-				if(r <= 0.f) {
-					continue;
-				}
-				
-				float s1 = 16.f * entity.scale;
-				float s2 = s1 * 0.5f;
-				in.x = pos.x - s2;
-				in.z = pos.z - s2;
-				
-				ColorRGBA rgba = Color::gray(r).toRGB();
-				ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = rgba;
-				
-				ltv[0].p = in;
-				ltv[1].p = in + Vec3f(s1, 0, 0);
-				ltv[2].p = in + Vec3f(s1, 0, s1);
-				ltv[3].p = in + Vec3f(0, 0, s1);
-				
-				if(ltv[0].p.z > 0.f && ltv[1].p.z > 0.f && ltv[2].p.z > 0.f) {
-					AddToShadowBatch(&ltv[0], &ltv[2], &ltv[1]);
-					AddToShadowBatch(&ltv[0], &ltv[3], &ltv[2]);
-				}
-				
+				addShadowBlob(entity, k, entity.scale, false);
 			}
 		} else {
 			for(const VertexGroup & group : entity.obj->grouplist) {
-				
-				Vec3f pos = entity.obj->vertexWorldPositions[group.origin].v;
-				
-				EERIEPOLY * ep = CheckInPoly(pos);
-				if(!ep) {
-					continue;
-				}
-				
-				Vec3f in;
-				in.y = ep->min.y - 3.f;
-				float r = 0.8f - glm::abs(pos.y - in.y) * 0.002f;
-				r *= group.m_blobShadowSize;
-				r -= entity.invisibility;
-				if(r <= 0.f) {
-					continue;
-				}
-				
-				float s1 = group.m_blobShadowSize * 44.f;
-				float s2 = s1 * 0.5f;
-				in.x = pos.x - s2;
-				in.z = pos.z - s2;
-				
-				ColorRGBA rgba = Color::gray(r).toRGB();
-				ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = rgba;
-				
-				ltv[0].p = in;
-				ltv[1].p = in + Vec3f(s1, 0, 0);
-				ltv[2].p = in + Vec3f(s1, 0, s1);
-				ltv[3].p = in + Vec3f(0, 0, s1);
-				
-				AddToShadowBatch(&ltv[0], &ltv[2], &ltv[1]);
-				AddToShadowBatch(&ltv[0], &ltv[3], &ltv[2]);
-				
+				addShadowBlob(entity, group.origin, group.m_blobShadowSize, true);
 			}
 		}
+		
 	}
 	
 	if(!g_shadowBatch.empty()) {
