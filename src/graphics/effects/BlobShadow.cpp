@@ -33,25 +33,6 @@
 
 static std::vector<TexturedVertex> g_shadowBatch;
 
-static void AddToShadowBatch(TexturedVertexUntransformed * _pVertex1, TexturedVertexUntransformed * _pVertex2,
-                             TexturedVertexUntransformed * _pVertex3) {
-	
-	TexturedVertex pPointAdd[3];
-	worldToClipSpace(_pVertex1->p, pPointAdd[0]);
-	worldToClipSpace(_pVertex2->p, pPointAdd[1]);
-	worldToClipSpace(_pVertex3->p, pPointAdd[2]);
-	pPointAdd[0].color = _pVertex1->color;
-	pPointAdd[0].uv = _pVertex1->uv;
-	pPointAdd[1].color = _pVertex2->color;
-	pPointAdd[1].uv = _pVertex2->uv;
-	pPointAdd[2].color = _pVertex3->color;
-	pPointAdd[2].uv = _pVertex3->uv;
-
-	g_shadowBatch.push_back(pPointAdd[0]);
-	g_shadowBatch.push_back(pPointAdd[1]);
-	g_shadowBatch.push_back(pPointAdd[2]);
-}
-
 static void addShadowBlob(const Entity & entity, size_t vertex, float scale, bool isGroup) {
 	
 	Vec3f pos = entity.obj->vertexWorldPositions[vertex].v;
@@ -73,20 +54,26 @@ static void addShadowBlob(const Entity & entity, size_t vertex, float scale, boo
 	float size = (isGroup ? 44.f :  16.f) * scale;
 	in.x = pos.x - size * 0.5f;
 	in.z = pos.z - size * 0.5f;
+	std::array<Vec3f, 4> p = { in, in + Vec3f(size, 0, 0), in + Vec3f(size, 0, size), in + Vec3f(0, 0, size) };
+	if(!isGroup && (p[0].z <= 0.f || p[1].z <= 0.f || p[2].z <= 0.f)) {
+		return;
+	}
 	
 	ColorRGBA color = Color::gray(strength).toRGB();
-	
-	std::array<TexturedVertexUntransformed, 4> ltv = { {
-		{ in,                        color, Vec2f(0.3f, 0.3f) },
-		{ in + Vec3f(size, 0, 0),    color, Vec2f(0.7f, 0.3f) },
-		{ in + Vec3f(size, 0, size), color, Vec2f(0.7f, 0.7f) },
-		{ in + Vec3f(0,    0, size), color, Vec2f(0.3f, 0.7f) }
+	std::array<TexturedVertex, 4> vertices = { {
+		{ worldToClipSpace(p[0]), color, Vec2f(0.3f, 0.3f) },
+		{ worldToClipSpace(p[1]), color, Vec2f(0.7f, 0.3f) },
+		{ worldToClipSpace(p[2]), color, Vec2f(0.7f, 0.7f) },
+		{ worldToClipSpace(p[3]), color, Vec2f(0.3f, 0.7f) }
 	} };
 	
-	if(isGroup || (ltv[0].p.z > 0.f && ltv[1].p.z > 0.f && ltv[2].p.z > 0.f)) {
-		AddToShadowBatch(&ltv[0], &ltv[2], &ltv[1]);
-		AddToShadowBatch(&ltv[0], &ltv[3], &ltv[2]);
-	}
+	g_shadowBatch.push_back(vertices[0]);
+	g_shadowBatch.push_back(vertices[2]);
+	g_shadowBatch.push_back(vertices[1]);
+	
+	g_shadowBatch.push_back(vertices[0]);
+	g_shadowBatch.push_back(vertices[3]);
+	g_shadowBatch.push_back(vertices[2]);
 	
 }
 
