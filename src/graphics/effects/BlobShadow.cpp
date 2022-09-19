@@ -57,13 +57,13 @@ void ARXDRAW_DrawInterShadows() {
 	
 	g_shadowBatch.clear();
 	
-	for(size_t i = 0; i < treatio.size(); i++) {
+	for(const auto & entry : treatio) {
 		
-		if(treatio[i].show != SHOW_FLAG_IN_SCENE || !treatio[i].io) {
+		if(entry.show != SHOW_FLAG_IN_SCENE || !entry.io) {
 			continue;
 		}
 		
-		Entity * io = treatio[i].io;
+		Entity * io = entry.io;
 		if(!io->obj || (io->ioflags & IO_JUST_COLLIDE) || (io->ioflags & IO_NOSHADOW)
 		   || (io->ioflags & IO_GOLD) || io->show != SHOW_FLAG_IN_SCENE) {
 			continue;
