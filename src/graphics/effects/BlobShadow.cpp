@@ -63,13 +63,13 @@ void ARXDRAW_DrawInterShadows() {
 			continue;
 		}
 		
-		Entity * io = entry.io;
-		if(!io->obj || (io->ioflags & IO_JUST_COLLIDE) || (io->ioflags & IO_NOSHADOW)
-		   || (io->ioflags & IO_GOLD) || io->show != SHOW_FLAG_IN_SCENE) {
+		Entity & entity = *entry.io;
+		if(!entity.obj || (entity.ioflags & IO_JUST_COLLIDE) || (entity.ioflags & IO_NOSHADOW)
+		   || (entity.ioflags & IO_GOLD) || entity.show != SHOW_FLAG_IN_SCENE) {
 			continue;
 		}
 		
-		if(!g_tiles->isInActiveTile(io->pos)) {
+		if(!g_tiles->isInActiveTile(entity.pos)) {
 			continue;
 		}
 		
@@ -79,27 +79,27 @@ void ARXDRAW_DrawInterShadows() {
 		ltv[2] = TexturedVertexUntransformed(Vec3f(0, 0, 0.001f), ColorRGBA(0), Vec2f(0.7f, 0.7f));
 		ltv[3] = TexturedVertexUntransformed(Vec3f(0, 0, 0.001f), ColorRGBA(0), Vec2f(0.3f, 0.7f));
 		
-		if(io->obj->grouplist.size() <= 1) {
-			for(size_t k = 0; k < io->obj->vertexlist.size(); k += 9) {
+		if(entity.obj->grouplist.size() <= 1) {
+			for(size_t k = 0; k < entity.obj->vertexlist.size(); k += 9) {
 				
-				EERIEPOLY * ep = CheckInPoly(io->obj->vertexWorldPositions[k].v);
+				EERIEPOLY * ep = CheckInPoly(entity.obj->vertexWorldPositions[k].v);
 				if(!ep) {
 					continue;
 				}
 				
 				Vec3f in;
 				in.y = ep->min.y - 3.f;
-				float r = 0.5f - glm::abs(io->obj->vertexWorldPositions[k].v.y - in.y) * 0.002f;
-				r -= io->invisibility;
-				r *= io->scale;
+				float r = 0.5f - glm::abs(entity.obj->vertexWorldPositions[k].v.y - in.y) * 0.002f;
+				r -= entity.invisibility;
+				r *= entity.scale;
 				if(r <= 0.f) {
 					continue;
 				}
 				
-				float s1 = 16.f * io->scale;
+				float s1 = 16.f * entity.scale;
 				float s2 = s1 * 0.5f;
-				in.x = io->obj->vertexWorldPositions[k].v.x - s2;
-				in.z = io->obj->vertexWorldPositions[k].v.z - s2;
+				in.x = entity.obj->vertexWorldPositions[k].v.x - s2;
+				in.z = entity.obj->vertexWorldPositions[k].v.z - s2;
 				
 				ColorRGBA rgba = Color::gray(r).toRGB();
 				ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = rgba;
@@ -116,10 +116,10 @@ void ARXDRAW_DrawInterShadows() {
 				
 			}
 		} else {
-			for(size_t k = 0; k < io->obj->grouplist.size(); k++) {
+			for(size_t k = 0; k < entity.obj->grouplist.size(); k++) {
 				
-				size_t origin = io->obj->grouplist[k].origin;
-				Vec3f pos = io->obj->vertexWorldPositions[origin].v;
+				size_t origin = entity.obj->grouplist[k].origin;
+				Vec3f pos = entity.obj->vertexWorldPositions[origin].v;
 				
 				EERIEPOLY * ep = CheckInPoly(pos);
 				if(!ep) {
@@ -129,13 +129,13 @@ void ARXDRAW_DrawInterShadows() {
 				Vec3f in;
 				in.y = ep->min.y - 3.f;
 				float r = 0.8f - glm::abs(pos.y - in.y) * 0.002f;
-				r *= io->obj->grouplist[k].m_blobShadowSize;
-				r -= io->invisibility;
+				r *= entity.obj->grouplist[k].m_blobShadowSize;
+				r -= entity.invisibility;
 				if(r <= 0.f) {
 					continue;
 				}
 				
-				float s1 = io->obj->grouplist[k].m_blobShadowSize * 44.f;
+				float s1 = entity.obj->grouplist[k].m_blobShadowSize * 44.f;
 				float s2 = s1 * 0.5f;
 				in.x = pos.x - s2;
 				in.z = pos.z - s2;
