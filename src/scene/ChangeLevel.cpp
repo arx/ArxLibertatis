@@ -517,11 +517,11 @@ static size_t getScriptVariableSaveSize(const SCRIPT_VARIABLES & variables) {
 	
 	size_t size = 0;
 	
-	for(size_t i = 0; i < variables.size(); i++) {
+	for(const SCRIPT_VAR & variable : variables) {
 		size += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
-		VariableType type = getVariableType(variables[i].name);
+		VariableType type = getVariableType(variable.name);
 		if(type == TYPE_G_TEXT || type == TYPE_L_TEXT) {
-			size += size_t(float(variables[i].text.size() + 1));
+			size += size_t(float(variable.text.size() + 1));
 		}
 	}
 	
