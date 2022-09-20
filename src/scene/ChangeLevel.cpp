@@ -779,10 +779,10 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 		}
 	}
 	
-	for(size_t i = 0; i < g_playerQuestLogEntries.size(); i++) {
+	for(std::string_view entry : g_playerQuestLogEntries) {
 		memset(dat + pos, 0, SAVED_QUEST_SLOT_SIZE);
-		assert(g_playerQuestLogEntries[i].length() < SAVED_QUEST_SLOT_SIZE);
-		util::storeString(dat + pos, SAVED_QUEST_SLOT_SIZE, g_playerQuestLogEntries[i]);
+		assert(entry.length() < SAVED_QUEST_SLOT_SIZE);
+		util::storeString(dat + pos, SAVED_QUEST_SLOT_SIZE, entry);
 		pos += SAVED_QUEST_SLOT_SIZE;
 	}
 	
