@@ -435,9 +435,9 @@ void OpenGLRenderer::reinit() {
 	// number of conventional fixed-function texture units
 	GLint texunits = 0;
 	glGetIntegerv(GL_MAX_TEXTURE_UNITS, &texunits);
-	m_TextureStages.resize(texunits, nullptr);
+	m_TextureStages.resize(texunits);
 	for(size_t i = 0; i < m_TextureStages.size(); ++i) {
-		m_TextureStages[i] = new GLTextureStage(this, i);
+		m_TextureStages[i] = std::make_unique<GLTextureStage>(this, i);
 	}
 	
 	// Clear screen
@@ -461,9 +461,6 @@ void OpenGLRenderer::shutdown() {
 	
 	onRendererShutdown();
 	
-	for(size_t i = 0; i < m_TextureStages.size(); ++i) {
-		delete m_TextureStages[i];
-	}
 	m_TextureStages.clear();
 	
 	m_maximumAnisotropy = 1.f;

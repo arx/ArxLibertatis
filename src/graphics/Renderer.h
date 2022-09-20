@@ -385,7 +385,7 @@ public:
 	
 protected:
 	
-	std::vector<TextureStage *> m_TextureStages;
+	std::vector<std::unique_ptr<TextureStage>> m_TextureStages;
 	bool m_initialized;
 	RenderState m_state;
 	

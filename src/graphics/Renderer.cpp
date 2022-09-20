@@ -29,11 +29,11 @@
 Renderer * GRenderer;
 
 TextureStage * Renderer::GetTextureStage(size_t textureStage) {
-	return (textureStage < m_TextureStages.size()) ? m_TextureStages[textureStage] : nullptr;
+	return (textureStage < m_TextureStages.size()) ? m_TextureStages[textureStage].get() : nullptr;
 }
 
 const TextureStage * Renderer::GetTextureStage(size_t textureStage) const {
-	return (textureStage < m_TextureStages.size()) ? m_TextureStages[textureStage] : nullptr;
+	return (textureStage < m_TextureStages.size()) ? m_TextureStages[textureStage].get() : nullptr;
 }
 
 void Renderer::ResetTexture(unsigned int textureStage) {
@@ -64,9 +64,6 @@ Renderer::Renderer()
 Renderer::~Renderer() {
 	if(isInitialized()) {
 		onRendererShutdown();
-	}
-	for(size_t i = 0; i < m_TextureStages.size(); ++i) {
-		delete m_TextureStages[i];
 	}
 }
 
