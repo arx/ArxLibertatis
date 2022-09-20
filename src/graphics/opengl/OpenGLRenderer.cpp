@@ -543,21 +543,21 @@ void OpenGLRenderer::SetProjectionMatrix(const glm::mat4x4 & matProj) {
 }
 
 void OpenGLRenderer::ReleaseAllTextures() {
-	for(TextureList::iterator it = textures.begin(); it != textures.end(); ++it) {
-		it->destroy();
+	for(GLTexture & texture : textures) {
+		texture.destroy();
 	}
 }
 
 void OpenGLRenderer::RestoreAllTextures() {
-	for(TextureList::iterator it = textures.begin(); it != textures.end(); ++it) {
-		it->restore();
+	for(GLTexture & texture : textures) {
+		texture.restore();
 	}
 }
 
 void OpenGLRenderer::reloadColorKeyTextures() {
-	for(TextureList::iterator it = textures.begin(); it != textures.end(); ++it) {
-		if(it->hasColorKey()) {
-			it->restore();
+	for(GLTexture & texture : textures) {
+		if(texture.hasColorKey()) {
+			texture.restore();
 		}
 	}
 }
@@ -728,9 +728,10 @@ void OpenGLRenderer::setMaxAnisotropy(float value) {
 	
 	m_maximumAnisotropy = maxAnisotropy;
 	
-	for(TextureList::iterator it = textures.begin(); it != textures.end(); ++it) {
-		it->updateMaxAnisotropy();
+	for(GLTexture & texture : textures) {
+		texture.updateMaxAnisotropy();
 	}
+	
 }
 
 Renderer::AlphaCutoutAntialising OpenGLRenderer::getMaxSupportedAlphaCutoutAntialiasing() const {
