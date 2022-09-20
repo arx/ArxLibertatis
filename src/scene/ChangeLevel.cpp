@@ -1473,13 +1473,10 @@ static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	
 	entities.player()->inventory->setBags(asp->bag);
 	
-	for(size_t i = 0; i < SAVED_MAX_PRECAST; i++) {
-		PRECAST_STRUCT precastSlot = asp->precast[i];
-		
-		if(precastSlot.typ == SPELL_NONE)
-			continue;
-		
-		Precast.push_back(precastSlot);
+	for(PRECAST_STRUCT precastSlot : asp->precast) {
+		if(precastSlot.typ != SPELL_NONE) {
+			Precast.push_back(precastSlot);
+		}
 	}
 	
 	player.Interface = PlayerInterfaceFlags::load(asp->Interface); // TODO save/load flags
