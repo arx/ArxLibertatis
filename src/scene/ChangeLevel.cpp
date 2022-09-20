@@ -828,21 +828,6 @@ static bool ARX_CHANGELEVEL_Push_AllIO(long level) {
 	return ok;
 }
 
-static Entity * GetObjIOSource(const EERIE_3DOBJ * obj) {
-	
-	if(!obj) {
-		return nullptr;
-	}
-	
-	for(Entity & entity : entities) {
-		if(entity.obj == obj) {
-			return &entity;
-		}
-	}
-	
-	return nullptr;
-}
-
 static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	
 	// Check Valid IO
@@ -953,9 +938,6 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	util::storeString(ais.weaponmaterial, io->weaponmaterial);
 	util::storeString(ais.strikespeech, io->strikespeech);
 	
-	ais.nb_linked = 0;
-	memset(&ais.linked_data, 0, sizeof(IO_LINKED_DATA) * MAX_LINKED_SAVE);
-	
 	// Save Animations
 	for(size_t i = 0; i < MAX_ANIMS; i++) {
 		memset(&ais.anims[i], 0, 256);
@@ -965,34 +947,32 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	}
 	
 	// Save Linked Objects
+	ais.nb_linked = 0;
+	memset(&ais.linked_data, 0, sizeof(IO_LINKED_DATA) * MAX_LINKED_SAVE);
 	if(io->obj) {
-		ais.nb_linked = 0;
-
-		for(size_t n = 0; n < io->obj->linked.size(); n++) {
-			if(GetObjIOSource(io->obj->linked[n].obj)) {
+		for(const EERIE_LINKED & linked : io->obj->linked) {
+			if(linked.io) {
+				arx_assert(linked.obj == linked.io->obj);
+				if(size_t(ais.nb_linked) == std::size(ais.linked_data)) {
+					LogError << "Entity " << io->idString() << " has more than " << MAX_LINKED_SAVE << " linked entities";
+					break;
+				}
+				ais.linked_data[ais.nb_linked].lgroup = linked.lgroup.handleData();
+				ais.linked_data[ais.nb_linked].lidx = linked.lidx.handleData();
+				ais.linked_data[ais.nb_linked].lidx2 = linked.lidx2.handleData();
+				ais.linked_data[ais.nb_linked].modinfo = SavedModInfo();
+				storeIdString(ais.linked_data[ais.nb_linked].linked_id, linked.io);
 				ais.nb_linked++;
-			}
-		}
-
-		if(size_t(ais.nb_linked) > MAX_LINKED_SAVE) {
-			ais.nb_linked = MAX_LINKED_SAVE;
-		}
-
-		long count = 0;
-
-		for(size_t n = 0; n < io->obj->linked.size(); n++) {
-			if(GetObjIOSource(io->obj->linked[n].obj)) {
-				ais.linked_data[count].lgroup = io->obj->linked[count].lgroup.handleData();
-				ais.linked_data[count].lidx = io->obj->linked[count].lidx.handleData();
-				ais.linked_data[count].lidx2 = io->obj->linked[count].lidx2.handleData();
-				ais.linked_data[count].modinfo = SavedModInfo();
-				storeIdString(ais.linked_data[count].linked_id, GetObjIOSource(io->obj->linked[count].obj));
-				count++;
+			} else {
+				#ifdef ARX_DEBUG
+				for(Entity & entity : entities) {
+					arx_assert(entity.obj != linked.obj);
+				}
+				#endif
 			}
 		}
 	}
-
-
+	
 	if(io->tweakerinfo) {
 		ais.system_flags = SYSTEM_FLAG_TWEAKER_INFO;
 	} else {
