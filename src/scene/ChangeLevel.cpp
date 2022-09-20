@@ -2155,13 +2155,12 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 		}
 		
 		io->tweaks.resize(ais->Tweak_nb);
-		for(size_t i = 0; i < io->tweaks.size(); i++) {
+		for(TWEAK_INFO & tweak : io->tweaks) {
 			const SavedTweakInfo * sti = reinterpret_cast<const SavedTweakInfo *>(dat + pos);
 			pos += sizeof(SavedTweakInfo);
-			
-			io->tweaks[i].type = TweakType::load(sti->type); // TODO save/load flags
-			io->tweaks[i].param1 = res::path::load(util::loadString(sti->param1));
-			io->tweaks[i].param2 = res::path::load(util::loadString(sti->param2));
+			tweak.type = TweakType::load(sti->type); // TODO save/load flags
+			tweak.param1 = res::path::load(util::loadString(sti->param1));
+			tweak.param2 = res::path::load(util::loadString(sti->param2));
 		}
 		
 		ARX_INTERACTIVE_APPLY_TWEAK_INFO(io);
