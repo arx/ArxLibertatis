@@ -48,6 +48,7 @@
 #include "physics/Collisions.h"
 
 #include "util/Flags.h"
+#include "util/Range.h"
 
 
 const size_t MAX_THROWN_OBJECTS = 100;
@@ -393,13 +394,11 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 			}
 			
 			bool need_kill = false;
-			for(size_t jj = 0; jj < sphereContent.size(); jj++) {
+			for(Entity & target : util::dereference(sphereContent)) {
 				
-				arx_assert(sphereContent[jj]);
-				if(sphereContent[jj]->index() == projectile.source) {
+				if(target.index() == projectile.source) {
 					continue;
 				}
-				Entity & target = *sphereContent[jj];
 				
 				if(target.ioflags & IO_NPC) {
 					
