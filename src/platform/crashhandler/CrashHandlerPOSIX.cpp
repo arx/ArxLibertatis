@@ -410,9 +410,8 @@ void CrashHandlerPOSIX::handleCrash(int signal, void * info, void * context) {
 	removeCrashHandlers(m_pPreviousCrashHandlers);
 	
 	// Run the callbacks
-	for(std::vector<CrashHandler::CrashCallback>::iterator it = m_crashCallbacks.begin();
-	    it != m_crashCallbacks.end(); ++it) {
-		(*it)();
+	for(auto & callback : m_crashCallbacks) {
+		callback();
 	}
 	
 	m_pCrashInfo->signal = signal;
