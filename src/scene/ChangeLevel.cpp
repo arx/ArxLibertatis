@@ -786,10 +786,10 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 		pos += SAVED_QUEST_SLOT_SIZE;
 	}
 	
-	for(size_t i = 0; i < g_playerKeyring.size(); i++) {
+	for(std::string_view key : g_playerKeyring) {
 		memset(dat + pos, 0, SAVED_KEYRING_SLOT_SIZE);
-		assert(g_playerKeyring[i].length() < SAVED_KEYRING_SLOT_SIZE);
-		util::storeString(dat + pos, SAVED_KEYRING_SLOT_SIZE, g_playerKeyring[i]);
+		assert(key.length() < SAVED_KEYRING_SLOT_SIZE);
+		util::storeString(dat + pos, SAVED_KEYRING_SLOT_SIZE, key);
 		pos += SAVED_KEYRING_SLOT_SIZE;
 	}
 	
