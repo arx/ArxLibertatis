@@ -530,33 +530,33 @@ static size_t getScriptVariableSaveSize(const SCRIPT_VARIABLES & variables) {
 
 static void storeScriptVariables(char * dat, size_t & pos, const SCRIPT_VARIABLES & variables, size_t diff) {
 	
-	for(size_t i = 0; i < variables.size(); i++) {
+	for(const SCRIPT_VAR & variable : variables) {
 		
 		ARX_CHANGELEVEL_VARIABLE_SAVE * avs = reinterpret_cast<ARX_CHANGELEVEL_VARIABLE_SAVE *>(dat + pos);
 		memset(avs, 0, sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE));
 		
-		util::storeStringTerminated(avs->name, variables[i].name);
+		util::storeStringTerminated(avs->name, variable.name);
 		
-		avs->type = getVariableType(variables[i].name);
+		avs->type = getVariableType(variable.name);
 		
 		switch(avs->type) {
 			
 			case TYPE_G_TEXT:
 			case TYPE_L_TEXT: {
-				avs->fval = float(variables[i].text.size() + diff);
-				arx_assert(size_t(avs->fval) == variables[i].text.size() + diff);
+				avs->fval = float(variable.text.size() + diff);
+				arx_assert(size_t(avs->fval) == variable.text.size() + diff);
 				break;
 			}
 			
 			case TYPE_G_LONG:
 			case TYPE_L_LONG: {
-				avs->fval = float(variables[i].ival);
+				avs->fval = float(variable.ival);
 				break;
 			}
 			
 			case TYPE_G_FLOAT:
 			case TYPE_L_FLOAT: {
-				avs->fval = variables[i].fval;
+				avs->fval = variable.fval;
 				break;
 			}
 			
@@ -567,7 +567,7 @@ static void storeScriptVariables(char * dat, size_t & pos, const SCRIPT_VARIABLE
 		pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 		
 		if(avs->type == TYPE_G_TEXT || avs->type == TYPE_L_TEXT) {
-			memcpy(dat + pos, variables[i].text.c_str(), variables[i].text.size() + 1);
+			memcpy(dat + pos, variable.text.c_str(), variable.text.size() + 1);
 			pos += size_t(avs->fval);
 		}
 		
