@@ -20,7 +20,7 @@
 #include "physics/Projectile.h"
 
 #include <memory>
-#include <string>
+#include <string_view>
 
 #include "core/Core.h"
 #include "core/GameTime.h"
@@ -231,22 +231,21 @@ static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHand
 		absorb = io_target->_npcdata->absorb;
 	}
 	
-	std::string _amat = "flesh";
-	const std::string * amat = &_amat;
+	std::string_view amat = "flesh";
 	if(!io_target->armormaterial.empty()) {
-		amat = &io_target->armormaterial;
+		amat = io_target->armormaterial;
 	}
 	if(io_target == entities.player()) {
 		Entity * io = entities.get(player.equiped[EQUIP_SLOT_ARMOR]);
 		if(io) {
 			if(!io->armormaterial.empty()) {
-				amat = &io->armormaterial;
+				amat = io->armormaterial;
 			}
 		}
 	}
 	
 	float power = std::min(projectile.damages * 0.05f, 1.f) * 0.15f + 0.85f;
-	ARX_SOUND_PlayCollision(*amat, "dagger", power, 1.f, projectile.position, entities.player());
+	ARX_SOUND_PlayCollision(amat, "dagger", power, 1.f, projectile.position, entities.player());
 	
 	float dmgs = projectile.damages * critical * backstab * (1.f - absorb * 0.01f) * distance_modifier;
 	
@@ -402,7 +401,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 			
 			if(Entity * source  = entities.get(projectile.source)) {
 				spawnAudibleSound(v0, *source);
-				std::string bkg_material = "earth";
+				std::string_view bkg_material = "earth";
 				if(result.hit && result.hit->tex && !result.hit->tex->m_texName.empty()) {
 					bkg_material = GetMaterialString(result.hit->tex->m_texName);
 				}
