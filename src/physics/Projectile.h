@@ -23,50 +23,6 @@
 #include "core/TimeTypes.h"
 #include "game/GameTypes.h"
 #include "graphics/GraphicsTypes.h"
-#include "scene/Object.h"
-
-class Trail;
-
-enum ProjectileFlag {
-	ATO_UNDERWATER = 1 << 2,
-	ATO_FIERY      = 1 << 3
-};
-DECLARE_FLAGS(ProjectileFlag, ProjectileFlags)
-DECLARE_FLAGS_OPERATORS(ProjectileFlags)
-
-struct Projectile {
-	
-	ProjectileFlags flags;
-	Vec3f vector;
-	glm::quat quat;
-	float gravity;
-	Vec3f initial_position;
-	Vec3f position;
-	float damages;
-	EERIE_3DOBJ * obj;
-	ActionPoint attach;
-	glm::quat rotation;
-	EntityHandle source;
-	GameInstant creation_time;
-	float poisonous;
-	Trail * m_trail;
-	
-	Projectile()
-		: flags(0)
-		, vector(0.f)
-		, quat(quat_identity())
-		, gravity(0.f)
-		, initial_position(0.f)
-		, position(0.f)
-		, damages(0)
-		, obj(nullptr)
-		, rotation(quat_identity())
-		, creation_time(0)
-		, poisonous(0.f)
-		, m_trail(nullptr)
-	{ }
-	
-};
 
 glm::quat getProjectileQuatFromVector(Vec3f vector);
 
