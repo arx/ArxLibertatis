@@ -676,6 +676,39 @@ auto grid(glm::vec<3, T, Q> begin, glm::vec<3, T, Q> end) {
 	return gridXYZ(begin, end);
 }
 
+template <typename Range, typename Predicate>
+auto unordered_remove_if(Range & range, Predicate && predicate) {
+	
+	auto a = range.begin();
+	auto b = range.end();
+	
+	while(a != b) {
+		
+		while(a != b && !predicate(*a)) {
+			a++;
+		}
+		if(a == b) {
+			break;
+		}
+		arx_assert(predicate(*a));
+		
+		do {
+			b--;
+		} while(a != b && predicate(*b));
+		if(a == b) {
+			break;
+		}
+		arx_assert(!predicate(*b));
+		
+		*a = std::move(*b);
+		a++;
+		
+	}
+	
+	range.erase(a, range.end());
+	
+}
+
 } // namespace util
 
 #endif // ARX_UTIL_RANGE_H
