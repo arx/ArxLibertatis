@@ -92,9 +92,7 @@ struct Projectile {
 	
 };
 
-const size_t MAX_THROWN_OBJECTS = 100;
-
-static Projectile g_projectiles[MAX_THROWN_OBJECTS];
+static std::vector<Projectile> g_projectiles;
 
 static bool IsPointInField(const Vec3f & pos) {
 	
@@ -110,37 +108,8 @@ static bool IsPointInField(const Vec3f & pos) {
 	return false;
 }
 
-static void ARX_THROWN_OBJECT_Kill(size_t num) {
-	if(num < MAX_THROWN_OBJECTS) {
-		g_projectiles[num].obj = nullptr;
-		g_projectiles[num].m_trail = nullptr;
-	}
-}
-
 void ARX_THROWN_OBJECT_KillAll() {
-	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
-		ARX_THROWN_OBJECT_Kill(i);
-	}
-}
-
-static long ARX_THROWN_OBJECT_GetFree() {
-	
-	GameInstant latest_time = g_gameTime.now();
-	size_t oldest = 0;
-	
-	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
-		if(!g_projectiles[i].obj) {
-			return i;
-		}
-		if(g_projectiles[i].creation_time < latest_time) {
-			oldest = i;
-			latest_time = g_projectiles[i].creation_time;
-		}
-	}
-	
-	ARX_THROWN_OBJECT_Kill(oldest);
-	
-	return oldest;
+	g_projectiles.clear();
 }
 
 glm::quat getProjectileQuatFromVector(Vec3f vector) {
@@ -154,11 +123,7 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	
 	arx_assert(obj);
 	
-	long num = ARX_THROWN_OBJECT_GetFree();
-	if(num < 0)
-		return;
-		
-	Projectile & projectile = g_projectiles[num];
+	Projectile & projectile = g_projectiles.emplace_back();;
 	
 	projectile.damages = damages;
 	projectile.position = position;
@@ -186,6 +151,7 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 				projectile.flags |= ATO_FIERY;
 		}
 	}
+	
 }
 
 static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHandle target) {
@@ -408,6 +374,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(Projectile & projectile, GameDura
 				projectile.vector = Vec3f(0.f);
 			} else {
 				projectile.obj = nullptr;
+				return;
 			}
 			
 			break;
@@ -511,7 +478,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(Projectile & projectile, GameDura
 		
 	}
 	
-	if(projectile.obj && projectile.m_trail) {
+	if(projectile.m_trail) {
 		projectile.m_trail->SetNextPosition(projectile.position);
 		projectile.m_trail->Update(timeDelta);
 	}
@@ -522,9 +489,8 @@ void ARX_THROWN_OBJECT_Manage(GameDuration timeDelta) {
 	
 	for(Projectile & projectile : g_projectiles) {
 		ARX_THROWN_OBJECT_ManageProjectile(projectile, timeDelta);
-		if(!projectile.obj) {
-			projectile.m_trail = nullptr;
-		}
 	}
+	
+	util::unordered_remove_if(g_projectiles, [](Projectile & projectile) { return !projectile.obj; });
 	
 }
