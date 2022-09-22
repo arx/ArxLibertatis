@@ -284,12 +284,9 @@ static void CheckExp(const Projectile & projectile) {
 
 void ARX_THROWN_OBJECT_Render() {
 	
-	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
-		Projectile & projectile = g_projectiles[i];
+	for(Projectile & projectile : g_projectiles) {
 		
-		if(!projectile.obj) {
-			continue;
-		}
+		arx_assert(projectile.obj);
 		
 		TransformInfo t(projectile.position, projectile.quat);
 		t.pos = t(projectile.obj->vertexlist[projectile.obj->origin].v
