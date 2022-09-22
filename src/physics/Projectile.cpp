@@ -307,20 +307,17 @@ void ARX_THROWN_OBJECT_Render() {
 	
 }
 
-static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta) {
+static void ARX_THROWN_OBJECT_ManageProjectile(Projectile & projectile, GameDuration timeDelta) {
+	
+	arx_assert(projectile.obj);
 	
 	float timeDeltaMs = toMsf(timeDelta);
-	
-	Projectile & projectile = g_projectiles[i];
-	if(!projectile.obj) {
-		return;
-	}
 	
 	// Is Object Visible & Near ?
 	
 	if(!g_tiles->isInActiveTile(projectile.position)) {
 		// Projectile got outside of the world
-		ARX_THROWN_OBJECT_Kill(i);
+		projectile.obj = nullptr;
 		return;
 	}
 	
@@ -413,7 +410,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 				projectile.position = original_pos + result.pos - v0;
 				projectile.vector = Vec3f(0.f);
 			} else {
-				ARX_THROWN_OBJECT_Kill(i);
+				projectile.obj = nullptr;
 			}
 			
 			break;
@@ -509,7 +506,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 			}
 			
 			if(need_kill) {
-				ARX_THROWN_OBJECT_Kill(i);
+				projectile.obj = nullptr;
 				return;
 			}
 			
@@ -517,7 +514,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 		
 	}
 	
-	if(projectile.m_trail) {
+	if(projectile.obj && projectile.m_trail) {
 		projectile.m_trail->SetNextPosition(projectile.position);
 		projectile.m_trail->Update(timeDelta);
 	}
@@ -525,7 +522,12 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 }
 
 void ARX_THROWN_OBJECT_Manage(GameDuration timeDelta) {
-	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
-		ARX_THROWN_OBJECT_ManageProjectile(i, timeDelta);
+	
+	for(Projectile & projectile : g_projectiles) {
+		ARX_THROWN_OBJECT_ManageProjectile(projectile, timeDelta);
+		if(!projectile.obj) {
+			projectile.m_trail = nullptr;
+		}
 	}
+	
 }
