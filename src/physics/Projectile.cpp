@@ -19,6 +19,7 @@
 
 #include "physics/Projectile.h"
 
+#include <memory>
 #include <string>
 
 #include "core/Core.h"
@@ -73,7 +74,7 @@ struct Projectile {
 	EntityHandle source;
 	GameInstant creation_time;
 	float poisonous;
-	Trail * m_trail;
+	std::unique_ptr<Trail> m_trail;
 	
 	Projectile()
 		: flags(0)
@@ -87,7 +88,6 @@ struct Projectile {
 		, rotation(quat_identity())
 		, creation_time(0)
 		, poisonous(0.f)
-		, m_trail(nullptr)
 	{ }
 	
 };
@@ -113,7 +113,6 @@ static bool IsPointInField(const Vec3f & pos) {
 static void ARX_THROWN_OBJECT_Kill(size_t num) {
 	if(num < MAX_THROWN_OBJECTS) {
 		g_projectiles[num].obj = nullptr;
-		delete g_projectiles[num].m_trail;
 		g_projectiles[num].m_trail = nullptr;
 	}
 }
@@ -173,7 +172,7 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	projectile.attach = attach;
 	projectile.poisonous = poisonous;
 	
-	projectile.m_trail = new ArrowTrail();
+	projectile.m_trail = std::make_unique<ArrowTrail>();
 	projectile.m_trail->SetNextPosition(projectile.position);
 	projectile.m_trail->Update(g_gameTime.lastFrameDuration());
 	
@@ -330,7 +329,6 @@ static void ARX_THROWN_OBJECT_ManageProjectile(size_t i, GameDuration timeDelta)
 		if(projectile.m_trail) {
 			projectile.m_trail->Update(timeDelta);
 			if(projectile.m_trail->emtpy()) {
-				delete projectile.m_trail;
 				projectile.m_trail = nullptr;
 			}
 		}
