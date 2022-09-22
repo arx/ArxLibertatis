@@ -154,11 +154,9 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	
 }
 
-static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHandle target) {
+static float ARX_THROWN_ComputeDamages(const Projectile & projectile, Entity & target) {
 	
-	Entity * io_target = entities[target];
-	
-	SendIOScriptEvent(entities.player(), io_target, SM_AGGRESSION);
+	SendIOScriptEvent(entities.player(), &target, SM_AGGRESSION);
 	
 	float distance = fdist(projectile.position, projectile.initial_position);
 	float distance_modifier = 1.f;
@@ -180,7 +178,7 @@ static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHand
 	}
 	
 	float backstab = 1.f;
-	if(io_target->_npcdata->npcflags & NPCFLAG_BACKSTAB) {
+	if(target._npcdata->npcflags & NPCFLAG_BACKSTAB) {
 		if(Random::getf(0.f, 100.f) <= player.m_skillFull.stealth) {
 			if(SendIOScriptEvent(nullptr, entities.player(), SM_BACKSTAB, "bow") != REFUSE) {
 				backstab = 1.5f;
@@ -189,19 +187,19 @@ static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHand
 	}
 	
 	float ac, absorb;
-	if(target == EntityHandle_Player) {
+	if(&target == entities.player()) {
 		ac = player.m_miscFull.armorClass;
 		absorb = player.m_skillFull.defense * .5f;
 	} else {
-		ac = ARX_INTERACTIVE_GetArmorClass(io_target);
-		absorb = io_target->_npcdata->absorb;
+		ac = ARX_INTERACTIVE_GetArmorClass(&target);
+		absorb = target._npcdata->absorb;
 	}
 	
 	std::string_view amat = "flesh";
-	if(!io_target->armormaterial.empty()) {
-		amat = io_target->armormaterial;
+	if(!target.armormaterial.empty()) {
+		amat = target.armormaterial;
 	}
-	if(io_target == entities.player()) {
+	if(&target == entities.player()) {
 		Entity * io = entities.get(player.equiped[EQUIP_SLOT_ARMOR]);
 		if(io) {
 			if(!io->armormaterial.empty()) {
@@ -420,7 +418,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(Projectile & projectile, GameDura
 					
 					if(projectile.source == EntityHandle_Player) {
 						
-						float damages = ARX_THROWN_ComputeDamages(projectile, target.index());
+						float damages = ARX_THROWN_ComputeDamages(projectile, target);
 						if(damages > 0.f) {
 							
 							arx_assert(hitpoint >= 0);
