@@ -1194,7 +1194,6 @@ static void print_io_header(SaveBlock & save, const ARX_CHANGELEVEL_IO_SAVE & ai
 	if(ais.ioflags & IO_FIELD) std::cout << " field";
 	if(ais.ioflags & IO_BUMP) std::cout << " bump";
 	if(ais.ioflags & IO_ANGULAR) std::cout << " angular";
-	if(ais.ioflags & IO_BODY_CHUNK) std::cout << " body_chunk";
 	if(ais.ioflags & IO_ZMAP) std::cout << " zmap";
 	if(ais.ioflags & IO_INVERTED) std::cout << " inverted";
 	if(ais.ioflags & IO_JUST_COLLIDE) std::cout << " just_collide";

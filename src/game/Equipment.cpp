@@ -645,7 +645,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 		if(CheckEverythingInSphere(sphere, io_source, entities.get(targ), sphereContent)) {
 			for(Entity * target : sphereContent) {
 				arx_assert(target);
-				if(!(target->ioflags & IO_BODY_CHUNK)) {
+				{
 					
 					bool HIT_SPARK = false;
 					EXCEPTIONS_LIST[EXCEPTIONS_LIST_Pos] = target->index();

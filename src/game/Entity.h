@@ -195,7 +195,7 @@ enum EntityFlag {
 	IO_FIELD               = 1 << 21,
 	IO_BUMP                = 1 << 22,
 	IO_ANGULAR             = 1 << 23,
-	IO_BODY_CHUNK          = 1 << 24,
+	IO_BODY_CHUNK          = 1 << 24, // TODO remove
 	// IO_ZMAP Currently has no effect, but keep for now as it affects save state
 	IO_ZMAP                = 1 << 25,
 	IO_INVERTED            = 1 << 26,

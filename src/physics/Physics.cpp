@@ -612,15 +612,13 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA & pbox, float framedi
 		return;
 	}
 	
-	if(!(source.ioflags & IO_BODY_CHUNK)) {
-		Material collisionMat = MATERIAL_STONE;
-		if(collisionPoly) {
-			collisionMat = polyTypeToCollisionMaterial(*collisionPoly);
-		}
-		Vec3f velocity = pbox.vert[0].velocity;
-		float power = (glm::abs(velocity.x) + glm::abs(velocity.y) + glm::abs(velocity.z)) * .01f;
-		ARX_TEMPORARY_TrySound(source, collisionMat, 0.4f + power);
+	Material collisionMat = MATERIAL_STONE;
+	if(collisionPoly) {
+		collisionMat = polyTypeToCollisionMaterial(*collisionPoly);
 	}
+	Vec3f velocity = pbox.vert[0].velocity;
+	float power = (glm::abs(velocity.x) + glm::abs(velocity.y) + glm::abs(velocity.z)) * .01f;
+	ARX_TEMPORARY_TrySound(source, collisionMat, 0.4f + power);
 	
 	if(!collisionPoly) {
 		for(size_t k = 0; k < pbox.vert.size(); k++) {

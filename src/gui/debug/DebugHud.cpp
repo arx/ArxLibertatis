@@ -89,7 +89,6 @@ const FlagName<EntityFlags> EntityFlagNames[] = {
 	{IO_FIELD               , "FIELD"},
 	{IO_BUMP                , "BUMP"},
 	{IO_ANGULAR             , "ANGULAR"},
-	{IO_BODY_CHUNK          , "BODY_CHUNK"},
 	{IO_ZMAP                , "ZMAP"},
 	{IO_INVERTED            , "INVERTED"},
 	{IO_JUST_COLLIDE        , "JUST_COLLIDE"},
