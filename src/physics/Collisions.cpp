@@ -1029,76 +1029,75 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 		return false;
 	}
 	
+	if(!closerThan(entity.pos, sphere.origin, sphere.radius + 500.f)) {
+		return false;
+	}
+	
 	float sr30 = sphere.radius + 22.f;
 	float sr40 = sphere.radius + 27.f;
-	float sr180 = sphere.radius + 500.f;
-	if(closerThan(entity.pos, sphere.origin, sr180)) {
-		
-		const std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
-		
-		if(entity.obj->grouplist.size() > 10) {
-			long count = 0;
-			long ii = entity.obj->grouplist.size() - 1;
-			while(ii) {
-				if(closerThan(vlist[entity.obj->grouplist[ii].origin].v, sphere.origin, sr40)) {
-					count++;
-					if(count > 3) {
-						return true;
-					}
+	
+	const std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
+	
+	if(entity.obj->grouplist.size() > 10) {
+		long count = 0;
+		long ii = entity.obj->grouplist.size() - 1;
+		while(ii) {
+			if(closerThan(vlist[entity.obj->grouplist[ii].origin].v, sphere.origin, sr40)) {
+				count++;
+				if(count > 3) {
+					return true;
 				}
-				ii--;
+			}
+			ii--;
+		}
+	}
+	
+	long step = 7;
+	long nbv = entity.obj->vertexlist.size();
+	if(nbv < 150) {
+		step = 1;
+	} else if(nbv < 300) {
+		step = 2;
+	} else if(nbv < 600) {
+		step = 4;
+	} else if(nbv < 1200) {
+		step = 6;
+	}
+	
+	long count = 0;
+	for(size_t ii = 0; ii < vlist.size(); ii += step) {
+		
+		if(closerThan(vlist[ii].v, sphere.origin, sr30)) {
+			count++;
+			if(count > 6) {
+				return true;
 			}
 		}
 		
-		long step;
-		long nbv = entity.obj->vertexlist.size();
-
-		if(nbv < 150)
-			step = 1;
-		else if(nbv < 300)
-			step = 2;
-		else if(nbv < 600)
-			step = 4;
-		else if(nbv < 1200)
-			step = 6;
-		else
-			step = 7;
-		
-		long count = 0;
-		
-		for(size_t ii = 0; ii < vlist.size(); ii += step) {
-			if(closerThan(vlist[ii].v, sphere.origin, sr30)) {
-				count++;
-
-				if(count > 6)
-					return true;
-			}
-
-			if(entity.obj->vertexlist.size() < 120) {
-				for(size_t kk = 0; kk < vlist.size(); kk += 1) {
-					if(kk != ii) {
-						for(size_t n = 1; n < 5; n++) {
-							float nn = float(n) * 0.2f;
-							Vec3f posi = vlist[ii].v * nn + vlist[kk].v * (1.f - nn);
-							if(!fartherThan(sphere.origin, posi, sr30 + 20)) {
-								count++;
-
-								if(count > 3) {
-									if(entity.ioflags & IO_FIX)
-										return true;
-
-									if(count > 6)
-										return true;
-								}
+		if(entity.obj->vertexlist.size() < 120) {
+			for(size_t kk = 0; kk < vlist.size(); kk += 1) {
+				if(kk != ii) {
+					for(size_t n = 1; n < 5; n++) {
+						float nn = float(n) * 0.2f;
+						Vec3f posi = vlist[ii].v * nn + vlist[kk].v * (1.f - nn);
+						if(!fartherThan(sphere.origin, posi, sr30 + 20)) {
+							count++;
+							if(count > 3) {
+								if(entity.ioflags & IO_FIX)
+									return true;
+								if(count > 6)
+									return true;
 							}
 						}
 					}
 				}
 			}
 		}
-
-		if(count > 3 && (entity.ioflags & IO_FIX))
-			return true;
+		
+	}
+	
+	if(count > 3 && (entity.ioflags & IO_FIX)) {
+		return true;
 	}
 	
 	return false;
