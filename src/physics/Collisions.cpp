@@ -738,8 +738,7 @@ static bool InExceptionList(EntityHandle val) {
 	return false;
 }
 
-static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity & entity,
-                                          std::vector<Entity *> & sphereContent) {
+static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity & entity) {
 	
 	float sr30 = sphere.radius + 20.f;
 	float sr40 = sphere.radius + 30.f;
@@ -787,7 +786,6 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity & entity
 					}
 					
 					if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z)) {
-						sphereContent.push_back(&entity);
 						return true;
 					}
 					
@@ -803,7 +801,6 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity & entity
 		if(entity.obj->grouplist.size() > 4) {
 			for(size_t ii = 0; ii < entity.obj->grouplist.size(); ii++) {
 				if(closerThan(vlist[entity.obj->grouplist[ii].origin].v, sphere.origin, sr40)) {
-					sphereContent.push_back(&entity);
 					return true;
 				}
 			}
@@ -823,7 +820,6 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity & entity
 			   || closerThan(vlist[ef->vid[0]].v, sphere.origin, sr30)
 			   || closerThan(vlist[ef->vid[1]].v, sphere.origin, sr30)
 			   || closerThan(vlist[ef->vid[2]].v, sphere.origin, sr30)) {
-				sphereContent.push_back(&entity);
 				return true;
 			}
 			
@@ -841,24 +837,25 @@ bool CheckEverythingInSphere(const Sphere & sphere, const Entity * source, Entit
 		if(target == source || !(target->gameFlags & GFLAG_ISINTREATZONE)) {
 			return false;
 		}
-		return CheckEverythingInSphere_Inner(sphere, *target, sphereContent);
+		if(CheckEverythingInSphere_Inner(sphere, *target)) {
+			sphereContent.push_back(target);
+			return true;
+		}
+		return false;
 	}
 	
-	bool vreturn = false;
-	
+	bool found = false;
 	for(const auto & entry : treatio) {
-		
 		if(!entry.io || entry.io == source) {
 			continue;
 		}
-		
-		if(CheckEverythingInSphere_Inner(sphere, *entry.io, sphereContent)) {
-			vreturn = true;
+		if(CheckEverythingInSphere_Inner(sphere, *entry.io)) {
+			sphereContent.push_back(entry.io);
+			found = true;
 		}
-		
 	}
 	
-	return vreturn;
+	return found;
 }
 
 const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) {
