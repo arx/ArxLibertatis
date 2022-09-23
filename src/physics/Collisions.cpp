@@ -1391,10 +1391,9 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit) {
 	// Current ray position
 	Vec3f tmpPos = orgn;
 	
-	float distance;
-	float nearest = distance = fdist(orgn, dest);
-	if(distance < pas) {
-		pas = distance * .5f;
+	float nearest =  fdist(orgn, dest);
+	if(nearest < pas) {
+		pas = nearest * .5f;
 	}
 	
 	// ray incs
