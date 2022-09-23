@@ -137,42 +137,41 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 		pbox->vert[13].pos.y = cubmin.y;
 		float RATI = diff * (1.0f / 8);
 		
-		for(size_t k = 0; k < obj->vertexlist.size(); k++) {
+		for(const EERIE_VERTEX & vertex : obj->vertexlist) {
 			
-			if(k == obj->origin) {
+			if(&vertex == &origin) {
 				continue;
 			}
-			Vec3f curr = obj->vertexlist[k].v;
 			
 			size_t SEC = 1;
-			pbox->vert[SEC].pos.x = std::min(pbox->vert[SEC].pos.x, curr.x);
-			pbox->vert[SEC].pos.z = std::min(pbox->vert[SEC].pos.z, curr.z);
-			pbox->vert[SEC + 1].pos.x = std::min(pbox->vert[SEC + 1].pos.x, curr.x);
-			pbox->vert[SEC + 1].pos.z = std::max(pbox->vert[SEC + 1].pos.z, curr.z);
-			pbox->vert[SEC + 2].pos.x = std::max(pbox->vert[SEC + 2].pos.x, curr.x);
-			pbox->vert[SEC + 2].pos.z = std::max(pbox->vert[SEC + 2].pos.z, curr.z);
-			pbox->vert[SEC + 3].pos.x = std::max(pbox->vert[SEC + 3].pos.x, curr.x);
-			pbox->vert[SEC + 3].pos.z = std::min(pbox->vert[SEC + 3].pos.z, curr.z);
+			pbox->vert[SEC].pos.x = std::min(pbox->vert[SEC].pos.x, vertex.v.x);
+			pbox->vert[SEC].pos.z = std::min(pbox->vert[SEC].pos.z, vertex.v.z);
+			pbox->vert[SEC + 1].pos.x = std::min(pbox->vert[SEC + 1].pos.x, vertex.v.x);
+			pbox->vert[SEC + 1].pos.z = std::max(pbox->vert[SEC + 1].pos.z, vertex.v.z);
+			pbox->vert[SEC + 2].pos.x = std::max(pbox->vert[SEC + 2].pos.x, vertex.v.x);
+			pbox->vert[SEC + 2].pos.z = std::max(pbox->vert[SEC + 2].pos.z, vertex.v.z);
+			pbox->vert[SEC + 3].pos.x = std::max(pbox->vert[SEC + 3].pos.x, vertex.v.x);
+			pbox->vert[SEC + 3].pos.z = std::min(pbox->vert[SEC + 3].pos.z, vertex.v.z);
 			
 			SEC = 5;
-			pbox->vert[SEC].pos.x = std::min(pbox->vert[SEC].pos.x, curr.x - RATI);
-			pbox->vert[SEC].pos.z = std::min(pbox->vert[SEC].pos.z, curr.z - RATI);
-			pbox->vert[SEC + 1].pos.x = std::min(pbox->vert[SEC + 1].pos.x, curr.x - RATI);
-			pbox->vert[SEC + 1].pos.z = std::max(pbox->vert[SEC + 1].pos.z, curr.z + RATI);
-			pbox->vert[SEC + 2].pos.x = std::max(pbox->vert[SEC + 2].pos.x, curr.x + RATI);
-			pbox->vert[SEC + 2].pos.z = std::max(pbox->vert[SEC + 2].pos.z, curr.z + RATI);
-			pbox->vert[SEC + 3].pos.x = std::max(pbox->vert[SEC + 3].pos.x, curr.x + RATI);
-			pbox->vert[SEC + 3].pos.z = std::min(pbox->vert[SEC + 3].pos.z, curr.z - RATI);
+			pbox->vert[SEC].pos.x = std::min(pbox->vert[SEC].pos.x, vertex.v.x - RATI);
+			pbox->vert[SEC].pos.z = std::min(pbox->vert[SEC].pos.z, vertex.v.z - RATI);
+			pbox->vert[SEC + 1].pos.x = std::min(pbox->vert[SEC + 1].pos.x, vertex.v.x - RATI);
+			pbox->vert[SEC + 1].pos.z = std::max(pbox->vert[SEC + 1].pos.z, vertex.v.z + RATI);
+			pbox->vert[SEC + 2].pos.x = std::max(pbox->vert[SEC + 2].pos.x, vertex.v.x + RATI);
+			pbox->vert[SEC + 2].pos.z = std::max(pbox->vert[SEC + 2].pos.z, vertex.v.z + RATI);
+			pbox->vert[SEC + 3].pos.x = std::max(pbox->vert[SEC + 3].pos.x, vertex.v.x + RATI);
+			pbox->vert[SEC + 3].pos.z = std::min(pbox->vert[SEC + 3].pos.z, vertex.v.z - RATI);
 			
 			SEC = 9;
-			pbox->vert[SEC].pos.x = std::min(pbox->vert[SEC].pos.x, curr.x);
-			pbox->vert[SEC].pos.z = std::min(pbox->vert[SEC].pos.z, curr.z);
-			pbox->vert[SEC + 1].pos.x = std::min(pbox->vert[SEC + 1].pos.x, curr.x);
-			pbox->vert[SEC + 1].pos.z = std::max(pbox->vert[SEC + 1].pos.z, curr.z);
-			pbox->vert[SEC + 2].pos.x = std::max(pbox->vert[SEC + 2].pos.x, curr.x);
-			pbox->vert[SEC + 2].pos.z = std::max(pbox->vert[SEC + 2].pos.z, curr.z);
-			pbox->vert[SEC + 3].pos.x = std::max(pbox->vert[SEC + 3].pos.x, curr.x);
-			pbox->vert[SEC  + 3].pos.z = std::min(pbox->vert[SEC + 3].pos.z, curr.z);
+			pbox->vert[SEC].pos.x = std::min(pbox->vert[SEC].pos.x, vertex.v.x);
+			pbox->vert[SEC].pos.z = std::min(pbox->vert[SEC].pos.z, vertex.v.z);
+			pbox->vert[SEC + 1].pos.x = std::min(pbox->vert[SEC + 1].pos.x, vertex.v.x);
+			pbox->vert[SEC + 1].pos.z = std::max(pbox->vert[SEC + 1].pos.z, vertex.v.z);
+			pbox->vert[SEC + 2].pos.x = std::max(pbox->vert[SEC + 2].pos.x, vertex.v.x);
+			pbox->vert[SEC + 2].pos.z = std::max(pbox->vert[SEC + 2].pos.z, vertex.v.z);
+			pbox->vert[SEC + 3].pos.x = std::max(pbox->vert[SEC + 3].pos.x, vertex.v.x);
+			pbox->vert[SEC  + 3].pos.z = std::min(pbox->vert[SEC + 3].pos.z, vertex.v.z);
 			
 		}
 		
