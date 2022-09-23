@@ -430,40 +430,35 @@ static bool platformCollides(const Entity & platform, const PHYSICS_BOX_DATA & p
 		Sphere sphere;
 		sphere.origin = pbox.vert[kk].pos;
 		sphere.radius = 30.f;
-		float miny, maxy;
-		miny = platform.bbox3D.min.y;
-		maxy = platform.bbox3D.max.y;
+		if((platform.bbox3D.max.y > sphere.origin.y + sphere.radius && platform.bbox3D.min.y < sphere.origin.y) ||
+		   !In3DBBoxTolerance(sphere.origin, platform.bbox3D, sphere.radius) ||
+		   !closerThan(Vec2f(platform.pos.x, platform.pos.z), Vec2f(sphere.origin.x, sphere.origin.z),
+		               440.f + sphere.radius)) {
+			continue;
+		}
 		
-		if(maxy <= sphere.origin.y + sphere.radius || miny >= sphere.origin.y) {
+		for(size_t ii = 0; ii < platform.obj->facelist.size(); ii++) {
 			
-			if(In3DBBoxTolerance(sphere.origin, platform.bbox3D, sphere.radius)) {
-				// TODO why ignore the z components?
-				if(closerThan(Vec2f(platform.pos.x, platform.pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
-					
-					for(size_t ii = 0; ii < platform.obj->facelist.size(); ii++) {
-						float cx = 0;
-						float cz = 0;
-						
-						EERIEPOLY ep;
-						ep.type = 0;
-						for(long idx = 0 ; idx < 3 ; idx++) {
-							ep.v[idx].p = platform.obj->vertexWorldPositions[platform.obj->facelist[ii].vid[idx]].v;
-							cx += ep.v[idx].p.x;
-							cz += ep.v[idx].p.z;
-						}
-						
-						cx *= 1.0f / 3;
-						cz *= 1.0f / 3;
-						
-						for(int k = 0; k < 3; k++) {
-							ep.v[k].p.x = (ep.v[k].p.x - cx) * 3.5f + cx;
-							ep.v[k].p.z = (ep.v[k].p.z - cz) * 3.5f + cz;
-						}
-						
-						if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z))
-							return true;
-					}
-				}
+			EERIEPOLY ep;
+			ep.type = 0;
+			float cx = 0.f;
+			float cz = 0.f;
+			for(long idx = 0 ; idx < 3 ; idx++) {
+				ep.v[idx].p = platform.obj->vertexWorldPositions[platform.obj->facelist[ii].vid[idx]].v;
+				cx += ep.v[idx].p.x;
+				cz += ep.v[idx].p.z;
+			}
+			
+			cx *= 1.0f / 3;
+			cz *= 1.0f / 3;
+			
+			for(int k = 0; k < 3; k++) {
+				ep.v[k].p.x = (ep.v[k].p.x - cx) * 3.5f + cx;
+				ep.v[k].p.z = (ep.v[k].p.z - cz) * 3.5f + cz;
+			}
+			
+			if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z)) {
+				return true;
 			}
 			
 		}
