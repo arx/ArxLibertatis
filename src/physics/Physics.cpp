@@ -441,20 +441,16 @@ static bool platformCollides(const Entity & platform, const PHYSICS_BOX_DATA & p
 			
 			EERIEPOLY ep;
 			ep.type = 0;
-			float cx = 0.f;
-			float cz = 0.f;
-			for(long i = 0 ; i < 3 ; i++) {
+			Vec2f center(0.f);
+			for(size_t i = 0 ; i < std::size(face.vid) ; i++) {
 				ep.v[i].p = platform.obj->vertexWorldPositions[face.vid[i]].v;
-				cx += ep.v[i].p.x;
-				cz += ep.v[i].p.z;
+				center += Vec2f(ep.v[i].p.x, ep.v[i].p.z);
 			}
+			center /= float(std::size(face.vid));
 			
-			cx *= 1.0f / 3;
-			cz *= 1.0f / 3;
-			
-			for(int k = 0; k < 3; k++) {
-				ep.v[k].p.x = (ep.v[k].p.x - cx) * 3.5f + cx;
-				ep.v[k].p.z = (ep.v[k].p.z - cz) * 3.5f + cz;
+			for(size_t k = 0; k < std::size(face.vid); k++) {
+				ep.v[k].p.x = (ep.v[k].p.x - center.x) * 3.5f + center.x;
+				ep.v[k].p.z = (ep.v[k].p.z - center.y) * 3.5f + center.y;
 			}
 			
 			if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z)) {
