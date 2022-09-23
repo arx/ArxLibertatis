@@ -1082,11 +1082,8 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 						Vec3f posi = vlist[ii].v * nn + vlist[kk].v * (1.f - nn);
 						if(!fartherThan(sphere.origin, posi, sr30 + 20)) {
 							count++;
-							if(count > 3) {
-								if(entity.ioflags & IO_FIX)
-									return true;
-								if(count > 6)
-									return true;
+							if(count > ((entity.ioflags & IO_FIX) ? 3 : 6)) {
+								return true;
 							}
 						}
 					}
