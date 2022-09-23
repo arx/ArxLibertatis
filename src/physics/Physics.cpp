@@ -437,14 +437,14 @@ static bool platformCollides(const Entity & platform, const PHYSICS_BOX_DATA & p
 			continue;
 		}
 		
-		for(size_t ii = 0; ii < platform.obj->facelist.size(); ii++) {
+		for(const EERIE_FACE & face : platform.obj->facelist) {
 			
 			EERIEPOLY ep;
 			ep.type = 0;
 			float cx = 0.f;
 			float cz = 0.f;
 			for(long idx = 0 ; idx < 3 ; idx++) {
-				ep.v[idx].p = platform.obj->vertexWorldPositions[platform.obj->facelist[ii].vid[idx]].v;
+				ep.v[idx].p = platform.obj->vertexWorldPositions[face.vid[idx]].v;
 				cx += ep.v[idx].p.x;
 				cz += ep.v[idx].p.z;
 			}
