@@ -381,44 +381,6 @@ bool isCylinderCollidingWithPlatform(const Cylinder & cylinder, const Entity & p
 
 static long NPC_IN_CYLINDER = 0;
 
-static bool CollidedFromBack(Entity * io, Entity * ioo) {
-	
-	// io was collided from back ?
-	EERIEPOLY ep;
-	ep.type = 0;
-	
-	if(io && ioo && (io->ioflags & IO_NPC) && (ioo->ioflags & IO_NPC)) {
-		
-		ep.v[0].p.x = io->pos.x;
-		ep.v[0].p.z = io->pos.z;
-		
-		float ft = glm::radians(135.f + 90.f);
-		ep.v[1].p.x =  std::sin(ft) * 180.f;
-		ep.v[1].p.z = -std::cos(ft) * 180.f;
-		
-		ft = glm::radians(225.f + 90.f);
-		ep.v[2].p.x =  std::sin(ft) * 180.f;
-		ep.v[2].p.z = -std::cos(ft) * 180.f;
-		
-		float angle = 270.f - io->angle.getYaw();
-		Vec3f p1 = VRotateY(ep.v[1].p, angle);
-		Vec3f p2 = VRotateY(ep.v[2].p, angle);
-		
-		ep.v[1].p.x = p1.x + ep.v[0].p.x;
-		ep.v[1].p.z = p1.z + ep.v[0].p.z;
-		ep.v[2].p.x = p2.x + ep.v[0].p.x;
-		ep.v[2].p.z = p2.z + ep.v[0].p.z;
-		
-		// To keep if we need some visual debug
-		if(PointIn2DPolyXZ(&ep, ioo->pos.x, ioo->pos.z)) {
-			return true;
-		}
-		
-	}
-	
-	return false;
-}
-
 static void CheckAnythingInCylinder_Platform(const Cylinder & cylinder, const Entity & target,
                                              float & anything) {
 	
@@ -468,6 +430,40 @@ static void CheckAnythingInCylinder_Platform(const Cylinder & cylinder, const En
 	
 }
 
+static bool CollidedFromBack(Entity & target, Entity & source) {
+	
+	arx_assert(source.ioflags & IO_NPC);
+	arx_assert(target.ioflags & IO_NPC);
+	
+	EERIEPOLY ep;
+	ep.type = 0;
+	ep.v[0].p.x = target.pos.x;
+	ep.v[0].p.z = target.pos.z;
+	
+	float ft = glm::radians(135.f + 90.f);
+	ep.v[1].p.x =  std::sin(ft) * 180.f;
+	ep.v[1].p.z = -std::cos(ft) * 180.f;
+	
+	ft = glm::radians(225.f + 90.f);
+	ep.v[2].p.x =  std::sin(ft) * 180.f;
+	ep.v[2].p.z = -std::cos(ft) * 180.f;
+	
+	float angle = 270.f - target.angle.getYaw();
+	Vec3f p1 = VRotateY(ep.v[1].p, angle);
+	Vec3f p2 = VRotateY(ep.v[2].p, angle);
+	
+	ep.v[1].p.x = p1.x + ep.v[0].p.x;
+	ep.v[1].p.z = p1.z + ep.v[0].p.z;
+	ep.v[2].p.x = p2.x + ep.v[0].p.x;
+	ep.v[2].p.z = p2.z + ep.v[0].p.z;
+	
+	if(PointIn2DPolyXZ(&ep, source.pos.x, source.pos.z)) {
+		return true;
+	}
+	
+	return false;
+}
+
 static void handleNpcCollision(Entity & source, Entity & target) {
 	
 	GameDuration elapsed = g_gameTime.now() - target.collide_door_time;
@@ -475,7 +471,7 @@ static void handleNpcCollision(Entity & source, Entity & target) {
 		
 		target.collide_door_time = g_gameTime.now();
 		
-		if(CollidedFromBack(&target, &source)) {
+		if(CollidedFromBack(target, source)) {
 			SendIOScriptEvent(&source, &target, SM_COLLIDE_NPC, "back");
 		} else {
 			SendIOScriptEvent(&source, &target, SM_COLLIDE_NPC);
@@ -483,7 +479,7 @@ static void handleNpcCollision(Entity & source, Entity & target) {
 		
 		target.collide_door_time = g_gameTime.now();
 		
-		if(CollidedFromBack(&source, &target)) {
+		if(CollidedFromBack(source, target)) {
 			SendIOScriptEvent(&target, &source, SM_COLLIDE_NPC, "back");
 		} else {
 			SendIOScriptEvent(&target, &source, SM_COLLIDE_NPC);
