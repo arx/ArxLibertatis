@@ -295,32 +295,30 @@ static void ComputeForces(std::array<PhysicsParticle, N> & particles) {
 	
 	const Vec3f PHYSICS_Gravity(0.f, 65.f, 0.f);
 	const float PHYSICS_Damping = 0.5f;
-
+	
 	float lastmass = 1.f;
 	float div = 1.f;
-
-	for(size_t k = 0; k < particles.size(); k++) {
-
-		PhysicsParticle * pv = &particles[k];
-
+	
+	for(PhysicsParticle & particle : particles) {
+		
 		// Reset Force
-		pv->force = Vec3f(0.f);
-
+		particle.force = Vec3f(0.f);
+		
 		// Apply Gravity
-		if(pv->mass > 0.f) {
-
+		if(particle.mass > 0.f) {
 			// need to be precomputed...
-			if(lastmass != pv->mass) {
-				div = 1.f / pv->mass;
-				lastmass = pv->mass;
+			if(lastmass != particle.mass) {
+				div = 1.f / particle.mass;
+				lastmass = particle.mass;
 			}
-
-			pv->force += (PHYSICS_Gravity * div);
+			particle.force += (PHYSICS_Gravity * div);
 		}
-
+		
 		// Apply Damping
-		pv->force += pv->velocity * -PHYSICS_Damping;
+		particle.force += particle.velocity * -PHYSICS_Damping;
+		
 	}
+	
 }
 
 //! Calculate new Positions and Velocities given a deltatime
