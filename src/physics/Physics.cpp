@@ -216,23 +216,24 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 	}
 	
 	pbox->radius = 0.f;
-
-	for(size_t k = 0; k < pbox->vert.size(); k++) {
-		PhysicsParticle & pv = pbox->vert[k];
+	
+	bool first = true;
+	for(PhysicsParticle & particle : pbox->vert) {
 		
-		float distt = glm::distance(pv.pos, pbox->vert[0].pos);
-		
-		if(distt > 20.f) {
-			pv.pos.x = (pv.pos.x - pbox->vert[0].pos.x) * 0.5f + pbox->vert[0].pos.x;
-			pv.pos.z = (pv.pos.z - pbox->vert[0].pos.z) * 0.5f + pbox->vert[0].pos.z;
+		if(glm::distance(particle.pos, pbox->vert[0].pos) > 20.f) {
+			particle.pos.x = (particle.pos.x - pbox->vert[0].pos.x) * 0.5f + pbox->vert[0].pos.x;
+			particle.pos.z = (particle.pos.z - pbox->vert[0].pos.z) * 0.5f + pbox->vert[0].pos.z;
 		}
+
+		particle.initpos = particle.pos;
 		
-		pv.initpos = pv.pos;
-		
-		if(k != 0) {
-			float d = glm::distance(pbox->vert[0].pos, pv.pos);
+		if(first) {
+			first = false;
+		} else {
+			float d = glm::distance(pbox->vert[0].pos, particle.pos);
 			pbox->radius = std::max(pbox->radius, d);
 		}
+		
 	}
 	
 	float surface = 0.f;
