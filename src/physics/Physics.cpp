@@ -484,8 +484,8 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 		}
 		
 		if((io->ioflags & IO_NPC) && io->_npcdata->lifePool.current > 0.f) {
-			for(size_t kk = 0; kk < pbox.vert.size(); kk++) {
-				if(PointInCylinder(io->physics.cyl, pbox.vert[kk].pos)) {
+			for(const PhysicsParticle & vertex : pbox.vert) {
+				if(PointInCylinder(io->physics.cyl, vertex.pos)) {
 					return true;
 				}
 			}
