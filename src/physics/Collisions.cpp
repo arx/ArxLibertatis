@@ -584,65 +584,58 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cylinder, Entity * so
 		return;
 	}
 	
-	Sphere sp;
-	
-	const std::vector<EERIE_VERTEX> & vlist = target->obj->vertexWorldPositions;
+	bool dealt = false;
 	
 	if(target->obj->grouplist.size() > 10) {
-		bool dealt = false;
+		
+		float radius = 26.f;
+		if(source == entities.player()) {
+			radius = 22.f;
+		} else if(source && !(source->ioflags & IO_NPC)) {
+			radius = 22.f;
+		}
+		
 		for(size_t ii = 0; ii < target->obj->grouplist.size(); ii++) {
 			long idx = target->obj->grouplist[ii].origin;
-			sp.origin = vlist[idx].v;
-			
-			if(source == entities.player()) {
-				sp.radius = 22.f;
-			} else if(source && !(source->ioflags & IO_NPC)) {
-				sp.radius = 22.f;
-			} else {
-				sp.radius = 26.f;
-			}
-			
-			if(SphereInCylinder(cylinder, sp)) {
+			Vec3f pos = target->obj->vertexWorldPositions[idx].v;
+			if(SphereInCylinder(cylinder, Sphere(pos, radius))) {
 				if(!(flags & CFLAG_JUST_TEST) && source) {
 					handlePropCollision(source, target, dealt);
 				}
-				anything = std::min(anything, std::min(sp.origin.y - sp.radius, target->bbox3D.min.y));
+				anything = std::min(anything, std::min(pos.y - radius, target->bbox3D.min.y));
 			}
 		}
+		
 	} else {
-		long step;
 		
-		if(source == entities.player())
-			sp.radius = 23.f;
-		else if(source && !(source->ioflags & IO_NPC))
-			sp.radius = 32.f;
-		else
-			sp.radius = 25.f;
+		float radius = 25.f;
+		if(source == entities.player()) {
+			radius = 23.f;
+		} else if(source && !(source->ioflags & IO_NPC)) {
+			radius = 32.f;
+		}
 		
-		size_t nbv = target->obj->vertexlist.size();
-		
-		if(nbv < 300)
+		size_t step = 6;
+		if(target->obj->vertexlist.size() < 300) {
 			step = 1;
-		else if(nbv < 600)
+		} else if(target->obj->vertexlist.size() < 600) {
 			step = 2;
-		else if(nbv < 1200)
+		} else if(target->obj->vertexlist.size() < 1200) {
 			step = 4;
-		else
-			step = 6;
+		}
 		
-		bool dealt = false;
-		for(size_t ii = 1; ii < nbv; ii += step) {
-			if(ii != target->obj->origin) {
-				sp.origin = vlist[ii].v;
-				
-				if(SphereInCylinder(cylinder, sp)) {
+		for(size_t i = 1; i < target->obj->vertexlist.size(); i += step) {
+			if(i != target->obj->origin) {
+				Vec3f pos = target->obj->vertexWorldPositions[i].v;
+				if(SphereInCylinder(cylinder, Sphere(pos, radius))) {
 					if(!(flags & CFLAG_JUST_TEST) && source) {
 						handlePropCollision(source, target, dealt);
 					}
-					anything = std::min(anything, std::min(sp.origin.y - sp.radius, target->bbox3D.min.y));
+					anything = std::min(anything, std::min(pos.y - radius, target->bbox3D.min.y));
 				}
 			}
 		}
+		
 	}
 	
 }
