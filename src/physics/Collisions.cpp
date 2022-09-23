@@ -846,13 +846,13 @@ bool CheckEverythingInSphere(const Sphere & sphere, const Entity * source, Entit
 	
 	bool vreturn = false;
 	
-	for(size_t i = 0; i < treatio.size(); i++) {
+	for(const auto & entry : treatio) {
 		
-		if(!treatio[i].io || treatio[i].io == source) {
+		if(!entry.io || entry.io == source) {
 			continue;
 		}
 		
-		if(CheckEverythingInSphere_Inner(sphere, treatio[i].io, sphereContent)) {
+		if(CheckEverythingInSphere_Inner(sphere, entry.io, sphereContent)) {
 			vreturn = true;
 		}
 		
