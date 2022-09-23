@@ -908,56 +908,56 @@ bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flag
 	
 	for(const auto & entry : treatio) {
 		
-		if(entry.show != SHOW_FLAG_IN_SCENE) {
+		if(entry.show != SHOW_FLAG_IN_SCENE || !entry.io) {
 			continue;
 		}
 		
-		Entity * io = entry.io;
-		if(!io || !io->obj || io == source) {
+		Entity & entity = *entry.io;
+		if(!entity.obj || &entity == source) {
 			continue;
 		}
 		
-		if(!(io->ioflags & IO_NPC) && (io->ioflags & IO_NO_COLLISIONS)) {
+		if(!(entity.ioflags & IO_NPC) && (entity.ioflags & IO_NO_COLLISIONS)) {
 			continue;
 		}
 		
-		if((flags & CAS_NO_DEAD_COL) && (io->ioflags & IO_NPC) && IsDeadNPC(*io)) {
+		if((flags & CAS_NO_DEAD_COL) && (entity.ioflags & IO_NPC) && IsDeadNPC(entity)) {
 			continue;
 		}
 		
-		if((io->ioflags & IO_FIX) && (flags & CAS_NO_FIX_COL)) {
+		if((entity.ioflags & IO_FIX) && (flags & CAS_NO_FIX_COL)) {
 			continue;
 		}
 		
-		if((io->ioflags & IO_ITEM) && (flags & CAS_NO_ITEM_COL)) {
+		if((entity.ioflags & IO_ITEM) && (flags & CAS_NO_ITEM_COL)) {
 			continue;
 		}
 		
-		if(io != entities.player()
+		if(&entity != entities.player()
 		   && source != entities.player()
 		   && (flags & CAS_NO_SAME_GROUP)
-		   && HaveCommonGroup(io, source)) {
+		   && HaveCommonGroup(&entity, source)) {
 			continue;
 		}
 		
-		if(io->gameFlags & GFLAG_PLATFORM) {
-			float miny = io->bbox3D.min.y;
-			float maxy = io->bbox3D.max.y;
+		if(entity.gameFlags & GFLAG_PLATFORM) {
+			float miny = entity.bbox3D.min.y;
+			float maxy = entity.bbox3D.max.y;
 
 			if(maxy > sphere.origin.y - sphere.radius || miny < sphere.origin.y + sphere.radius)
-			if(In3DBBoxTolerance(sphere.origin, io->bbox3D, sphere.radius))
+			if(In3DBBoxTolerance(sphere.origin, entity.bbox3D, sphere.radius))
 			{
-				if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
+				if(closerThan(Vec2f(entity.pos.x, entity.pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
 
 					EERIEPOLY ep;
 					ep.type = 0;
 
-					for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
+					for(size_t ii = 0; ii < entity.obj->facelist.size(); ii++) {
 						
 						float cx = 0;
 						float cz = 0;
 						for(long kk = 0; kk < 3; kk++) {
-							ep.v[kk].p = io->obj->vertexWorldPositions[io->obj->facelist[ii].vid[kk]].v;
+							ep.v[kk].p = entity.obj->vertexWorldPositions[entity.obj->facelist[ii].vid[kk]].v;
 							cx += ep.v[kk].p.x;
 							cz += ep.v[kk].p.z;
 						}
@@ -971,7 +971,7 @@ bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flag
 						
 						if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z)) {
 							if(result) {
-								*result = io;
+								*result = &entity;
 							}
 							return true;
 						}
@@ -981,15 +981,15 @@ bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flag
 			}
 		}
 
-		if(closerThan(io->pos, sphere.origin, sr180)) {
+		if(closerThan(entity.pos, sphere.origin, sr180)) {
 			long amount = 1;
-			const std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
+			const std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
 
-			if(io->obj->grouplist.size() > 4) {
-				for(size_t ii = 0; ii < io->obj->grouplist.size(); ii++) {
-					if(closerThan(vlist[io->obj->grouplist[ii].origin].v, sphere.origin, sr40)) {
+			if(entity.obj->grouplist.size() > 4) {
+				for(size_t ii = 0; ii < entity.obj->grouplist.size(); ii++) {
+					if(closerThan(vlist[entity.obj->grouplist[ii].origin].v, sphere.origin, sr40)) {
 						if(result) {
-							*result = io;
+							*result = &entity;
 						}
 						return true;
 					}
@@ -998,15 +998,15 @@ bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flag
 				amount = 2;
 			}
 
-			for(size_t ii = 0; ii < io->obj->facelist.size(); ii += amount) {
+			for(size_t ii = 0; ii < entity.obj->facelist.size(); ii += amount) {
 
-				if(io->obj->facelist[ii].facetype & POLY_HIDE)
+				if(entity.obj->facelist[ii].facetype & POLY_HIDE)
 					continue;
 
-				if(closerThan(vlist[io->obj->facelist[ii].vid[0]].v, sphere.origin, sr30)
-				   || closerThan(vlist[io->obj->facelist[ii].vid[1]].v, sphere.origin, sr30)) {
+				if(closerThan(vlist[entity.obj->facelist[ii].vid[0]].v, sphere.origin, sr30)
+				   || closerThan(vlist[entity.obj->facelist[ii].vid[1]].v, sphere.origin, sr30)) {
 					if(result) {
-						*result = io;
+						*result = &entity;
 					}
 					return true;
 				}
