@@ -1118,12 +1118,12 @@ bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags) 
 	if((flags & CFLAG_LEVITATE) && anything == 0.f) {
 		return true;
 	}
-
+	
 	// Falling Cylinder but valid pos !
 	if(anything >= 0.f) {
-		if(flags & CFLAG_RETURN_HEIGHT)
+		if(flags & CFLAG_RETURN_HEIGHT) {
 			cyl.origin.y += anything;
-
+		}
 		return true;
 	}
 	
@@ -1135,20 +1135,19 @@ bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags) 
 	anything = tmp.origin.y - cyl.origin.y;
 	
 	if(MOVING_CYLINDER) {
+		
 		if(flags & CFLAG_NPC) {
-			float tolerate;
 			
+			float tolerate;
 			if((flags & CFLAG_PLAYER) && player.jumpphase != NotJumping) {
-				tolerate = 0;
+				tolerate = 0.f;
 			} else if(io && (io->ioflags & IO_NPC) && io->_npcdata->pathfind.listnb > 0
 			          && io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb) {
-				tolerate = -65 - io->_npcdata->moveproblem;
+				tolerate = -65.f - io->_npcdata->moveproblem;
+			} else if(io && io->_npcdata) {
+				tolerate = -55.f - io->_npcdata->moveproblem;
 			} else {
-				if(io && io->_npcdata) {
-					tolerate = -55 - io->_npcdata->moveproblem;
-				} else {
-					tolerate = 0.f;
-				}
+				tolerate = 0.f;
 			}
 			
 			if(NPC_IN_CYLINDER) {
@@ -1158,6 +1157,7 @@ bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags) 
 			if(anything < tolerate) {
 				return false;
 			}
+			
 		}
 		
 		if(io && (flags & CFLAG_PLAYER) && anything < 0.f && (flags & CFLAG_JUST_TEST)) {
@@ -1166,67 +1166,67 @@ bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags) 
 			if(CheckAnythingInCylinder(tmpp, io, flags | CFLAG_JUST_TEST) > 50.f) {
 				tmpp.radius = cyl.radius * 1.4f;
 				tmpp.origin.y -= 30.f;
-				if(CheckAnythingInCylinder(tmpp, io, flags | CFLAG_JUST_TEST) < 0) {
+				if(CheckAnythingInCylinder(tmpp, io, flags | CFLAG_JUST_TEST) < 0.f) {
 					return false;
 				}
 			}
 		}
 		
-		if(io && !(flags & CFLAG_JUST_TEST)) {
-			if((flags & CFLAG_PLAYER) && anything < 0.f) {
-				
-				if(player.jumpphase != NotJumping) {
-					io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
-					return false;
-				}
-
-				float dist = std::max(glm::length(vector2D), 1.f);
-				float pente = glm::abs(anything) / dist * 0.5f;
-				io->_npcdata->climb_count += pente;
-
-				if(io->_npcdata->climb_count > MAX_ALLOWED_PER_SECOND) {
-					io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
-				}
-
-				if(anything < -55) {
-					io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
-					return false;
-				}
-				
-				Cylinder tmpp = cyl;
-				tmpp.radius *= 0.65f;
-				if(CheckAnythingInCylinder(tmpp, io, flags | CFLAG_JUST_TEST) > 50.f) {
-					tmpp.radius = cyl.radius * 1.45f;
-					tmpp.origin.y -= 30.f;
-					if(CheckAnythingInCylinder(tmpp, io, flags | CFLAG_JUST_TEST) < 0) {
-						return false;
-					}
-				}
-				
+		if(io && !(flags & CFLAG_JUST_TEST) && (flags & CFLAG_PLAYER) && anything < 0.f) {
+			
+			if(player.jumpphase != NotJumping) {
+				io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
+				return false;
 			}
+			
+			float dist = std::max(glm::length(vector2D), 1.f);
+			float pente = glm::abs(anything) / dist * 0.5f;
+			io->_npcdata->climb_count += pente;
+			
+			if(io->_npcdata->climb_count > MAX_ALLOWED_PER_SECOND) {
+				io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
+			}
+			
+			if(anything < -55.f) {
+				io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
+				return false;
+			}
+			
+			Cylinder tmpp = cyl;
+			tmpp.radius *= 0.65f;
+			if(CheckAnythingInCylinder(tmpp, io, flags | CFLAG_JUST_TEST) > 50.f) {
+				tmpp.radius = cyl.radius * 1.45f;
+				tmpp.origin.y -= 30.f;
+				if(CheckAnythingInCylinder(tmpp, io, flags | CFLAG_JUST_TEST) < 0.f) {
+					return false;
+				}
+			}
+			
 		}
-	} else if(anything < -45) {
+		
+	} else if(anything < -45.f) {
+		
 		return false;
+		
 	}
 	
 	tmp = cyl;
 	tmp.origin.y += anything;
 	anything = CheckAnythingInCylinder(tmp, io, flags);
-
+	
 	if(anything < 0.f) {
 		if(flags & CFLAG_RETURN_HEIGHT) {
 			while(anything < 0.f) {
 				tmp.origin.y += anything;
 				anything = CheckAnythingInCylinder(tmp, io, flags);
 			}
-
 			cyl.origin.y = tmp.origin.y;
 		}
-
 		return false;
 	}
-
+	
 	cyl.origin.y = tmp.origin.y;
+	
 	return true;
 }
 
