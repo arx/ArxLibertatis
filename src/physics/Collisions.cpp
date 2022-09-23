@@ -430,7 +430,7 @@ static void CheckAnythingInCylinder_Platform(const Cylinder & cylinder, const En
 	
 }
 
-static bool CollidedFromBack(Entity & target, Entity & source) {
+static void sendNpcCollisionEvent(Entity & target, Entity & source) {
 	
 	arx_assert(source.ioflags & IO_NPC);
 	arx_assert(target.ioflags & IO_NPC);
@@ -458,33 +458,21 @@ static bool CollidedFromBack(Entity & target, Entity & source) {
 	ep.v[2].p.z = p2.z + ep.v[0].p.z;
 	
 	if(PointIn2DPolyXZ(&ep, source.pos.x, source.pos.z)) {
-		return true;
+		SendIOScriptEvent(&source, &target, SM_COLLIDE_NPC, "back");
+	} else {
+		SendIOScriptEvent(&source, &target, SM_COLLIDE_NPC);
 	}
 	
-	return false;
 }
 
 static void handleNpcCollision(Entity & source, Entity & target) {
 	
 	GameDuration elapsed = g_gameTime.now() - target.collide_door_time;
 	if(elapsed > 500ms) {
-		
 		target.collide_door_time = g_gameTime.now();
-		
-		if(CollidedFromBack(target, source)) {
-			SendIOScriptEvent(&source, &target, SM_COLLIDE_NPC, "back");
-		} else {
-			SendIOScriptEvent(&source, &target, SM_COLLIDE_NPC);
-		}
-		
+		sendNpcCollisionEvent(target, source);
 		target.collide_door_time = g_gameTime.now();
-		
-		if(CollidedFromBack(source, target)) {
-			SendIOScriptEvent(&target, &source, SM_COLLIDE_NPC, "back");
-		} else {
-			SendIOScriptEvent(&target, &source, SM_COLLIDE_NPC);
-		}
-		
+		sendNpcCollisionEvent(source, target);
 	}
 	
 	if(source.damager_damages > 0) {
