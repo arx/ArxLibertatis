@@ -530,10 +530,13 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cylinder, Entity * so
 	if((target->gameFlags & GFLAG_PLATFORM) ||
 	   ((flags & CFLAG_COLLIDE_NOCOL) && (target->ioflags & IO_NPC) && (target->ioflags & IO_NO_COLLISIONS))) {
 		CheckAnythingInCylinder_Platform(cylinder, *target, anything);
-	} else if((target->ioflags & IO_NPC)
-	          && !(flags & CFLAG_NO_NPC_COLLIDE) // MUST be checked here only (not before...)
-	          && !(source && (source->ioflags & IO_NO_COLLISIONS))
-	          && target->_npcdata->lifePool.current > 0.f) {
+		return;
+	}
+	
+	if((target->ioflags & IO_NPC)
+	   && !(flags & CFLAG_NO_NPC_COLLIDE) // MUST be checked here only (not before...)
+	   && !(source && (source->ioflags & IO_NO_COLLISIONS))
+	   && target->_npcdata->lifePool.current > 0.f) {
 		if(CylinderInCylinder(cylinder, target->physics.cyl)) {
 			NPC_IN_CYLINDER = 1;
 			anything = std::min(anything, target->physics.cyl.origin.y + target->physics.cyl.height);
@@ -542,118 +545,119 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cylinder, Entity * so
 				handleNpcCollision(source, target);
 			}
 		}
-	} else if(target->ioflags & IO_FIX) {
-		
-		if(target->bbox3D.max.y <= cylinder.origin.y + cylinder.height || target->bbox3D.min.y >= cylinder.origin.y) {
-			return;
-		}
-		
-		Sphere sp;
-		
-		if(In3DBBoxTolerance(cylinder.origin, target->bbox3D, cylinder.radius + 30.f)) {
-			const std::vector<EERIE_VERTEX> & vlist = target->obj->vertexWorldPositions;
+		return;
+	}
+	
+	if(!(target->ioflags & IO_FIX) ||
+	   target->bbox3D.max.y <= cylinder.origin.y + cylinder.height ||
+	   target->bbox3D.min.y >= cylinder.origin.y ||
+	   !In3DBBoxTolerance(cylinder.origin, target->bbox3D, cylinder.radius + 30.f)) {
+		return;
+	}
+	
+	Sphere sp;
+	
+	const std::vector<EERIE_VERTEX> & vlist = target->obj->vertexWorldPositions;
+	
+	if(target->obj->grouplist.size() > 10) {
+		bool dealt = false;
+		for(size_t ii = 0; ii < target->obj->grouplist.size(); ii++) {
+			long idx = target->obj->grouplist[ii].origin;
+			sp.origin = vlist[idx].v;
 			
-			if(target->obj->grouplist.size() > 10) {
-				bool dealt = false;
-				for(size_t ii = 0; ii < target->obj->grouplist.size(); ii++) {
-					long idx = target->obj->grouplist[ii].origin;
-					sp.origin = vlist[idx].v;
-					
-					if(source == entities.player()) {
-						sp.radius = 22.f;
-					} else if(source && !(source->ioflags & IO_NPC)) {
-						sp.radius = 22.f;
-					} else {
-						sp.radius = 26.f;
-					}
-					
-					if(SphereInCylinder(cylinder, sp)) {
-						if(!(flags & CFLAG_JUST_TEST) && source) {
-							if(target->gameFlags & GFLAG_DOOR) {
-								GameDuration elapsed = g_gameTime.now() - target->collide_door_time;
-								if(elapsed > 500ms) {
-									                           target->collide_door_time = g_gameTime.now();
-									SendIOScriptEvent(source, target, SM_COLLIDE_DOOR);
-									                           target->collide_door_time = g_gameTime.now();
-									SendIOScriptEvent(target, source, SM_COLLIDE_DOOR);
-								}
-							}
-
-							if(target->ioflags & IO_FIELD) {
-								                        target->collide_door_time = g_gameTime.now();
-								SendIOScriptEvent(nullptr, source, SM_COLLIDE_FIELD);
-							}
-
-							if(!dealt && (source->damager_damages > 0 || target->damager_damages > 0)) {
-								dealt = true;
-								if((target->ioflags & IO_NPC) && source->damager_damages > 0) {
-									damageCharacter(*target, source->damager_damages, *source, nullptr, source->damager_type, &target->pos);
-								}
-								if((source->ioflags & IO_NPC) && target->damager_damages > 0) {
-									damageCharacter(*source, target->damager_damages, *target, nullptr, target->damager_type, &source->pos);
-								}
-							}
+			if(source == entities.player()) {
+				sp.radius = 22.f;
+			} else if(source && !(source->ioflags & IO_NPC)) {
+				sp.radius = 22.f;
+			} else {
+				sp.radius = 26.f;
+			}
+			
+			if(SphereInCylinder(cylinder, sp)) {
+				if(!(flags & CFLAG_JUST_TEST) && source) {
+					if(target->gameFlags & GFLAG_DOOR) {
+						GameDuration elapsed = g_gameTime.now() - target->collide_door_time;
+						if(elapsed > 500ms) {
+																					target->collide_door_time = g_gameTime.now();
+							SendIOScriptEvent(source, target, SM_COLLIDE_DOOR);
+																					target->collide_door_time = g_gameTime.now();
+							SendIOScriptEvent(target, source, SM_COLLIDE_DOOR);
 						}
-						anything = std::min(anything, std::min(sp.origin.y - sp.radius, target->bbox3D.min.y));
+					}
+
+					if(target->ioflags & IO_FIELD) {
+																		target->collide_door_time = g_gameTime.now();
+						SendIOScriptEvent(nullptr, source, SM_COLLIDE_FIELD);
+					}
+
+					if(!dealt && (source->damager_damages > 0 || target->damager_damages > 0)) {
+						dealt = true;
+						if((target->ioflags & IO_NPC) && source->damager_damages > 0) {
+							damageCharacter(*target, source->damager_damages, *source, nullptr, source->damager_type, &target->pos);
+						}
+						if((source->ioflags & IO_NPC) && target->damager_damages > 0) {
+							damageCharacter(*source, target->damager_damages, *target, nullptr, target->damager_type, &source->pos);
+						}
 					}
 				}
-			} else {
-				long step;
+				anything = std::min(anything, std::min(sp.origin.y - sp.radius, target->bbox3D.min.y));
+			}
+		}
+	} else {
+		long step;
+		
+		if(source == entities.player())
+			sp.radius = 23.f;
+		else if(source && !(source->ioflags & IO_NPC))
+			sp.radius = 32.f;
+		else
+			sp.radius = 25.f;
+		
+		size_t nbv = target->obj->vertexlist.size();
+		
+		if(nbv < 300)
+			step = 1;
+		else if(nbv < 600)
+			step = 2;
+		else if(nbv < 1200)
+			step = 4;
+		else
+			step = 6;
+		
+		bool dealt = false;
+		for(size_t ii = 1; ii < nbv; ii += step) {
+			if(ii != target->obj->origin) {
+				sp.origin = vlist[ii].v;
 				
-				if(source == entities.player())
-					sp.radius = 23.f;
-				else if(source && !(source->ioflags & IO_NPC))
-					sp.radius = 32.f;
-				else
-					sp.radius = 25.f;
-				
-				size_t nbv = target->obj->vertexlist.size();
-				
-				if(nbv < 300)
-					step = 1;
-				else if(nbv < 600)
-					step = 2;
-				else if(nbv < 1200)
-					step = 4;
-				else
-					step = 6;
-				
-				bool dealt = false;
-				for(size_t ii = 1; ii < nbv; ii += step) {
-					if(ii != target->obj->origin) {
-						sp.origin = vlist[ii].v;
-						
-						if(SphereInCylinder(cylinder, sp)) {
-							if(!(flags & CFLAG_JUST_TEST) && source) {
-								if(target->gameFlags & GFLAG_DOOR) {
-									GameDuration elapsed = g_gameTime.now() - target->collide_door_time;
-									if(elapsed > 500ms) {
-										                              target->collide_door_time = g_gameTime.now();
-										SendIOScriptEvent(source, target, SM_COLLIDE_DOOR);
-										                              target->collide_door_time = g_gameTime.now();
-										SendIOScriptEvent(target, source, SM_COLLIDE_DOOR);
-									}
-								}
-								
-								if(target->ioflags & IO_FIELD) {
-									                           target->collide_door_time = g_gameTime.now();
-									SendIOScriptEvent(nullptr, source, SM_COLLIDE_FIELD);
-								}
-								
-								if(!dealt && source && (source->damager_damages > 0 || target->damager_damages > 0)) {
-									dealt = true;
-									if((target->ioflags & IO_NPC) && source->damager_damages > 0) {
-										damageCharacter(*target, source->damager_damages, *source, nullptr, source->damager_type, &target->pos);
-									}
-									if((source->ioflags & IO_NPC) && target->damager_damages > 0) {
-										damageCharacter(*source, target->damager_damages, *target, nullptr, target->damager_type, &source->pos);
-									}
-								}
-								
+				if(SphereInCylinder(cylinder, sp)) {
+					if(!(flags & CFLAG_JUST_TEST) && source) {
+						if(target->gameFlags & GFLAG_DOOR) {
+							GameDuration elapsed = g_gameTime.now() - target->collide_door_time;
+							if(elapsed > 500ms) {
+																							target->collide_door_time = g_gameTime.now();
+								SendIOScriptEvent(source, target, SM_COLLIDE_DOOR);
+																							target->collide_door_time = g_gameTime.now();
+								SendIOScriptEvent(target, source, SM_COLLIDE_DOOR);
 							}
-							anything = std::min(anything, std::min(sp.origin.y - sp.radius, target->bbox3D.min.y));
 						}
+						
+						if(target->ioflags & IO_FIELD) {
+																					target->collide_door_time = g_gameTime.now();
+							SendIOScriptEvent(nullptr, source, SM_COLLIDE_FIELD);
+						}
+						
+						if(!dealt && source && (source->damager_damages > 0 || target->damager_damages > 0)) {
+							dealt = true;
+							if((target->ioflags & IO_NPC) && source->damager_damages > 0) {
+								damageCharacter(*target, source->damager_damages, *source, nullptr, source->damager_type, &target->pos);
+							}
+							if((source->ioflags & IO_NPC) && target->damager_damages > 0) {
+								damageCharacter(*source, target->damager_damages, *target, nullptr, target->damager_type, &source->pos);
+							}
+						}
+						
 					}
+					anything = std::min(anything, std::min(sp.origin.y - sp.radius, target->bbox3D.min.y));
 				}
 			}
 		}
