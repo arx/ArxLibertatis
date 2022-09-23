@@ -651,7 +651,7 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, lo
 
 // Returns 0 if nothing in cyl
 // Else returns Y Offset to put cylinder in a proper place
-float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
+float CheckAnythingInCylinder(const Cylinder & cylinder, Entity * source, long flags) {
 	
 	ARX_PROFILE_FUNC();
 	
@@ -660,8 +660,8 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 	float anything = 999999.f;
 	
 	// TODO should this be tilesAround(cyl.origin, cyl.radius)
-	u16 radius = u16((cyl.radius + g_backgroundTileSize.x) * g_tiles->m_mul.x);
-	for(auto tile : g_tiles->tilesAround(g_tiles->getTile(cyl.origin), radius)) {
+	u16 radius = u16((cylinder.radius + g_backgroundTileSize.x) * g_tiles->m_mul.x);
+	for(auto tile : g_tiles->tilesAround(g_tiles->getTile(cylinder.origin), radius)) {
 		
 		float nearest = 99999999.f;
 		for(long num = 0; num < 4; num++) {
@@ -673,13 +673,13 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 			if(num == 2 || num == 3) {
 				nearz += g_backgroundTileSize.y;
 			}
-			float dd = fdist(Vec2f(nearx, nearz), Vec2f(cyl.origin.x, cyl.origin.z));
+			float dd = fdist(Vec2f(nearx, nearz), Vec2f(cylinder.origin.x, cylinder.origin.z));
 			if(dd < nearest) {
 				nearest = dd;
 			}
 		}
 		
-		if(nearest > std::max(82.f, cyl.radius)) {
+		if(nearest > std::max(82.f, cylinder.radius)) {
 			continue;
 		}
 		
@@ -690,7 +690,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 			}
 			
 			if(ep.min.y < anything) {
-				anything = std::min(anything, IsPolyInCylinder(ep, cyl, flags));
+				anything = std::min(anything, IsPolyInCylinder(ep, cylinder, flags));
 				if(POLYIN && (ep.type & POLY_CLIMB)) {
 					COLLIDED_CLIMB_POLY = 1;
 				}
@@ -701,18 +701,18 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 	}
 	
 	float tempo;
-	if(CheckInPoly(cyl.origin + Vec3f(0.f, cyl.height, 0.f), &tempo)) {
+	if(CheckInPoly(cylinder.origin + Vec3f(0.f, cylinder.height, 0.f), &tempo)) {
 		anything = std::min(anything, tempo);
 	}
 	
 	if(!(flags & CFLAG_NO_INTERCOL)) {
-		if(ioo && (ioo->ioflags & IO_NPC) && (ioo->_npcdata->pathfind.flags & PATHFIND_ALWAYS)) {
+		if(source && (source->ioflags & IO_NPC) && (source->_npcdata->pathfind.flags & PATHFIND_ALWAYS)) {
 			for(Entity & other : entities) {
-				CheckAnythingInCylinder_Inner(cyl, ioo, flags, &other, anything);
+				CheckAnythingInCylinder_Inner(cylinder, source, flags, &other, anything);
 			}
 		} else {
 			for(const auto & entry : treatio) {
-				CheckAnythingInCylinder_Inner(cyl, ioo, flags, entry.io, anything);
+				CheckAnythingInCylinder_Inner(cylinder, source, flags, entry.io, anything);
 			}
 		}
 	}
@@ -721,7 +721,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 		return 0.f;
 	}
 	
-	return anything - cyl.origin.y;
+	return anything - cylinder.origin.y;
 }
 
 static bool InExceptionList(EntityHandle val) {
