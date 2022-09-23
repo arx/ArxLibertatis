@@ -468,6 +468,51 @@ static void CheckAnythingInCylinder_Platform(const Cylinder & cylinder, const En
 	
 }
 
+static void handleNpcCollision(Entity * source, Entity * target) {
+	
+	GameDuration elapsed = g_gameTime.now() - target->collide_door_time;
+	if(elapsed > 500ms) {
+		
+		target->collide_door_time = g_gameTime.now();
+		
+		if(CollidedFromBack(target, source)) {
+			SendIOScriptEvent(source, target, SM_COLLIDE_NPC, "back");
+		} else {
+			SendIOScriptEvent(source, target, SM_COLLIDE_NPC);
+		}
+		
+		target->collide_door_time = g_gameTime.now();
+		
+		if(CollidedFromBack(source, target)) {
+			SendIOScriptEvent(target, source, SM_COLLIDE_NPC, "back");
+		} else {
+			SendIOScriptEvent(target, source, SM_COLLIDE_NPC);
+		}
+		
+	}
+	
+	if(source->damager_damages > 0) {
+		damageCharacter(*target, source->damager_damages, *source, nullptr, source->damager_type, &target->pos);
+	}
+	if(target->damager_damages > 0) {
+		damageCharacter(*source, target->damager_damages, *target, nullptr, target->damager_type, &source->pos);
+	}
+	
+	if(target->targetinfo == target->index()) {
+		if(target->_npcdata->pathfind.listnb > 0) {
+			target->_npcdata->pathfind.listpos = 0;
+			target->_npcdata->pathfind.listnb = -1;
+			delete[] target->_npcdata->pathfind.list;
+			target->_npcdata->pathfind.list = nullptr;
+		}
+		if(!target->_npcdata->reachedtarget) {
+			SendIOScriptEvent(source, target, SM_REACHEDTARGET);
+			target->_npcdata->reachedtarget = 1;
+		}
+	}
+	
+}
+
 static void CheckAnythingInCylinder_Inner(const Cylinder & cylinder, Entity * source, CollisionFlags flags,
                                           Entity * target, float & anything) {
 	
@@ -480,8 +525,7 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cylinder, Entity * so
 		return;
 	}
 	
-	Cylinder & io_cyl = target->physics.cyl;
-	io_cyl = getEntityCylinder(*target);
+	target->physics.cyl = getEntityCylinder(*target);
 	
 	if((target->gameFlags & GFLAG_PLATFORM) ||
 	   ((flags & CFLAG_COLLIDE_NOCOL) && (target->ioflags & IO_NPC) && (target->ioflags & IO_NO_COLLISIONS))) {
@@ -490,53 +534,12 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cylinder, Entity * so
 	          && !(flags & CFLAG_NO_NPC_COLLIDE) // MUST be checked here only (not before...)
 	          && !(source && (source->ioflags & IO_NO_COLLISIONS))
 	          && target->_npcdata->lifePool.current > 0.f) {
-		
-		if(CylinderInCylinder(cylinder, io_cyl)) {
+		if(CylinderInCylinder(cylinder, target->physics.cyl)) {
 			NPC_IN_CYLINDER = 1;
-			anything = std::min(anything, io_cyl.origin.y + io_cyl.height);
-			
+			anything = std::min(anything, target->physics.cyl.origin.y + target->physics.cyl.height);
 			if(!(flags & CFLAG_JUST_TEST) && source) {
 				arx_assert(source->ioflags & IO_NPC);
-				GameDuration elapsed = g_gameTime.now() - target->collide_door_time;
-				if(elapsed > 500ms) {
-					
-					               target->collide_door_time = g_gameTime.now();
-					
-					if(CollidedFromBack(target, source)) {
-						SendIOScriptEvent(source, target, SM_COLLIDE_NPC, "back");
-					} else {
-						SendIOScriptEvent(source, target, SM_COLLIDE_NPC);
-					}
-					
-					               target->collide_door_time = g_gameTime.now();
-					
-					if(CollidedFromBack(source, target)) {
-						SendIOScriptEvent(target, source, SM_COLLIDE_NPC, "back");
-					} else {
-						SendIOScriptEvent(target, source, SM_COLLIDE_NPC);
-					}
-					
-				}
-				
-				if(source->damager_damages > 0) {
-					damageCharacter(*target, source->damager_damages, *source, nullptr, source->damager_type, &target->pos);
-				}
-				if(target->damager_damages > 0) {
-					damageCharacter(*source, target->damager_damages, *target, nullptr, target->damager_type, &source->pos);
-				}
-				
-				if(target->targetinfo == target->index()) {
-					if(target->_npcdata->pathfind.listnb > 0) {
-						                  target->_npcdata->pathfind.listpos = 0;
-						                  target->_npcdata->pathfind.listnb = -1;
-						delete[] target->_npcdata->pathfind.list;
-						                  target->_npcdata->pathfind.list = nullptr;
-					}
-					if(!target->_npcdata->reachedtarget) {
-						SendIOScriptEvent(source, target, SM_REACHEDTARGET);
-						                  target->_npcdata->reachedtarget = 1;
-					}
-				}
+				handleNpcCollision(source, target);
 			}
 		}
 	} else if(target->ioflags & IO_FIX) {
