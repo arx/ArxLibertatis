@@ -417,8 +417,8 @@ static bool CollidedFromBack(Entity * io, Entity * ioo) {
 	return false;
 }
 
-static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, long flags, Entity * io,
-                                          float & anything) {
+static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, CollisionFlags flags,
+                                          Entity * io, float & anything) {
 	
 	if(!io
 	   || io == ioo
@@ -651,7 +651,7 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cyl, Entity * ioo, lo
 
 // Returns 0 if nothing in cyl
 // Else returns Y Offset to put cylinder in a proper place
-float CheckAnythingInCylinder(const Cylinder & cylinder, Entity * source, long flags) {
+float CheckAnythingInCylinder(const Cylinder & cylinder, Entity * source, CollisionFlags flags) {
 	
 	ARX_PROFILE_FUNC();
 	

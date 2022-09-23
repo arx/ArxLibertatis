@@ -83,7 +83,7 @@ extern EntityHandle EXCEPTIONS_LIST[MAX_IN_SPHERE + 1];
 extern bool DIRECT_PATH;
 
 bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLINDER_STEP, CollisionFlags flags = 0);
-float CheckAnythingInCylinder(const Cylinder & cylinder, Entity * source, long flags = 0);
+float CheckAnythingInCylinder(const Cylinder & cylinder, Entity * source, CollisionFlags flags = 0);
 
 enum CheckAnythingInSphereFlag {
 	 CAS_NO_NPC_COL        = 1 << 0,
