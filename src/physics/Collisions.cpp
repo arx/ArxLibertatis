@@ -419,44 +419,45 @@ static bool CollidedFromBack(Entity * io, Entity * ioo) {
 
 static void CheckAnythingInCylinder_Platform(const Cylinder & cylinder, const Entity & target, float & anything) {
 	
-	if(closerThan(Vec2f(target.pos.x, target.pos.z), Vec2f(cylinder.origin.x, cylinder.origin.z), 440.f + cylinder.radius))
-	if(In3DBBoxTolerance(cylinder.origin, target.bbox3D, cylinder.radius + 80))
-	{
-		if(target.ioflags & IO_FIELD) {
-			if(In3DBBoxTolerance(cylinder.origin, target.bbox3D, cylinder.radius + 10))
-				anything = -99999.f;
-		} else {
-			for(size_t ii = 0; ii < target.obj->vertexWorldPositions.size(); ii++) {
-				long res = PointInUnderCylinder(cylinder, target.obj->vertexWorldPositions[ii].v);
-					if(res > 0) {
-					if(res == 2)
-						ON_PLATFORM = 1;
-					anything = std::min(anything, target.obj->vertexWorldPositions[ii].v.y - 10.f);
-				}
+	if(!closerThan(Vec2f(target.pos.x, target.pos.z), Vec2f(cylinder.origin.x, cylinder.origin.z),
+	               cylinder.radius + 440.f) ||
+	   !In3DBBoxTolerance(cylinder.origin, target.bbox3D, cylinder.radius + 80.f)) {
+		return;
+	}
+	
+	if(target.ioflags & IO_FIELD) {
+		if(In3DBBoxTolerance(cylinder.origin, target.bbox3D, cylinder.radius + 10))
+			anything = -99999.f;
+	} else {
+		for(size_t ii = 0; ii < target.obj->vertexWorldPositions.size(); ii++) {
+			long res = PointInUnderCylinder(cylinder, target.obj->vertexWorldPositions[ii].v);
+				if(res > 0) {
+				if(res == 2)
+					ON_PLATFORM = 1;
+				anything = std::min(anything, target.obj->vertexWorldPositions[ii].v.y - 10.f);
+			}
+		}
+		
+		for(size_t ii = 0; ii < target.obj->facelist.size(); ii++) {
+			Vec3f c(0.f);
+			float height = target.obj->vertexWorldPositions[target.obj->facelist[ii].vid[0]].v.y;
+			
+			for(long kk = 0; kk < 3; kk++) {
+				c.x += target.obj->vertexWorldPositions[target.obj->facelist[ii].vid[kk]].v.x;
+				c.y += target.obj->vertexWorldPositions[target.obj->facelist[ii].vid[kk]].v.y;
+				c.z += target.obj->vertexWorldPositions[target.obj->facelist[ii].vid[kk]].v.z;
+				height = std::min(height, target.obj->vertexWorldPositions[target.obj->facelist[ii].vid[kk]].v.y);
 			}
 			
-			for(size_t ii = 0; ii < target.obj->facelist.size(); ii++) {
-				Vec3f c(0.f);
-				float height = target.obj->vertexWorldPositions[target.obj->facelist[ii].vid[0]].v.y;
-				
-				for(long kk = 0; kk < 3; kk++) {
-					c.x += target.obj->vertexWorldPositions[target.obj->facelist[ii].vid[kk]].v.x;
-					c.y += target.obj->vertexWorldPositions[target.obj->facelist[ii].vid[kk]].v.y;
-					c.z += target.obj->vertexWorldPositions[target.obj->facelist[ii].vid[kk]].v.z;
-					
-					height = std::min(height, target.obj->vertexWorldPositions[target.obj->facelist[ii].vid[kk]].v.y);
+			c.x *= (1.0f / 3);
+			c.z *= (1.0f / 3);
+			c.y = target.bbox3D.min.y;
+			long res = PointInUnderCylinder(cylinder, c);
+			if(res > 0) {
+				if(res == 2) {
+					ON_PLATFORM = 1;
 				}
-				
-				c.x *= (1.0f / 3);
-				c.z *= (1.0f / 3);
-				c.y = target.bbox3D.min.y;
-				long res = PointInUnderCylinder(cylinder, c);
-				if(res > 0) {
-					if(res == 2)
-						ON_PLATFORM = 1;
-
-					anything = std::min(anything, height);
-				}
+				anything = std::min(anything, height);
 			}
 		}
 	}
