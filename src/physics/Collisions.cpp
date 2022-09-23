@@ -46,8 +46,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Collisions.h"
 
-#include "ai/Anchors.h"
+#include <algorithm>
+#include <limits>
 
+#include "ai/Anchors.h"
 #include "core/GameTime.h"
 #include "core/Core.h"
 #include "game/Damage.h"
@@ -445,20 +447,16 @@ static void CheckAnythingInCylinder_Platform(const Cylinder & cylinder, const En
 	
 	for(const EERIE_FACE & face : target.obj->facelist) {
 		
-		Vec3f c(0.f);
-		float height = target.obj->vertexWorldPositions[face.vid[0]].v.y;
-		
-		for(long kk = 0; kk < 3; kk++) {
-			c.x += target.obj->vertexWorldPositions[face.vid[kk]].v.x;
-			c.y += target.obj->vertexWorldPositions[face.vid[kk]].v.y;
-			c.z += target.obj->vertexWorldPositions[face.vid[kk]].v.z;
-			height = std::min(height, target.obj->vertexWorldPositions[face.vid[kk]].v.y);
+		Vec3f center(0.f);
+		float height = std::numeric_limits<float>::max();
+		for(size_t vertex : face.vid) {
+			center += target.obj->vertexWorldPositions[vertex].v;
+			height = std::min(height, target.obj->vertexWorldPositions[vertex].v.y);
 		}
+		center /= std::size(face.vid);
+		center.y = target.bbox3D.min.y;
 		
-		c.x *= (1.0f / 3);
-		c.z *= (1.0f / 3);
-		c.y = target.bbox3D.min.y;
-		long res = PointInUnderCylinder(cylinder, c);
+		long res = PointInUnderCylinder(cylinder, center);
 		if(res > 0) {
 			if(res == 2) {
 				ON_PLATFORM = 1;
