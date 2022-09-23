@@ -899,10 +899,6 @@ bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flag
 		return false;
 	}
 	
-	float sr30 = sphere.radius + 20.f;
-	float sr40 = sphere.radius + 30.f;
-	float sr180 = sphere.radius + 500.f;
-	
 	for(const auto & entry : treatio) {
 		
 		if(entry.show != SHOW_FLAG_IN_SCENE || !entry.io) {
@@ -978,15 +974,15 @@ bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flag
 			}
 		}
 		
-		if(!closerThan(entity.pos, sphere.origin, sr180)) {
+		if(!closerThan(entity.pos, sphere.origin, sphere.radius + 500.f)) {
 			continue;
 		}
 		
 		long amount = 1;
 		const std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
 		if(entity.obj->grouplist.size() > 4) {
-			for(size_t ii = 0; ii < entity.obj->grouplist.size(); ii++) {
-				if(closerThan(vlist[entity.obj->grouplist[ii].origin].v, sphere.origin, sr40)) {
+			for(const VertexGroup & group : entity.obj->grouplist) {
+				if(closerThan(vlist[group.origin].v, sphere.origin, sphere.radius + 30.f)) {
 					if(result) {
 						*result = &entity;
 					}
@@ -1000,8 +996,8 @@ bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flag
 			if(entity.obj->facelist[ii].facetype & POLY_HIDE) {
 				continue;
 			}
-			if(closerThan(vlist[entity.obj->facelist[ii].vid[0]].v, sphere.origin, sr30) ||
-			   closerThan(vlist[entity.obj->facelist[ii].vid[1]].v, sphere.origin, sr30)) {
+			if(closerThan(vlist[entity.obj->facelist[ii].vid[0]].v, sphere.origin, sphere.radius + 20.f) ||
+			   closerThan(vlist[entity.obj->facelist[ii].vid[1]].v, sphere.origin, sphere.radius + 20.f)) {
 				if(result) {
 					*result = &entity;
 				}
