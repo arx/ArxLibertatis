@@ -740,10 +740,6 @@ static bool InExceptionList(EntityHandle val) {
 
 static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity & entity) {
 	
-	float sr30 = sphere.radius + 20.f;
-	float sr40 = sphere.radius + 30.f;
-	float sr180 = sphere.radius + 500.f;
-	
 	if(entity.show != SHOW_FLAG_IN_SCENE || InExceptionList(entity.index())) {
 		return false;
 	}
@@ -794,35 +790,36 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity & entity
 		}
 	}
 	
-	if(closerThan(entity.pos, sphere.origin, sr180)) {
-		long amount = 1;
-		const std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
-		
-		if(entity.obj->grouplist.size() > 4) {
-			for(size_t ii = 0; ii < entity.obj->grouplist.size(); ii++) {
-				if(closerThan(vlist[entity.obj->grouplist[ii].origin].v, sphere.origin, sr40)) {
-					return true;
-				}
-			}
-			amount = 2;
-		}
-		
-		for(size_t ii = 0; ii < entity.obj->facelist.size(); ii += amount) {
-			EERIE_FACE * ef = &entity.obj->facelist[ii];
-			
-			if(ef->facetype & POLY_HIDE) {
-				continue;
-			}
-			
-			Vec3f fcenter = (vlist[ef->vid[0]].v + vlist[ef->vid[1]].v + vlist[ef->vid[2]].v) * (1.0f / 3);
-			
-			if(closerThan(fcenter, sphere.origin, sr30)
-			   || closerThan(vlist[ef->vid[0]].v, sphere.origin, sr30)
-			   || closerThan(vlist[ef->vid[1]].v, sphere.origin, sr30)
-			   || closerThan(vlist[ef->vid[2]].v, sphere.origin, sr30)) {
+	if(!closerThan(entity.pos, sphere.origin, sphere.radius + 500.f)) {
+		return false;
+	}
+	
+	long amount = 1;
+	const std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
+	
+	if(entity.obj->grouplist.size() > 4) {
+		for(size_t ii = 0; ii < entity.obj->grouplist.size(); ii++) {
+			if(closerThan(vlist[entity.obj->grouplist[ii].origin].v, sphere.origin, sphere.radius + 30.f)) {
 				return true;
 			}
-			
+		}
+		amount = 2;
+	}
+	
+	for(size_t ii = 0; ii < entity.obj->facelist.size(); ii += amount) {
+		EERIE_FACE * ef = &entity.obj->facelist[ii];
+		
+		if(ef->facetype & POLY_HIDE) {
+			continue;
+		}
+		
+		Vec3f fcenter = (vlist[ef->vid[0]].v + vlist[ef->vid[1]].v + vlist[ef->vid[2]].v) * (1.0f / 3);
+		
+		if(closerThan(fcenter, sphere.origin, sphere.radius + 20.f) ||
+		   closerThan(vlist[ef->vid[0]].v, sphere.origin, sphere.radius + 20.f) ||
+		   closerThan(vlist[ef->vid[1]].v, sphere.origin, sphere.radius + 20.f) ||
+		   closerThan(vlist[ef->vid[2]].v, sphere.origin, sphere.radius + 20.f)) {
+			return true;
 		}
 		
 	}
