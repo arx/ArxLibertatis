@@ -1078,9 +1078,7 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 			for(size_t kk = 0; kk < vlist.size(); kk += 1) {
 				if(kk != ii) {
 					for(size_t n = 1; n < 5; n++) {
-						float nn = float(n) * 0.2f;
-						Vec3f posi = vlist[ii].v * nn + vlist[kk].v * (1.f - nn);
-						if(!fartherThan(sphere.origin, posi, sr30 + 20)) {
+						if(!fartherThan(sphere.origin, glm::mix(vlist[kk].v, vlist[ii].v, float(n) * 0.2f), sr30 + 20)) {
 							count++;
 							if(count > ((entity.ioflags & IO_FIX) ? 3 : 6)) {
 								return true;
