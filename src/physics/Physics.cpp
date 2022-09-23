@@ -589,19 +589,19 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA & pbox, float framedi
 
 	Vec3f oldpos[32];
 	
-	for(size_t kk = 0; kk < pbox.vert.size(); kk++) {
-		PhysicsParticle * pv = &pbox.vert[kk];
-		oldpos[kk] = pv->pos;
+	for(size_t i = 0; i < pbox.vert.size(); i++) {
+		PhysicsParticle * pv = &pbox.vert[i];
+		oldpos[i] = pv->pos;
 		pv->velocity.x = glm::clamp(pv->velocity.x, -VELOCITY_THRESHOLD, VELOCITY_THRESHOLD);
 		pv->velocity.y = glm::clamp(pv->velocity.y, -VELOCITY_THRESHOLD, VELOCITY_THRESHOLD);
 		pv->velocity.z = glm::clamp(pv->velocity.z, -VELOCITY_THRESHOLD, VELOCITY_THRESHOLD);
 	}
-
+	
 	RK4Integrate(pbox.vert, framediff);
 	
 	EERIEPOLY * collisionPoly = nullptr;
 	
-	for(size_t i = 0; i < pbox.vert.size(); i += 1) {
+	for(size_t i = 0; i < pbox.vert.size(); i++) {
 		const Vec3f start = oldpos[i];
 		const Vec3f end = pbox.vert[i].pos;
 		RaycastResult ray = raycastScene(start, end, POLY_NOCOL | POLY_WATER | POLY_TRANS);
