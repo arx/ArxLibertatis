@@ -450,24 +450,6 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 			}
 		} else if(io->ioflags & IO_FIX) {
 			
-			size_t step;
-			const size_t nbv = io->obj->vertexlist.size();
-			Sphere sp;
-			sp.radius = 28.f;
-			
-			if(nbv < 500) {
-				step = 1;
-				sp.radius = 36.f;
-			} else if(nbv < 900) {
-				step = 2;
-			} else if(nbv < 1500) {
-				step = 4;
-			} else {
-				step = 6;
-			}
-			
-			const std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
-			
 			if(io->gameFlags & GFLAG_PLATFORM) {
 				for(size_t kk = 0; kk < pbox.vert.size(); kk++) {
 					Sphere sphere;
@@ -512,6 +494,20 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 				}
 			}
 			
+			size_t step = 6;
+			const size_t nbv = io->obj->vertexlist.size();
+			Sphere sp;
+			sp.radius = 28.f;
+			if(nbv < 500) {
+				step = 1;
+				sp.radius = 36.f;
+			} else if(nbv < 900) {
+				step = 2;
+			} else if(nbv < 1500) {
+				step = 4;
+			}
+			
+			const std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
 			for(size_t ii = 1; ii < nbv; ii += step) {
 				if(ii != io->obj->origin) {
 					sp.origin = vlist[ii].v;
