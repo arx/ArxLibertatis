@@ -980,36 +980,35 @@ bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flag
 				}
 			}
 		}
-
-		if(closerThan(entity.pos, sphere.origin, sr180)) {
-			long amount = 1;
-			const std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
-
-			if(entity.obj->grouplist.size() > 4) {
-				for(size_t ii = 0; ii < entity.obj->grouplist.size(); ii++) {
-					if(closerThan(vlist[entity.obj->grouplist[ii].origin].v, sphere.origin, sr40)) {
-						if(result) {
-							*result = &entity;
-						}
-						return true;
-					}
-				}
-
-				amount = 2;
-			}
-
-			for(size_t ii = 0; ii < entity.obj->facelist.size(); ii += amount) {
-
-				if(entity.obj->facelist[ii].facetype & POLY_HIDE)
-					continue;
-
-				if(closerThan(vlist[entity.obj->facelist[ii].vid[0]].v, sphere.origin, sr30)
-				   || closerThan(vlist[entity.obj->facelist[ii].vid[1]].v, sphere.origin, sr30)) {
+		
+		if(!closerThan(entity.pos, sphere.origin, sr180)) {
+			continue;
+		}
+		
+		long amount = 1;
+		const std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
+		if(entity.obj->grouplist.size() > 4) {
+			for(size_t ii = 0; ii < entity.obj->grouplist.size(); ii++) {
+				if(closerThan(vlist[entity.obj->grouplist[ii].origin].v, sphere.origin, sr40)) {
 					if(result) {
 						*result = &entity;
 					}
 					return true;
 				}
+			}
+			amount = 2;
+		}
+		
+		for(size_t ii = 0; ii < entity.obj->facelist.size(); ii += amount) {
+			if(entity.obj->facelist[ii].facetype & POLY_HIDE) {
+				continue;
+			}
+			if(closerThan(vlist[entity.obj->facelist[ii].vid[0]].v, sphere.origin, sr30) ||
+			   closerThan(vlist[entity.obj->facelist[ii].vid[1]].v, sphere.origin, sr30)) {
+				if(result) {
+					*result = &entity;
+				}
+				return true;
 			}
 		}
 		
