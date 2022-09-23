@@ -394,9 +394,9 @@ static bool IsObjectInField(const PHYSICS_BOX_DATA & pbox) {
 	for(const Spell & spell : spells.ofType(SPELL_CREATE_FIELD)) {
 		
 		if(Entity * field = entities.get(static_cast<const CreateFieldSpell &>(spell).m_entity)) {
-			for(const PhysicsParticle & pv : pbox.vert) {
-				Cylinder cyl = Cylinder(pv.pos + Vec3f(0.f, 17.5f, 0.f), 35.f, -35.f);
-				if(isCylinderCollidingWithPlatform(cyl, *field)) {
+			for(const PhysicsParticle & particle : pbox.vert) {
+				Cylinder cylinder = Cylinder(particle.pos + Vec3f(0.f, 17.5f, 0.f), 35.f, -35.f);
+				if(isCylinderCollidingWithPlatform(cylinder, *field)) {
 					return true;
 				}
 			}
