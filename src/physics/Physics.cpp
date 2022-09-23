@@ -466,15 +466,15 @@ static bool platformCollides(const Entity & platform, const PHYSICS_BOX_DATA & p
 
 static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, Entity & source) {
 	
-	for(size_t i = 0; i < treatio.size(); i++) {
+	for(const auto & entry : treatio) {
 		
-		if(treatio[i].show != SHOW_FLAG_IN_SCENE || (treatio[i].ioflags & IO_NO_COLLISIONS)) {
+		if(entry.show != SHOW_FLAG_IN_SCENE || (entry.ioflags & IO_NO_COLLISIONS)) {
 			continue;
 		}
 		
-		Entity * io = treatio[i].io;
+		Entity * io = entry.io;
 		if(!io || io == &source || !io->obj || io == entities.player()
-		   || treatio[i].io->index() == source.no_collide
+		   || entry.io->index() == source.no_collide
 		   || (io->ioflags & (IO_CAMERA | IO_MARKER | IO_ITEM))
 		   || io->usepath
 		   || ((io->ioflags & IO_NPC) && (source.ioflags & IO_NO_NPC_COLLIDE))
