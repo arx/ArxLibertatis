@@ -595,9 +595,8 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cylinder, Entity * so
 			radius = 22.f;
 		}
 		
-		for(size_t ii = 0; ii < target->obj->grouplist.size(); ii++) {
-			long idx = target->obj->grouplist[ii].origin;
-			Vec3f pos = target->obj->vertexWorldPositions[idx].v;
+		for(const VertexGroup & group : target->obj->grouplist) {
+			Vec3f pos = target->obj->vertexWorldPositions[group.origin].v;
 			if(SphereInCylinder(cylinder, Sphere(pos, radius))) {
 				if(!(flags & CFLAG_JUST_TEST) && source) {
 					handlePropCollision(source, target, dealt);
