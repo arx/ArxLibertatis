@@ -448,87 +448,92 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 					return true;
 				}
 			}
-		} else if(io->ioflags & IO_FIX) {
-			
-			if(io->gameFlags & GFLAG_PLATFORM) {
-				for(size_t kk = 0; kk < pbox.vert.size(); kk++) {
-					Sphere sphere;
-					sphere.origin = pbox.vert[kk].pos;
-					sphere.radius = 30.f;
-					float miny, maxy;
-					miny = io->bbox3D.min.y;
-					maxy = io->bbox3D.max.y;
-
-					if(maxy <= sphere.origin.y + sphere.radius || miny >= sphere.origin.y) {
-						if(In3DBBoxTolerance(sphere.origin, io->bbox3D, sphere.radius)) {
-							// TODO why ignore the z components?
-							if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
-
-								EERIEPOLY ep;
-								ep.type = 0;
-
-								for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
-									float cx = 0;
-									float cz = 0;
-									
-									for(long idx = 0 ; idx < 3 ; idx++) {
-										ep.v[idx].p = io->obj->vertexWorldPositions[io->obj->facelist[ii].vid[idx]].v;
-										cx += ep.v[idx].p.x;
-										cz += ep.v[idx].p.z;
-									}
-									
-									cx *= 1.0f / 3;
-									cz *= 1.0f / 3;
-									
-									for(int k = 0; k < 3; k++) {
-										ep.v[k].p.x = (ep.v[k].p.x - cx) * 3.5f + cx;
-										ep.v[k].p.z = (ep.v[k].p.z - cz) * 3.5f + cz;
-									}
-									
-									if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z))
-										return true;
-								}
-							}
-						}
-					}
-				}
-			}
-			
-			size_t step = 6;
-			const size_t nbv = io->obj->vertexlist.size();
-			Sphere sp;
-			sp.radius = 28.f;
-			if(nbv < 500) {
-				step = 1;
-				sp.radius = 36.f;
-			} else if(nbv < 900) {
-				step = 2;
-			} else if(nbv < 1500) {
-				step = 4;
-			}
-			
-			const std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
-			for(size_t ii = 1; ii < nbv; ii += step) {
-				if(ii != io->obj->origin) {
-					sp.origin = vlist[ii].v;
-					for(const PhysicsParticle & vertex : pbox.vert) {
-						if(sp.contains(vertex.pos)) {
-							if((io->gameFlags & GFLAG_DOOR)) {
-								GameDuration elapsed = g_gameTime.now() - io->collide_door_time;
-								if(elapsed > 500ms) {
-									io->collide_door_time = g_gameTime.now();
-									SendIOScriptEvent(&source, io, SM_COLLIDE_DOOR);
-									io->collide_door_time = g_gameTime.now();
-									SendIOScriptEvent(io, &source, SM_COLLIDE_DOOR);
-								}
-							}
-							return true;
-						}
-					}
-				}
-			}
-			
+			continue;
 		}
+		
+		if(!(io->ioflags & IO_FIX)) {
+			continue;
+		}
+		
+		
+		if(io->gameFlags & GFLAG_PLATFORM) {
+			for(size_t kk = 0; kk < pbox.vert.size(); kk++) {
+				Sphere sphere;
+				sphere.origin = pbox.vert[kk].pos;
+				sphere.radius = 30.f;
+				float miny, maxy;
+				miny = io->bbox3D.min.y;
+				maxy = io->bbox3D.max.y;
+
+				if(maxy <= sphere.origin.y + sphere.radius || miny >= sphere.origin.y) {
+					if(In3DBBoxTolerance(sphere.origin, io->bbox3D, sphere.radius)) {
+						// TODO why ignore the z components?
+						if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
+
+							EERIEPOLY ep;
+							ep.type = 0;
+
+							for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
+								float cx = 0;
+								float cz = 0;
+								
+								for(long idx = 0 ; idx < 3 ; idx++) {
+									ep.v[idx].p = io->obj->vertexWorldPositions[io->obj->facelist[ii].vid[idx]].v;
+									cx += ep.v[idx].p.x;
+									cz += ep.v[idx].p.z;
+								}
+								
+								cx *= 1.0f / 3;
+								cz *= 1.0f / 3;
+								
+								for(int k = 0; k < 3; k++) {
+									ep.v[k].p.x = (ep.v[k].p.x - cx) * 3.5f + cx;
+									ep.v[k].p.z = (ep.v[k].p.z - cz) * 3.5f + cz;
+								}
+								
+								if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z))
+									return true;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		size_t step = 6;
+		const size_t nbv = io->obj->vertexlist.size();
+		Sphere sp;
+		sp.radius = 28.f;
+		if(nbv < 500) {
+			step = 1;
+			sp.radius = 36.f;
+		} else if(nbv < 900) {
+			step = 2;
+		} else if(nbv < 1500) {
+			step = 4;
+		}
+		
+		const std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
+		for(size_t ii = 1; ii < nbv; ii += step) {
+			if(ii != io->obj->origin) {
+				sp.origin = vlist[ii].v;
+				for(const PhysicsParticle & vertex : pbox.vert) {
+					if(sp.contains(vertex.pos)) {
+						if((io->gameFlags & GFLAG_DOOR)) {
+							GameDuration elapsed = g_gameTime.now() - io->collide_door_time;
+							if(elapsed > 500ms) {
+								io->collide_door_time = g_gameTime.now();
+								SendIOScriptEvent(&source, io, SM_COLLIDE_DOOR);
+								io->collide_door_time = g_gameTime.now();
+								SendIOScriptEvent(io, &source, SM_COLLIDE_DOOR);
+							}
+						}
+						return true;
+					}
+				}
+			}
+		}
+		
 	}
 
 	return false;
