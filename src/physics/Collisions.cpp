@@ -417,7 +417,8 @@ static bool CollidedFromBack(Entity * io, Entity * ioo) {
 	return false;
 }
 
-static void CheckAnythingInCylinder_Platform(const Cylinder & cylinder, const Entity & target, float & anything) {
+static void CheckAnythingInCylinder_Platform(const Cylinder & cylinder, const Entity & target,
+                                             float & anything) {
 	
 	if(!closerThan(Vec2f(target.pos.x, target.pos.z), Vec2f(cylinder.origin.x, cylinder.origin.z),
 	               cylinder.radius + 440.f) ||
@@ -432,13 +433,13 @@ static void CheckAnythingInCylinder_Platform(const Cylinder & cylinder, const En
 		return;
 	}
 	
-	for(size_t ii = 0; ii < target.obj->vertexWorldPositions.size(); ii++) {
-		long res = PointInUnderCylinder(cylinder, target.obj->vertexWorldPositions[ii].v);
+	for(const EERIE_VERTEX & vertex : target.obj->vertexWorldPositions) {
+		long res = PointInUnderCylinder(cylinder, vertex.v);
 		if(res > 0) {
 			if(res == 2) {
 				ON_PLATFORM = 1;
 			}
-			anything = std::min(anything, target.obj->vertexWorldPositions[ii].v.y - 10.f);
+			anything = std::min(anything, vertex.v.y - 10.f);
 		}
 	}
 	
