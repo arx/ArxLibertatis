@@ -340,20 +340,20 @@ static void RK4Integrate(std::array<PhysicsParticle, N> & particles, float Delta
 	
 	std::array<std::array<PhysicsParticle, N>, 5> m_TempSys;
 	
-	for(size_t jj = 0; jj < 4; jj++) {
+	for(size_t i = 0; i < 4; i++) {
 		
-		arx_assert(particles.size() == m_TempSys[jj + 1].size());
-		m_TempSys[jj + 1] = particles;
+		arx_assert(particles.size() == m_TempSys[i + 1].size());
+		m_TempSys[i + 1] = particles;
 		
-		if(jj == 3) {
+		if(i == 3) {
 			halfDeltaT = DeltaTime;
 		}
 		
-		for(size_t kk = 0; kk < particles.size(); kk++) {
+		for(size_t j = 0; j < particles.size(); j++) {
 			
-			const PhysicsParticle & source = particles[kk];
-			PhysicsParticle & accum1 = m_TempSys[jj + 1][kk];
-			PhysicsParticle & target = m_TempSys[0][kk];
+			const PhysicsParticle & source = particles[j];
+			PhysicsParticle & accum1 = m_TempSys[i + 1][j];
+			PhysicsParticle & target = m_TempSys[0][j];
 			
 			accum1.force = source.force * (source.mass * halfDeltaT);
 			accum1.velocity = source.velocity * halfDeltaT;
@@ -370,14 +370,14 @@ static void RK4Integrate(std::array<PhysicsParticle, N> & particles, float Delta
 		ComputeForces(m_TempSys[0]); // compute the new forces
 	}
 	
-	for(size_t kk = 0; kk < particles.size(); kk++) {
+	for(size_t j = 0; j < particles.size(); j++) {
 		
-		PhysicsParticle & particle = particles[kk];
+		PhysicsParticle & particle = particles[j];
 		
-		const PhysicsParticle & accum1 = m_TempSys[1][kk];
-		const PhysicsParticle & accum2 = m_TempSys[2][kk];
-		const PhysicsParticle & accum3 = m_TempSys[3][kk];
-		const PhysicsParticle & accum4 = m_TempSys[4][kk];
+		const PhysicsParticle & accum1 = m_TempSys[1][j];
+		const PhysicsParticle & accum2 = m_TempSys[2][j];
+		const PhysicsParticle & accum3 = m_TempSys[3][j];
+		const PhysicsParticle & accum4 = m_TempSys[4][j];
 		
 		Vec3f dv = accum1.force + ((accum2.force + accum3.force) * 2.f) + accum4.force;
 		Vec3f dp = accum1.velocity + ((accum2.velocity + accum3.velocity) * 2.f) + accum4.velocity;
