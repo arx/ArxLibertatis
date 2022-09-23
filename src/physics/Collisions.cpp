@@ -1238,7 +1238,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 	COLLIDED_CLIMB_POLY = 0;
 	DIRECT_PATH = true;
 	IO_PHYSICS test;
-
+	
 	if(ip == nullptr) {
 		MOVING_CYLINDER = 0;
 		return false;
@@ -1254,13 +1254,14 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 	
 	long count = 100;
 	while(distance > 0.f && count--) {
+		
 		// First We compute current increment
 		float curmovedist = std::min(distance, MOVE_CYLINDER_STEP);
 		distance -= curmovedist;
-
+		
 		// Store our cylinder desc into a test struct
 		test = *ip;
-
+		
 		// uses test struct to simulate movement.
 		vector2D.x = mvector.x * curmovedist;
 		vector2D.y = 0.f;
@@ -1271,23 +1272,25 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 		test.cyl.origin.z += vector2D.z;
 		
 		if(AttemptValidCylinderPos(test.cyl, io, flags)) {
+			
 			// Found without complication
 			*ip = test;
+			
 		} else {
 			
-			if(mvector.x == 0.f && mvector.z == 0.f)
+			if(mvector.x == 0.f && mvector.z == 0.f) {
 				return true;
+			}
 			
 			if(flags & CFLAG_CLIMBING) {
 				test.cyl = ip->cyl;
 				test.cyl.origin.y += mvector.y * curmovedist;
-
 				if(AttemptValidCylinderPos(test.cyl, io, flags)) {
 					*ip = test;
 					continue;
 				}
 			}
-
+			
 			DIRECT_PATH = false;
 			// Must Attempt To Slide along collisions
 			Vec3f rpos;
@@ -1296,56 +1299,56 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 			long LFOUND = 0;
 			long maxRANGLE = 90;
 			float ANGLESTEPP;
-
+			
 			if(flags & CFLAG_EASY_SLIDING) { // Player sliding in fact...
 				ANGLESTEPP = 10.f;
 				maxRANGLE = 70;
 			} else {
 				ANGLESTEPP = 30.f;
 			}
-
+			
 			float rangle = ANGLESTEPP;
 			float langle = 360.f - ANGLESTEPP;
-
-
 			while(rangle <= maxRANGLE) { // Tries on the right and left sides
+				
 				test.cyl = ip->cyl;
 				float t = MAKEANGLE(rangle);
 				Vec3f vecatt = VRotateY(mvector, t);
 				test.cyl.origin += vecatt * curmovedist;
 				float cc = io->_npcdata->climb_count;
-
+				
 				if(AttemptValidCylinderPos(test.cyl, io, flags)) {
 					rpos = test.cyl.origin;
 					RFOUND = 1;
 				} else {
 					io->_npcdata->climb_count = cc;
 				}
-
+				
 				rangle += ANGLESTEPP;
-
+				
 				test.cyl = ip->cyl;
 				t = MAKEANGLE(langle);
 				vecatt = VRotateY(mvector, t);
 				test.cyl.origin += vecatt * curmovedist;
 				cc = io->_npcdata->climb_count;
-
+				
 				if(AttemptValidCylinderPos(test.cyl, io, flags)) {
 					lpos = test.cyl.origin;
 					LFOUND = 1;
 				} else {
 					io->_npcdata->climb_count = cc;
 				}
-
+				
 				langle -= ANGLESTEPP;
-
-				if(RFOUND || LFOUND)
+				
+				if(RFOUND || LFOUND) {
 					break;
+				}
+				
 			}
 			
 			if(LFOUND && RFOUND) {
 				langle = 360.f - langle;
-
 				if(langle < rangle) {
 					ip->cyl.origin = lpos;
 					distance -= curmovedist;
@@ -1365,11 +1368,11 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 				MOVING_CYLINDER = 0;
 				return false;
 			}
+			
 		}
-
-		if(flags & CFLAG_NO_HEIGHT_MOD) {
-			if(glm::abs(ip->startpos.y - ip->cyl.origin.y) > 30.f)
-				return false;
+		
+		if((flags & CFLAG_NO_HEIGHT_MOD) && glm::abs(ip->startpos.y - ip->cyl.origin.y) > 30.f) {
+			return false;
 		}
 		
 	}
