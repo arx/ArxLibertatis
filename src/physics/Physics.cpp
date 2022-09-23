@@ -423,6 +423,56 @@ static Material polyTypeToCollisionMaterial(const EERIEPOLY & ep) {
 	return MATERIAL_STONE;
 }
 
+static bool platformCollides(const Entity & platform, const PHYSICS_BOX_DATA & pbox) {
+	
+	for(size_t kk = 0; kk < pbox.vert.size(); kk++) {
+		
+		Sphere sphere;
+		sphere.origin = pbox.vert[kk].pos;
+		sphere.radius = 30.f;
+		float miny, maxy;
+		miny = platform.bbox3D.min.y;
+		maxy = platform.bbox3D.max.y;
+		
+		if(maxy <= sphere.origin.y + sphere.radius || miny >= sphere.origin.y) {
+			
+			if(In3DBBoxTolerance(sphere.origin, platform.bbox3D, sphere.radius)) {
+				// TODO why ignore the z components?
+				if(closerThan(Vec2f(platform.pos.x, platform.pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
+					
+					for(size_t ii = 0; ii < platform.obj->facelist.size(); ii++) {
+						float cx = 0;
+						float cz = 0;
+						
+						EERIEPOLY ep;
+						ep.type = 0;
+						for(long idx = 0 ; idx < 3 ; idx++) {
+							ep.v[idx].p = platform.obj->vertexWorldPositions[platform.obj->facelist[ii].vid[idx]].v;
+							cx += ep.v[idx].p.x;
+							cz += ep.v[idx].p.z;
+						}
+						
+						cx *= 1.0f / 3;
+						cz *= 1.0f / 3;
+						
+						for(int k = 0; k < 3; k++) {
+							ep.v[k].p.x = (ep.v[k].p.x - cx) * 3.5f + cx;
+							ep.v[k].p.z = (ep.v[k].p.z - cz) * 3.5f + cz;
+						}
+						
+						if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z))
+							return true;
+					}
+				}
+			}
+			
+		}
+		
+	}
+	
+	return false;
+}
+
 static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, Entity & source) {
 	
 	for(size_t i = 0; i < treatio.size(); i++) {
@@ -455,49 +505,8 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 			continue;
 		}
 		
-		
-		if(io->gameFlags & GFLAG_PLATFORM) {
-			for(size_t kk = 0; kk < pbox.vert.size(); kk++) {
-				Sphere sphere;
-				sphere.origin = pbox.vert[kk].pos;
-				sphere.radius = 30.f;
-				float miny, maxy;
-				miny = io->bbox3D.min.y;
-				maxy = io->bbox3D.max.y;
-
-				if(maxy <= sphere.origin.y + sphere.radius || miny >= sphere.origin.y) {
-					if(In3DBBoxTolerance(sphere.origin, io->bbox3D, sphere.radius)) {
-						// TODO why ignore the z components?
-						if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
-
-							EERIEPOLY ep;
-							ep.type = 0;
-
-							for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
-								float cx = 0;
-								float cz = 0;
-								
-								for(long idx = 0 ; idx < 3 ; idx++) {
-									ep.v[idx].p = io->obj->vertexWorldPositions[io->obj->facelist[ii].vid[idx]].v;
-									cx += ep.v[idx].p.x;
-									cz += ep.v[idx].p.z;
-								}
-								
-								cx *= 1.0f / 3;
-								cz *= 1.0f / 3;
-								
-								for(int k = 0; k < 3; k++) {
-									ep.v[k].p.x = (ep.v[k].p.x - cx) * 3.5f + cx;
-									ep.v[k].p.z = (ep.v[k].p.z - cz) * 3.5f + cz;
-								}
-								
-								if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z))
-									return true;
-							}
-						}
-					}
-				}
-			}
+		if((io->gameFlags & GFLAG_PLATFORM) && platformCollides(*io, pbox)) {
+			return true;
 		}
 		
 		size_t step = 6;
@@ -535,7 +544,7 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 		}
 		
 	}
-
+	
 	return false;
 }
 
