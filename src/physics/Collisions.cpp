@@ -794,7 +794,7 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity & entity
 		return false;
 	}
 	
-	long amount = 1;
+	size_t amount = 1;
 	const std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
 	
 	if(entity.obj->grouplist.size() > 4) {
@@ -806,22 +806,18 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity & entity
 		amount = 2;
 	}
 	
-	for(size_t ii = 0; ii < entity.obj->facelist.size(); ii += amount) {
-		EERIE_FACE * ef = &entity.obj->facelist[ii];
-		
-		if(ef->facetype & POLY_HIDE) {
+	for(size_t i = 0; i < entity.obj->facelist.size(); i += amount) {
+		const EERIE_FACE & face = entity.obj->facelist[i];
+		if(face.facetype & POLY_HIDE) {
 			continue;
 		}
-		
-		Vec3f fcenter = (vlist[ef->vid[0]].v + vlist[ef->vid[1]].v + vlist[ef->vid[2]].v) * (1.0f / 3);
-		
-		if(closerThan(fcenter, sphere.origin, sphere.radius + 20.f) ||
-		   closerThan(vlist[ef->vid[0]].v, sphere.origin, sphere.radius + 20.f) ||
-		   closerThan(vlist[ef->vid[1]].v, sphere.origin, sphere.radius + 20.f) ||
-		   closerThan(vlist[ef->vid[2]].v, sphere.origin, sphere.radius + 20.f)) {
+		Vec3f center = (vlist[face.vid[0]].v + vlist[face.vid[1]].v + vlist[face.vid[2]].v) * (1.0f / 3);
+		if(closerThan(center, sphere.origin, sphere.radius + 20.f) ||
+		   closerThan(vlist[face.vid[0]].v, sphere.origin, sphere.radius + 20.f) ||
+		   closerThan(vlist[face.vid[1]].v, sphere.origin, sphere.radius + 20.f) ||
+		   closerThan(vlist[face.vid[2]].v, sphere.origin, sphere.radius + 20.f)) {
 			return true;
 		}
-		
 	}
 	
 	return false;
