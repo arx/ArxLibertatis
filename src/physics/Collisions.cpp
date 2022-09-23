@@ -247,20 +247,20 @@ bool IsCollidingIO(Entity * io, Entity * ioo) {
 	arx_assert(io);
 	arx_assert(ioo);
 	
-	if(io != ioo
-	   && !(ioo->ioflags & IO_NO_COLLISIONS)
-	   && ioo->show == SHOW_FLAG_IN_SCENE
-	   && ioo->obj
-	) {
-		if(ioo->ioflags & IO_NPC) {
-			Cylinder cyl = ioo->physics.cyl;
-			cyl.radius += 25.f;
-			
-			for(size_t j = 0; j < io->obj->vertexWorldPositions.size(); j++) {
-				if(PointInCylinder(cyl, io->obj->vertexWorldPositions[j].v)) {
-					return true;
-				}
-			}
+	if(io == ioo ||
+	   (ioo->ioflags & IO_NO_COLLISIONS) ||
+	   ioo->show != SHOW_FLAG_IN_SCENE ||
+	   !ioo->obj ||
+	   !(ioo->ioflags & IO_NPC)) {
+		return false;
+	}
+	
+	Cylinder cyl = ioo->physics.cyl;
+	cyl.radius += 25.f;
+	
+	for(size_t j = 0; j < io->obj->vertexWorldPositions.size(); j++) {
+		if(PointInCylinder(cyl, io->obj->vertexWorldPositions[j].v)) {
+			return true;
 		}
 	}
 	
