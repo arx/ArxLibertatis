@@ -1033,25 +1033,21 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 		return false;
 	}
 	
-	float sr30 = sphere.radius + 22.f;
-	float sr40 = sphere.radius + 27.f;
-	
 	const std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
 	
 	if(entity.obj->grouplist.size() > 10) {
 		long count = 0;
-		long ii = entity.obj->grouplist.size() - 1;
-		while(ii) {
-			if(closerThan(vlist[entity.obj->grouplist[ii].origin].v, sphere.origin, sr40)) {
+		for(const VertexGroup & group : entity.obj->grouplist) {
+			if(closerThan(vlist[group.origin].v, sphere.origin, sphere.radius + 27.f)) {
 				count++;
 				if(count > 3) {
 					return true;
 				}
 			}
-			ii--;
 		}
 	}
 	
+	float sr30 = sphere.radius + 22.f;
 	long step = 7;
 	long nbv = entity.obj->vertexlist.size();
 	if(nbv < 150) {
