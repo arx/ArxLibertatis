@@ -906,13 +906,13 @@ bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flag
 	float sr40 = sphere.radius + 30.f;
 	float sr180 = sphere.radius + 500.f;
 	
-	for(size_t i = 0; i < treatio.size(); i++) {
+	for(const auto & entry : treatio) {
 		
-		if(treatio[i].show != SHOW_FLAG_IN_SCENE) {
+		if(entry.show != SHOW_FLAG_IN_SCENE) {
 			continue;
 		}
 		
-		Entity * io = treatio[i].io;
+		Entity * io = entry.io;
 		if(!io || !io->obj || io == source) {
 			continue;
 		}
@@ -1012,6 +1012,7 @@ bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flag
 				}
 			}
 		}
+		
 	}
 	
 	return false;
