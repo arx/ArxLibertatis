@@ -511,14 +511,12 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 					}
 				}
 			}
-
-
+			
 			for(size_t ii = 1; ii < nbv; ii += step) {
 				if(ii != io->obj->origin) {
 					sp.origin = vlist[ii].v;
-
-					for(size_t kk = 0; kk < pbox.vert.size(); kk++) {
-						if(sp.contains(pbox.vert[kk].pos)) {
+					for(const PhysicsParticle & vertex : pbox.vert) {
+						if(sp.contains(vertex.pos)) {
 							if((io->gameFlags & GFLAG_DOOR)) {
 								GameDuration elapsed = g_gameTime.now() - io->collide_door_time;
 								if(elapsed > 500ms) {
@@ -533,6 +531,7 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 					}
 				}
 			}
+			
 		}
 	}
 
