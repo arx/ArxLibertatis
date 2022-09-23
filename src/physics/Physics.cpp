@@ -468,40 +468,40 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 	
 	for(const auto & entry : treatio) {
 		
-		if(entry.show != SHOW_FLAG_IN_SCENE || (entry.ioflags & IO_NO_COLLISIONS)) {
+		if(entry.show != SHOW_FLAG_IN_SCENE || (entry.ioflags & IO_NO_COLLISIONS) || !entry.io) {
 			continue;
 		}
 		
-		Entity * io = entry.io;
-		if(!io || io == &source || !io->obj || io == entities.player()
-		   || entry.io->index() == source.no_collide
-		   || (io->ioflags & (IO_CAMERA | IO_MARKER | IO_ITEM))
-		   || io->usepath
-		   || ((io->ioflags & IO_NPC) && (source.ioflags & IO_NO_NPC_COLLIDE))
-		   || !closerThan(io->pos, pbox.vert[0].pos, 600.f)
-		   || !In3DBBoxTolerance(pbox.vert[0].pos, io->bbox3D, pbox.radius)) {
+		Entity & entity = *entry.io;
+		if(entity == source || !entity.obj || &entity == entities.player()
+		   || entity.index() == source.no_collide
+		   || (entity.ioflags & (IO_CAMERA | IO_MARKER | IO_ITEM))
+		   || entity.usepath
+		   || ((entity.ioflags & IO_NPC) && (source.ioflags & IO_NO_NPC_COLLIDE))
+		   || !closerThan(entity.pos, pbox.vert[0].pos, 600.f)
+		   || !In3DBBoxTolerance(pbox.vert[0].pos, entity.bbox3D, pbox.radius)) {
 			continue;
 		}
 		
-		if((io->ioflags & IO_NPC) && io->_npcdata->lifePool.current > 0.f) {
+		if((entity.ioflags & IO_NPC) && entity._npcdata->lifePool.current > 0.f) {
 			for(const PhysicsParticle & vertex : pbox.vert) {
-				if(PointInCylinder(io->physics.cyl, vertex.pos)) {
+				if(PointInCylinder(entity.physics.cyl, vertex.pos)) {
 					return true;
 				}
 			}
 			continue;
 		}
 		
-		if(!(io->ioflags & IO_FIX)) {
+		if(!(entity.ioflags & IO_FIX)) {
 			continue;
 		}
 		
-		if((io->gameFlags & GFLAG_PLATFORM) && platformCollides(*io, pbox)) {
+		if((entity.gameFlags & GFLAG_PLATFORM) && platformCollides(entity, pbox)) {
 			return true;
 		}
 		
 		size_t step = 6;
-		const size_t nbv = io->obj->vertexlist.size();
+		const size_t nbv = entity.obj->vertexlist.size();
 		Sphere sp;
 		sp.radius = 28.f;
 		if(nbv < 500) {
@@ -513,19 +513,19 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 			step = 4;
 		}
 		
-		const std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
+		const std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
 		for(size_t ii = 1; ii < nbv; ii += step) {
-			if(ii != io->obj->origin) {
+			if(ii != entity.obj->origin) {
 				sp.origin = vlist[ii].v;
 				for(const PhysicsParticle & vertex : pbox.vert) {
 					if(sp.contains(vertex.pos)) {
-						if((io->gameFlags & GFLAG_DOOR)) {
-							GameDuration elapsed = g_gameTime.now() - io->collide_door_time;
+						if((entity.gameFlags & GFLAG_DOOR)) {
+							GameDuration elapsed = g_gameTime.now() - entity.collide_door_time;
 							if(elapsed > 500ms) {
-								io->collide_door_time = g_gameTime.now();
-								SendIOScriptEvent(&source, io, SM_COLLIDE_DOOR);
-								io->collide_door_time = g_gameTime.now();
-								SendIOScriptEvent(io, &source, SM_COLLIDE_DOOR);
+								entity.collide_door_time = g_gameTime.now();
+								SendIOScriptEvent(&source, &entity, SM_COLLIDE_DOOR);
+								entity.collide_door_time = g_gameTime.now();
+								SendIOScriptEvent(&entity, &source, SM_COLLIDE_DOOR);
 							}
 						}
 						return true;
