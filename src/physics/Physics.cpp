@@ -429,47 +429,6 @@ static Material polyTypeToCollisionMaterial(const EERIEPOLY & ep) {
 	return MATERIAL_STONE;
 }
 
-static bool platformCollides(const Entity & platform, const PHYSICS_BOX_DATA & pbox) {
-	
-	for(const PhysicsParticle & vertex : pbox.vert) {
-		
-		Sphere sphere;
-		sphere.origin = vertex.pos;
-		sphere.radius = 30.f;
-		if((platform.bbox3D.max.y > sphere.origin.y + sphere.radius && platform.bbox3D.min.y < sphere.origin.y) ||
-		   !In3DBBoxTolerance(sphere.origin, platform.bbox3D, sphere.radius) ||
-		   !closerThan(Vec2f(platform.pos.x, platform.pos.z), Vec2f(sphere.origin.x, sphere.origin.z),
-		               440.f + sphere.radius)) {
-			continue;
-		}
-		
-		for(const EERIE_FACE & face : platform.obj->facelist) {
-			
-			EERIEPOLY ep;
-			ep.type = 0;
-			Vec2f center(0.f);
-			for(size_t i = 0 ; i < std::size(face.vid) ; i++) {
-				ep.v[i].p = platform.obj->vertexWorldPositions[face.vid[i]].v;
-				center += Vec2f(ep.v[i].p.x, ep.v[i].p.z);
-			}
-			center /= float(std::size(face.vid));
-			
-			for(size_t i = 0; i < std::size(face.vid); i++) {
-				ep.v[i].p.x = (ep.v[i].p.x - center.x) * 3.5f + center.x;
-				ep.v[i].p.z = (ep.v[i].p.z - center.y) * 3.5f + center.y;
-			}
-			
-			if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z)) {
-				return true;
-			}
-			
-		}
-		
-	}
-	
-	return false;
-}
-
 static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, Entity & source) {
 	
 	for(const auto & entry : treatio) {
@@ -502,8 +461,13 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 			continue;
 		}
 		
-		if((entity.gameFlags & GFLAG_PLATFORM) && platformCollides(entity, pbox)) {
-			return true;
+		if((entity.gameFlags & GFLAG_PLATFORM)) {
+			for(const PhysicsParticle & particle : pbox.vert) {
+				if((entity.bbox3D.max.y <= particle.pos.y + 30.f || entity.bbox3D.min.y >= particle.pos.y) &&
+				   platformCollides(entity, Sphere(particle.pos, 30.f))) {
+					return true;
+				}
+			}
 		}
 		
 		size_t step = 6;
