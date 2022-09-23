@@ -871,7 +871,7 @@ bool platformCollides(const Entity & platform, const Sphere & sphere) {
 	return false;
 }
 
-bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flags, Entity  ** result) {
+bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flags, Entity ** result) {
 	
 	ARX_PROFILE_FUNC();
 	
