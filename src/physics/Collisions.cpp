@@ -738,43 +738,43 @@ static bool InExceptionList(EntityHandle val) {
 	return false;
 }
 
-static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity * io,
+static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity & entity,
                                           std::vector<Entity *> & sphereContent) {
 	
 	float sr30 = sphere.radius + 20.f;
 	float sr40 = sphere.radius + 30.f;
 	float sr180 = sphere.radius + 500.f;
 	
-	if(io->show != SHOW_FLAG_IN_SCENE || InExceptionList(io->index())) {
+	if(entity.show != SHOW_FLAG_IN_SCENE || InExceptionList(entity.index())) {
 		return false;
 	}
 	
-	if(!(io->ioflags & IO_NPC) && (io->ioflags & IO_NO_COLLISIONS)) {
+	if(!(entity.ioflags & IO_NPC) && (entity.ioflags & IO_NO_COLLISIONS)) {
 		return false;
 	}
 	
-	if(!io->obj) {
+	if(!entity.obj) {
 		return false;
 	}
 	
-	if(io->gameFlags & GFLAG_PLATFORM) {
-		float miny = io->bbox3D.min.y;
-		float maxy = io->bbox3D.max.y;
+	if(entity.gameFlags & GFLAG_PLATFORM) {
+		float miny = entity.bbox3D.min.y;
+		float maxy = entity.bbox3D.max.y;
 
 		if(maxy <= sphere.origin.y + sphere.radius || miny >= sphere.origin.y)
-		if(In3DBBoxTolerance(sphere.origin, io->bbox3D, sphere.radius))
+		if(In3DBBoxTolerance(sphere.origin, entity.bbox3D, sphere.radius))
 		{
-			if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
+			if(closerThan(Vec2f(entity.pos.x, entity.pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
 				
 				EERIEPOLY ep;
 				ep.type = 0;
 				
-				for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
+				for(size_t ii = 0; ii < entity.obj->facelist.size(); ii++) {
 					
 					float cx = 0;
 					float cz = 0;
 					for(long kk = 0; kk < 3; kk++) {
-						ep.v[kk].p = io->obj->vertexWorldPositions[io->obj->facelist[ii].vid[kk]].v;
+						ep.v[kk].p = entity.obj->vertexWorldPositions[entity.obj->facelist[ii].vid[kk]].v;
 						cx += ep.v[kk].p.x;
 						cz += ep.v[kk].p.z;
 					}
@@ -787,7 +787,7 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity * io,
 					}
 					
 					if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z)) {
-						sphereContent.push_back(io);
+						sphereContent.push_back(&entity);
 						return true;
 					}
 					
@@ -796,22 +796,22 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity * io,
 		}
 	}
 	
-	if(closerThan(io->pos, sphere.origin, sr180)) {
+	if(closerThan(entity.pos, sphere.origin, sr180)) {
 		long amount = 1;
-		const std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
+		const std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
 		
-		if(io->obj->grouplist.size() > 4) {
-			for(size_t ii = 0; ii < io->obj->grouplist.size(); ii++) {
-				if(closerThan(vlist[io->obj->grouplist[ii].origin].v, sphere.origin, sr40)) {
-					sphereContent.push_back(io);
+		if(entity.obj->grouplist.size() > 4) {
+			for(size_t ii = 0; ii < entity.obj->grouplist.size(); ii++) {
+				if(closerThan(vlist[entity.obj->grouplist[ii].origin].v, sphere.origin, sr40)) {
+					sphereContent.push_back(&entity);
 					return true;
 				}
 			}
 			amount = 2;
 		}
 		
-		for(size_t ii = 0; ii < io->obj->facelist.size(); ii += amount) {
-			EERIE_FACE * ef = &io->obj->facelist[ii];
+		for(size_t ii = 0; ii < entity.obj->facelist.size(); ii += amount) {
+			EERIE_FACE * ef = &entity.obj->facelist[ii];
 			
 			if(ef->facetype & POLY_HIDE) {
 				continue;
@@ -823,7 +823,7 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity * io,
 			   || closerThan(vlist[ef->vid[0]].v, sphere.origin, sr30)
 			   || closerThan(vlist[ef->vid[1]].v, sphere.origin, sr30)
 			   || closerThan(vlist[ef->vid[2]].v, sphere.origin, sr30)) {
-				sphereContent.push_back(io);
+				sphereContent.push_back(&entity);
 				return true;
 			}
 			
@@ -841,7 +841,7 @@ bool CheckEverythingInSphere(const Sphere & sphere, const Entity * source, Entit
 		if(target == source || !(target->gameFlags & GFLAG_ISINTREATZONE)) {
 			return false;
 		}
-		return CheckEverythingInSphere_Inner(sphere, target, sphereContent);
+		return CheckEverythingInSphere_Inner(sphere, *target, sphereContent);
 	}
 	
 	bool vreturn = false;
@@ -852,7 +852,7 @@ bool CheckEverythingInSphere(const Sphere & sphere, const Entity * source, Entit
 			continue;
 		}
 		
-		if(CheckEverythingInSphere_Inner(sphere, entry.io, sphereContent)) {
+		if(CheckEverythingInSphere_Inner(sphere, *entry.io, sphereContent)) {
 			vreturn = true;
 		}
 		
