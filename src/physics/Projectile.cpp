@@ -438,24 +438,22 @@ static void ARX_THROWN_OBJECT_ManageProjectile(Projectile & projectile, GameDura
 							CheckExp(projectile);
 							
 						} else {
-							ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
 							spawnAudibleSound(v0, *entities.player());
+							ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
 						}
 						
 					}
 					
 				} else { // not NPC
 					
-					Entity * source = entities.get(projectile.source);
-					if((target.ioflags & IO_FIX) && source) {
-						damageProp(target, 0.1f, source, nullptr, DAMAGE_TYPE_METAL);
+					if(Entity * source = entities.get(projectile.source)) {
+						if(target.ioflags & IO_FIX) {
+							damageProp(target, 0.1f, source, nullptr, DAMAGE_TYPE_METAL);
+						}
+						spawnAudibleSound(v0, *source);
 					}
 					
 					ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
-					
-					if(source) {
-						spawnAudibleSound(v0, *source);
-					}
 					
 					CheckExp(projectile);
 					
