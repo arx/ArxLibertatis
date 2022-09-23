@@ -701,9 +701,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 	}
 	
 	float tempo;
-	EERIEPOLY * ep = CheckInPoly(cyl.origin + Vec3f(0.f, cyl.height, 0.f), &tempo);
-	
-	if(ep) {
+	if(CheckInPoly(cyl.origin + Vec3f(0.f, cyl.height, 0.f), &tempo)) {
 		anything = std::min(anything, tempo);
 	}
 	
@@ -719,12 +717,11 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 		}
 	}
 	
-	if(anything == 999999.f)
+	if(anything == 999999.f) {
 		return 0.f;
-
-	anything = anything - cyl.origin.y;
+	}
 	
-	return anything;
+	return anything - cyl.origin.y;
 }
 
 static bool InExceptionList(EntityHandle val) {
