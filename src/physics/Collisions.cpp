@@ -443,15 +443,16 @@ static void CheckAnythingInCylinder_Platform(const Cylinder & cylinder, const En
 		}
 	}
 	
-	for(size_t ii = 0; ii < target.obj->facelist.size(); ii++) {
+	for(const EERIE_FACE & face : target.obj->facelist) {
+		
 		Vec3f c(0.f);
-		float height = target.obj->vertexWorldPositions[target.obj->facelist[ii].vid[0]].v.y;
+		float height = target.obj->vertexWorldPositions[face.vid[0]].v.y;
 		
 		for(long kk = 0; kk < 3; kk++) {
-			c.x += target.obj->vertexWorldPositions[target.obj->facelist[ii].vid[kk]].v.x;
-			c.y += target.obj->vertexWorldPositions[target.obj->facelist[ii].vid[kk]].v.y;
-			c.z += target.obj->vertexWorldPositions[target.obj->facelist[ii].vid[kk]].v.z;
-			height = std::min(height, target.obj->vertexWorldPositions[target.obj->facelist[ii].vid[kk]].v.y);
+			c.x += target.obj->vertexWorldPositions[face.vid[kk]].v.x;
+			c.y += target.obj->vertexWorldPositions[face.vid[kk]].v.y;
+			c.z += target.obj->vertexWorldPositions[face.vid[kk]].v.z;
+			height = std::min(height, target.obj->vertexWorldPositions[face.vid[kk]].v.y);
 		}
 		
 		c.x *= (1.0f / 3);
@@ -464,6 +465,7 @@ static void CheckAnythingInCylinder_Platform(const Cylinder & cylinder, const En
 			}
 			anything = std::min(anything, height);
 		}
+		
 	}
 	
 }
