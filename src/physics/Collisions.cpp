@@ -513,6 +513,35 @@ static void handleNpcCollision(Entity * source, Entity * target) {
 	
 }
 
+static void handlePropCollision(Entity * source, Entity * target, bool & dealt) {
+	
+	if(target->gameFlags & GFLAG_DOOR) {
+		GameDuration elapsed = g_gameTime.now() - target->collide_door_time;
+		if(elapsed > 500ms) {
+			target->collide_door_time = g_gameTime.now();
+			SendIOScriptEvent(source, target, SM_COLLIDE_DOOR);
+			target->collide_door_time = g_gameTime.now();
+			SendIOScriptEvent(target, source, SM_COLLIDE_DOOR);
+		}
+	}
+	
+	if(target->ioflags & IO_FIELD) {
+		target->collide_door_time = g_gameTime.now();
+		SendIOScriptEvent(nullptr, source, SM_COLLIDE_FIELD);
+	}
+	
+	if(!dealt && (source->damager_damages > 0 || target->damager_damages > 0)) {
+		dealt = true;
+		if((target->ioflags & IO_NPC) && source->damager_damages > 0) {
+			damageCharacter(*target, source->damager_damages, *source, nullptr, source->damager_type, &target->pos);
+		}
+		if((source->ioflags & IO_NPC) && target->damager_damages > 0) {
+			damageCharacter(*source, target->damager_damages, *target, nullptr, target->damager_type, &source->pos);
+		}
+	}
+	
+}
+
 static void CheckAnythingInCylinder_Inner(const Cylinder & cylinder, Entity * source, CollisionFlags flags,
                                           Entity * target, float & anything) {
 	
@@ -575,30 +604,7 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cylinder, Entity * so
 			
 			if(SphereInCylinder(cylinder, sp)) {
 				if(!(flags & CFLAG_JUST_TEST) && source) {
-					if(target->gameFlags & GFLAG_DOOR) {
-						GameDuration elapsed = g_gameTime.now() - target->collide_door_time;
-						if(elapsed > 500ms) {
-																					target->collide_door_time = g_gameTime.now();
-							SendIOScriptEvent(source, target, SM_COLLIDE_DOOR);
-																					target->collide_door_time = g_gameTime.now();
-							SendIOScriptEvent(target, source, SM_COLLIDE_DOOR);
-						}
-					}
-
-					if(target->ioflags & IO_FIELD) {
-																		target->collide_door_time = g_gameTime.now();
-						SendIOScriptEvent(nullptr, source, SM_COLLIDE_FIELD);
-					}
-
-					if(!dealt && (source->damager_damages > 0 || target->damager_damages > 0)) {
-						dealt = true;
-						if((target->ioflags & IO_NPC) && source->damager_damages > 0) {
-							damageCharacter(*target, source->damager_damages, *source, nullptr, source->damager_type, &target->pos);
-						}
-						if((source->ioflags & IO_NPC) && target->damager_damages > 0) {
-							damageCharacter(*source, target->damager_damages, *target, nullptr, target->damager_type, &source->pos);
-						}
-					}
+					handlePropCollision(source, target, dealt);
 				}
 				anything = std::min(anything, std::min(sp.origin.y - sp.radius, target->bbox3D.min.y));
 			}
@@ -631,31 +637,7 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cylinder, Entity * so
 				
 				if(SphereInCylinder(cylinder, sp)) {
 					if(!(flags & CFLAG_JUST_TEST) && source) {
-						if(target->gameFlags & GFLAG_DOOR) {
-							GameDuration elapsed = g_gameTime.now() - target->collide_door_time;
-							if(elapsed > 500ms) {
-																							target->collide_door_time = g_gameTime.now();
-								SendIOScriptEvent(source, target, SM_COLLIDE_DOOR);
-																							target->collide_door_time = g_gameTime.now();
-								SendIOScriptEvent(target, source, SM_COLLIDE_DOOR);
-							}
-						}
-						
-						if(target->ioflags & IO_FIELD) {
-																					target->collide_door_time = g_gameTime.now();
-							SendIOScriptEvent(nullptr, source, SM_COLLIDE_FIELD);
-						}
-						
-						if(!dealt && source && (source->damager_damages > 0 || target->damager_damages > 0)) {
-							dealt = true;
-							if((target->ioflags & IO_NPC) && source->damager_damages > 0) {
-								damageCharacter(*target, source->damager_damages, *source, nullptr, source->damager_type, &target->pos);
-							}
-							if((source->ioflags & IO_NPC) && target->damager_damages > 0) {
-								damageCharacter(*source, target->damager_damages, *target, nullptr, target->damager_type, &source->pos);
-							}
-						}
-						
+						handlePropCollision(source, target, dealt);
 					}
 					anything = std::min(anything, std::min(sp.origin.y - sp.radius, target->bbox3D.min.y));
 				}
