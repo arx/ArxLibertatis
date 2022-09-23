@@ -71,14 +71,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 // Creation of the physics box... quite cabalistic and extensive func...
 // Need to put a (really) smarter algorithm in there...
-void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
-{
-	if (!obj) return;
-
+void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj) {
+	
+	if(!obj) {
+		return;
+	}
+	
 	EERIE_PHYSICS_BOX_Release(obj);
-
-	if (obj->vertexlist.empty()) return;
-
+	
+	if(obj->vertexlist.empty()) {
+		return;
+	}
+	
 	PHYSICS_BOX_DATA * pbox = new PHYSICS_BOX_DATA();
 	
 	pbox->stopcount = 0;
@@ -88,11 +92,10 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 	
 	arx_assert(obj->origin < obj->vertexlist.size());
 	const EERIE_VERTEX & origin = obj->vertexlist[obj->origin];
-	
-	for(size_t k = 0; k < obj->vertexlist.size(); k++) {
-		if(k != obj->origin) {
-			cubmin = glm::min(cubmin, obj->vertexlist[k].v);
-			cubmax = glm::max(cubmax, obj->vertexlist[k].v);
+	for(const EERIE_VERTEX & vertex : obj->vertexlist) {
+		if(&vertex != &origin) {
+			cubmin = glm::min(cubmin, vertex.v);
+			cubmax = glm::max(cubmax, vertex.v);
 		}
 	}
 	
@@ -115,7 +118,6 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 	}
 	
 	float diff = cubmax.y - cubmin.y;
-	
 	if(diff < 12.f) {
 		
 		cubmax.y += 8.f;
