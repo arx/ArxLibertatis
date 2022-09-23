@@ -1393,10 +1393,10 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit) {
 	
 	float distance;
 	float nearest = distance = fdist(orgn, dest);
-
-	if(distance < pas)
+	if(distance < pas) {
 		pas = distance * .5f;
-
+	}
+	
 	// ray incs
 	Vec3f d = dest - orgn;
 	
@@ -1405,31 +1405,19 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit) {
 	
 	Vec3f i;
 	if(ad.x >= ad.y && ad.x >= ad.z) {
-		if(ad.x != d.x)
-			i.x = -pas;
-		else
-			i.x = pas;
-
+		i.x = (ad.x != d.x) ? -pas : pas;
 		iter = ad.x / pas;
 		float t = 1.f / (iter);
 		i.y = d.y * t;
 		i.z = d.z * t;
 	} else if(ad.y >= ad.x && ad.y >= ad.z) {
-		if(ad.y != d.y)
-			i.y = -pas;
-		else
-			i.y = pas;
-
+		i.y = (ad.y != d.y) ? -pas : pas;
 		iter = ad.y / pas;
 		float t = 1.f / (iter);
 		i.x = d.x * t;
 		i.z = d.z * t;
 	} else {
-		if(ad.z != d.z)
-			i.z = -pas;
-		else
-			i.z = pas;
-
+		i.z = (ad.z != d.z) ? -pas : pas;
 		iter = ad.z / pas;
 		float t = 1.f / (iter);
 		i.x = d.x * t;
@@ -1479,10 +1467,11 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit) {
 		
 	}
 	
-	if(!found_ep)
+	if(!found_ep) {
 		return true;
+	}
 	
 	*hit = found_hit;
-
+	
 	return false;
 }
