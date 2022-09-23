@@ -883,6 +883,41 @@ const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) {
 	return nullptr;
 }
 
+bool platformCollides(const Entity & platform, const Sphere & sphere) {
+	
+	if(In3DBBoxTolerance(sphere.origin, platform.bbox3D, sphere.radius) &&
+	   closerThan(Vec2f(platform.pos.x, platform.pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
+		
+		EERIEPOLY ep;
+		ep.type = 0;
+		for(size_t ii = 0; ii < platform.obj->facelist.size(); ii++) {
+			
+			float cx = 0;
+			float cz = 0;
+			for(long kk = 0; kk < 3; kk++) {
+				ep.v[kk].p = platform.obj->vertexWorldPositions[platform.obj->facelist[ii].vid[kk]].v;
+				cx += ep.v[kk].p.x;
+				cz += ep.v[kk].p.z;
+			}
+			cx *= 1.f / 3;
+			cz *= 1.f / 3;
+			
+			for(int kk = 0; kk < 3; kk++) {
+				ep.v[kk].p.x = (ep.v[kk].p.x - cx) * 3.5f + cx;
+				ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
+			}
+			
+			if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z)) {
+				return true;
+			}
+			
+		}
+		
+	}
+	
+	return false;
+}
+
 bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flags, Entity  ** result) {
 	
 	ARX_PROFILE_FUNC();
@@ -933,45 +968,14 @@ bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flag
 			continue;
 		}
 		
-		if(entity.gameFlags & GFLAG_PLATFORM) {
-			float miny = entity.bbox3D.min.y;
-			float maxy = entity.bbox3D.max.y;
-
-			if(maxy > sphere.origin.y - sphere.radius || miny < sphere.origin.y + sphere.radius)
-			if(In3DBBoxTolerance(sphere.origin, entity.bbox3D, sphere.radius))
-			{
-				if(closerThan(Vec2f(entity.pos.x, entity.pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
-
-					EERIEPOLY ep;
-					ep.type = 0;
-
-					for(size_t ii = 0; ii < entity.obj->facelist.size(); ii++) {
-						
-						float cx = 0;
-						float cz = 0;
-						for(long kk = 0; kk < 3; kk++) {
-							ep.v[kk].p = entity.obj->vertexWorldPositions[entity.obj->facelist[ii].vid[kk]].v;
-							cx += ep.v[kk].p.x;
-							cz += ep.v[kk].p.z;
-						}
-						cx *= 1.f / 3;
-						cz *= 1.f / 3;
-						
-						for(int kk = 0; kk < 3; kk++) {
-							ep.v[kk].p.x = (ep.v[kk].p.x - cx) * 3.5f + cx;
-							ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
-						}
-						
-						if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z)) {
-							if(result) {
-								*result = &entity;
-							}
-							return true;
-						}
-						
-					}
-				}
+		if((entity.gameFlags & GFLAG_PLATFORM) &&
+		   (entity.bbox3D.min.y > sphere.origin.y - sphere.radius ||
+		    entity.bbox3D.max.y < sphere.origin.y + sphere.radius) &&
+		   platformCollides(entity, sphere)) {
+			if(result) {
+				*result = &entity;
 			}
+			return true;
 		}
 		
 		if(!closerThan(entity.pos, sphere.origin, sphere.radius + 500.f)) {

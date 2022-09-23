@@ -96,6 +96,8 @@ enum CheckAnythingInSphereFlag {
 DECLARE_FLAGS(CheckAnythingInSphereFlag, CASFlags)
 DECLARE_FLAGS_OPERATORS(CASFlags)
 
+bool platformCollides(const Entity & platform, const Sphere & sphere);
+
 bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flags = 0,
                            Entity ** result = nullptr);
 
