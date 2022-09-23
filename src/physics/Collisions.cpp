@@ -891,11 +891,8 @@ bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flag
 		*result = nullptr;
 	}
 	
-	if(!(flags & CAS_NO_BACKGROUND_COL)) {
-		const EERIEPOLY * poly = CheckBackgroundInSphere(sphere);
-		if(poly) {
-			return true;
-		}
+	if(!(flags & CAS_NO_BACKGROUND_COL) && CheckBackgroundInSphere(sphere)) {
+		return true;
 	}
 	
 	if(flags & CAS_NO_NPC_COL) {
