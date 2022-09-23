@@ -891,14 +891,14 @@ bool platformCollides(const Entity & platform, const Sphere & sphere) {
 		return false;
 	}
 	
-	for(size_t ii = 0; ii < platform.obj->facelist.size(); ii++) {
+	for(const EERIE_FACE & face : platform.obj->facelist) {
 		
 		EERIEPOLY ep;
 		ep.type = 0;
 		float cx = 0;
 		float cz = 0;
 		for(long kk = 0; kk < 3; kk++) {
-			ep.v[kk].p = platform.obj->vertexWorldPositions[platform.obj->facelist[ii].vid[kk]].v;
+			ep.v[kk].p = platform.obj->vertexWorldPositions[face.vid[kk]].v;
 			cx += ep.v[kk].p.x;
 			cz += ep.v[kk].p.z;
 		}
