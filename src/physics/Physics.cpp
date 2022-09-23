@@ -236,10 +236,10 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 	}
 	
 	float surface = 0.f;
-	for(size_t i = 0; i < obj->facelist.size(); i++) {
-		const Vec3f & p0 = obj->vertexlist[obj->facelist[i].vid[0]].v;
-		const Vec3f & p1 = obj->vertexlist[obj->facelist[i].vid[1]].v;
-		const Vec3f & p2 = obj->vertexlist[obj->facelist[i].vid[2]].v;
+	for(const EERIE_FACE & face : obj->facelist) {
+		const Vec3f & p0 = obj->vertexlist[face.vid[0]].v;
+		const Vec3f & p1 = obj->vertexlist[face.vid[1]].v;
+		const Vec3f & p2 = obj->vertexlist[face.vid[2]].v;
 		surface += glm::distance((p0 + p1) * .5f, p2) * glm::distance(p0, p1) * .5f;
 	}
 	pbox->surface = surface;
