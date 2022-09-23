@@ -1074,16 +1074,19 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 			}
 		}
 		
-		if(entity.obj->vertexlist.size() < 120) {
-			for(size_t kk = 0; kk < vlist.size(); kk += 1) {
-				if(kk != ii) {
-					for(size_t n = 1; n < 5; n++) {
-						if(!fartherThan(sphere.origin, glm::mix(vlist[kk].v, vlist[ii].v, float(n) * 0.2f), sr30 + 20)) {
-							count++;
-							if(count > ((entity.ioflags & IO_FIX) ? 3 : 6)) {
-								return true;
-							}
-						}
+		if(entity.obj->vertexlist.size() >= 120) {
+			continue;
+		}
+		
+		for(size_t kk = 0; kk < vlist.size(); kk++) {
+			if(kk == ii) {
+				continue;
+			}
+			for(size_t n = 1; n < 5; n++) {
+				if(!fartherThan(sphere.origin, glm::mix(vlist[kk].v, vlist[ii].v, float(n) * 0.2f), sr30 + 20)) {
+					count++;
+					if(count > ((entity.ioflags & IO_FIX) ? 3 : 6)) {
+						return true;
 					}
 				}
 			}
