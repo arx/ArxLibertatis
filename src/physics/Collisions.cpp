@@ -713,8 +713,8 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 				CheckAnythingInCylinder_Inner(cyl, ioo, flags, &other, anything);
 			}
 		} else {
-			for(size_t i = 0; i < treatio.size(); i++) {
-				CheckAnythingInCylinder_Inner(cyl, ioo, flags, treatio[i].io, anything);
+			for(const auto & entry : treatio) {
+				CheckAnythingInCylinder_Inner(cyl, ioo, flags, entry.io, anything);
 			}
 		}
 	}
