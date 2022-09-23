@@ -443,10 +443,10 @@ static bool platformCollides(const Entity & platform, const PHYSICS_BOX_DATA & p
 			ep.type = 0;
 			float cx = 0.f;
 			float cz = 0.f;
-			for(long idx = 0 ; idx < 3 ; idx++) {
-				ep.v[idx].p = platform.obj->vertexWorldPositions[face.vid[idx]].v;
-				cx += ep.v[idx].p.x;
-				cz += ep.v[idx].p.z;
+			for(long i = 0 ; i < 3 ; i++) {
+				ep.v[i].p = platform.obj->vertexWorldPositions[face.vid[i]].v;
+				cx += ep.v[i].p.x;
+				cz += ep.v[i].p.z;
 			}
 			
 			cx *= 1.0f / 3;
