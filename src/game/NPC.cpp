@@ -836,8 +836,6 @@ static void CheckUnderWaterIO(Entity & io) {
 
 static void ManageNPCMovement(Entity * io);
 
-extern float MAX_ALLOWED_PER_SECOND;
-
 void ARX_PHYSICS_Apply() {
 	
 	ARX_PROFILE_FUNC();

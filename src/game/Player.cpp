@@ -1748,7 +1748,6 @@ static void ARX_PLAYER_MakeStepNoise() {
 }
 
 extern bool bGCroucheToggle;
-extern float MAX_ALLOWED_PER_SECOND;
 
 static long LAST_FIRM_GROUND = 1;
 static long TRUE_FIRM_GROUND = 1;

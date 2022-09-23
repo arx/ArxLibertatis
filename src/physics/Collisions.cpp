@@ -1104,8 +1104,6 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 	return false;
 }
 
-float MAX_ALLOWED_PER_SECOND = 12.f;
-
 //-----------------------------------------------------------------------------
 // Checks if a position is valid, Modify it for height if necessary
 // Returns true or false
