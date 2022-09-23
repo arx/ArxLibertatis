@@ -258,8 +258,8 @@ bool IsCollidingIO(Entity * io, Entity * ioo) {
 	Cylinder cyl = ioo->physics.cyl;
 	cyl.radius += 25.f;
 	
-	for(size_t j = 0; j < io->obj->vertexWorldPositions.size(); j++) {
-		if(PointInCylinder(cyl, io->obj->vertexWorldPositions[j].v)) {
+	for(const EERIE_VERTEX & vertex : io->obj->vertexWorldPositions) {
+		if(PointInCylinder(cyl, vertex.v)) {
 			return true;
 		}
 	}
