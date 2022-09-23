@@ -985,11 +985,12 @@ bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flag
 		}
 		
 		for(size_t i = 0; i < entity.obj->facelist.size(); i += amount) {
-			if(entity.obj->facelist[i].facetype & POLY_HIDE) {
+			const EERIE_FACE & face = entity.obj->facelist[i];
+			if(face.facetype & POLY_HIDE) {
 				continue;
 			}
-			if(closerThan(vlist[entity.obj->facelist[i].vid[0]].v, sphere.origin, sphere.radius + 20.f) ||
-			   closerThan(vlist[entity.obj->facelist[i].vid[1]].v, sphere.origin, sphere.radius + 20.f)) {
+			if(closerThan(vlist[face.vid[0]].v, sphere.origin, sphere.radius + 20.f) ||
+			   closerThan(vlist[face.vid[1]].v, sphere.origin, sphere.radius + 20.f)) {
 				if(result) {
 					*result = &entity;
 				}
