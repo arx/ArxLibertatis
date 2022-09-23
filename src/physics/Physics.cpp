@@ -425,10 +425,10 @@ static Material polyTypeToCollisionMaterial(const EERIEPOLY & ep) {
 
 static bool platformCollides(const Entity & platform, const PHYSICS_BOX_DATA & pbox) {
 	
-	for(size_t kk = 0; kk < pbox.vert.size(); kk++) {
+	for(const PhysicsParticle & vertex : pbox.vert) {
 		
 		Sphere sphere;
-		sphere.origin = pbox.vert[kk].pos;
+		sphere.origin = vertex.pos;
 		sphere.radius = 30.f;
 		if((platform.bbox3D.max.y > sphere.origin.y + sphere.radius && platform.bbox3D.min.y < sphere.origin.y) ||
 		   !In3DBBoxTolerance(sphere.origin, platform.bbox3D, sphere.radius) ||
