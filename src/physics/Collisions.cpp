@@ -417,6 +417,52 @@ static bool CollidedFromBack(Entity * io, Entity * ioo) {
 	return false;
 }
 
+static void CheckAnythingInCylinder_Platform(const Cylinder & cylinder, const Entity & target, float & anything) {
+	
+	if(closerThan(Vec2f(target.pos.x, target.pos.z), Vec2f(cylinder.origin.x, cylinder.origin.z), 440.f + cylinder.radius))
+	if(In3DBBoxTolerance(cylinder.origin, target.bbox3D, cylinder.radius + 80))
+	{
+		if(target.ioflags & IO_FIELD) {
+			if(In3DBBoxTolerance(cylinder.origin, target.bbox3D, cylinder.radius + 10))
+				anything = -99999.f;
+		} else {
+			for(size_t ii = 0; ii < target.obj->vertexWorldPositions.size(); ii++) {
+				long res = PointInUnderCylinder(cylinder, target.obj->vertexWorldPositions[ii].v);
+					if(res > 0) {
+					if(res == 2)
+						ON_PLATFORM = 1;
+					anything = std::min(anything, target.obj->vertexWorldPositions[ii].v.y - 10.f);
+				}
+			}
+			
+			for(size_t ii = 0; ii < target.obj->facelist.size(); ii++) {
+				Vec3f c(0.f);
+				float height = target.obj->vertexWorldPositions[target.obj->facelist[ii].vid[0]].v.y;
+				
+				for(long kk = 0; kk < 3; kk++) {
+					c.x += target.obj->vertexWorldPositions[target.obj->facelist[ii].vid[kk]].v.x;
+					c.y += target.obj->vertexWorldPositions[target.obj->facelist[ii].vid[kk]].v.y;
+					c.z += target.obj->vertexWorldPositions[target.obj->facelist[ii].vid[kk]].v.z;
+					
+					height = std::min(height, target.obj->vertexWorldPositions[target.obj->facelist[ii].vid[kk]].v.y);
+				}
+				
+				c.x *= (1.0f / 3);
+				c.z *= (1.0f / 3);
+				c.y = target.bbox3D.min.y;
+				long res = PointInUnderCylinder(cylinder, c);
+				if(res > 0) {
+					if(res == 2)
+						ON_PLATFORM = 1;
+
+					anything = std::min(anything, height);
+				}
+			}
+		}
+	}
+	
+}
+
 static void CheckAnythingInCylinder_Inner(const Cylinder & cylinder, Entity * source, CollisionFlags flags,
                                           Entity * target, float & anything) {
 	
@@ -432,51 +478,9 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cylinder, Entity * so
 	Cylinder & io_cyl = target->physics.cyl;
 	io_cyl = getEntityCylinder(*target);
 	
-	if((target->gameFlags & GFLAG_PLATFORM)
-	   || ((flags & CFLAG_COLLIDE_NOCOL) && (target->ioflags & IO_NPC) &&  (target->ioflags & IO_NO_COLLISIONS))) {
-		
-		if(closerThan(Vec2f(target->pos.x, target->pos.z), Vec2f(cylinder.origin.x, cylinder.origin.z), 440.f + cylinder.radius))
-		if(In3DBBoxTolerance(cylinder.origin, target->bbox3D, cylinder.radius + 80))
-		{
-			if(target->ioflags & IO_FIELD) {
-				if(In3DBBoxTolerance(cylinder.origin, target->bbox3D, cylinder.radius + 10))
-					anything = -99999.f;
-			} else {
-				for(size_t ii = 0; ii < target->obj->vertexWorldPositions.size(); ii++) {
-					long res = PointInUnderCylinder(cylinder, target->obj->vertexWorldPositions[ii].v);
-						if(res > 0) {
-						if(res == 2)
-							ON_PLATFORM = 1;
-						anything = std::min(anything, target->obj->vertexWorldPositions[ii].v.y - 10.f);
-					}
-				}
-				
-				for(size_t ii = 0; ii < target->obj->facelist.size(); ii++) {
-					Vec3f c(0.f);
-					float height = target->obj->vertexWorldPositions[target->obj->facelist[ii].vid[0]].v.y;
-					
-					for(long kk = 0; kk < 3; kk++) {
-						c.x += target->obj->vertexWorldPositions[target->obj->facelist[ii].vid[kk]].v.x;
-						c.y += target->obj->vertexWorldPositions[target->obj->facelist[ii].vid[kk]].v.y;
-						c.z += target->obj->vertexWorldPositions[target->obj->facelist[ii].vid[kk]].v.z;
-						
-						height = std::min(height, target->obj->vertexWorldPositions[target->obj->facelist[ii].vid[kk]].v.y);
-					}
-					
-					c.x *= (1.0f / 3);
-					c.z *= (1.0f / 3);
-					c.y = target->bbox3D.min.y;
-					long res = PointInUnderCylinder(cylinder, c);
-					if(res > 0) {
-						if(res == 2)
-							ON_PLATFORM = 1;
-
-						anything = std::min(anything, height);
-					}
-				}
-			}
-		}
-		
+	if((target->gameFlags & GFLAG_PLATFORM) ||
+	   ((flags & CFLAG_COLLIDE_NOCOL) && (target->ioflags & IO_NPC) && (target->ioflags & IO_NO_COLLISIONS))) {
+		CheckAnythingInCylinder_Platform(cylinder, *target, anything);
 	} else if((target->ioflags & IO_NPC)
 	          && !(flags & CFLAG_NO_NPC_COLLIDE) // MUST be checked here only (not before...)
 	          && !(source && (source->ioflags & IO_NO_COLLISIONS))
