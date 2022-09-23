@@ -121,9 +121,6 @@ static float IsPolyInCylinder(const EERIEPOLY & ep, const Cylinder & cyl, Collis
 				if(PointInCylinder(cyl, center)) {
 					anything = std::min(anything, center.y);
 					POLYIN = 1;
-					if(!(flags & CFLAG_EXTRA_PRECISION)) {
-						return anything;
-					}
 				}
 			}
 		}
