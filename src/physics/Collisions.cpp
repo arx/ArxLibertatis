@@ -73,7 +73,7 @@ long MOVING_CYLINDER = 0;
 Vec3f vector2D;
 bool DIRECT_PATH = true;
 
-static float IsPolyInCylinder(const EERIEPOLY & ep, const Cylinder & cyl, long flags) {
+static float IsPolyInCylinder(const EERIEPOLY & ep, const Cylinder & cyl, CollisionFlags flags) {
 	
 	POLYIN = 0;
 	float minf = cyl.origin.y + cyl.height;
