@@ -448,9 +448,9 @@ static bool platformCollides(const Entity & platform, const PHYSICS_BOX_DATA & p
 			}
 			center /= float(std::size(face.vid));
 			
-			for(size_t k = 0; k < std::size(face.vid); k++) {
-				ep.v[k].p.x = (ep.v[k].p.x - center.x) * 3.5f + center.x;
-				ep.v[k].p.z = (ep.v[k].p.z - center.y) * 3.5f + center.y;
+			for(size_t i = 0; i < std::size(face.vid); i++) {
+				ep.v[i].p.x = (ep.v[i].p.x - center.x) * 3.5f + center.x;
+				ep.v[i].p.z = (ep.v[i].p.z - center.y) * 3.5f + center.y;
 			}
 			
 			if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z)) {
