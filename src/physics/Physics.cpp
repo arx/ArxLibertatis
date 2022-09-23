@@ -259,8 +259,9 @@ void EERIE_PHYSICS_BOX_Release(EERIE_3DOBJ * obj) {
 }
 
 // Used to launch an object into the physical world...
-void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef & angle, const Vec3f & vect)
-{
+void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos,
+                              const Anglef & angle, const Vec3f & vect) {
+	
 	arx_assert(obj);
 	arx_assert(obj->pbox);
 	
@@ -268,23 +269,24 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef
 	ratio = glm::clamp(ratio, 0.f, 0.8f);
 	ratio = 1.f - (ratio * (1.0f / 4));
 	
-	for(size_t i = 0; i < obj->pbox->vert.size(); i++) {
-		PhysicsParticle * pv = &obj->pbox->vert[i];
-		pv->pos = pv->initpos;
+	for(PhysicsParticle & particle : obj->pbox->vert) {
 		
-		pv->pos = VRotateY(pv->pos, MAKEANGLE(270.f - angle.getYaw()));
-		pv->pos = VRotateX(pv->pos, -angle.getPitch());
-		pv->pos = VRotateZ(pv->pos, angle.getRoll());
-		pv->pos += pos;
-
-		pv->force = Vec3f(0.f);
-		pv->velocity = vect * (250.f * ratio);
-		pv->mass = 0.4f + ratio * 0.1f;
+		particle.pos = particle.initpos;
+		particle.pos = VRotateY(particle.pos, MAKEANGLE(270.f - angle.getYaw()));
+		particle.pos = VRotateX(particle.pos, -angle.getPitch());
+		particle.pos = VRotateZ(particle.pos, angle.getRoll());
+		particle.pos += pos;
+		
+		particle.force = Vec3f(0.f);
+		particle.velocity = vect * (250.f * ratio);
+		particle.mass = 0.4f + ratio * 0.1f;
+		
 	}
 	
 	obj->pbox->active = 1;
 	obj->pbox->stopcount = 0;
 	obj->pbox->storedtiming = 0;
+	
 }
 
 
