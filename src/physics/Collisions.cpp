@@ -198,7 +198,7 @@ inline float IsPolyInCylinder(const EERIEPOLY & ep, const Cylinder & cyl, long f
 	return anything;
 }
 
-inline bool IsPolyInSphere(const EERIEPOLY & ep, const Sphere & sph) {
+static bool IsPolyInSphere(const EERIEPOLY & ep, const Sphere & sphere) {
 	
 	if(ep.area < 100.f) {
 		return false;
@@ -211,24 +211,24 @@ inline bool IsPolyInSphere(const EERIEPOLY & ep, const Sphere & sph) {
 		
 		if(ep.area > 2000.f) {
 			Vec3f center = (ep.v[n].p + ep.v[r].p) * 0.5f;
-			if(sph.contains(center)) {
+			if(sphere.contains(center)) {
 				return true;
 			}
 			if(ep.area > 4000.f) {
 				center = (ep.v[n].p + ep.center) * 0.5f;
-				if(sph.contains(center)) {
+				if(sphere.contains(center)) {
 					return true;
 				}
 			}
 			if(ep.area > 6000.f) {
 				center = (center + ep.v[n].p) * 0.5f;
-				if(sph.contains(center)) {
+				if(sphere.contains(center)) {
 					return true;
 				}
 			}
 		}
 		
-		if(sph.contains(ep.v[n].p)) {
+		if(sphere.contains(ep.v[n].p)) {
 			return true;
 		}
 		
@@ -238,7 +238,7 @@ inline bool IsPolyInSphere(const EERIEPOLY & ep, const Sphere & sph) {
 		}
 		
 	}
-
+	
 	return false;
 }
 
