@@ -597,7 +597,6 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA & pbox, float framedi
 	RK4Integrate(pbox.vert, framediff);
 	
 	EERIEPOLY * collisionPoly = nullptr;
-	
 	for(size_t i = 0; i < pbox.vert.size(); i++) {
 		const Vec3f start = oldpos[i];
 		const Vec3f end = pbox.vert[i].pos;
@@ -608,49 +607,39 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA & pbox, float framedi
 		}
 	}
 	
-	if( collisionPoly
-	   || ARX_INTERACTIVE_CheckFULLCollision(pbox, source)
-	   || IsObjectInField(pbox)
-	) {
-		
-		if(!(source.ioflags & IO_BODY_CHUNK)) {
-			Material collisionMat = MATERIAL_STONE;
-			if(collisionPoly) {
-				collisionMat = polyTypeToCollisionMaterial(*collisionPoly);
-			}
-			
-			Vec3f velocity = pbox.vert[0].velocity;
-			
-			float power = (glm::abs(velocity.x) + glm::abs(velocity.y) + glm::abs(velocity.z)) * .01f;
-			
-			ARX_TEMPORARY_TrySound(source, collisionMat, 0.4f + power);
-		}
-
-		if(!collisionPoly) {
-			for(size_t k = 0; k < pbox.vert.size(); k++) {
-				PhysicsParticle * pv = &pbox.vert[k];
-				pv->velocity *= Vec3f(-0.3f, -0.4f, -0.3f);
-				pv->pos = oldpos[k];
-			}
-		} else {
-			for(size_t k = 0; k < pbox.vert.size(); k++) {
-				PhysicsParticle * pv = &pbox.vert[k];
-
-				float t = glm::dot(collisionPoly->norm, pv->velocity);
-				pv->velocity -= collisionPoly->norm * (2.f * t);
-
-				pv->velocity *= Vec3f(0.3f, 0.4f, 0.3f);
-				pv->pos = oldpos[k];
-			}
-		}
-		
-		pbox.stopcount += 1;
-	} else {
-		pbox.stopcount -= 2;
-
-		if(pbox.stopcount < 0)
-			pbox.stopcount = 0;
+	if(!collisionPoly && !ARX_INTERACTIVE_CheckFULLCollision(pbox, source) && !IsObjectInField(pbox)) {
+		pbox.stopcount = std::max(pbox.stopcount - 2, 0);
+		return;
 	}
+	
+	if(!(source.ioflags & IO_BODY_CHUNK)) {
+		Material collisionMat = MATERIAL_STONE;
+		if(collisionPoly) {
+			collisionMat = polyTypeToCollisionMaterial(*collisionPoly);
+		}
+		Vec3f velocity = pbox.vert[0].velocity;
+		float power = (glm::abs(velocity.x) + glm::abs(velocity.y) + glm::abs(velocity.z)) * .01f;
+		ARX_TEMPORARY_TrySound(source, collisionMat, 0.4f + power);
+	}
+	
+	if(!collisionPoly) {
+		for(size_t k = 0; k < pbox.vert.size(); k++) {
+			PhysicsParticle * pv = &pbox.vert[k];
+			pv->velocity *= Vec3f(-0.3f, -0.4f, -0.3f);
+			pv->pos = oldpos[k];
+		}
+	} else {
+		for(size_t k = 0; k < pbox.vert.size(); k++) {
+			PhysicsParticle * pv = &pbox.vert[k];
+			float t = glm::dot(collisionPoly->norm, pv->velocity);
+			pv->velocity -= collisionPoly->norm * (2.f * t);
+			pv->velocity *= Vec3f(0.3f, 0.4f, 0.3f);
+			pv->pos = oldpos[k];
+		}
+	}
+	
+	pbox.stopcount += 1;
+	
 }
 
 void ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA & pbox, float framediff, float rubber, Entity & source) {
