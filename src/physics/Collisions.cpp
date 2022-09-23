@@ -796,10 +796,9 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity & entity
 	
 	size_t amount = 1;
 	const std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
-	
 	if(entity.obj->grouplist.size() > 4) {
-		for(size_t ii = 0; ii < entity.obj->grouplist.size(); ii++) {
-			if(closerThan(vlist[entity.obj->grouplist[ii].origin].v, sphere.origin, sphere.radius + 30.f)) {
+		for(const VertexGroup & group : entity.obj->grouplist) {
+			if(closerThan(vlist[group.origin].v, sphere.origin, sphere.radius + 30.f)) {
 				return true;
 			}
 		}
