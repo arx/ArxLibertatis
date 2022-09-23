@@ -338,7 +338,7 @@ void PushIO_ON_Top(const Entity & platform, float ydec) {
 					}
 				} else {
 					if(ydec <= 0) {
-						                  entity.pos.y += ydec;
+						entity.pos.y += ydec;
 					} else {
 						Cylinder cyl = getEntityCylinder(entity);
 						cyl.origin.y += ydec;
