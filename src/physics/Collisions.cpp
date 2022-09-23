@@ -885,32 +885,33 @@ const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) {
 
 bool platformCollides(const Entity & platform, const Sphere & sphere) {
 	
-	if(In3DBBoxTolerance(sphere.origin, platform.bbox3D, sphere.radius) &&
-	   closerThan(Vec2f(platform.pos.x, platform.pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
+	if(!In3DBBoxTolerance(sphere.origin, platform.bbox3D, sphere.radius) ||
+	   !closerThan(Vec2f(platform.pos.x, platform.pos.z), Vec2f(sphere.origin.x, sphere.origin.z),
+	               sphere.radius + 440.f)) {
+		return false;
+	}
+	
+	for(size_t ii = 0; ii < platform.obj->facelist.size(); ii++) {
 		
 		EERIEPOLY ep;
 		ep.type = 0;
-		for(size_t ii = 0; ii < platform.obj->facelist.size(); ii++) {
-			
-			float cx = 0;
-			float cz = 0;
-			for(long kk = 0; kk < 3; kk++) {
-				ep.v[kk].p = platform.obj->vertexWorldPositions[platform.obj->facelist[ii].vid[kk]].v;
-				cx += ep.v[kk].p.x;
-				cz += ep.v[kk].p.z;
-			}
-			cx *= 1.f / 3;
-			cz *= 1.f / 3;
-			
-			for(int kk = 0; kk < 3; kk++) {
-				ep.v[kk].p.x = (ep.v[kk].p.x - cx) * 3.5f + cx;
-				ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
-			}
-			
-			if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z)) {
-				return true;
-			}
-			
+		float cx = 0;
+		float cz = 0;
+		for(long kk = 0; kk < 3; kk++) {
+			ep.v[kk].p = platform.obj->vertexWorldPositions[platform.obj->facelist[ii].vid[kk]].v;
+			cx += ep.v[kk].p.x;
+			cz += ep.v[kk].p.z;
+		}
+		cx *= 1.f / 3;
+		cz *= 1.f / 3;
+		
+		for(int kk = 0; kk < 3; kk++) {
+			ep.v[kk].p.x = (ep.v[kk].p.x - cx) * 3.5f + cx;
+			ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
+		}
+		
+		if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z)) {
+			return true;
 		}
 		
 	}
