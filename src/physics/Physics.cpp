@@ -548,9 +548,6 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 
 static void ARX_TEMPORARY_TrySound(Entity & source, Material collisionMaterial, float volume) {
 	
-	if(source.ioflags & IO_BODY_CHUNK)
-		return;
-	
 	GameInstant now = g_gameTime.now();
 	
 	if(now > source.soundtime) {
