@@ -55,7 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Types.h"
 #include "util/Flags.h"
 
-constexpr float MAX_ALLOWED_PER_SECOND = 12.f;
+constexpr float MAX_ALLOWED_CLIMBS_PER_SECOND = 12.f;
 
 // ARX_COLLISIONS flags (cylinder move)
 enum CollisionFlag {

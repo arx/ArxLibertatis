@@ -1173,7 +1173,7 @@ bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags) 
 		if(io && !(flags & CFLAG_JUST_TEST) && (flags & CFLAG_PLAYER) && anything < 0.f) {
 			
 			if(player.jumpphase != NotJumping) {
-				io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
+				io->_npcdata->climb_count = MAX_ALLOWED_CLIMBS_PER_SECOND;
 				return false;
 			}
 			
@@ -1181,12 +1181,12 @@ bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags) 
 			float pente = glm::abs(anything) / dist * 0.5f;
 			io->_npcdata->climb_count += pente;
 			
-			if(io->_npcdata->climb_count > MAX_ALLOWED_PER_SECOND) {
-				io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
+			if(io->_npcdata->climb_count > MAX_ALLOWED_CLIMBS_PER_SECOND) {
+				io->_npcdata->climb_count = MAX_ALLOWED_CLIMBS_PER_SECOND;
 			}
 			
 			if(anything < -55.f) {
-				io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
+				io->_npcdata->climb_count = MAX_ALLOWED_CLIMBS_PER_SECOND;
 				return false;
 			}
 			

@@ -1848,7 +1848,7 @@ static void PlayerMovementIterate(float DeltaTime) {
 		}
 		
 		if(entities.player()->_npcdata->climb_count != 0.f && g_framedelay > 0) {
-			entities.player()->_npcdata->climb_count -= MAX_ALLOWED_PER_SECOND * g_framedelay * 0.1f;
+			entities.player()->_npcdata->climb_count -= MAX_ALLOWED_CLIMBS_PER_SECOND * g_framedelay * 0.1f;
 			if(entities.player()->_npcdata->climb_count < 0) {
 				entities.player()->_npcdata->climb_count = 0.f;
 			}

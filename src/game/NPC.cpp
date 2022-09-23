@@ -961,7 +961,7 @@ void ARX_PHYSICS_Apply() {
 		if(io->ioflags & IO_NPC) {
 			
 			if(io->_npcdata->climb_count != 0.f && g_framedelay > 0) {
-				io->_npcdata->climb_count -= MAX_ALLOWED_PER_SECOND * g_framedelay * 0.001f;
+				io->_npcdata->climb_count -= MAX_ALLOWED_CLIMBS_PER_SECOND * g_framedelay * 0.001f;
 				if(io->_npcdata->climb_count < 0) {
 					io->_npcdata->climb_count = 0.f;
 				}
