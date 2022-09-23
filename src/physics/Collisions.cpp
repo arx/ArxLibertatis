@@ -286,9 +286,9 @@ void PushIO_ON_Top(const Entity & platform, float ydec) {
 		
 		float miny = 9999999.f;
 		float maxy = -9999999.f;
-		for(size_t ii = 0; ii < platform.obj->vertexWorldPositions.size(); ii++) {
-			miny = std::min(miny, platform.obj->vertexWorldPositions[ii].v.y);
-			maxy = std::max(maxy, platform.obj->vertexWorldPositions[ii].v.y);
+		for(const EERIE_VERTEX & vertex : platform.obj->vertexWorldPositions) {
+			miny = std::min(miny, vertex.v.y);
+			maxy = std::max(maxy, vertex.v.y);
 		}
 		
 		float posy = (&entity == entities.player()) ? player.basePosition().y : entity.pos.y;
