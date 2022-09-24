@@ -48,9 +48,9 @@ bool IniKey::getValue(bool defaultValue) const {
 const IniKey * IniSection::getKey(std::string_view name) const {
 	
 	// Try to match the key to one in the section
-	for(iterator i = begin(); i != end(); ++i) {
-		if(i->getName() == name) { // If the key name matches that specified
-			return &*i;
+	for(const IniKey & key : keys) {
+		if(key.getName() == name) { // If the key name matches that specified
+			return &key;
 		}
 	}
 	
