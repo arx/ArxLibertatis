@@ -85,17 +85,6 @@ extern bool REQUEST_SPEECH_SKIP;
 const size_t MAX_ASPEECH = 100;
 static Speech g_aspeech[MAX_ASPEECH];
 
-bool ARX_SPEECH_playerNotSpeaking() {
-	bool bOk = true;
-	
-	for(size_t i = 0; i < MAX_ASPEECH; i++) {
-		if(g_aspeech[i].exist && (g_aspeech[i].io == entities.player())) {
-			bOk = false;
-		}
-	}
-	return bOk;
-}
-
 Speech * getSpeechForEntity(const Entity & entity) {
 	
 	for(Speech & speech : g_aspeech) {
