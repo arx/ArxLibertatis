@@ -1000,11 +1000,7 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 		
 	}
 	
-	if(count > 3 && (entity.ioflags & IO_FIX)) {
-		return true;
-	}
-	
-	return false;
+	return (count > 3 && (entity.ioflags & IO_FIX));
 }
 
 //-----------------------------------------------------------------------------
