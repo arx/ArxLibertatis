@@ -487,6 +487,6 @@ void ARX_THROWN_OBJECT_Manage(GameDuration timeDelta) {
 		ARX_THROWN_OBJECT_ManageProjectile(projectile, timeDelta);
 	}
 	
-	util::unordered_remove_if(g_projectiles, [](Projectile & projectile) { return !projectile.obj; });
+	util::unordered_remove_if(g_projectiles, [](const Projectile & projectile) { return !projectile.obj; });
 	
 }
