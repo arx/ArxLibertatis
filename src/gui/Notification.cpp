@@ -28,10 +28,8 @@
 #include "core/Localisation.h"
 #include "graphics/Draw.h"
 #include "graphics/Renderer.h"
-#include "graphics/font/Font.h"
 #include "gui/Text.h"
 #include "gui/TextManager.h"
-#include "io/log/Logger.h"
 #include "math/Rectangle.h"
 
 struct Notification {
