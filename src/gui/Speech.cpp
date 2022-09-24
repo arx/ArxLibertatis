@@ -193,13 +193,13 @@ void ARX_SPEECH_ClearIOSpeech(const Entity * entity) {
 }
 
 
-Speech * ARX_SPEECH_AddSpeech(Entity * io, std::string_view data, long mood, SpeechFlags flags) {
+Speech * ARX_SPEECH_AddSpeech(Entity & speaker, std::string_view data, long mood, SpeechFlags flags) {
 	
 	if(data.empty()) {
 		return nullptr;
 	}
 	
-	ARX_SPEECH_ClearIOSpeech(io);
+	ARX_SPEECH_ClearIOSpeech(&speaker);
 	
 	long num = ARX_SPEECH_GetFree();
 	if(num < 0) {
@@ -209,7 +209,7 @@ Speech * ARX_SPEECH_AddSpeech(Entity * io, std::string_view data, long mood, Spe
 	g_aspeech[num] = Speech();
 	g_aspeech[num].exist = 1;
 	g_aspeech[num].time_creation = g_gameTime.now();
-	g_aspeech[num].io = io; // can be nullptr
+	g_aspeech[num].io = &speaker;
 	g_aspeech[num].duration = 2s; // Minimum value
 	g_aspeech[num].flags = flags;
 	g_aspeech[num].sample = audio::SourcedSample();
@@ -233,8 +233,8 @@ Speech * ARX_SPEECH_AddSpeech(Entity * io, std::string_view data, long mood, Spe
 		if(count > 1) {
 			do {
 				variant = Random::get(1, count);
-			} while(io->lastspeechflag == variant);
-			io->lastspeechflag = checked_range_cast<short>(variant);
+			} while(speaker.lastspeechflag == variant);
+			speaker.lastspeechflag = checked_range_cast<short>(variant);
 		}
 		
 		LogDebug(" -> " << variant << " / " << count);
@@ -245,7 +245,7 @@ Speech * ARX_SPEECH_AddSpeech(Entity * io, std::string_view data, long mood, Spe
 		
 	} else {
 		
-		io->lastspeechflag = 0;
+		speaker.lastspeechflag = 0;
 		g_aspeech[num].text = getLocalised(data, "\x01");
 		if(g_aspeech[num].text == "\x01") {
 			g_aspeech[num].text.clear();
@@ -255,14 +255,14 @@ Speech * ARX_SPEECH_AddSpeech(Entity * io, std::string_view data, long mood, Spe
 		                                   GameDuration(s64(g_aspeech[num].text.length() + 1) * 100ms));
 	}
 	
-	Entity * source = (g_aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE) ? nullptr : io;
+	Entity * source = (g_aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE) ? nullptr : &speaker;
 	g_aspeech[num].sample = ARX_SOUND_PlaySpeech(sample, nullptr, source);
 	
 	// TODO Next lines must be removed (use callback instead)
 	g_aspeech[num].duration = ARX_SOUND_GetDuration(g_aspeech[num].sample.getSampleId());
 	
-	if((io->ioflags & IO_NPC) && !(g_aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE)) {
-		g_aspeech[num].duration = g_aspeech[num].duration / io->_npcdata->speakpitch;
+	if((speaker.ioflags & IO_NPC) && !(g_aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE)) {
+		g_aspeech[num].duration = g_aspeech[num].duration / speaker._npcdata->speakpitch;
 	}
 	
 	if(g_aspeech[num].duration < 500ms) {
