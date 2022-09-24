@@ -174,7 +174,8 @@ static void endSpeech(Speech & speech) {
 	
 	ARX_SPEECH_Release(speech);
 	
-	if(script && ValidIOAddress(scriptEntity)) {
+	if(script) {
+		arx_assert(ValidIOAddress(scriptEntity));
 		ScriptEvent::resume(script, scriptEntity, scriptPos);
 	}
 	
