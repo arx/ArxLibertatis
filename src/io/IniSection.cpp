@@ -37,12 +37,14 @@ float IniKey::getValue(float defaultValue) const {
 
 bool IniKey::getValue(bool defaultValue) const {
 	
-	if("false" == value || "0" == value)
+	if("false" == value || "0" == value) {
 		return false;
-	else if("true" == value || "1" == value)
+	} else if("true" == value || "1" == value) {
 		return true;
-	else
+	} else {
 		return defaultValue;
+	}
+	
 }
 
 const IniKey * IniSection::getKey(std::string_view name) const {
