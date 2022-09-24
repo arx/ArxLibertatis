@@ -150,6 +150,14 @@ void ARX_SPEECH_ReleaseIOSpeech(const Entity & entity) {
 		ARX_SPEECH_Release(*speech);
 	}
 	
+	for(Speech & speech : g_aspeech) {
+		if(speech.ioscript == &entity) {
+			speech.ioscript = nullptr;
+			speech.es = nullptr;
+			speech.scrpos = 0;
+		}
+	}
+	
 }
 
 void ARX_SPEECH_Reset() {
