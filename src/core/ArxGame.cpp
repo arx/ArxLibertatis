@@ -723,7 +723,6 @@ bool ArxGame::initGame()
 	player = ARXCHARACTER();
 	ARX_PLAYER_InitPlayer();
 	
-	ARX_SPEECH_FirstInit();
 	notification_init();
 	notification_ClearAll();
 	RemoveQuakeFX();

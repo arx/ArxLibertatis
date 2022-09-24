@@ -140,7 +140,6 @@ struct Speech {
 	
 };
 
-void ARX_SPEECH_FirstInit();
 void ARX_SPEECH_Reset();
 void ARX_SPEECH_Update();
 

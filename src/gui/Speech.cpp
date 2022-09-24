@@ -108,12 +108,6 @@ static void ARX_CONVERSATION_CheckAcceleratedSpeech() {
 	}
 }
 
-void ARX_SPEECH_FirstInit() {
-	for(size_t i = 0 ; i < MAX_ASPEECH ; i++) {
-		g_aspeech[i] = Speech();
-	}
-}
-
 static long ARX_SPEECH_GetFree() {
 	
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
