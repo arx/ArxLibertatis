@@ -1840,7 +1840,7 @@ static void PlayerMovementIterate(float DeltaTime) {
 				if(t >= 0 && t <= 350ms) {
 					REQUEST_JUMP = 0;
 					spawnAudibleSound(player.pos, *entities.player());
-					ARX_SPEECH_Launch_No_Unicode_Seek("player_jump", entities.player());
+					ARX_SPEECH_AddSpeech(entities.player(), "player_jump", ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
 					player.onfirmground = false;
 					player.jumpphase = JumpStart;
 				}
