@@ -112,7 +112,7 @@ void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & entity, Vec3f & force) {
 		}
 		
 		float attenuation = 1.f - (distance / attractor.radius);
-		force += glm::normalize(source->pos - entity.pos) * (attractor.power * attenuation * 0.01f);
+		force += glm::normalize(source->pos - entity.pos) * (attractor.power * attenuation);
 		
 	}
 	

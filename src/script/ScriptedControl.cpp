@@ -105,7 +105,7 @@ public:
 		
 		DebugScript(' ' << target << ' ' << val << ' ' << radius);
 		
-		ARX_SPECIAL_ATTRACTORS_Add((t == nullptr) ? EntityHandle() : t->index(), val, radius);
+		ARX_SPECIAL_ATTRACTORS_Add((t == nullptr) ? EntityHandle() : t->index(), val * 0.01f, radius);
 		
 		return Success;
 	}
