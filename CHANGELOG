@@ -51,6 +51,7 @@ Modding:
 * Added support for creating items without an icon existing at the same path as the script
 * Added support for calling the `closestealbag` command from non-NPC entities
 * Added support for fractional intervals in the `timer` command
+* Added support for more than 16 active attractors
 * Fixed the ^$objontop script variable to not have a leading space and don't repeat 'player'
 
 Debugging:

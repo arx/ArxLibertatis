@@ -46,10 +46,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Attractors.h"
 
+#include <vector>
+
 #include "game/Entity.h"
 #include "game/EntityManager.h"
 #include "graphics/Math.h"
 #include "scene/Interactive.h"
+#include "util/Range.h"
 
 struct Attractor {
 	EntityHandle ionum;
@@ -57,64 +60,41 @@ struct Attractor {
 	float radius;
 };
 
-static const size_t MAX_ATTRACTORS = 16;
-static Attractor attractors[MAX_ATTRACTORS];
+static std::vector<Attractor> g_attractors;
 
 void ARX_SPECIAL_ATTRACTORS_Reset() {
-	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
-		attractors[i].ionum = EntityHandle();
-	}
+	g_attractors.clear();
 }
 
-static void ARX_SPECIAL_ATTRACTORS_Remove(EntityHandle ionum) {
-	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
-		if(attractors[i].ionum == ionum) {
-			attractors[i].ionum = EntityHandle();
-		}
-	}
-}
-
-static long ARX_SPECIAL_ATTRACTORS_Exist(EntityHandle ionum) {
-	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
-		if(attractors[i].ionum == ionum) {
-			return i;
-		}
-	}
-	return -1;
-}
-
-bool ARX_SPECIAL_ATTRACTORS_Add(EntityHandle ionum, float power, float radius) {
+void ARX_SPECIAL_ATTRACTORS_Add(EntityHandle ionum, float power, float radius) {
 	
 	if(power == 0.f) {
-		ARX_SPECIAL_ATTRACTORS_Remove(ionum);
-		return true;
+		util::unordered_remove_if(g_attractors, [ionum](const auto & entry) { return entry.ionum == ionum; });
+		return;
 	}
 	
-	if(long tst = ARX_SPECIAL_ATTRACTORS_Exist(ionum); tst != -1) {
-		attractors[tst].power = power;
-		attractors[tst].radius = radius;
-		return false;
-	}
-	
-	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
-		if(attractors[i].ionum == EntityHandle()) {
-			attractors[i].ionum = ionum;
-			attractors[i].power = power;
-			attractors[i].radius = radius;
-			return true;
+	for(Attractor & attractor : g_attractors) {
+		if(attractor.ionum == ionum) {
+			attractor.power = power;
+			attractor.radius = radius;
+			return;
 		}
 	}
 	
-	return false;
+	Attractor & attractor = g_attractors.emplace_back();
+	attractor.ionum = ionum;
+	attractor.power = power;
+	attractor.radius = radius;
+	
 }
 
 void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & ioo, Vec3f & force) {
 	
 	force = Vec3f(0.f);
 	
-	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
+	for(auto & attractor : g_attractors) {
 		
-		Entity * iop = entities.get(attractors[i].ionum);
+		Entity * iop = entities.get(attractor.ionum);
 		if(!iop) {
 			continue;
 		}
@@ -126,12 +106,12 @@ void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & ioo, Vec3f & force) {
 			continue;
 		}
 		
-		float power = attractors[i].power;
+		float power = attractor.power;
 		float dist = fdist(ioo.pos, io.pos);
 		
 		if(dist > (ioo.physics.cyl.radius + io.physics.cyl.radius + 10.f) || power < 0.f) {
 			
-			float max_radius = attractors[i].radius;
+			float max_radius = attractor.radius;
 			
 			if(dist < max_radius) {
 				float ratio_dist = 1.f - (dist / max_radius);
@@ -143,4 +123,5 @@ void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & ioo, Vec3f & force) {
 		}
 		
 	}
+	
 }
