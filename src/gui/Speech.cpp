@@ -116,7 +116,9 @@ static void releaseSpeech(Speech & speech) {
 	ARX_SOUND_Stop(speech.sample);
 	speech.sample = audio::SourcedSample();
 	
-	if(ValidIOAddress(speech.speaker) && speech.speaker->animlayer[2].cur_anim) {
+	arx_assert(ValidIOAddress(speech.speaker));
+	
+	if(speech.speaker->animlayer[2].cur_anim) {
 		AcquireLastAnim(speech.speaker);
 		speech.speaker->animlayer[2].cur_anim = nullptr;
 	}
@@ -145,7 +147,6 @@ void ARX_SPEECH_ReleaseIOSpeech(const Entity & entity) {
 void ARX_SPEECH_Reset() {
 	
 	for(Speech & speech : g_aspeech) {
-		arx_assert(speech.speaker);
 		releaseSpeech(speech);
 	}
 	
@@ -262,7 +263,7 @@ void ARX_SPEECH_Update() {
 	
 	for(Speech & speech : g_aspeech) {
 		
-		arx_assert(speech.speaker);
+		arx_assert(ValidIOAddress(speech.speaker));
 		
 		if(speech.flags & ARX_SPEECH_FLAG_OFFVOICE) {
 			ARX_SOUND_RefreshSpeechPosition(speech.sample);
@@ -270,7 +271,7 @@ void ARX_SPEECH_Update() {
 			ARX_SOUND_RefreshSpeechPosition(speech.sample, speech.speaker);
 		}
 		
-		if((speech.speaker != entities.player() || EXTERNALVIEW) && ValidIOAddress(speech.speaker)) {
+		if(speech.speaker != entities.player() || EXTERNALVIEW) {
 			if(!speech.speaker->anims[speech.mood]) {
 				speech.mood = ANIM_TALK_NEUTRAL;
 			}
