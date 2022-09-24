@@ -329,13 +329,12 @@ public:
 		
 		Entity * speaker = context.getEntity();
 		
-		bool unbreakable = false;
-		SpeechFlags voixoff = 0;
+		SpeechFlags flags = 0;
 		AnimationNumber mood = ANIM_TALK_NEUTRAL;
 		HandleFlags("tuphaoc") {
 			
-			voixoff |= (flg & flag('t')) ? ARX_SPEECH_FLAG_NOTEXT : SpeechFlags(0);
-			unbreakable = test_flag(flg, 'u');
+			flags |= (flg & flag('t')) ? ARX_SPEECH_FLAG_NOTEXT : SpeechFlags(0);
+			flags |= (flg & flag('u')) ? ARX_SPEECH_FLAG_UNBREAKABLE : SpeechFlags(0);
 			if(flg & flag('p')) {
 				speaker = entities.player();
 			}
@@ -348,7 +347,7 @@ public:
 			
 			// Crash when we set speak pitch to 1,
 			// Variable use for a division, 0 is not possible
-			voixoff |= (flg & flag('o')) ? ARX_SPEECH_FLAG_OFFVOICE : SpeechFlags(0);
+			flags |= (flg & flag('o')) ? ARX_SPEECH_FLAG_OFFVOICE : SpeechFlags(0);
 			
 			if(flg & flag('c')) {
 				parseCinematicSpeech(acs, context, speaker);
@@ -379,10 +378,10 @@ public:
 		
 		
 		if(!cinematicBorder.isActive()) {
-			voixoff |= ARX_SPEECH_FLAG_NOTEXT;
+			flags |= ARX_SPEECH_FLAG_NOTEXT;
 		}
 		
-		Speech * speech = ARX_SPEECH_AddSpeech(speaker, data, mood, voixoff);
+		Speech * speech = ARX_SPEECH_AddSpeech(speaker, data, mood, flags);
 		if(!speech) {
 			return Failed;
 		}
@@ -393,9 +392,6 @@ public:
 			speech->scrpos = onspeechend;
 			speech->es = context.getScript();
 			speech->ioscript = context.getEntity();
-			if(unbreakable) {
-				speech->flags |= ARX_SPEECH_FLAG_UNBREAKABLE;
-			}
 			speech->cine = acs;
 		}
 		
