@@ -55,7 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "util/Range.h"
 
 struct Attractor {
-	EntityHandle ionum;
+	EntityHandle source;
 	float power;
 	float radius;
 };
@@ -69,12 +69,12 @@ void ARX_SPECIAL_ATTRACTORS_Reset() {
 void ARX_SPECIAL_ATTRACTORS_Add(EntityHandle ionum, float power, float radius) {
 	
 	if(power == 0.f) {
-		util::unordered_remove_if(g_attractors, [ionum](const auto & entry) { return entry.ionum == ionum; });
+		util::unordered_remove_if(g_attractors, [ionum](const auto & entry) { return entry.source == ionum; });
 		return;
 	}
 	
 	for(Attractor & attractor : g_attractors) {
-		if(attractor.ionum == ionum) {
+		if(attractor.source == ionum) {
 			attractor.power = power;
 			attractor.radius = radius;
 			return;
@@ -82,7 +82,7 @@ void ARX_SPECIAL_ATTRACTORS_Add(EntityHandle ionum, float power, float radius) {
 	}
 	
 	Attractor & attractor = g_attractors.emplace_back();
-	attractor.ionum = ionum;
+	attractor.source = ionum;
 	attractor.power = power;
 	attractor.radius = radius;
 	
@@ -94,7 +94,7 @@ void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & ioo, Vec3f & force) {
 	
 	for(auto & attractor : g_attractors) {
 		
-		Entity * iop = entities.get(attractor.ionum);
+		Entity * iop = entities.get(attractor.source);
 		if(!iop) {
 			continue;
 		}
