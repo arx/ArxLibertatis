@@ -258,7 +258,6 @@ else(MSVC)
 		add_cxxflag("-Wshift-overflow")
 		add_cxxflag("-Wstrict-null-sentinel")
 		add_cxxflag("-Wstringop-overflow=2")
-		add_cxxflag("-Wsuggest-override")
 		add_cxxflag("-Wundef")
 		add_cxxflag("-Wunused-const-variable=1")
 		add_cxxflag("-Wunused-macros")
@@ -272,6 +271,12 @@ else(MSVC)
 		
 		if(NOT UNITY_BUILD)
 			add_cxxflag("-Wheader-hygiene")
+		endif()
+		
+		if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9)
+			# GCC <= 8 wants override even for member functions declared final
+		else()
+			add_cxxflag("-Wsuggest-override")
 		endif()
 		
 		if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8)
