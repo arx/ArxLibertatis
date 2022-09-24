@@ -19,7 +19,9 @@
 
 #include "gui/Notification.h"
 
+#include <algorithm>
 #include <utility>
+#include <vector>
 
 #include "core/Core.h"
 #include "core/GameTime.h"
@@ -38,109 +40,53 @@ struct Notification {
 	GameDuration duration;
 	std::string text;
 	
-	void clear() {
-		timecreation = 0;
-		duration = 0;
-		text.clear();
-	}
-	
 };
 
-static const size_t MAX_SPEECH = 9;
-static Notification g_notification[MAX_SPEECH];
+static std::vector<Notification> g_notifications;
 
 extern TextureContainer * arx_logo_tc;
 
-void notification_init() {
-
-	for(size_t i = 0 ; i < MAX_SPEECH ; i++ )
-		g_notification[i].clear();
-}
-
-static void ARX_SPEECH_MoveUp() {
-	
-	if(g_notification[0].timecreation != 0) {
-		g_notification[0].text.clear();
-	}
-	
-	for(size_t j = 0; j < MAX_SPEECH - 1; j++) {
-		g_notification[j] = g_notification[j + 1];
-	}
-	
-	g_notification[MAX_SPEECH - 1].clear();
-	
-}
-
-void notification_ClearAll()
-{
-	for(size_t i = 0; i < MAX_SPEECH; i++) {
-		
-		if(g_notification[i].timecreation == 0) {
-			continue;
-		}
-		
-		g_notification[i].clear();
-	}
+void notification_ClearAll() {
+	g_notifications.clear();
 }
 
 void notification_add(std::string && text) {
 	
-	if(text.empty())
-		return;
-	
-	GameInstant now = std::max(g_gameTime.now(), GameInstant(0) + 1ms);
-	
-	if(g_notification[MAX_SPEECH - 1].timecreation != 0) {
-		ARX_SPEECH_MoveUp();
-	}
-	
-	for(size_t i = 0; i < MAX_SPEECH; i++) {
-		
-		if(g_notification[i].timecreation != 0) {
-			continue;
-		}
-		
-		// Sets creation time
-		g_notification[i].timecreation = now;
-		g_notification[i].duration = 2s + getLocalised(text).length() * 60ms;
-		g_notification[i].text = std::move(text);
+	if(text.empty()) {
 		return;
 	}
 	
-	LogInfo << "Failed to add speech: " << text;
-}
-
-static bool isLastSpeech(size_t index) {
-	
-	for(size_t i = index + 1; i < MAX_SPEECH; i++) {
-		
-		if(g_notification[i].timecreation == 0) {
-			continue;
-		}
-		
-		if(!g_notification[i].text.empty())
-			return false;
+	if(g_notifications.size() > 3) {
+		g_notifications.erase(g_notifications.begin());
 	}
 	
-	return true;
+	Notification & notification = g_notifications.emplace_back();
+	notification.timecreation = g_gameTime.now();
+	notification.duration = 2s + getLocalised(text).length() * 60ms;
+	notification.text = std::move(text);
+	
 }
 
-static void ARX_SPEECH_Render() {
+void notification_check() {
+	
+	g_notifications.erase(std::remove_if(g_notifications.begin(), g_notifications.end(),
+	                      [](const Notification & notification) {
+		return g_gameTime.now() > notification.timecreation  + notification.duration;
+	}), g_notifications.end());
+	
+	if(g_notifications.empty()) {
+		return;
+	}
+	
+	pTextManage->Clear();
 	
 	long igrec = 14;
 	
-	Vec2i sSize = hFontInGame->getTextSize("p");
-	sSize.y *= 3;
-	
-	int iEnd = igrec + sSize.y;
-	
 	UseRenderState state(render2D());
 	
-	for(size_t i = 0; i < MAX_SPEECH; i++) {
+	for(Notification & notification : g_notifications) {
 		
-		if(g_notification[i].timecreation == 0 || g_notification[i].text.empty()) {
-			continue;
-		}
+		arx_assert(notification.timecreation != 0 && !notification.text.empty());
 		
 		Rectf rect(
 			Vec2f(120 * g_sizeRatio.x - 16 * minSizeRatio(), igrec),
@@ -151,43 +97,9 @@ static void ARX_SPEECH_Render() {
 		EERIEDrawBitmap(rect, .00001f, arx_logo_tc, Color::white);
 		
 		igrec += ARX_UNICODE_DrawTextInRect(hFontInGame, Vec2f(120.f * g_sizeRatio.x, igrec), 500 * g_sizeRatio.x,
-		                                    std::string(" ") += getLocalised(g_notification[i].text),
+		                                    std::string(" ") += getLocalised(notification.text),
 		                                    Color::white, nullptr);
 		
-		if(igrec > iEnd && !isLastSpeech(i)) {
-			ARX_SPEECH_MoveUp();
-			break;
-		}
 	}
 	
-}
-
-void notification_check()
-{
-	bool bClear = false;
-	long exist = 0;
-
-	for(size_t i = 0; i < MAX_SPEECH; i++) {
-		
-		if(g_notification[i].timecreation == 0) {
-			continue;
-		}
-		
-		GameDuration elapsed = g_gameTime.now() - g_notification[i].timecreation;
-		if(elapsed > g_notification[i].duration) {
-			ARX_SPEECH_MoveUp();
-			i--;
-		} else {
-			exist++;
-		}
-
-		bClear = true;
-	}
-
-	if(bClear && pTextManage) {
-		pTextManage->Clear();
-	}
-
-	if(exist)
-		ARX_SPEECH_Render();
 }

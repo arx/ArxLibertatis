@@ -22,7 +22,6 @@
 
 #include <string>
 
-void notification_init();
 void notification_ClearAll();
 
 /*!
