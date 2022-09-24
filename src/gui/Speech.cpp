@@ -360,34 +360,39 @@ void ARX_SPEECH_Update() {
 		
 		height += fZoneClippHeight;
 		
-		if(speech.fDeltaY <= height) {
-			float fDTime;
+		if(speech.fDeltaY > height) {
+			continue;
+		}
+		
+		float fDTime;
+		
+		if(speech.sample != audio::SourcedSample()) {
 			
-			if(speech.sample != audio::SourcedSample()) {
-				
-				GameDuration duration = ARX_SOUND_GetDuration(speech.sample.getSampleId());
-				if(duration == 0) {
-					duration = 4s;
-				}
-				
-				fDTime = height * (g_gameTime.lastFrameDuration() / duration);
-				float fTimeOneLine = sSize.y * fDTime;
-				
-				if(speech.iTimeScroll >= fTimeOneLine) {
-					float fResteLine = sSize.y - speech.fPixelScroll;
-					float fTimePlus = fResteLine * (g_gameTime.lastFrameDuration() / duration);
-					fDTime -= fTimePlus;
-					speech.fPixelScroll = 0.f;
-					speech.iTimeScroll = 0;
-				}
-				speech.iTimeScroll += checked_range_cast<int>(g_framedelay);
-			} else {
-				fDTime = height * (g_gameTime.lastFrameDuration() / 4s);
+			GameDuration duration = ARX_SOUND_GetDuration(speech.sample.getSampleId());
+			if(duration == 0) {
+				duration = 4s;
 			}
 			
-			speech.fDeltaY += fDTime;
-			speech.fPixelScroll += fDTime;
+			fDTime = height * (g_gameTime.lastFrameDuration() / duration);
+			float fTimeOneLine = sSize.y * fDTime;
+			
+			if(speech.iTimeScroll >= fTimeOneLine) {
+				float fResteLine = sSize.y - speech.fPixelScroll;
+				float fTimePlus = fResteLine * (g_gameTime.lastFrameDuration() / duration);
+				fDTime -= fTimePlus;
+				speech.fPixelScroll = 0.f;
+				speech.iTimeScroll = 0;
+			}
+			speech.iTimeScroll += checked_range_cast<int>(g_framedelay);
+			
+		} else {
+			
+			fDTime = height * (g_gameTime.lastFrameDuration() / 4s);
+			
 		}
+		
+		speech.fDeltaY += fDTime;
+		speech.fPixelScroll += fDTime;
 		
 	}
 	
