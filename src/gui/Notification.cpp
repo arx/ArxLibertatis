@@ -36,9 +36,8 @@
 
 struct Notification {
 	
-	GameInstant timecreation;
-	GameDuration duration;
 	std::string text;
+	GameInstant deadline;
 	
 };
 
@@ -61,8 +60,7 @@ void notification_add(std::string && text) {
 	}
 	
 	Notification & notification = g_notifications.emplace_back();
-	notification.timecreation = g_gameTime.now();
-	notification.duration = 2s + getLocalised(text).length() * 60ms;
+	notification.deadline = g_gameTime.now() + 2s + getLocalised(text).length() * 60ms;
 	notification.text = std::move(text);
 	
 }
@@ -70,9 +68,8 @@ void notification_add(std::string && text) {
 void notification_check() {
 	
 	g_notifications.erase(std::remove_if(g_notifications.begin(), g_notifications.end(),
-	                      [](const Notification & notification) {
-		return g_gameTime.now() > notification.timecreation  + notification.duration;
-	}), g_notifications.end());
+	                                     [](const auto & entry) { return g_gameTime.now() > entry.deadline; }),
+	                      g_notifications.end());
 	
 	if(g_notifications.empty()) {
 		return;
@@ -86,7 +83,7 @@ void notification_check() {
 	
 	for(Notification & notification : g_notifications) {
 		
-		arx_assert(notification.timecreation != 0 && !notification.text.empty());
+		arx_assert(!notification.text.empty());
 		
 		Rectf rect(
 			Vec2f(120 * g_sizeRatio.x - 16 * minSizeRatio(), igrec),
