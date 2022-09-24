@@ -96,13 +96,15 @@ bool ARX_SPEECH_playerNotSpeaking() {
 	return bOk;
 }
 
-bool ARX_SPEECH_isEntitySpeaking(const Entity * entity) {
-	for(size_t i = 0; i < MAX_ASPEECH; i++) {
-		if(g_aspeech[i].exist && entity == g_aspeech[i].io) {
-			return true;
+Speech * getSpeechForEntity(const Entity & entity) {
+	
+	for(Speech & speech : g_aspeech) {
+		if(speech.exist && speech.io == &entity) {
+			return &speech;
 		}
 	}
-	return false;
+	
+	return nullptr;
 }
 
 static void ARX_CONVERSATION_CheckAcceleratedSpeech() {

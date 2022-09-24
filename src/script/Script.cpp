@@ -947,11 +947,9 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			}
 			
 			if(boost::starts_with(name, "^speaking")) {
-				if(context.getEntity()) {
-					if(ARX_SPEECH_isEntitySpeaking(context.getEntity())) {
-						*lcontent = 1;
-						return TYPE_LONG;
-					}
+				if(context.getEntity() && getSpeechForEntity(*context.getEntity())) {
+					*lcontent = 1;
+					return TYPE_LONG;
 				}
 				*lcontent = 0;
 				return TYPE_LONG;

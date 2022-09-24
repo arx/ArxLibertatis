@@ -144,7 +144,8 @@ void ARX_SPEECH_Reset();
 void ARX_SPEECH_Update();
 
 bool ARX_SPEECH_playerNotSpeaking();
-bool ARX_SPEECH_isEntitySpeaking(const Entity * entity);
+
+Speech * getSpeechForEntity(const Entity & entity);
 
 /*!
  * Add an entry to the conversation view.
