@@ -94,7 +94,7 @@ struct CinematicSpeech {
 		, ionum(EntityHandle_Player) // TODO is this correct?
 		, pos1(0.f)
 		, pos2(0.f)
-	{}
+	{ }
 	
 	void clear() {
 		type = ARX_CINE_SPEECH_NONE;
