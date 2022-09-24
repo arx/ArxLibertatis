@@ -1316,7 +1316,6 @@ void ArxGame::speechControlledCinematic() {
 	}
 	
 	const CinematicSpeech & acs = speech->cine;
-	const Entity * io = speech->io;
 	
 	float rtime = glm::clamp((g_gameTime.now() - speech->time_creation) / speech->duration, 0.f, 1.f);
 	float itime = 1.f - rtime;
@@ -1343,9 +1342,9 @@ void ArxGame::speechControlledCinematic() {
 			float distance = acs.startpos * itime + acs.endpos * rtime;
 			Vec3f targetpos = acs.pos1;
 			
-			g_playerCamera.m_pos = angleToVectorXZ(io->angle.getYaw() + beta) * distance;
-			g_playerCamera.m_pos.y = std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() + alpha))) * distance;
-			g_playerCamera.m_pos += targetpos;
+			Vec3f vector = angleToVectorXZ(speech->io->angle.getYaw() + beta);
+			vector.y = std::sin(glm::radians(MAKEANGLE(speech->io->angle.getPitch() + alpha)));
+			g_playerCamera.m_pos = targetpos + vector * distance;
 			
 			g_playerCamera.lookAt(targetpos);
 			
