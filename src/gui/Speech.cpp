@@ -128,10 +128,6 @@ static long ARX_SPEECH_GetFree() {
 
 static void ARX_SPEECH_Release(Speech & speech) {
 	
-	if(!speech.exist) {
-		return;
-	}
-	
 	ARX_SOUND_Stop(speech.sample);
 	speech.sample = audio::SourcedSample();
 	
@@ -162,7 +158,9 @@ void ARX_SPEECH_ReleaseIOSpeech(const Entity & entity) {
 
 void ARX_SPEECH_Reset() {
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
-		ARX_SPEECH_Release(g_aspeech[i]);
+		if(g_aspeech[i].exist) {
+			ARX_SPEECH_Release(g_aspeech[i]);
+		}
 	}
 }
 
