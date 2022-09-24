@@ -135,34 +135,37 @@ static long ARX_SPEECH_GetFree() {
 	return -1;
 }
 
-static void ARX_SPEECH_Release(long i) {
+static void ARX_SPEECH_Release(Speech & speech) {
 	
-	if(g_aspeech[i].exist) {
-		
-		ARX_SOUND_Stop(g_aspeech[i].sample);
-		g_aspeech[i].sample = audio::SourcedSample();
-		
-		if(ValidIOAddress(g_aspeech[i].io) && g_aspeech[i].io->animlayer[2].cur_anim) {
-			AcquireLastAnim(g_aspeech[i].io);
-			g_aspeech[i].io->animlayer[2].cur_anim = nullptr;
-		}
-		
-		g_aspeech[i] = Speech();
+	if(!speech.exist) {
+		return;
 	}
+	
+	ARX_SOUND_Stop(speech.sample);
+	speech.sample = audio::SourcedSample();
+	
+	if(ValidIOAddress(speech.io) && speech.io->animlayer[2].cur_anim) {
+		AcquireLastAnim(speech.io);
+		speech.io->animlayer[2].cur_anim = nullptr;
+	}
+	
+	speech = Speech();
+	
 }
 
 void ARX_SPEECH_ReleaseIOSpeech(const Entity * entity) {
 	
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
 		if(g_aspeech[i].exist && g_aspeech[i].io == entity) {
-			ARX_SPEECH_Release(i);
+			ARX_SPEECH_Release(g_aspeech[i]);
 		}
 	}
+	
 }
 
 void ARX_SPEECH_Reset() {
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
-		ARX_SPEECH_Release(i);
+		ARX_SPEECH_Release(g_aspeech[i]);
 	}
 }
 
@@ -181,7 +184,7 @@ void ARX_SPEECH_ClearIOSpeech(const Entity * entity) {
 		const EERIE_SCRIPT * es = g_aspeech[i].es;
 		Entity * scriptEntity = g_aspeech[i].ioscript;
 		size_t scrpos = g_aspeech[i].scrpos;
-		ARX_SPEECH_Release(i);
+		ARX_SPEECH_Release(g_aspeech[i]);
 		
 		if(es && ValidIOAddress(scriptEntity)) {
 			ScriptEvent::resume(es, scriptEntity, scrpos);
@@ -272,48 +275,50 @@ Speech * ARX_SPEECH_AddSpeech(Entity * io, std::string_view data, long mood, Spe
 void ARX_SPEECH_Update() {
 	
 	GameInstant now = g_gameTime.now();
-
-	if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS)
+	
+	if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS) {
 		ARX_CONVERSATION_CheckAcceleratedSpeech();
-
-	for(size_t i = 0; i < MAX_ASPEECH; i++) {
-		if(!g_aspeech[i].exist)
+	}
+	
+	for(Speech & speech : g_aspeech) {
+		
+		if(!speech.exist) {
 			continue;
-
-		Entity * io = g_aspeech[i].io;
-
-		// updates animations
-		if(io) {
-			if(g_aspeech[i].flags & ARX_SPEECH_FLAG_OFFVOICE)
-				ARX_SOUND_RefreshSpeechPosition(g_aspeech[i].sample);
-			else
-				ARX_SOUND_RefreshSpeechPosition(g_aspeech[i].sample, io);
+		}
+		
+		if(Entity * speaker = speech.io) {
 			
-			if((io != entities.player() || EXTERNALVIEW) && ValidIOAddress(io)) {
-				
-				if(!io->anims[g_aspeech[i].mood])
-					g_aspeech[i].mood = ANIM_TALK_NEUTRAL;
-				
-				ANIM_HANDLE * anim = io->anims[g_aspeech[i].mood];
-				if(anim) {
-					AnimLayer & layer2 = io->animlayer[2];
+			if(speech.flags & ARX_SPEECH_FLAG_OFFVOICE) {
+				ARX_SOUND_RefreshSpeechPosition(speech.sample);
+			} else {
+				ARX_SOUND_RefreshSpeechPosition(speech.sample, speaker);
+			}
+			
+			if((speaker != entities.player() || EXTERNALVIEW) && ValidIOAddress(speaker)) {
+				if(!speaker->anims[speech.mood]) {
+					speech.mood = ANIM_TALK_NEUTRAL;
+				}
+				if(ANIM_HANDLE * anim = speaker->anims[speech.mood]) {
+					AnimLayer & layer2 = speaker->animlayer[2];
 					if(layer2.cur_anim != anim || (layer2.flags & EA_ANIMEND)) {
-						changeAnimation(io, 2, anim);
+						changeAnimation(speaker, 2, anim);
 					}
 				}
 			}
+			
 		}
-
+		
 		// checks finished speech
-		if(now >= g_aspeech[i].time_creation + g_aspeech[i].duration) {
-			const EERIE_SCRIPT * es = g_aspeech[i].es;
-			Entity * scriptEntity = g_aspeech[i].ioscript;
-			size_t scrpos = g_aspeech[i].scrpos;
-			ARX_SPEECH_Release(i);
+		if(now >= speech.time_creation + speech.duration) {
+			const EERIE_SCRIPT * es = speech.es;
+			Entity * scriptEntity = speech.ioscript;
+			size_t scrpos = speech.scrpos;
+			ARX_SPEECH_Release(speech);
 			if(es && ValidIOAddress(scriptEntity)) {
 				ScriptEvent::resume(es, scriptEntity, scrpos);
 			}
 		}
+		
 	}
 	
 	if(!cinematicBorder.isActive() || cinematicBorder.CINEMA_DECAL < 100.f) {
