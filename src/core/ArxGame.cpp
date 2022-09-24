@@ -1310,9 +1310,11 @@ void ArxGame::updateFirstPersonCamera() {
 void ArxGame::speechControlledCinematic() {
 	
 	Speech * speech = getCinematicSpeech();
-	if(!speech || !speech->io) {
+	if(!speech) {
 		return;
 	}
+	
+	arx_assert(speech->speaker);
 	
 	const CinematicSpeech & acs = speech->cine;
 	
@@ -1340,8 +1342,8 @@ void ArxGame::speechControlledCinematic() {
 			float distance = glm::mix(acs.startpos, acs.endpos, rtime);
 			Vec3f targetpos = acs.pos1;
 			
-			Vec3f vector = angleToVectorXZ(speech->io->angle.getYaw() + beta);
-			vector.y = std::sin(glm::radians(MAKEANGLE(speech->io->angle.getPitch() + alpha)));
+			Vec3f vector = angleToVectorXZ(speech->speaker->angle.getYaw() + beta);
+			vector.y = std::sin(glm::radians(MAKEANGLE(speech->speaker->angle.getPitch() + alpha)));
 			g_playerCamera.m_pos = targetpos + vector * distance;
 			
 			g_playerCamera.lookAt(targetpos);

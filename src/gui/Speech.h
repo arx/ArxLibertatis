@@ -118,7 +118,7 @@ struct Speech {
 	int iTimeScroll;
 	float fPixelScroll;
 	std::string text;
-	Entity * io;
+	Entity * speaker;
 	CinematicSpeech cine;
 	
 	Entity * scriptEntity;
@@ -130,7 +130,7 @@ struct Speech {
 		, fDeltaY(0.f)
 		, iTimeScroll(0)
 		, fPixelScroll(0.f)
-		, io(nullptr)
+		, speaker(nullptr)
 		, scriptEntity(nullptr)
 		, script(nullptr)
 		, scriptPos(0)

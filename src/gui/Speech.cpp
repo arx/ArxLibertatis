@@ -90,7 +90,7 @@ static std::vector<Speech> g_aspeech;
 
 static std::vector<Speech>::iterator getSpeechItForEntity(const Entity & entity) {
 	return std::find_if(g_aspeech.begin(), g_aspeech.end(),
-	                    [&](const Speech & speech) { return speech.io == &entity; });
+	                    [&](const Speech & speech) { return speech.speaker == &entity; });
 }
 
 Speech * getSpeechForEntity(const Entity & entity) {
@@ -116,12 +116,12 @@ static void releaseSpeech(Speech & speech) {
 	ARX_SOUND_Stop(speech.sample);
 	speech.sample = audio::SourcedSample();
 	
-	if(ValidIOAddress(speech.io) && speech.io->animlayer[2].cur_anim) {
-		AcquireLastAnim(speech.io);
-		speech.io->animlayer[2].cur_anim = nullptr;
+	if(ValidIOAddress(speech.speaker) && speech.speaker->animlayer[2].cur_anim) {
+		AcquireLastAnim(speech.speaker);
+		speech.speaker->animlayer[2].cur_anim = nullptr;
 	}
 	
-	speech.io = nullptr;
+	speech.speaker = nullptr;
 	
 }
 
@@ -145,7 +145,7 @@ void ARX_SPEECH_ReleaseIOSpeech(const Entity & entity) {
 void ARX_SPEECH_Reset() {
 	
 	for(Speech & speech : g_aspeech) {
-		arx_assert(speech.io);
+		arx_assert(speech.speaker);
 		releaseSpeech(speech);
 	}
 	
@@ -189,7 +189,7 @@ Speech * ARX_SPEECH_AddSpeech(Entity & speaker, std::string_view data, long mood
 	
 	speech = Speech();
 	speech.time_creation = g_gameTime.now();
-	speech.io = &speaker;
+	speech.speaker = &speaker;
 	speech.duration = 2s; // Minimum value
 	speech.flags = flags;
 	speech.sample = audio::SourcedSample();
@@ -262,22 +262,22 @@ void ARX_SPEECH_Update() {
 	
 	for(Speech & speech : g_aspeech) {
 		
-		arx_assert(speech.io);
+		arx_assert(speech.speaker);
 		
 		if(speech.flags & ARX_SPEECH_FLAG_OFFVOICE) {
 			ARX_SOUND_RefreshSpeechPosition(speech.sample);
 		} else {
-			ARX_SOUND_RefreshSpeechPosition(speech.sample, speech.io);
+			ARX_SOUND_RefreshSpeechPosition(speech.sample, speech.speaker);
 		}
 		
-		if((speech.io != entities.player() || EXTERNALVIEW) && ValidIOAddress(speech.io)) {
-			if(!speech.io->anims[speech.mood]) {
+		if((speech.speaker != entities.player() || EXTERNALVIEW) && ValidIOAddress(speech.speaker)) {
+			if(!speech.speaker->anims[speech.mood]) {
 				speech.mood = ANIM_TALK_NEUTRAL;
 			}
-			if(ANIM_HANDLE * anim = speech.io->anims[speech.mood]) {
-				AnimLayer & layer2 = speech.io->animlayer[2];
+			if(ANIM_HANDLE * anim = speech.speaker->anims[speech.mood]) {
+				AnimLayer & layer2 = speech.speaker->animlayer[2];
 				if(layer2.cur_anim != anim || (layer2.flags & EA_ANIMEND)) {
-					changeAnimation(speech.io, 2, anim);
+					changeAnimation(speech.speaker, 2, anim);
 				}
 			}
 		}
@@ -289,7 +289,7 @@ void ARX_SPEECH_Update() {
 		
 	}
 	
-	util::unordered_remove_if(g_aspeech, [](const Speech & speech) { return !speech.io; });
+	util::unordered_remove_if(g_aspeech, [](const Speech & speech) { return !speech.speaker; });
 	
 	if(!cinematicBorder.isActive() || cinematicBorder.CINEMA_DECAL < 100.f) {
 		return;
