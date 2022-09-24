@@ -88,36 +88,31 @@ void ARX_SPECIAL_ATTRACTORS_Add(EntityHandle ionum, float power, float radius) {
 	
 }
 
-void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & ioo, Vec3f & force) {
+void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & entity, Vec3f & force) {
 	
 	force = Vec3f(0.f);
 	
 	for(auto & attractor : g_attractors) {
 		
-		Entity * iop = entities.get(attractor.source);
-		if(!iop) {
+		const Entity * source = entities.get(attractor.source);
+		if(!source) {
 			continue;
 		}
 		
-		const Entity & io = *iop;
-		
-		if(io.show != SHOW_FLAG_IN_SCENE || (io.ioflags & IO_NO_COLLISIONS)
-			 || !(io.gameFlags & GFLAG_ISINTREATZONE)) {
+		if(source->show != SHOW_FLAG_IN_SCENE || (source->ioflags & IO_NO_COLLISIONS)
+			 || !(source->gameFlags & GFLAG_ISINTREATZONE)) {
 			continue;
 		}
 		
-		float dist = fdist(ioo.pos, io.pos);
-		
-		if(dist > (ioo.physics.cyl.radius + io.physics.cyl.radius + 10.f) || attractor.power < 0.f) {
-			
-			float max_radius = attractor.radius;
-			
-			if(dist < max_radius) {
-				float ratio_dist = 1.f - (dist / max_radius);
-				Vec3f vect = io.pos - ioo.pos;
-				force += glm::normalize(vect) * (attractor.power * ratio_dist * 0.01f);
-			}
+		float distance = fdist(entity.pos, source->pos);
+		if(distance >= attractor.radius ||
+		   (attractor.power > 0.f &&
+		    distance <= (entity.physics.cyl.radius + source->physics.cyl.radius + 10.f))) {
+			continue;
 		}
+		
+		float attenuation = 1.f - (distance / attractor.radius);
+		force += glm::normalize(source->pos - entity.pos) * (attractor.power * attenuation * 0.01f);
 		
 	}
 	
