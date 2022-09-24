@@ -386,13 +386,12 @@ public:
 			return Failed;
 		}
 		
-		size_t onspeechend = context.skipCommand();
+		speech->cine = acs;
 		
-		if(onspeechend != size_t(-1)) {
+		if(size_t onspeechend = context.skipCommand(); onspeechend != size_t(-1)) {
 			speech->scrpos = onspeechend;
 			speech->es = context.getScript();
 			speech->ioscript = context.getEntity();
-			speech->cine = acs;
 		}
 		
 		return Success;
