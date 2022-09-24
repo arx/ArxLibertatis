@@ -109,7 +109,6 @@ DECLARE_FLAGS_OPERATORS(SpeechFlags)
 
 struct Speech {
 	
-	long exist;
 	audio::SourcedSample sample;
 	long mood;
 	SpeechFlags flags;
@@ -127,8 +126,7 @@ struct Speech {
 	size_t scriptPos;
 	
 	Speech()
-		: exist(0)
-		, mood(0)
+		: mood(0)
 		, fDeltaY(0.f)
 		, iTimeScroll(0)
 		, fPixelScroll(0.f)

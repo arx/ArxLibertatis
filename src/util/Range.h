@@ -677,7 +677,7 @@ auto grid(glm::vec<3, T, Q> begin, glm::vec<3, T, Q> end) {
 }
 
 template <typename Range, typename Predicate>
-auto unordered_remove_if(Range & range, Predicate && predicate) {
+auto unordered_remove_if(Range & range, Predicate predicate) {
 	
 	auto a = range.begin();
 	auto b = range.end();
@@ -706,6 +706,17 @@ auto unordered_remove_if(Range & range, Predicate && predicate) {
 	}
 	
 	range.erase(a, range.end());
+	
+}
+
+template <typename Range, typename It>
+auto unordered_erase(Range & range, It && it) {
+	
+	if(it + 1 != range.end()) {
+		*it = std::move(*(range.end() - 1));
+	}
+	
+	range.resize(range.size() - 1);
 	
 }
 
