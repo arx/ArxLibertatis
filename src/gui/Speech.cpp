@@ -316,13 +316,13 @@ void ARX_SPEECH_Update() {
 		}
 	}
 	
+	if(!cinematicBorder.isActive() || cinematicBorder.CINEMA_DECAL < 100.f) {
+		return;
+	}
+	
 	for(Speech & speech : g_aspeech) {
 		
 		if(!speech.exist || speech.text.empty()) {
-			continue;
-		}
-		
-		if(!cinematicBorder.isActive() || cinematicBorder.CINEMA_DECAL < 100.f) {
 			continue;
 		}
 		
