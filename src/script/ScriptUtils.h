@@ -46,7 +46,7 @@ inline bool test_flag(u64 flg, char c) {
 	return (flg & flag(c)) != 0;
 }
 
-inline u64 flags(std::string_view flags) {
+inline u64 flagsToMask(std::string_view flags) {
 	
 	
 	size_t i = 0;
@@ -71,7 +71,7 @@ inline u64 flags(std::string_view flags) {
  * implementation, but that will be much uglier and limited.
  */
 template <size_t N>
-u64 flags(const char (&flags)[N]) {
+u64 flagsToMask(const char (&flags)[N]) {
 	
 	u64 result = 0ul;
 	for(size_t i = (flags[0] == '-') ? 1 : 0; i < N - 1; i++) {
@@ -189,7 +189,7 @@ size_t initSuppressions();
 #define ScriptError   ARX_LOG(isSuppressed(context, getName()) ? Logger::Debug : Logger::Error) << ScriptPrefix ": "
 
 #define HandleFlags(expected) std::string options = context.getFlags(); \
-	for(u64 run = !options.empty(), flg = 0; run && ((flg = flags(options), (flg && !(flg & ~flags(expected)))) || (ScriptWarning << "unexpected flags: " << options, true)); run = 0)
+	for(u64 run = !options.empty(), flg = 0; run && ((flg = flagsToMask(options), (flg && !(flg & ~flagsToMask(expected)))) || (ScriptWarning << "unexpected flags: " << options, true)); run = 0)
 
 } // namespace script
 
