@@ -282,7 +282,7 @@ void Entity::cleanReferences() {
 	}
 	gameFlags &= ~GFLAG_ISINTREATZONE;
 	
-	ARX_SPEECH_ReleaseIOSpeech(this);
+	ARX_SPEECH_ReleaseIOSpeech(*this);
 	
 	ARX_INTERACTIVE_DestroyDynamicInfo(this);
 	

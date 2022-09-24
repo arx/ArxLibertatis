@@ -150,7 +150,7 @@ Speech * getSpeechForEntity(const Entity & entity);
  * \param data is a sample name / localised string id
  */
 Speech * ARX_SPEECH_AddSpeech(Entity & speaker, std::string_view data, long mood, SpeechFlags flags = 0);
-void ARX_SPEECH_ReleaseIOSpeech(const Entity * entity);
+void ARX_SPEECH_ReleaseIOSpeech(const Entity & entity);
 void ARX_SPEECH_ClearIOSpeech(const Entity & entity);
 
 Speech * getCinematicSpeech();

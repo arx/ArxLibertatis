@@ -144,12 +144,10 @@ static void ARX_SPEECH_Release(Speech & speech) {
 	
 }
 
-void ARX_SPEECH_ReleaseIOSpeech(const Entity * entity) {
+void ARX_SPEECH_ReleaseIOSpeech(const Entity & entity) {
 	
-	for(size_t i = 0; i < MAX_ASPEECH; i++) {
-		if(g_aspeech[i].exist && g_aspeech[i].io == entity) {
-			ARX_SPEECH_Release(g_aspeech[i]);
-		}
+	if(Speech * speech = getSpeechForEntity(entity)) {
+		ARX_SPEECH_Release(*speech);
 	}
 	
 }
