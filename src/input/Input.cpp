@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "input/Input.h"
 
+#include <algorithm>
 #include <string>
 #include <map>
 #include <cmath>
@@ -373,11 +374,9 @@ void Input::reset() {
 		bMouseButton[i] = bOldMouseButton[i] = false;
 		iOldNumClick[i] = 0;
 	}
-
+	
 	iKeyId = -1;
-	for(int i = 0; i < Keyboard::KeyCount; i++) {
-		keysStates[i] = 0;
-	}
+	std::fill(std::begin(keysStates), std::end(keysStates), 0);
 	
 	EERIEMouseButton = 0;
 	iWheelDir = 0;
