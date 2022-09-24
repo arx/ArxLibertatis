@@ -376,7 +376,6 @@ public:
 			return Success;
 		}
 		
-		
 		if(!cinematicBorder.isActive()) {
 			flags |= ARX_SPEECH_FLAG_NOTEXT;
 		}
