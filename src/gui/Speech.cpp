@@ -176,14 +176,8 @@ static void endSpeech(Speech & speech) {
 
 void ARX_SPEECH_ClearIOSpeech(const Entity & entity) {
 	
-	for(size_t i = 0; i < MAX_ASPEECH; i++) {
-		
-		if(!g_aspeech[i].exist || g_aspeech[i].io != &entity) {
-			continue;
-		}
-		
-		endSpeech(g_aspeech[i]);
-		
+	if(Speech * speech = getSpeechForEntity(entity)) {
+		endSpeech(*speech);
 	}
 	
 }
