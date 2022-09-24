@@ -160,6 +160,20 @@ void ARX_SPEECH_Reset() {
 	}
 }
 
+static void endSpeech(Speech & speech) {
+	
+	const EERIE_SCRIPT * script = speech.es;
+	Entity * scriptEntity = speech.ioscript;
+	size_t scrpos = speech.scrpos;
+	
+	ARX_SPEECH_Release(speech);
+	
+	if(script && ValidIOAddress(scriptEntity)) {
+		ScriptEvent::resume(script, scriptEntity, scrpos);
+	}
+	
+}
+
 void ARX_SPEECH_ClearIOSpeech(const Entity & entity) {
 	
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
@@ -168,14 +182,7 @@ void ARX_SPEECH_ClearIOSpeech(const Entity & entity) {
 			continue;
 		}
 		
-		const EERIE_SCRIPT * es = g_aspeech[i].es;
-		Entity * scriptEntity = g_aspeech[i].ioscript;
-		size_t scrpos = g_aspeech[i].scrpos;
-		ARX_SPEECH_Release(g_aspeech[i]);
-		
-		if(es && ValidIOAddress(scriptEntity)) {
-			ScriptEvent::resume(es, scriptEntity, scrpos);
-		}
+		endSpeech(g_aspeech[i]);
 		
 	}
 	
@@ -299,13 +306,7 @@ void ARX_SPEECH_Update() {
 		
 		// checks finished speech
 		if(now >= speech.time_creation + speech.duration) {
-			const EERIE_SCRIPT * es = speech.es;
-			Entity * scriptEntity = speech.ioscript;
-			size_t scrpos = speech.scrpos;
-			ARX_SPEECH_Release(speech);
-			if(es && ValidIOAddress(scriptEntity)) {
-				ScriptEvent::resume(es, scriptEntity, scrpos);
-			}
+			endSpeech(speech);
 		}
 		
 	}
