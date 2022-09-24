@@ -105,16 +105,6 @@ bool ARX_SPEECH_isEntitySpeaking(const Entity * entity) {
 	return false;
 }
 
-
-void ARX_SPEECH_Launch_No_Unicode_Seek(std::string_view text, Entity * io_source) {
-	
-	Speech * speech = ARX_SPEECH_AddSpeech(io_source, text, ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
-	if(!speech) {
-		return;
-	}
-	
-}
-
 static void ARX_CONVERSATION_CheckAcceleratedSpeech() {
 	
 	if(REQUEST_SPEECH_SKIP) {
