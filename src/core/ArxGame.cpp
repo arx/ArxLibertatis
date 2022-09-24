@@ -1318,7 +1318,6 @@ void ArxGame::speechControlledCinematic() {
 	const CinematicSpeech & acs = speech->cine;
 	
 	float rtime = glm::clamp((g_gameTime.now() - speech->time_creation) / speech->duration, 0.f, 1.f);
-	float itime = 1.f - rtime;
 	
 	switch(acs.type) {
 		
@@ -1337,9 +1336,9 @@ void ArxGame::speechControlledCinematic() {
 			arx_assert(isallfinite(acs.pos1));
 			
 			// Need to compute current values
-			float alpha = acs.startangle.getPitch() * itime + acs.endangle.getPitch() * rtime;
-			float beta = acs.startangle.getYaw() * itime + acs.endangle.getYaw() * rtime;
-			float distance = acs.startpos * itime + acs.endpos * rtime;
+			float alpha = glm::mix(acs.startangle.getPitch(), acs.endangle.getPitch(), rtime);
+			float beta = glm::mix(acs.startangle.getYaw(), acs.endangle.getYaw(), rtime);
+			float distance = glm::mix(acs.startpos, acs.endpos, rtime);
 			Vec3f targetpos = acs.pos1;
 			
 			Vec3f vector = angleToVectorXZ(speech->io->angle.getYaw() + beta);
@@ -1367,14 +1366,13 @@ void ArxGame::speechControlledCinematic() {
 				Vec3f vect = glm::normalize(to - from);
 				Vec3f vect2 = VRotateY(vect, (acs.type == ARX_CINE_SPEECH_SIDE_LEFT) ? -90.f : 90.f);
 				
-				float distance = acs.m_startdist * itime + acs.m_enddist * rtime;
-				vect2 *= distance;
+				float distance = glm::mix(acs.m_startdist, acs.m_enddist, rtime);
 				float _dist = glm::distance(from, to);
 				Vec3f tfrom = from + vect * acs.startpos * (1.0f / 100) * _dist;
 				Vec3f tto = from + vect * acs.endpos * (1.0f / 100) * _dist;
-				Vec3f targetpos = tfrom * itime + tto * rtime + Vec3f(0.f, acs.m_heightModifier, 0.f);
+				Vec3f targetpos = glm::mix(tfrom, tto, rtime) + Vec3f(0.f, acs.m_heightModifier, 0.f);
 				
-				g_playerCamera.m_pos = targetpos + vect2 + Vec3f(0.f, acs.m_heightModifier, 0.f);
+				g_playerCamera.m_pos = targetpos + vect2 * distance + Vec3f(0.f, acs.m_heightModifier, 0.f);
 				
 				g_playerCamera.lookAt(targetpos);
 				
@@ -1402,7 +1400,7 @@ void ArxGame::speechControlledCinematic() {
 					std::swap(sourcepos, targetpos);
 				}
 				
-				float distance = (acs.startpos * itime + acs.endpos * rtime) * 0.01f;
+				float distance = glm::mix(acs.startpos, acs.endpos, rtime) * 0.01f;
 				Vec3f vect = sourcepos - targetpos;
 				Vec3f vect2 = VRotateY(vect, 90.f);
 				vect2 = glm::normalize(vect2);
