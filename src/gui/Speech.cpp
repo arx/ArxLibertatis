@@ -126,7 +126,7 @@ static long ARX_SPEECH_GetFree() {
 	return -1;
 }
 
-static void ARX_SPEECH_Release(Speech & speech) {
+static void releaseSpeech(Speech & speech) {
 	
 	ARX_SOUND_Stop(speech.sample);
 	speech.sample = audio::SourcedSample();
@@ -143,7 +143,7 @@ static void ARX_SPEECH_Release(Speech & speech) {
 void ARX_SPEECH_ReleaseIOSpeech(const Entity & entity) {
 	
 	if(Speech * speech = getSpeechForEntity(entity)) {
-		ARX_SPEECH_Release(*speech);
+		releaseSpeech(*speech);
 	}
 	
 	for(Speech & speech : g_aspeech) {
@@ -159,7 +159,7 @@ void ARX_SPEECH_ReleaseIOSpeech(const Entity & entity) {
 void ARX_SPEECH_Reset() {
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
 		if(g_aspeech[i].exist) {
-			ARX_SPEECH_Release(g_aspeech[i]);
+			releaseSpeech(g_aspeech[i]);
 		}
 	}
 }
@@ -170,7 +170,7 @@ static void endSpeech(Speech & speech) {
 	const EERIE_SCRIPT * script = speech.script;
 	size_t scriptPos = speech.scriptPos;
 	
-	ARX_SPEECH_Release(speech);
+	releaseSpeech(speech);
 	
 	if(script) {
 		arx_assert(ValidIOAddress(scriptEntity));
