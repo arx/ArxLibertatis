@@ -85,23 +85,23 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern bool EXTERNALVIEW;
 extern bool REQUEST_SPEECH_SKIP;
 
-static std::vector<Speech> g_aspeech;
+static std::vector<Speech> g_speech;
 
 
 static std::vector<Speech>::iterator getSpeechItForEntity(const Entity & entity) {
-	return std::find_if(g_aspeech.begin(), g_aspeech.end(),
+	return std::find_if(g_speech.begin(), g_speech.end(),
 	                    [&](const Speech & speech) { return speech.speaker == &entity; });
 }
 
 Speech * getSpeechForEntity(const Entity & entity) {
 	auto it = getSpeechItForEntity(entity);
-	return it == g_aspeech.end() ? nullptr : &*it;
+	return it == g_speech.end() ? nullptr : &*it;
 }
 
 static void ARX_CONVERSATION_CheckAcceleratedSpeech() {
 	
 	if(REQUEST_SPEECH_SKIP) {
-		for(Speech & speech : g_aspeech) {
+		for(Speech & speech : g_speech) {
 			if(!(speech.flags & ARX_SPEECH_FLAG_UNBREAKABLE)) {
 				speech.duration = 0;
 			}
@@ -129,12 +129,12 @@ static void releaseSpeech(Speech & speech) {
 
 void ARX_SPEECH_ReleaseIOSpeech(const Entity & entity) {
 	
-	if(auto it = getSpeechItForEntity(entity); it != g_aspeech.end()) {
+	if(auto it = getSpeechItForEntity(entity); it != g_speech.end()) {
 		releaseSpeech(*it);
-		util::unordered_erase(g_aspeech, it);
+		util::unordered_erase(g_speech, it);
 	}
 	
-	for(Speech & speech : g_aspeech) {
+	for(Speech & speech : g_speech) {
 		if(speech.scriptEntity == &entity) {
 			speech.scriptEntity = nullptr;
 			speech.script = nullptr;
@@ -146,11 +146,11 @@ void ARX_SPEECH_ReleaseIOSpeech(const Entity & entity) {
 
 void ARX_SPEECH_Reset() {
 	
-	for(Speech & speech : g_aspeech) {
+	for(Speech & speech : g_speech) {
 		releaseSpeech(speech);
 	}
 	
-	g_aspeech.clear();
+	g_speech.clear();
 	
 }
 
@@ -171,9 +171,9 @@ static void endSpeech(Speech & speech) {
 
 void ARX_SPEECH_ClearIOSpeech(const Entity & entity) {
 	
-	if(auto it = getSpeechItForEntity(entity); it != g_aspeech.end()) {
+	if(auto it = getSpeechItForEntity(entity); it != g_speech.end()) {
 		endSpeech(*it);
-		util::unordered_erase(g_aspeech, it);
+		util::unordered_erase(g_speech, it);
 	}
 	
 }
@@ -186,7 +186,7 @@ Speech * ARX_SPEECH_AddSpeech(Entity & speaker, std::string_view data, long mood
 	
 	ARX_SPEECH_ClearIOSpeech(speaker);
 	
-	Speech & speech = g_aspeech.emplace_back();
+	Speech & speech = g_speech.emplace_back();
 	
 	speech = Speech();
 	speech.time_creation = g_gameTime.now();
@@ -261,7 +261,7 @@ void ARX_SPEECH_Update() {
 		ARX_CONVERSATION_CheckAcceleratedSpeech();
 	}
 	
-	for(Speech & speech : g_aspeech) {
+	for(Speech & speech : g_speech) {
 		
 		arx_assert(ValidIOAddress(speech.speaker));
 		
@@ -290,13 +290,13 @@ void ARX_SPEECH_Update() {
 		
 	}
 	
-	util::unordered_remove_if(g_aspeech, [](const Speech & speech) { return !speech.speaker; });
+	util::unordered_remove_if(g_speech, [](const Speech & speech) { return !speech.speaker; });
 	
 	if(!cinematicBorder.isActive() || cinematicBorder.CINEMA_DECAL < 100.f) {
 		return;
 	}
 	
-	for(Speech & speech : g_aspeech) {
+	for(Speech & speech : g_speech) {
 		
 		if(speech.text.empty()) {
 			continue;
@@ -376,7 +376,7 @@ void ARX_SPEECH_Update() {
 
 Speech * getCinematicSpeech() {
 	
-	for(Speech & speech : g_aspeech) {
+	for(Speech & speech : g_speech) {
 		if(speech.cine.type != ARX_CINE_SPEECH_NONE) {
 			return &speech;
 		}
