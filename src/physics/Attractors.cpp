@@ -51,14 +51,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "scene/Interactive.h"
 
-struct ARX_SPECIAL_ATTRACTOR {
+struct Attractor {
 	EntityHandle ionum;
 	float power;
 	float radius;
 };
 
 static const size_t MAX_ATTRACTORS = 16;
-static ARX_SPECIAL_ATTRACTOR attractors[MAX_ATTRACTORS];
+static Attractor attractors[MAX_ATTRACTORS];
 
 void ARX_SPECIAL_ATTRACTORS_Reset() {
 	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
