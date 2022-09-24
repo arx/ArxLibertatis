@@ -53,7 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class Entity;
 
 void ARX_SPECIAL_ATTRACTORS_Reset();
-void ARX_SPECIAL_ATTRACTORS_Add(EntityHandle ionum, float power, float radius);
+void ARX_SPECIAL_ATTRACTORS_Add(const Entity & entity, float power, float radius);
 Vec3f ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & entity);
 
 #endif // ARX_PHYSICS_ATTRACTORS_H

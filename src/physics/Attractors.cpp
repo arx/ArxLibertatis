@@ -66,15 +66,17 @@ void ARX_SPECIAL_ATTRACTORS_Reset() {
 	g_attractors.clear();
 }
 
-void ARX_SPECIAL_ATTRACTORS_Add(EntityHandle ionum, float power, float radius) {
+void ARX_SPECIAL_ATTRACTORS_Add(const Entity & entity, float power, float radius) {
+	
+	EntityHandle source = entity.index();
 	
 	if(power == 0.f) {
-		util::unordered_remove_if(g_attractors, [ionum](const auto & entry) { return entry.source == ionum; });
+		util::unordered_remove_if(g_attractors, [source](const auto & entry) { return entry.source == source; });
 		return;
 	}
 	
 	for(Attractor & attractor : g_attractors) {
-		if(attractor.source == ionum) {
+		if(attractor.source == source) {
 			attractor.power = power;
 			attractor.radius = radius;
 			return;
@@ -82,7 +84,7 @@ void ARX_SPECIAL_ATTRACTORS_Add(EntityHandle ionum, float power, float radius) {
 	}
 	
 	Attractor & attractor = g_attractors.emplace_back();
-	attractor.source = ionum;
+	attractor.source = source;
 	attractor.power = power;
 	attractor.radius = radius;
 	

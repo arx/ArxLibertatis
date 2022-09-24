@@ -91,8 +91,6 @@ public:
 		
 		std::string target = context.getWord();
 		
-		Entity * t = entities.getById(target, context.getEntity());
-		
 		std::string power = context.getWord();
 		
 		float val = 0.f;
@@ -105,9 +103,14 @@ public:
 		
 		DebugScript(' ' << target << ' ' << val << ' ' << radius);
 		
-		ARX_SPECIAL_ATTRACTORS_Add((t == nullptr) ? EntityHandle() : t->index(), val * 0.01f, radius);
+		if(Entity * entity = entities.getById(target, context.getEntity())) {
+			ARX_SPECIAL_ATTRACTORS_Add(*entity, val * 0.01f, radius);
+			return Success;
+		} else {
+			ScriptWarning << "Cannot add or remove attractor for non-existent target " << target;
+			return Failed;
+		}
 		
-		return Success;
 	}
 	
 };
