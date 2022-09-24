@@ -106,19 +106,16 @@ void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & ioo, Vec3f & force) {
 			continue;
 		}
 		
-		float power = attractor.power;
 		float dist = fdist(ioo.pos, io.pos);
 		
-		if(dist > (ioo.physics.cyl.radius + io.physics.cyl.radius + 10.f) || power < 0.f) {
+		if(dist > (ioo.physics.cyl.radius + io.physics.cyl.radius + 10.f) || attractor.power < 0.f) {
 			
 			float max_radius = attractor.radius;
 			
 			if(dist < max_radius) {
 				float ratio_dist = 1.f - (dist / max_radius);
 				Vec3f vect = io.pos - ioo.pos;
-				vect = glm::normalize(vect);
-				power *= ratio_dist * 0.01f;
-				force = vect * power;
+				force += glm::normalize(vect) * (attractor.power * ratio_dist * 0.01f);
 			}
 		}
 		
