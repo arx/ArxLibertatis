@@ -81,7 +81,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern bool EXTERNALVIEW;
 extern bool REQUEST_SPEECH_SKIP;
 
-ARX_SPEECH g_aspeech[MAX_ASPEECH];
+Speech g_aspeech[MAX_ASPEECH];
 
 
 bool ARX_SPEECH_playerNotSpeaking() {
@@ -338,7 +338,7 @@ void ARX_SPEECH_Update() {
 
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
 		
-		ARX_SPEECH * speech = &g_aspeech[i];
+		Speech * speech = &g_aspeech[i];
 		if(!speech->exist || speech->text.empty()) {
 			continue;
 		}

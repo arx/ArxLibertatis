@@ -120,7 +120,7 @@ enum SpeechFlag {
 DECLARE_FLAGS(SpeechFlag, SpeechFlags)
 DECLARE_FLAGS_OPERATORS(SpeechFlags)
 
-struct ARX_SPEECH {
+struct Speech {
 	
 	long exist;
 	audio::SourcedSample sample;
@@ -159,7 +159,7 @@ struct ARX_SPEECH {
 };
 
 const size_t MAX_ASPEECH = 100;
-extern ARX_SPEECH g_aspeech[MAX_ASPEECH];
+extern Speech g_aspeech[MAX_ASPEECH];
 
 void ARX_SPEECH_FirstInit();
 void ARX_SPEECH_Reset();
