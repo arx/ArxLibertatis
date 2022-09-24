@@ -151,10 +151,10 @@ void ARX_SPEECH_ReleaseIOSpeech(const Entity & entity) {
 	}
 	
 	for(Speech & speech : g_aspeech) {
-		if(speech.ioscript == &entity) {
-			speech.ioscript = nullptr;
-			speech.es = nullptr;
-			speech.scrpos = 0;
+		if(speech.scriptEntity == &entity) {
+			speech.scriptEntity = nullptr;
+			speech.script = nullptr;
+			speech.scriptPos = 0;
 		}
 	}
 	
@@ -168,14 +168,14 @@ void ARX_SPEECH_Reset() {
 
 static void endSpeech(Speech & speech) {
 	
-	const EERIE_SCRIPT * script = speech.es;
-	Entity * scriptEntity = speech.ioscript;
-	size_t scrpos = speech.scrpos;
+	Entity * scriptEntity = speech.scriptEntity;
+	const EERIE_SCRIPT * script = speech.script;
+	size_t scriptPos = speech.scriptPos;
 	
 	ARX_SPEECH_Release(speech);
 	
 	if(script && ValidIOAddress(scriptEntity)) {
-		ScriptEvent::resume(script, scriptEntity, scrpos);
+		ScriptEvent::resume(script, scriptEntity, scriptPos);
 	}
 	
 }

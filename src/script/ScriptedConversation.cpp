@@ -388,9 +388,9 @@ public:
 		speech->cine = acs;
 		
 		if(size_t onspeechend = context.skipCommand(); onspeechend != size_t(-1)) {
-			speech->scrpos = onspeechend;
-			speech->es = context.getScript();
-			speech->ioscript = context.getEntity();
+			speech->scriptEntity = context.getEntity();
+			speech->script = context.getScript();
+			speech->scriptPos = onspeechend;
 		}
 		
 		return Success;

@@ -120,10 +120,11 @@ struct Speech {
 	float fPixelScroll;
 	std::string text;
 	Entity * io;
-	Entity * ioscript;
 	CinematicSpeech cine;
-	const EERIE_SCRIPT * es;
-	size_t scrpos;
+	
+	Entity * scriptEntity;
+	const EERIE_SCRIPT * script;
+	size_t scriptPos;
 	
 	Speech()
 		: exist(0)
@@ -132,9 +133,9 @@ struct Speech {
 		, iTimeScroll(0)
 		, fPixelScroll(0.f)
 		, io(nullptr)
-		, ioscript(nullptr)
-		, es(nullptr)
-		, scrpos(0)
+		, scriptEntity(nullptr)
+		, script(nullptr)
+		, scriptPos(0)
 	{ }
 	
 };
