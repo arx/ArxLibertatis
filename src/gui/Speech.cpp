@@ -99,13 +99,14 @@ Speech * getSpeechForEntity(const Entity & entity) {
 static void ARX_CONVERSATION_CheckAcceleratedSpeech() {
 	
 	if(REQUEST_SPEECH_SKIP) {
-		for(size_t i = 0; i < MAX_ASPEECH; i++) {
-			if((g_aspeech[i].exist) && !(g_aspeech[i].flags & ARX_SPEECH_FLAG_UNBREAKABLE)) {
-				g_aspeech[i].duration = 0;
+		for(Speech & speech : g_aspeech) {
+			if(speech.exist && !(speech.flags & ARX_SPEECH_FLAG_UNBREAKABLE)) {
+				speech.duration = 0;
 			}
 		}
 		REQUEST_SPEECH_SKIP = false;
 	}
+	
 }
 
 static long ARX_SPEECH_GetFree() {
