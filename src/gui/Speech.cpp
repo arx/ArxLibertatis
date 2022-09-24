@@ -78,11 +78,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptEvent.h"
 
+
 extern bool EXTERNALVIEW;
 extern bool REQUEST_SPEECH_SKIP;
 
-Speech g_aspeech[MAX_ASPEECH];
-
+const size_t MAX_ASPEECH = 100;
+static Speech g_aspeech[MAX_ASPEECH];
 
 bool ARX_SPEECH_playerNotSpeaking() {
 	bool bOk = true;
