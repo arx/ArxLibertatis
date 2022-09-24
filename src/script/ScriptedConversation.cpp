@@ -320,7 +320,7 @@ class SpeakCommand : public Command {
 	
 public:
 	
-	SpeakCommand() : Command("speak") { }
+	SpeakCommand() : Command("speak", AnyEntity) { }
 	
 	Result execute(Context & context) override {
 		
