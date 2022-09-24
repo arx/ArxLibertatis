@@ -2071,9 +2071,7 @@ static void PlayerMovementIterate(float DeltaTime) {
 		}
 		
 		// Apply attraction
-		Vec3f attraction;
-		ARX_SPECIAL_ATTRACTORS_ComputeForIO(*entities.player(), attraction);
-		player.physics.forces += attraction / TARGET_DT;
+		player.physics.forces += ARX_SPECIAL_ATTRACTORS_ComputeForIO(*entities.player()) / TARGET_DT;
 		
 		// Apply push player force
 		player.physics.forces += PUSH_PLAYER_FORCE / TARGET_DT;

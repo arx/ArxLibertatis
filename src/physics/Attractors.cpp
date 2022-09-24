@@ -88,9 +88,9 @@ void ARX_SPECIAL_ATTRACTORS_Add(EntityHandle ionum, float power, float radius) {
 	
 }
 
-void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & entity, Vec3f & force) {
+Vec3f ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & entity) {
 	
-	force = Vec3f(0.f);
+	Vec3f force(0.f);
 	
 	for(auto & attractor : g_attractors) {
 		
@@ -119,4 +119,5 @@ void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & entity, Vec3f & force) {
 	
 	util::unordered_remove_if(g_attractors, [](const auto & entry) { return entry.source == EntityHandle(); });
 	
+	return force;
 }
