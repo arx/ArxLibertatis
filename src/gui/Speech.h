@@ -152,7 +152,7 @@ bool ARX_SPEECH_isEntitySpeaking(const Entity * entity);
  */
 Speech * ARX_SPEECH_AddSpeech(Entity & speaker, std::string_view data, long mood, SpeechFlags flags = 0);
 void ARX_SPEECH_ReleaseIOSpeech(const Entity * entity);
-void ARX_SPEECH_ClearIOSpeech(const Entity * entity);
+void ARX_SPEECH_ClearIOSpeech(const Entity & entity);
 
 Speech * getCinematicSpeech();
 

@@ -372,7 +372,7 @@ public:
 		DebugScript(' ' << options << ' ' << data); // TODO debug more
 		
 		if(data.empty()) {
-			ARX_SPEECH_ClearIOSpeech(context.getEntity());
+			ARX_SPEECH_ClearIOSpeech(*context.getEntity());
 			return Success;
 		}
 		

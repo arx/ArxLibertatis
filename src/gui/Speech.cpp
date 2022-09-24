@@ -169,15 +169,11 @@ void ARX_SPEECH_Reset() {
 	}
 }
 
-void ARX_SPEECH_ClearIOSpeech(const Entity * entity) {
-	
-	if(!entity) {
-		return;
-	}
+void ARX_SPEECH_ClearIOSpeech(const Entity & entity) {
 	
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
 		
-		if(!g_aspeech[i].exist || g_aspeech[i].io != entity) {
+		if(!g_aspeech[i].exist || g_aspeech[i].io != &entity) {
 			continue;
 		}
 		
@@ -189,7 +185,9 @@ void ARX_SPEECH_ClearIOSpeech(const Entity * entity) {
 		if(es && ValidIOAddress(scriptEntity)) {
 			ScriptEvent::resume(es, scriptEntity, scrpos);
 		}
+		
 	}
+	
 }
 
 
@@ -199,7 +197,7 @@ Speech * ARX_SPEECH_AddSpeech(Entity & speaker, std::string_view data, long mood
 		return nullptr;
 	}
 	
-	ARX_SPEECH_ClearIOSpeech(&speaker);
+	ARX_SPEECH_ClearIOSpeech(speaker);
 	
 	long num = ARX_SPEECH_GetFree();
 	if(num < 0) {
