@@ -96,6 +96,7 @@ void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & entity, Vec3f & force) {
 		
 		const Entity * source = entities.get(attractor.source);
 		if(!source) {
+			attractor.source = EntityHandle();
 			continue;
 		}
 		
@@ -115,5 +116,7 @@ void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & entity, Vec3f & force) {
 		force += glm::normalize(source->pos - entity.pos) * (attractor.power * attenuation);
 		
 	}
+	
+	util::unordered_remove_if(g_attractors, [](const auto & entry) { return entry.source == EntityHandle(); });
 	
 }
