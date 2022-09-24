@@ -381,7 +381,7 @@ public:
 			flags |= ARX_SPEECH_FLAG_NOTEXT;
 		}
 		
-		Speech * speech = ARX_SPEECH_AddSpeech(speaker, data, mood, flags);
+		Speech * speech = ARX_SPEECH_AddSpeech(*speaker, data, mood, flags);
 		if(!speech) {
 			return Failed;
 		}

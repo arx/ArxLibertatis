@@ -976,7 +976,7 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta) {
 
 				if(!BLOCK_PLAYER_CONTROLS) {
 					if(ARX_SPEECH_playerNotSpeaking())
-						ARX_SPEECH_AddSpeech(entities.player(), "player_off_hungry", ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
+						ARX_SPEECH_AddSpeech(*entities.player(), "player_off_hungry", ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
 				}
 			}
 
@@ -1840,7 +1840,7 @@ static void PlayerMovementIterate(float DeltaTime) {
 				if(t >= 0 && t <= 350ms) {
 					REQUEST_JUMP = 0;
 					spawnAudibleSound(player.pos, *entities.player());
-					ARX_SPEECH_AddSpeech(entities.player(), "player_jump", ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
+					ARX_SPEECH_AddSpeech(*entities.player(), "player_jump", ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
 					player.onfirmground = false;
 					player.jumpphase = JumpStart;
 				}

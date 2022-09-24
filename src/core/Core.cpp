@@ -491,7 +491,7 @@ static void strikeSpeak(Entity * io) {
 		speech = equiped->strikespeech;
 	}
 	
-	ARX_SPEECH_AddSpeech(io, speech, ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
+	ARX_SPEECH_AddSpeech(*io, speech, ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
 }
 
 void ManageCombatModeAnimations() {

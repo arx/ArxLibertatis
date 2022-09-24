@@ -213,7 +213,7 @@ void DispellFieldSpell::Launch() {
 	
 	if(valid > dispelled) {
 		// Some fileds could not be dispelled
-		ARX_SPEECH_AddSpeech(entities.player(), "player_not_skilled_enough",
+		ARX_SPEECH_AddSpeech(*entities.player(), "player_not_skilled_enough",
 		                     ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
 	}
 	

@@ -102,7 +102,7 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 		ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE);
 		
 		notification_add("player_cantcast");
-		ARX_SPEECH_AddSpeech(entities.player(), "player_cantcast", ANIM_TALK_NEUTRAL);
+		ARX_SPEECH_AddSpeech(*entities.player(), "player_cantcast", ANIM_TALK_NEUTRAL);
 	}
 }
 
