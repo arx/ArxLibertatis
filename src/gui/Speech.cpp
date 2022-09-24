@@ -315,27 +315,24 @@ void ARX_SPEECH_Update() {
 			}
 		}
 	}
-
-	for(size_t i = 0; i < MAX_ASPEECH; i++) {
+	
+	for(Speech & speech : g_aspeech) {
 		
-		Speech * speech = &g_aspeech[i];
-		if(!speech->exist || speech->text.empty()) {
+		if(!speech.exist || speech.text.empty()) {
 			continue;
 		}
 		
-		if(!cinematicBorder.isActive())
+		if(!cinematicBorder.isActive() || cinematicBorder.CINEMA_DECAL < 100.f) {
 			continue;
-
-		if(cinematicBorder.CINEMA_DECAL < 100.f)
-			continue;
-
-		Vec2i sSize = hFontInGame->getTextSize(speech->text);
+		}
+		
+		Vec2i sSize = hFontInGame->getTextSize(speech.text);
 		
 		float fZoneClippHeight = static_cast<float>(sSize.y * 3);
 		float fStartYY = 100 * g_sizeRatio.y;
 		float fStartY = float((int(fStartYY) - int(fZoneClippHeight)) / 2);
-		float fDepY = float(g_size.height()) - fStartYY + fStartY - speech->fDeltaY + sSize.y;
-		float fZoneClippY = fDepY + speech->fDeltaY;
+		float fDepY = float(g_size.height()) - fStartYY + fStartY - speech.fDeltaY + sSize.y;
+		float fZoneClippY = fDepY + speech.fDeltaY;
 		
 		float fAdd = fZoneClippY + fZoneClippHeight;
 		
@@ -350,7 +347,7 @@ void ARX_SPEECH_Update() {
 		
 		float height = float(ARX_UNICODE_DrawTextInRect(hFontInGame,
 		                                                Vec2f(clippingRect.left + 10.f, fDepY + fZoneClippHeight),
-		                                                clippingRect.right - 10.f, speech->text,
+		                                                clippingRect.right - 10.f, speech.text,
 		                                                Color::white, &clippingRect));
 		
 		UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
@@ -362,36 +359,38 @@ void ARX_SPEECH_Update() {
 		                          0.f, Color::black, Color::white);
 		
 		height += fZoneClippHeight;
-
-		if(speech->fDeltaY <= height) {
+		
+		if(speech.fDeltaY <= height) {
 			float fDTime;
-
-			if(speech->sample != audio::SourcedSample()) {
+			
+			if(speech.sample != audio::SourcedSample()) {
 				
-				GameDuration duration = ARX_SOUND_GetDuration(speech->sample.getSampleId());
+				GameDuration duration = ARX_SOUND_GetDuration(speech.sample.getSampleId());
 				if(duration == 0) {
 					duration = 4s;
 				}
 				
 				fDTime = height * (g_gameTime.lastFrameDuration() / duration);
 				float fTimeOneLine = sSize.y * fDTime;
-
-				if(speech->iTimeScroll >= fTimeOneLine) {
-					float fResteLine = sSize.y - speech->fPixelScroll;
+				
+				if(speech.iTimeScroll >= fTimeOneLine) {
+					float fResteLine = sSize.y - speech.fPixelScroll;
 					float fTimePlus = fResteLine * (g_gameTime.lastFrameDuration() / duration);
 					fDTime -= fTimePlus;
-					speech->fPixelScroll = 0.f;
-					speech->iTimeScroll = 0;
+					speech.fPixelScroll = 0.f;
+					speech.iTimeScroll = 0;
 				}
-				speech->iTimeScroll += checked_range_cast<int>(g_framedelay);
+				speech.iTimeScroll += checked_range_cast<int>(g_framedelay);
 			} else {
 				fDTime = height * (g_gameTime.lastFrameDuration() / 4s);
 			}
 			
-			speech->fDeltaY += fDTime;
-			speech->fPixelScroll += fDTime;
+			speech.fDeltaY += fDTime;
+			speech.fPixelScroll += fDTime;
 		}
+		
 	}
+	
 }
 
 Speech * getCinematicSpeech() {
