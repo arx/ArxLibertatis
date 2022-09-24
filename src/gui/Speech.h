@@ -177,4 +177,6 @@ void ARX_SPEECH_ReleaseIOSpeech(const Entity * entity);
 void ARX_SPEECH_ClearIOSpeech(const Entity * entity);
 void ARX_SPEECH_Launch_No_Unicode_Seek(std::string_view text, Entity * io_source);
 
+Speech * getCinematicSpeech();
+
 #endif // ARX_GUI_SPEECH_H

@@ -1310,21 +1310,14 @@ void ArxGame::updateFirstPersonCamera() {
 
 void ArxGame::speechControlledCinematic() {
 	
-	long valid = -1;
+	Speech * speech = getCinematicSpeech();
 	
-	for(size_t i = 0; i < MAX_ASPEECH; i++) {
-		if(g_aspeech[i].exist && g_aspeech[i].cine.type > 0) {
-			valid = i;
-			break;
-		}
-	}
-
-	if(valid >= 0) {
-		const CinematicSpeech & acs = g_aspeech[valid].cine;
-		const Entity * io = g_aspeech[valid].io;
+	if(speech) {
+		const CinematicSpeech & acs = speech->cine;
+		const Entity * io = speech->io;
 		
-		const GameDuration elapsed = g_gameTime.now() - g_aspeech[valid].time_creation;
-		float rtime = elapsed / g_aspeech[valid].duration;
+		const GameDuration elapsed = g_gameTime.now() - speech->time_creation;
+		float rtime = elapsed / speech->duration;
 
 		rtime = glm::clamp(rtime, 0.f, 1.f);
 		

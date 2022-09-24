@@ -413,3 +413,14 @@ void ARX_SPEECH_Update() {
 		}
 	}
 }
+
+Speech * getCinematicSpeech() {
+	
+	for(Speech & speech : g_aspeech) {
+		if(speech.exist && speech.cine.type != ARX_CINE_SPEECH_NONE) {
+			return &speech;
+		}
+	}
+	
+	return nullptr;
+}
