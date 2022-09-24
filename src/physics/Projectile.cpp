@@ -123,7 +123,7 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	
 	arx_assert(obj);
 	
-	Projectile & projectile = g_projectiles.emplace_back();;
+	Projectile & projectile = g_projectiles.emplace_back();
 	
 	projectile.damages = damages;
 	projectile.position = position;
