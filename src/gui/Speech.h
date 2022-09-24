@@ -96,19 +96,6 @@ struct CinematicSpeech {
 		, pos2(0.f)
 	{ }
 	
-	void clear() {
-		type = ARX_CINE_SPEECH_NONE;
-		startangle = Anglef();
-		endangle = Anglef();
-		startpos = 0;
-		endpos = 0;
-		m_startdist = 0;
-		m_enddist = 0;
-		ionum = EntityHandle_Player; // TODO is this correct?
-		pos1 = Vec3f(0.f);
-		pos2 = Vec3f(0.f);
-	}
-	
 };
 
 enum SpeechFlag {
@@ -138,23 +125,17 @@ struct Speech {
 	const EERIE_SCRIPT * es;
 	size_t scrpos;
 	
-	void clear() {
-		exist = 0;
-		sample = audio::SourcedSample();
-		mood = 0;
-		flags = 0;
-		time_creation = 0;
-		duration = 0;
-		fDeltaY = 0;
-		iTimeScroll = 0;
-		fPixelScroll = 0;
-		text.clear();
-		io = nullptr;
-		ioscript = nullptr;
-		cine.clear();
-		es = nullptr;
-		scrpos = 0;
-	}
+	Speech()
+		: exist(0)
+		, mood(0)
+		, fDeltaY(0.f)
+		, iTimeScroll(0)
+		, fPixelScroll(0.f)
+		, io(nullptr)
+		, ioscript(nullptr)
+		, es(nullptr)
+		, scrpos(0)
+	{ }
 	
 };
 
