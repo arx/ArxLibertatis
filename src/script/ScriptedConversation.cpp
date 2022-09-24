@@ -382,21 +382,21 @@ public:
 			voixoff |= ARX_SPEECH_FLAG_NOTEXT;
 		}
 		
-		long speechnum = ARX_SPEECH_AddSpeech(speaker, data, mood, voixoff);
-		if(speechnum < 0) {
+		Speech * speech = ARX_SPEECH_AddSpeech(speaker, data, mood, voixoff);
+		if(!speech) {
 			return Failed;
 		}
 		
 		size_t onspeechend = context.skipCommand();
 		
 		if(onspeechend != size_t(-1)) {
-			g_aspeech[speechnum].scrpos = onspeechend;
-			g_aspeech[speechnum].es = context.getScript();
-			g_aspeech[speechnum].ioscript = context.getEntity();
+			speech->scrpos = onspeechend;
+			speech->es = context.getScript();
+			speech->ioscript = context.getEntity();
 			if(unbreakable) {
-				g_aspeech[speechnum].flags |= ARX_SPEECH_FLAG_UNBREAKABLE;
+				speech->flags |= ARX_SPEECH_FLAG_UNBREAKABLE;
 			}
-			g_aspeech[speechnum].cine = acs;
+			speech->cine = acs;
 		}
 		
 		return Success;

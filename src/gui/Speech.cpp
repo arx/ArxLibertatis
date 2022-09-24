@@ -107,19 +107,20 @@ bool ARX_SPEECH_isEntitySpeaking(const Entity * entity) {
 
 void ARX_SPEECH_Launch_No_Unicode_Seek(std::string_view text, Entity * io_source) {
 	
-	long mood = ANIM_TALK_NEUTRAL;
-	long speechnum = ARX_SPEECH_AddSpeech(io_source, text, mood, ARX_SPEECH_FLAG_NOTEXT);
-	if(speechnum >= 0) {
-		
-		g_aspeech[speechnum].scrpos = size_t(-1);
-		g_aspeech[speechnum].es = nullptr;
-		g_aspeech[speechnum].ioscript = io_source;
-		g_aspeech[speechnum].flags = 0;
-		
-		CinematicSpeech acs;
-		acs.type = ARX_CINE_SPEECH_NONE;
-		g_aspeech[speechnum].cine = acs;
+	Speech * speech = ARX_SPEECH_AddSpeech(io_source, text, ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
+	if(!speech) {
+		return;
 	}
+	
+	speech->scrpos = size_t(-1);
+	speech->es = nullptr;
+	speech->ioscript = io_source;
+	speech->flags = 0;
+	
+	CinematicSpeech acs;
+	acs.type = ARX_CINE_SPEECH_NONE;
+	speech->cine = acs;
+	
 }
 
 static void ARX_CONVERSATION_CheckAcceleratedSpeech() {
@@ -207,17 +208,17 @@ void ARX_SPEECH_ClearIOSpeech(const Entity * entity) {
 }
 
 
-long ARX_SPEECH_AddSpeech(Entity * io, std::string_view data, long mood, SpeechFlags flags) {
+Speech * ARX_SPEECH_AddSpeech(Entity * io, std::string_view data, long mood, SpeechFlags flags) {
 	
 	if(data.empty()) {
-		return -1;
+		return nullptr;
 	}
 	
 	ARX_SPEECH_ClearIOSpeech(io);
 	
 	long num = ARX_SPEECH_GetFree();
 	if(num < 0) {
-		return -1;
+		return nullptr;
 	}
 	
 	g_aspeech[num].exist = 1;
@@ -286,7 +287,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, std::string_view data, long mood, SpeechF
 		g_aspeech[num].duration = 2s;
 	}
 	
-	return num;
+	return &g_aspeech[num];
 }
 
 void ARX_SPEECH_Update() {
