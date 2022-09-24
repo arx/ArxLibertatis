@@ -222,15 +222,13 @@ Speech * ARX_SPEECH_AddSpeech(Entity * io, std::string_view data, long mood, Spe
 		return nullptr;
 	}
 	
+	g_aspeech[num] = Speech();
 	g_aspeech[num].exist = 1;
 	g_aspeech[num].time_creation = g_gameTime.now();
 	g_aspeech[num].io = io; // can be nullptr
 	g_aspeech[num].duration = 2s; // Minimum value
 	g_aspeech[num].flags = flags;
 	g_aspeech[num].sample = audio::SourcedSample();
-	g_aspeech[num].fDeltaY = 0.f;
-	g_aspeech[num].iTimeScroll = 0;
-	g_aspeech[num].fPixelScroll = 0.f;
 	g_aspeech[num].mood = mood;
 
 	LogDebug("speech \"" << data << '"');
@@ -264,7 +262,6 @@ Speech * ARX_SPEECH_AddSpeech(Entity * io, std::string_view data, long mood, Spe
 	} else {
 		
 		io->lastspeechflag = 0;
-		g_aspeech[num].text.clear();
 		g_aspeech[num].text = getLocalised(data, "\x01");
 		if(g_aspeech[num].text == "\x01") {
 			g_aspeech[num].text.clear();
