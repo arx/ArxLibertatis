@@ -113,15 +113,6 @@ void ARX_SPEECH_Launch_No_Unicode_Seek(std::string_view text, Entity * io_source
 		return;
 	}
 	
-	speech->scrpos = size_t(-1);
-	speech->es = nullptr;
-	speech->ioscript = io_source;
-	speech->flags = 0;
-	
-	CinematicSpeech acs;
-	acs.type = ARX_CINE_SPEECH_NONE;
-	speech->cine = acs;
-	
 }
 
 static void ARX_CONVERSATION_CheckAcceleratedSpeech() {
