@@ -718,8 +718,8 @@ InputKeyId Input::getKeyId(std::string_view name) {
 	
 	if(keyNames.empty()) {
 		// Initialize the key name -> id map.
-		for(size_t i = 0; i < std::size(keysDescriptions); i++) {
-			keyNames[keysDescriptions[i].name] = keysDescriptions[i].id;
+		for(const KeyDescription & description : keysDescriptions) {
+			keyNames[description.name] = description.id;
 		}
 		keyNames["WheelUp"] = InputKeyId(Mouse::Wheel_Up);
 		keyNames["WheelDown"] = InputKeyId(Mouse::Wheel_Down);
