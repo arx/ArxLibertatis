@@ -453,7 +453,7 @@ void ARX_SPELLS_Analyse_Alt() {
 
 static const size_t MAX_POINTS(200);
 
-Rune SpellSymbol[MAX_SPELL_SYMBOLS];
+std::array<Rune, MAX_SPELL_SYMBOLS> SpellSymbol;
 
 size_t CurrSpellSymbol = 0;
 std::string SpellMoves; // Rune directions encoded as numpad keys
@@ -626,11 +626,7 @@ enum ARX_SPELLS_RuneDirection
 	AUPLEFT
 };
 
-
-
-
-
-static SpellType getSpell(const Rune symbols[MAX_SPELL_SYMBOLS]) {
+static SpellType getSpell(const std::array<Rune, MAX_SPELL_SYMBOLS> & symbols) {
 	
 	const SpellDefinition * def = &definedSpells;
 	
@@ -647,8 +643,6 @@ static SpellType getSpell(const Rune symbols[MAX_SPELL_SYMBOLS]) {
 	
 	return def->spell;
 }
-
-
 
 void ARX_SPELLS_Analyse() {
 	

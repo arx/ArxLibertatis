@@ -20,12 +20,13 @@
 #ifndef ARX_GAME_MAGIC_SPELLRECOGNITION_H
 #define ARX_GAME_MAGIC_SPELLRECOGNITION_H
 
+#include <array>
 #include <string>
 
 #include "game/magic/Rune.h"
 
 const size_t MAX_SPELL_SYMBOLS = 6;
-extern Rune SpellSymbol[MAX_SPELL_SYMBOLS];
+extern std::array<Rune, MAX_SPELL_SYMBOLS> SpellSymbol;
 
 extern size_t CurrSpellSymbol;
 extern std::string SpellMoves;
