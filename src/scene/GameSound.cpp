@@ -44,6 +44,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/GameSound.h"
 
+#include <algorithm>
 #include <map>
 #include <vector>
 #include <sstream>
@@ -1043,10 +1044,8 @@ static void ARX_SOUND_CreateCollisionMaps() {
 
 static void ARX_SOUND_CreateMaterials() {
 	
-	for(size_t i = 0; i < size_t(MAX_MATERIALS); i++) {
-		for(size_t j = 0; j < size_t(MAX_MATERIALS); j++) {
-			g_soundMaterials[i][j] = audio::SampleHandle();
-		}
+	for(auto & array : g_soundMaterials) {
+		std::fill(std::begin(array), std::end(array), audio::SampleHandle());
 	}
 	
 	std::ostringstream oss;
