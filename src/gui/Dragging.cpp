@@ -64,8 +64,8 @@ void setDraggedEntity(Entity * entity) {
 		if(entity->obj && entity->show == SHOW_FLAG_IN_SCENE && (entity->gameFlags & GFLAG_ISINTREATZONE)
 		   && !(entity->gameFlags & (GFLAG_INVISIBILITY | GFLAG_MEGAHIDE))) {
 			EERIE_3D_BBOX bbox;
-			for(size_t i = 0; i < entity->obj->vertexlist.size(); i++) {
-				bbox.add(entity->obj->vertexlist[i].v);
+			for(const EERIE_VERTEX & vertex : entity->obj->vertexlist) {
+				bbox.add(vertex.v);
 			}
 			Vec3f center = bbox.min + (bbox.max - bbox.min) * Vec3f(0.5f);
 			Anglef angle = entity->angle;
