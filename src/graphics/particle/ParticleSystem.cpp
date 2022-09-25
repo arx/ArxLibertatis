@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 #include <cstring>
+#include <algorithm>
 #include <sstream>
 #include <iomanip>
 
@@ -70,9 +71,7 @@ ParticleSystem::ParticleSystem()
 	, eMat(1.f)
 {
 	
-	for(size_t i = 0; i < 20; i++) {
-		tex_tab[i] = nullptr;
-	}
+	std::fill(tex_tab.begin(), tex_tab.end(), nullptr);
 	
 	m_parameters.m_nbMax = 50;
 	m_parameters.m_rotation = 0;
