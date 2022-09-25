@@ -44,6 +44,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_PARTICLE_PARTICLESYSTEM_H
 #define ARX_GRAPHICS_PARTICLE_PARTICLESYSTEM_H
 
+#include <array>
 #include <list>
 
 #include "core/TimeTypes.h"
@@ -56,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Quantizer.h"
 #include "platform/Alignment.h"
 #include "util/Flags.h"
- 
+
 class Particle;
 class ParticleParams;
 class TextureContainer;
@@ -89,7 +90,7 @@ private:
 	Vec3f m_nextPosition;
 	int iParticleNbAlive;
 	
-	TextureContainer * tex_tab[20];
+	std::array<TextureContainer *, 20> tex_tab;
 	int iNbTex;
 	int iTexTime;
 	bool bTexLoop;
