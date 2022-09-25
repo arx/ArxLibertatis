@@ -61,11 +61,11 @@ void RenderBatcher::render() {
 	
 	ARX_PROFILE_FUNC();
 	
-	for(Batches::const_iterator it = m_BatchedSprites.begin(); it != m_BatchedSprites.end(); ++it) {
-		if(!it->second.empty()) {
-			UseRenderState state(it->first.apply());
-			UseTextureState textureState(TextureStage::FilterLinear, it->first.getWrapMode());
-			EERIEDRAWPRIM(Renderer::TriangleList, &it->second.front(), it->second.size(), true);
+	for(auto & batch : m_BatchedSprites) {
+		if(!batch.second.empty()) {
+			UseRenderState state(batch.first.apply());
+			UseTextureState textureState(TextureStage::FilterLinear, batch.first.getWrapMode());
+			EERIEDRAWPRIM(Renderer::TriangleList, &batch.second.front(), batch.second.size(), true);
 			GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::OpSelectArg1);
 		}
 	}
@@ -78,8 +78,10 @@ void RenderBatcher::clear() {
 	
 	ARX_PROFILE_FUNC();
 	
-	for(Batches::iterator itBatch = m_BatchedSprites.begin(); itBatch != m_BatchedSprites.end(); ++itBatch)
-		itBatch->second.clear();
+	for(auto & batch : m_BatchedSprites) {
+		batch.second.clear();
+	}
+	
 }
 
 void RenderBatcher::reset() {
