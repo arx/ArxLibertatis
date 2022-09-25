@@ -434,14 +434,14 @@ void worldToClipSpace(const Vec3f & in, TexturedVertex & out) {
 
 long EERIEDrawnPolys = 0;
 
-float PtIn2DPolyProj(const std::vector<Vec4f> & verts, EERIE_FACE * ef, float x, float z) {
+float PtIn2DPolyProj(const std::vector<Vec4f> & verts, const EERIE_FACE & ef, float x, float z) {
 	
 	Vec3f p[3];
 	for(size_t i = 0; i < 3; i++) {
-		if(verts[ef->vid[i]].w <= 0.f) {
+		if(verts[ef.vid[i]].w <= 0.f) {
 			return 0.f;
 		}
-		p[i] = Vec3f(verts[ef->vid[i]]) / verts[ef->vid[i]].w;
+		p[i] = Vec3f(verts[ef.vid[i]]) / verts[ef.vid[i]].w;
 	}
 	
 	bool c = false;

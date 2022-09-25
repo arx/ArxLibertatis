@@ -1780,7 +1780,7 @@ Entity * GetFirstInterAtPos(const Vec2s & pos) {
 		} else {
 			
 			for(EERIE_FACE & face : entity.obj->facelist) {
-				float n = PtIn2DPolyProj(entity.obj->vertexClipPositions, &face , pos.x, pos.y);
+				float n = PtIn2DPolyProj(entity.obj->vertexClipPositions, face , pos.x, pos.y);
 				if(n > 0.f) {
 					fp = bPlayerEquiped ? 0.f : fdist(entity.pos, player.pos);
 					if(fp <= fMaxDist && (fp < _fdist || !foundPixel)) {

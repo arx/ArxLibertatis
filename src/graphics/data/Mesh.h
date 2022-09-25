@@ -104,7 +104,7 @@ long MakeTopObjString(Entity * entity, std::string & dest);
 
 Vec2f getWaterFxUvOffset(float watereffect, const Vec3f & odtv);
 
-float PtIn2DPolyProj(const std::vector<Vec4f> & verts, EERIE_FACE * ef, float x, float z);
+float PtIn2DPolyProj(const std::vector<Vec4f> & verts, const EERIE_FACE & ef, float x, float z);
 
 void EERIE_PORTAL_Release();
 
