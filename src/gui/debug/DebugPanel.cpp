@@ -91,14 +91,9 @@ void DebugBox::calcSizes() {
 			colums[i].width = std::max(colums[i].width, int(field.size()));
 			
 			if(!first) {
-				bool numeric = true;
-				for(size_t u = 0; u < field.size(); ++u) {
-					if(field[u] < 48 || field[u] > 57) {
-						numeric = false;
-						break;
-					}
-				}
-				
+				bool numeric = std::find_if(field.begin(), field.end(), [](std::uint8_t character) {
+					return (character < 48 || character > 57);
+				}) == field.end();
 				if(!numeric) {
 					colums[i].numeric = false;
 				}
