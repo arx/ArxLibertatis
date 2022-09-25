@@ -167,69 +167,70 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 		
 		PrepareCamera(&bookcam, Rect(rect), projectionCenter);
 		
-			Anglef angle;
-			if(gui::necklace.runeAngles[i].getYaw() != 0.f) {
-				if(gui::necklace.runeAngles[i].getYaw() > 300.f) {
-					gui::necklace.runeAngles[i].setYaw(300.f);
+		Anglef angle;
+		if(gui::necklace.runeAngles[i].getYaw() != 0.f) {
+			if(gui::necklace.runeAngles[i].getYaw() > 300.f) {
+				gui::necklace.runeAngles[i].setYaw(300.f);
+			}
+			angle.setYaw(wave * gui::necklace.runeAngles[i].getYaw() * (1.0f / 40));
+		}
+		
+		gui::necklace.runeAngles[i].setYaw(gui::necklace.runeAngles[i].getYaw() - ptDelta * 0.2f);
+		
+		if(gui::necklace.runeAngles[i].getYaw() < 0.f)
+			gui::necklace.runeAngles[i].setYaw(0.f);
+		
+		// Now draw the rune
+		DrawEERIEInter(rune, TransformInfo(pos, toQuaternion(angle)), nullptr, false, 0.f);
+		
+		Rectf runeBox = UpdateBbox2d(*rune).toRect();
+		
+		PopAllTriangleListOpaque(baseState);
+		
+		tmpPos.x++;
+		
+		if(tmpPos.x > 4) {
+			tmpPos.x = 0;
+			tmpPos.y++;
+		}
+		
+		// TODO this is a workaround for vertexClipPositions being relative to viewport
+		Vec2f mousePosInViewport = mousePos - rect.topLeft();
+		
+		// Checks for Mouse floating over a rune...
+		if(runeBox.contains(mousePosInViewport)) {
+			bool r = false;
+			
+			for(const EERIE_FACE & face : rune->facelist) {
+				float n = PtIn2DPolyProj(rune->vertexClipPositions, face,
+				                         mousePosInViewport.x, mousePosInViewport.y);
+				if(n != 0.f) {
+					r = true;
+					break;
 				}
-				angle.setYaw(wave * gui::necklace.runeAngles[i].getYaw() * (1.0f / 40));
 			}
 			
-			gui::necklace.runeAngles[i].setYaw(gui::necklace.runeAngles[i].getYaw() - ptDelta * 0.2f);
-			
-			if(gui::necklace.runeAngles[i].getYaw() < 0.f)
-				gui::necklace.runeAngles[i].setYaw(0.f);
-			
-			// Now draw the rune
-			DrawEERIEInter(rune, TransformInfo(pos, toQuaternion(angle)), nullptr, false, 0.f);
-			
-			Rectf runeBox = UpdateBbox2d(*rune).toRect();
-			
-			PopAllTriangleListOpaque(baseState);
-			
-			tmpPos.x++;
-			
-			if(tmpPos.x > 4) {
-				tmpPos.x = 0;
-				tmpPos.y++;
-			}
-			
-			// TODO this is a workaround for vertexClipPositions being relative to viewport
-			Vec2f mousePosInViewport = mousePos - rect.topLeft();
-			
-			// Checks for Mouse floating over a rune...
-			if(runeBox.contains(mousePosInViewport)) {
-				bool r = false;
+			if(r) {
 				
-				for(const EERIE_FACE & face : rune->facelist) {
-					float n = PtIn2DPolyProj(rune->vertexClipPositions, face,
-					                         mousePosInViewport.x, mousePosInViewport.y);
-					if(n != 0.f) {
-						r = true;
-						break;
-					}
-				}
+				TransformInfo t(pos, toQuaternion(angle));
+				DrawEERIEInter(rune, t, nullptr, false, 0.f);
 				
-				if(r) {
-					
-					TransformInfo t(pos, toQuaternion(angle));
-					DrawEERIEInter(rune, t, nullptr, false, 0.f);
-					
-					gui::necklace.runeAngles[i].setYaw(gui::necklace.runeAngles[i].getYaw() + ptDelta * 2.f);
-					
-					PopAllTriangleListOpaque(baseState.blendAdditive());
-					
-					cursorSetInteraction();
-					
-					if(eeMouseDown1()) {
-						PlayerBookDrawRune(Rune(i));
-					}
+				gui::necklace.runeAngles[i].setYaw(gui::necklace.runeAngles[i].getYaw() + ptDelta * 2.f);
+				
+				PopAllTriangleListOpaque(baseState.blendAdditive());
+				
+				cursorSetInteraction();
+				
+				if(eeMouseDown1()) {
+					PlayerBookDrawRune(Rune(i));
 				}
 			}
-			
-			DrawEERIEInter(gui::necklace.lacet, TransformInfo(pos, quat_identity()), nullptr, false, 0.f);
-			
-			PopAllTriangleListOpaque(baseState);
+		}
+		
+		DrawEERIEInter(gui::necklace.lacet, TransformInfo(pos, quat_identity()), nullptr, false, 0.f);
+		
+		PopAllTriangleListOpaque(baseState);
+		
 	}
 	
 	*light = tl;
