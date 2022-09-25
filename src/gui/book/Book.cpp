@@ -20,7 +20,7 @@
 #include "gui/book/Book.h"
 
 #include <iomanip>
-#include <string>
+#include <string_view>
 #include <sstream>
 #include <utility>
 
@@ -50,6 +50,7 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 #include "script/Script.h"
+
 
 long IN_BOOK_DRAW = 0;
 
@@ -1529,8 +1530,8 @@ void QuestBookPage::manage() {
 	// Cache the questbook data
 	if(m_questBook.type() == Note::Undefined) {
 		std::string text;
-		for(size_t i = 0; i < g_playerQuestLogEntries.size(); ++i) {
-			std::string_view quest = getLocalised(g_playerQuestLogEntries[i]);
+		for(std::string_view entry : g_playerQuestLogEntries) {
+			std::string_view quest = getLocalised(entry);
 			if(!quest.empty()) {
 				text += quest;
 				text += "\n\n";

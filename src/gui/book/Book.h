@@ -20,9 +20,12 @@
 #ifndef ARX_GUI_BOOK_BOOK_H
 #define ARX_GUI_BOOK_BOOK_H
 
+#include <string>
+
 #include "graphics/Color.h"
 #include "gui/Menu.h"
 #include "gui/Note.h"
+
 
 enum ARX_INTERFACE_BOOK_MODE
 {
