@@ -1451,7 +1451,8 @@ void SpellsPage::drawSpells() const {
 				if(eeMouseDown1()) {
 					player.SpellToMemorize.bSpell = true;
 					
-					for(long j = 0; j < 6; j++) {
+					arx_assert(std::size(player.SpellToMemorize.iSpellSymbols) == std::size(spellInfo.symbols));
+					for(size_t j = 0; j < std::size(spellInfo.symbols); j++) {
 						player.SpellToMemorize.iSpellSymbols[j] = spellInfo.symbols[j];
 					}
 					
