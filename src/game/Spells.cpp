@@ -827,20 +827,17 @@ bool ARX_SPELLS_Launch(SpellType typ, Entity & source, SpellcastFlags flags, lon
 	if(cur_rf == 3) {
 		flags |= SPELLCAST_FLAG_NOCHECKCANCAST | SPELLCAST_FLAG_NOMANA;
 	}
-
+	
 	if(sp_max) {
 		level = std::max(level, 15l);
 	}
 	
-	if(source == *entities.player() && !(flags & SPELLCAST_FLAG_NOCHECKCANCAST)) {
-		for(Rune rune : SpellSymbol) {
-			if(rune != RUNE_NONE && !player.hasRune(rune)) {
-				ARX_SOUND_PlaySpeech("player_cantcast");
-				CurrSpellSymbol = 0;
-				ARX_SPELLS_ResetRecognition();
-				return false;
-			}
-		}
+	if(source == *entities.player() && !(flags & SPELLCAST_FLAG_NOCHECKCANCAST) &&
+	   !player.hasAllRunes(SpellSymbol)) {
+		ARX_SOUND_PlaySpeech("player_cantcast");
+		CurrSpellSymbol = 0;
+		ARX_SPELLS_ResetRecognition();
+		return false;
 	}
 	
 	float playerSpellLevel = 0;
