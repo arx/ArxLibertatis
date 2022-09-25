@@ -103,8 +103,8 @@ EntityDragResult findSpotForDraggedEntity(Vec3f origin, Vec3f dir, Entity * enti
 	result.foundCollision = false;
 	
 	EERIE_3D_BBOX bbox;
-	for(size_t i = 0; i < entity->obj->vertexlist.size(); i++) {
-		bbox.add(entity->obj->vertexlist[i].v);
+	for(const EERIE_VERTEX & vertex : entity->obj->vertexlist) {
+		bbox.add(vertex.v);
 	}
 	
 	result.offset = bbox.min + (bbox.max - bbox.min) * Vec3f(0.5f);
