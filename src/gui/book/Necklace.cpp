@@ -201,8 +201,9 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 			if(runeBox.contains(mousePosInViewport)) {
 				bool r = false;
 				
-				for(size_t j = 0; j < rune->facelist.size(); j++) {
-					float n = PtIn2DPolyProj(rune->vertexClipPositions, rune->facelist[j], mousePosInViewport.x, mousePosInViewport.y);
+				for(const EERIE_FACE & face : rune->facelist) {
+					float n = PtIn2DPolyProj(rune->vertexClipPositions, face,
+					                         mousePosInViewport.x, mousePosInViewport.y);
 					if(n != 0.f) {
 						r = true;
 						break;
