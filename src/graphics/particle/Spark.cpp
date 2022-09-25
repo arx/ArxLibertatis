@@ -125,15 +125,13 @@ void ParticleSparkUpdate() {
 	
 	for(SparkParticle & spark : g_sparkParticles) {
 		
-		long framediff = spark.timcreation + spark.m_duration - toMsi(now);
-		if(framediff <= 0) {
+		u32 age = u32(toMsi(now) - spark.timcreation);
+		if(age > spark.m_duration) {
 			spark.m_duration = 0;
 			continue;
 		}
 		
-		float val = (spark.m_duration - framediff) * 0.01f;
-		
-		Vec3f in = spark.m_pos + spark.move * val;
+		Vec3f in = spark.m_pos + spark.move * (age * 0.01f);
 		
 		Vec3f tailDirection = glm::normalize(-spark.move);
 		
