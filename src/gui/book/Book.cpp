@@ -1395,8 +1395,7 @@ void SpellsPage::drawSpells() const {
 	
 	Vec2f tmpPos(0.f);
 	
-	for(size_t i = 0; i < SPELL_TYPES_COUNT; i++) {
-		const SPELL_ICON & spellInfo = spellicons[i];
+	for(const SPELL_ICON & spellInfo : spellicons) {
 		
 		if(spellInfo.level != (m_currentTab + 1) || spellInfo.bSecret)
 			continue;
