@@ -110,8 +110,8 @@ void DebugBox::calcSizes() {
 	}
 	
 	int maxRowChars = 2;
-	for(size_t i = 0; i < colums.size(); ++i) {
-		maxRowChars += colums[i].width + 1;
+	for(const ColInfo & column : colums) {
+		maxRowChars += column.width + 1;
 	}
 	
 	m_chars = Vec2i(maxRowChars, m_elements.size() + 2);
