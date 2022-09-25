@@ -323,40 +323,23 @@ void ARX_PLAYER_Quest_Init() {
 }
 
 //! Add _ulRune to player runes
-void ARX_Player_Rune_Add(RuneFlag _ulRune)
-{
+void ARX_Player_Rune_Add(RuneFlag _ulRune) {
+	
 	int iNbSpells = 0;
-	int iNbSpellsAfter = 0;
-
 	for(size_t i = 0; i < SPELL_TYPES_COUNT; i++) {
 		if(!spellicons[i].bSecret) {
-			long j = 0;
-			bool bOk = true;
-			while(j < 4 && spellicons[i].symbols[j] != 255) {
-				if(!player.hasRune(spellicons[i].symbols[j])) {
-					bOk = false;
-				}
-				j++;
-			}
-			if(bOk) {
+			if(player.hasAllRunes(spellicons[i].symbols)) {
 				iNbSpells++;
 			}
 		}
 	}
-
+	
 	player.rune_flags |= _ulRune;
-
+	
+	int iNbSpellsAfter = 0;
 	for(size_t i = 0; i < SPELL_TYPES_COUNT; i++) {
 		if(!spellicons[i].bSecret) {
-			long j = 0;
-			bool bOk = true;
-			while(j < 4 && (spellicons[i].symbols[j] != 255)) {
-				if(!player.hasRune(spellicons[i].symbols[j])) {
-					bOk = false;
-				}
-				j++;
-			}
-			if(bOk) {
+			if(player.hasAllRunes(spellicons[i].symbols)) {
 				iNbSpellsAfter++;
 			}
 		}
@@ -366,6 +349,7 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune)
 		g_hudRoot.bookIconGui.requestFX();
 		g_hudRoot.bookIconGui.requestHalo();
 	}
+	
 }
 
 //! Remove _ulRune from player runes
