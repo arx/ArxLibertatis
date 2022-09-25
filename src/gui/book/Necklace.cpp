@@ -101,22 +101,20 @@ void ReleaseNecklace() {
 	
 	delete necklace.lacet, necklace.lacet = nullptr;
 	
-	for(long i = 0; i < RUNE_COUNT; i++) {
-		delete necklace.runes[i], necklace.runes[i] = nullptr;
+	for(EERIE_3DOBJ * & rune : necklace.runes) {
+		delete rune;
+		rune = nullptr;
 	}
 	
 	std::fill(necklace.pTexTab.begin(), necklace.pTexTab.end(), nullptr);
 	
 }
 
-
 static void PlayerBookDrawRune(Rune rune) {
 	
 	ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(g_snd.SYMB[rune]));
 	ARX_SOUND_PlayInterface(g_snd.SYMB[rune]);
 }
-
-
 
 void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, float scale)
 {
