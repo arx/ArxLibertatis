@@ -19,6 +19,8 @@
 
 #include "gui/book/Necklace.h"
 
+#include <algorithm>
+
 #include "animation/AnimationRender.h"
 #include "core/Application.h"
 #include "core/Core.h"
@@ -101,8 +103,10 @@ void ReleaseNecklace() {
 	
 	for(long i = 0; i < RUNE_COUNT; i++) {
 		delete necklace.runes[i], necklace.runes[i] = nullptr;
-		necklace.pTexTab[i] = nullptr;
 	}
+	
+	std::fill(necklace.pTexTab.begin(), necklace.pTexTab.end(), nullptr);
+	
 }
 
 
