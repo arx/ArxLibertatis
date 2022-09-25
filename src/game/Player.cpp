@@ -322,14 +322,13 @@ void ARX_PLAYER_Quest_Init() {
 	g_playerBook.clearJournal();
 }
 
-//! Add _ulRune to player runes
-void ARX_Player_Rune_Add(RuneFlag _ulRune) {
+void ARX_Player_Rune_Add(RuneFlag rune) {
 	
 	size_t spellsBefore = std::count_if(spellicons.begin(), spellicons.end(), [](const SPELL_ICON & spell) {
 		return !spell.bSecret && player.hasAllRunes(spell.symbols);
 	});
 	
-	player.rune_flags |= _ulRune;
+	player.rune_flags |= rune;
 	
 	size_t spellsAfter = std::count_if(spellicons.begin(), spellicons.end(), [](const SPELL_ICON & spell) {
 		return !spell.bSecret && player.hasAllRunes(spell.symbols);
@@ -342,10 +341,8 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune) {
 	
 }
 
-//! Remove _ulRune from player runes
-void ARX_Player_Rune_Remove(RuneFlag _ulRune)
-{
-	player.rune_flags &= ~_ulRune;
+void ARX_Player_Rune_Remove(RuneFlag rune) {
+	player.rune_flags &= ~rune;
 }
 
 //! Add quest "quest" to player Questbook
