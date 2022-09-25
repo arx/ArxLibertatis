@@ -1397,20 +1397,10 @@ void SpellsPage::drawSpells() const {
 	
 	for(const SPELL_ICON & spellInfo : spellicons) {
 		
-		if(spellInfo.level != (m_currentTab + 1) || spellInfo.bSecret)
+		if(spellInfo.level != (m_currentTab + 1) || spellInfo.bSecret || !player.hasAllRunes(spellInfo.symbols)) {
 			continue;
-		
-		// check if player can cast it
-		bool bOk = true;
-		for(long j = 0; j < 4 && spellInfo.symbols[j] != RUNE_NONE; j++) {
-			if(!player.hasRune(spellInfo.symbols[j])) {
-				bOk = false;
-			}
 		}
 		
-		if(!bOk)
-			continue;
-			
 		float scale = g_bookScale;
 		Vec2f bookPos = g_bookRect.topLeft();
 		Vec2f fPos = bookPos + Vec2f(73.f, 71.f) * scale + tmpPos * Vec2f(85.f, 70.f) * scale;
