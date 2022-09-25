@@ -1373,9 +1373,9 @@ void SpellsPage::manage() {
 
 void SpellsPage::drawLeftTabs() {
 	
-	for(size_t i = 0; i < SPELL_TYPES_COUNT; ++i) {
-		if(!spellicons[i].bSecret && player.hasAllRunes(spellicons[i].symbols)) {
-			PlayerBookPage::manageLeftTabs(spellicons[i].level - 1, m_currentTab);
+	for(const SPELL_ICON & spellInfo : spellicons) {
+		if(!spellInfo.bSecret && player.hasAllRunes(spellInfo.symbols)) {
+			PlayerBookPage::manageLeftTabs(spellInfo.level - 1, m_currentTab);
 		}
 	}
 	
