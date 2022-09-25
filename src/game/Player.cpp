@@ -170,6 +170,12 @@ static unsigned long FALLING_TIME = 0;
 
 std::vector<std::string> g_playerQuestLogEntries;
 
+[[nodiscard]] bool ARXCHARACTER::hasAllRunes(const std::array<Rune, 6> & runes) const noexcept {
+	return std::all_of(runes.begin(), runes.end(), [this](Rune rune) {
+		return rune == RUNE_NONE || hasRune(rune);
+	});
+}
+
 bool ARX_PLAYER_IsInFightMode() {
 	arx_assert(entities.player());
 	

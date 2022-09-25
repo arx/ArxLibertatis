@@ -377,9 +377,10 @@ struct ARXCHARACTER {
 		heads.fill(nullptr);
 	}
 	
-	[[nodiscard]] bool hasRune(Rune rune) const {
+	[[nodiscard]] bool hasRune(Rune rune) const noexcept {
 		return (rune_flags & RuneFlag(1 << rune)) != 0;
 	}
+	[[nodiscard]] bool hasAllRunes(const std::array<Rune, 6> & runes) const noexcept;
 	
 	[[nodiscard]] static float baseRadius() { return 52.f; }
 	[[nodiscard]] static float baseHeight() { return -170.f; }
