@@ -20,6 +20,7 @@
 #include "graphics/particle/Spark.h"
 
 #include <cmath>
+#include <vector>
 
 #include "core/Core.h"
 #include "core/GameTime.h"
@@ -30,8 +31,10 @@
 #include "graphics/RenderBatcher.h"
 #include "math/RandomVector.h"
 #include "platform/profiler/Profiler.h"
+#include "util/Range.h"
 
 struct SparkParticle {
+	
 	u32 m_duration;
 	Vec3f m_pos;
 	Vec3f move;
@@ -47,19 +50,17 @@ struct SparkParticle {
 		, rgb(Color::black.toRGB())
 		, m_tailLength(0.f)
 	{ }
+	
 };
 
-static const size_t g_sparkParticlesMax = 500;
-static SparkParticle g_sparkParticles[g_sparkParticlesMax];
-static long g_sparkParticlesCount = 0;
+static std::vector<SparkParticle> g_sparkParticles;
 
 void ParticleSparkClear() {
-	std::fill(g_sparkParticles, g_sparkParticles + g_sparkParticlesMax, SparkParticle());
-	g_sparkParticlesCount = 0;
+	g_sparkParticles.clear();
 }
 
-long ParticleSparkCount() {
-	return g_sparkParticlesCount;
+size_t ParticleSparkCount() {
+	return g_sparkParticles.size();
 }
 
 void ParticleSparkSpawnContinous(const Vec3f & pos, unsigned rate, SpawnSparkType type) {
@@ -84,21 +85,7 @@ void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType ty
 	
 	for(unsigned int k = 0; k < count; k++) {
 		
-		int sparkSlot = -1;
-		for(size_t i = 0; i < g_sparkParticlesMax; i++) {
-			if(g_sparkParticles[i].m_duration == 0) {
-				sparkSlot = int(i);
-				break;
-			}
-		}
-		
-		if(sparkSlot == -1) {
-			return;
-		}
-		
-		SparkParticle & spark = g_sparkParticles[sparkSlot];
-		
-		g_sparkParticlesCount++;
+		SparkParticle & spark = g_sparkParticles.emplace_back();
 		
 		spark.timcreation = toMsi(g_gameTime.now());
 		spark.m_pos = pos + arx::randomVec(-5.f, 5.f);
@@ -118,14 +105,16 @@ void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType ty
 		}
 		
 		spark.m_tailLength = len + Random::getf() * len;
+		
 	}
+	
 }
 
 void ParticleSparkUpdate() {
 	
 	ARX_PROFILE_FUNC();
 	
-	if(g_sparkParticlesCount == 0) {
+	if(g_sparkParticles.empty()) {
 		return;
 	}
 	
@@ -136,16 +125,13 @@ void ParticleSparkUpdate() {
 	
 	for(SparkParticle & spark : g_sparkParticles) {
 		
-		long framediff = spark.timcreation + spark.m_duration - toMsi(now);
-		long framediff2 = toMsi(now) - spark.timcreation;
-		
-		if(framediff2 < 0) {
+		if(toMsi(now) < spark.timcreation) {
 			continue;
 		}
 		
+		long framediff = spark.timcreation + spark.m_duration - toMsi(now);
 		if(framediff <= 0) {
 			spark.m_duration = 0;
-			g_sparkParticlesCount--;
 			continue;
 		}
 		
@@ -175,5 +161,9 @@ void ParticleSparkUpdate() {
 		g_renderBatcher.add(sparkMaterial, tv);
 		
 	}
+	
+	util::unordered_remove_if(g_sparkParticles, [](const SparkParticle & spark) {
+		return spark.m_duration == 0;
+	});
 	
 }
