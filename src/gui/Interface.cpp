@@ -129,6 +129,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
+#include "util/Range.h"
+
 #include "window/RenderWindow.h"
 
 
@@ -501,8 +503,8 @@ static ScriptResult combineEntities(Entity * source, Entity * target, bool peekO
 	
 	if(boost::starts_with(source->className(), "keyring")) {
 		
-		for(size_t i = 0; i < g_playerKeyring.size(); i++) {
-			parameters[0] = g_playerKeyring[i];
+		for(std::string_view key : util::StableIndexedRange<const std::vector<std::string> &>(g_playerKeyring)) {
+			parameters[0] = key;
 			ScriptResult ret = SendIOScriptEvent(source, target, SM_COMBINE, parameters);
 			if(ret == REFUSE || ret == DESTRUCTIVE) {
 				return ret;
