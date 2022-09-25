@@ -134,13 +134,8 @@ void ParticleSparkUpdate() {
 	RenderMaterial sparkMaterial;
 	sparkMaterial.setBlendType(RenderMaterial::Additive);
 	
-	for(size_t i = 0; i < g_sparkParticlesMax; i++) {
-
-		SparkParticle & spark = g_sparkParticles[i];
-		if(spark.m_duration == 0) {
-			continue;
-		}
-
+	for(SparkParticle & spark : g_sparkParticles) {
+		
 		long framediff = spark.timcreation + spark.m_duration - toMsi(now);
 		long framediff2 = toMsi(now) - spark.timcreation;
 		
@@ -178,5 +173,7 @@ void ParticleSparkUpdate() {
 		worldToClipSpace(temp2, tv[2]);
 		
 		g_renderBatcher.add(sparkMaterial, tv);
+		
 	}
+	
 }
