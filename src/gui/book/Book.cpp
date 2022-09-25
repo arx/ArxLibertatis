@@ -1374,18 +1374,11 @@ void SpellsPage::manage() {
 void SpellsPage::drawLeftTabs() {
 	
 	for(size_t i = 0; i < SPELL_TYPES_COUNT; ++i) {
-		if(!spellicons[i].bSecret) {
-			bool bOk = true;
-
-			for(long j = 0; j < 4 && spellicons[i].symbols[j] != RUNE_NONE; ++j) {
-				if(!player.hasRune(spellicons[i].symbols[j]))
-					bOk = false;
-			}
-
-			if(bOk)
-				PlayerBookPage::manageLeftTabs(spellicons[i].level - 1, m_currentTab);
+		if(!spellicons[i].bSecret && player.hasAllRunes(spellicons[i].symbols)) {
+			PlayerBookPage::manageLeftTabs(spellicons[i].level - 1, m_currentTab);
 		}
 	}
+	
 }
 
 void SpellsPage::drawSpells() const {
