@@ -325,27 +325,17 @@ void ARX_PLAYER_Quest_Init() {
 //! Add _ulRune to player runes
 void ARX_Player_Rune_Add(RuneFlag _ulRune) {
 	
-	int iNbSpells = 0;
-	for(size_t i = 0; i < SPELL_TYPES_COUNT; i++) {
-		if(!spellicons[i].bSecret) {
-			if(player.hasAllRunes(spellicons[i].symbols)) {
-				iNbSpells++;
-			}
-		}
-	}
+	size_t spellsBefore = std::count_if(spellicons.begin(), spellicons.end(), [](const SPELL_ICON & spell) {
+		return !spell.bSecret && player.hasAllRunes(spell.symbols);
+	});
 	
 	player.rune_flags |= _ulRune;
 	
-	int iNbSpellsAfter = 0;
-	for(size_t i = 0; i < SPELL_TYPES_COUNT; i++) {
-		if(!spellicons[i].bSecret) {
-			if(player.hasAllRunes(spellicons[i].symbols)) {
-				iNbSpellsAfter++;
-			}
-		}
-	}
+	size_t spellsAfter = std::count_if(spellicons.begin(), spellicons.end(), [](const SPELL_ICON & spell) {
+		return !spell.bSecret && player.hasAllRunes(spell.symbols);
+	});
 	
-	if(iNbSpellsAfter > iNbSpells) {
+	if(spellsAfter > spellsBefore) {
 		g_hudRoot.bookIconGui.requestFX();
 		g_hudRoot.bookIconGui.requestHalo();
 	}
