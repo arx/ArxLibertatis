@@ -34,6 +34,8 @@
 #include "scene/GameSound.h"
 #include "scene/Light.h"
 #include "scene/Object.h"
+#include "util/Range.h"
+
 
 namespace gui {
 
@@ -87,11 +89,10 @@ void NecklaceInit() {
 	necklace.pTexTab[RUNE_VITAE]       = TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_vitae[icon]");
 	necklace.pTexTab[RUNE_YOK]         = TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_yok[icon]");
 	
-	for(size_t i = 0; i < RUNE_COUNT; i++) {
-		if(necklace.pTexTab[i]) {
-			necklace.pTexTab[i]->getHalo();
-		}
+	for(TextureContainer & texture : util::nonnull(necklace.pTexTab)) {
+		texture.getHalo();
 	}
+	
 }
 
 void ReleaseNecklace() {
