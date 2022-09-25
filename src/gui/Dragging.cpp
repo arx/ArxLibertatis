@@ -308,8 +308,8 @@ void updateDraggedEntity() {
 	if((entity->ioflags & IO_ITEM) && entity->_itemdata->count > 1) {
 		
 		EERIE_3D_BBOX bbox;
-		for(size_t i = 0; i < entity->obj->vertexlist.size(); i++) {
-			bbox.add(entity->obj->vertexlist[i].v);
+		for(const EERIE_VERTEX & vertex : entity->obj->vertexlist) {
+			bbox.add(vertex.v);
 		}
 		Vec3f delta = (bbox.max - bbox.min) * std::pow(float(entity->_itemdata->count), 1.f / 3.f);
 		
