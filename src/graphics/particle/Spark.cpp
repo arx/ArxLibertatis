@@ -125,10 +125,6 @@ void ParticleSparkUpdate() {
 	
 	for(SparkParticle & spark : g_sparkParticles) {
 		
-		if(toMsi(now) < spark.timcreation) {
-			continue;
-		}
-		
 		long framediff = spark.timcreation + spark.m_duration - toMsi(now);
 		if(framediff <= 0) {
 			spark.m_duration = 0;
