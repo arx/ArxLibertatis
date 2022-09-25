@@ -1430,10 +1430,11 @@ void SpellsPage::drawSpells() const {
 			
 			size_t count = spellInfo.symbols.size() -
 			               std::count(spellInfo.symbols.begin(), spellInfo.symbols.end(), RUNE_NONE);
-			for(size_t j = 0; j < spellInfo.symbols.size(); ++j) {
-				if(spellInfo.symbols[j] != RUNE_NONE) {
-					Vec2f pos = bookPos + Vec2f(143.f - float(count) * 16.f + float(j) * 32.f, 242.f) * scale;
-					DrawBookInterfaceItem(gui::necklace.pTexTab[spellInfo.symbols[j]], pos, Color::white, 0.000001f);
+			Vec2f pos = bookPos + Vec2f(143.f - float(count) * 16.f, 242.f) * scale;
+			for(Rune rune : spellInfo.symbols) {
+				if(rune != RUNE_NONE) {
+					DrawBookInterfaceItem(gui::necklace.pTexTab[rune], pos, Color::white, 0.000001f);
+					pos.x += 32.f * scale;
 				}
 			}
 			
