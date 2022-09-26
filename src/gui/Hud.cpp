@@ -144,8 +144,7 @@ void HitStrengthGauge::draw() {
 	}
 }
 
-
-void BookIconGui::MakeBookFX() {
+void BookIconGui::requestFX() {
 	
 	static const float z = 0.00001f;
 	
@@ -196,10 +195,6 @@ void BookIconGui::init() {
 void BookIconGui::requestHalo() {
 	m_haloActive = true;
 	ulBookHaloTime = 0;
-}
-
-void BookIconGui::requestFX() {
-	MakeBookFX();
 }
 
 void BookIconGui::update(const Rectf & parent) {

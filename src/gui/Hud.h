@@ -57,7 +57,6 @@ class BookIconGui : public HudIconBase {
 	
 	Vec2f m_size;
 	PlatformDuration ulBookHaloTime;
-	void MakeBookFX();
 	
 public:
 	BookIconGui();
