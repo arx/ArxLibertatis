@@ -48,6 +48,7 @@ void RotatingCone::Init(float rbase, float rhaut, float hauteur) {
 	}
 	
 	m_tsouffle = TextureContainer::Load("graph/obj3d/textures/(fx)_sebsouffle");
+	
 }
 
 void RotatingCone::Update(GameDuration timeDelta, Vec3f pos, float coneScale) {
@@ -68,7 +69,7 @@ void RotatingCone::Update(GameDuration timeDelta, Vec3f pos, float coneScale) {
 void RotatingCone::Render() {
 	
 	float u = m_ang;
-	float du = .99999999f / float(Def);
+	float du = 2.f / float(Def);
 	
 	Vec3f * vertex = conevertex;
 	TexturedVertexUntransformed * d3dv = coned3d;
@@ -105,6 +106,9 @@ void RotatingCone::Render() {
 		u += du;
 		nb--;
 	}
+	
+	coned3d[std::size(coned3d) - 2].color = coned3d[0].color;
+	coned3d[std::size(coned3d) - 1].color = coned3d[1].color;
 	
 	RenderMaterial mat;
 	mat.setDepthTest(true);
