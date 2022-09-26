@@ -83,7 +83,6 @@ struct Missile {
 	Vec3f velocity;
 	Vec3f lastpos;
 	GameInstant timecreation;
-	GameInstant lastupdate;
 	GameDuration tolive;
 	LightHandle m_light;
 	EntityHandle owner;
@@ -93,7 +92,6 @@ struct Missile {
 		, velocity(0.f)
 		, lastpos(0.f)
 		, timecreation(0)
-		, lastupdate(0)
 		, tolive(0)
 	{ }
 	
@@ -133,7 +131,7 @@ void ARX_MISSILES_Spawn(Entity * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f &
 	missile.owner = (io == nullptr) ? EntityHandle() : io->index();
 	missile.lastpos = missile.startpos = startpos;
 	missile.velocity = glm::normalize(targetpos - startpos) * 0.8f;
-	missile.lastupdate = missile.timecreation = g_gameTime.now();
+	missile.timecreation = g_gameTime.now();
 	
 	missile.tolive = 6s;
 	
@@ -223,8 +221,6 @@ void ARX_MISSILES_Update() {
 		}
 		
 		missile.lastpos = pos;
-		
-		missile.lastupdate = now;
 		
 	}
 	
