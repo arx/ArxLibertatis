@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Missile.h"
 
 #include <stddef.h>
+#include <vector>
 
 #include "core/GameTime.h"
 #include "core/Core.h"
@@ -71,11 +72,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
 
+#include "util/Range.h"
+
+
 class TextureContainer;
 
 struct Missile {
 	
-	ARX_SPELLS_MISSILE_TYPE type;
 	Vec3f startpos;
 	Vec3f velocity;
 	Vec3f lastpos;
@@ -86,8 +89,7 @@ struct Missile {
 	EntityHandle owner;
 	
 	Missile()
-		: type(MISSILE_NONE)
-		, startpos(0.f)
+		: startpos(0.f)
 		, velocity(0.f)
 		, lastpos(0.f)
 		, timecreation(0)
@@ -97,22 +99,8 @@ struct Missile {
 	
 };
 
-static const size_t MAX_MISSILES = 100;
-static Missile missiles[MAX_MISSILES];
+static std::vector<Missile> g_missiles;
 
-// Gets a Free Projectile Slot
-static long ARX_MISSILES_GetFree() {
-	
-	for(size_t i = 0; i < MAX_MISSILES; i++) {
-		if(missiles[i].type == MISSILE_NONE) {
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-// Kills a missile
 static void ARX_MISSILES_Kill(Missile & missile) {
 	
 	EERIE_LIGHT * light = lightHandleGet(missile.m_light);
@@ -120,33 +108,29 @@ static void ARX_MISSILES_Kill(Missile & missile) {
 		light->duration = 150ms;
 	}
 	
-	missile.type = MISSILE_NONE;
+	missile.tolive = 0;
 	
 }
 
-//-----------------------------------------------------------------------------
-// Clear all missiles
 void ARX_MISSILES_ClearAll() {
-	for(size_t i = 0; i < MAX_MISSILES; i++) {
-		if(missiles[i].type == MISSILE_NONE) {
-			ARX_MISSILES_Kill(missiles[i]);
-		}
+	
+	for(Missile & missile : g_missiles) {
+		ARX_MISSILES_Kill(missile);
 	}
+	
+	g_missiles.clear();
+	
 }
 
-//-----------------------------------------------------------------------------
-// Spawns a Projectile using type, starting position/TargetPosition
 void ARX_MISSILES_Spawn(Entity * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f & startpos, const Vec3f & targetpos) {
 	
-	long i(ARX_MISSILES_GetFree());
-	if(i == -1 || type == MISSILE_NONE) {
+	if(type == MISSILE_NONE) {
 		return;
 	}
 	
-	Missile & missile = missiles[i];
+	Missile & missile = g_missiles.emplace_back();
 	
 	missile.owner = (io == nullptr) ? EntityHandle() : io->index();
-	missile.type = type;
 	missile.lastpos = missile.startpos = startpos;
 	missile.velocity = glm::normalize(targetpos - startpos) * 0.8f;
 	missile.lastupdate = missile.timecreation = g_gameTime.now();
@@ -167,19 +151,15 @@ void ARX_MISSILES_Spawn(Entity * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f &
 	
 }
 
-//-----------------------------------------------------------------------------
-// Updates all currently launched projectiles
 void ARX_MISSILES_Update() {
 	
 	ARX_PROFILE_FUNC();
 	
 	GameInstant now = g_gameTime.now();
 	
-	for(Missile & missile : missiles) {
+	for(Missile & missile : g_missiles) {
 		
-		if(missile.type == MISSILE_NONE) {
-			continue;
-		}
+		arx_assert(missile.tolive != 0);
 		
 		GameDuration framediff3 = now - missile.timecreation;
 		if(framediff3 > missile.tolive) {
@@ -247,5 +227,7 @@ void ARX_MISSILES_Update() {
 		missile.lastupdate = now;
 		
 	}
+	
+	util::unordered_remove_if(g_missiles, [](const Missile & missile) { return missile.tolive == 0; });
 	
 }
