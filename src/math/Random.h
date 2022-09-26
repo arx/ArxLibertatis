@@ -20,6 +20,7 @@
 #ifndef ARX_MATH_RANDOM_H
 #define ARX_MATH_RANDOM_H
 
+#include <stddef.h>
 #include <limits>
 #include <random>
 #include <type_traits>
@@ -43,6 +44,9 @@ public:
 	template <class RealType> static RealType getf();
 	template <class RealType> static RealType getf(RealType realMin, RealType realMax);
 	static float getf(float realMin = 0.0f, float realMax = 1.0f);
+	
+	//! Generate a success count of random independent samples with given probability
+	static size_t getCount(size_t samples, float probability);
 	
 	//! Return a random iterator pointing in the range [begin, end).
 	template <class Iterator>
@@ -106,6 +110,10 @@ RealType Random::getf() {
 
 inline float Random::getf(float min, float max) {
 	return Random::getf<float>(min, max);
+}
+
+inline size_t Random::getCount(size_t samples, float probability) {
+	return std::binomial_distribution<size_t>(samples, double(probability))(*rng);
 }
 
 template <class Iterator>
