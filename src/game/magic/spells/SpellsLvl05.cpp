@@ -127,13 +127,12 @@ void RuneOfGuardingSpell::Update() {
 	
 	Draw3DObject(srune, stiteangle, pos, stitescale, stitecolor, mat);
 	
-	for(int n = 0; n < 4; n++) {
-		
-		PARTICLE_DEF * pd = createParticle();
+	size_t count = m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 0.12f);
+	for(size_t i = 0; i < count; i++) {
+		PARTICLE_DEF * pd = createParticle(true);
 		if(!pd) {
 			break;
 		}
-		
 		pd->ov = pos + arx::randomOffsetXZ(40.f);
 		pd->move = arx::linearRand(Vec3f(-0.8f, -4.f, -0.8f), Vec3f(0.8f, 0.f, 0.8f));
 		pd->scale = Vec3f(-0.1f);
@@ -143,12 +142,10 @@ void RuneOfGuardingSpell::Update() {
 		pd->rgb = Color3f(.4f, .4f, .6f);
 	}
 	
-	
-	
 	Sphere sphere = Sphere(m_pos, std::max(m_level * 15.f, 50.f));
 	Entity * caster = entities.get(m_caster);
 	if(CheckAnythingInSphere(sphere, caster, CAS_NO_SAME_GROUP | CAS_NO_BACKGROUND_COL | CAS_NO_ITEM_COL
-	                                           | CAS_NO_FIX_COL | CAS_NO_DEAD_COL)) {
+	                                         | CAS_NO_FIX_COL | CAS_NO_DEAD_COL)) {
 		spawnFireHitParticle(m_pos, 0);
 		PolyBoomAddScorch(m_pos);
 		LaunchFireballBoom(m_pos, m_level);
@@ -157,6 +154,7 @@ void RuneOfGuardingSpell::Update() {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_RUNE_OF_GUARDING_END, &m_pos);
 		requestEnd();
 	}
+	
 }
 
 Vec3f RuneOfGuardingSpell::getPosition() const {

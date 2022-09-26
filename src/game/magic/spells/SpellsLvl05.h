@@ -43,8 +43,8 @@ public:
 private:
 	
 	Vec3f m_pos;
+	math::Quantizer m_quantizer;
 	LightHandle m_light;
-	
 	TextureContainer * tex_p2;
 	
 };
