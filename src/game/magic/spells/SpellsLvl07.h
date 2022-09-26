@@ -137,6 +137,7 @@ private:
 	TextureContainer * tex_trail;
 	AnimLayer animlayer[MAX_ANIM_LAYERS];
 	Vec3f eCurPos;
+	math::Quantizer m_quantizer;
 	
 };
 

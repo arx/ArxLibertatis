@@ -690,9 +690,10 @@ void ConfuseSpell::Update() {
 		EERIEDrawAnimQuatRender(spapi, eCurPos, nullptr, 0.f);
 	}
 	
-	for(int i = 0; i < 6; i++) {
+	size_t count = m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 0.18f);
+	for(size_t i = 0; i < count; i++) {
 		
-		PARTICLE_DEF * pd = createParticle();
+		PARTICLE_DEF * pd = createParticle(true);
 		if(!pd) {
 			break;
 		}
@@ -714,6 +715,7 @@ void ConfuseSpell::Update() {
 			c = baseColor + randomColor3f() * randomFactor;
 		}
 		pd->rgb = c * Color3f(0.8f, 0.8f, 0.8f);
+		
 	}
 	
 	EERIE_LIGHT * light = dynLightCreate(m_light);
@@ -726,6 +728,7 @@ void ConfuseSpell::Update() {
 		light->duration = 200ms;
 		light->extras = 0;
 	}
+	
 }
 
 Vec3f ConfuseSpell::getPosition() const {
