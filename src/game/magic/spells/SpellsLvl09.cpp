@@ -346,23 +346,18 @@ void NegateMagicSpell::Update() {
 	
 	Vec3f stitepos = m_pos - Vec3f(0.f, 10.f, 0.f);
 	
-	for(int i = 0; i < 360; i++) {
-		float t = Random::getf();
-		if(t < 0.04f) {
-			
-			PARTICLE_DEF * pd = createParticle();
-			if(!pd) {
-				break;
-			}
-			
-			pd->ov = stitepos + arx::randomOffsetXZ(150.f);
-			pd->move = Vec3f(0.f, Random::getf(-3.f, 0.f), 0.f);
-			pd->siz = 0.3f;
-			pd->tolive = Random::getu(2000, 4000);
-			pd->tc = tex_p2;
-			pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING | SUBSTRACT;
-			pd->m_rotation = 0.0000001f;
+	for(size_t i = 0; i < Random::getCount(360, 0.04f); i++) {
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			break;
 		}
+		pd->ov = stitepos + arx::randomOffsetXZ(150.f);
+		pd->move = Vec3f(0.f, Random::getf(-3.f, 0.f), 0.f);
+		pd->siz = 0.3f;
+		pd->tolive = Random::getu(2000, 4000);
+		pd->tc = tex_p2;
+		pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING | SUBSTRACT;
+		pd->m_rotation = 0.0000001f;
 	}
 	
 	RenderMaterial mat;
