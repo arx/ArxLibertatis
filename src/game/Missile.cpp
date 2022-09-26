@@ -65,6 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Random.h"
 #include "math/RandomVector.h"
 #include "math/Vector.h"
+#include "math/Quantizer.h"
 
 #include "platform/profiler/Profiler.h"
 
@@ -86,6 +87,7 @@ struct Missile {
 	GameDuration tolive;
 	LightHandle m_light;
 	EntityHandle owner;
+	math::Quantizer m_quantizer;
 	
 	Missile()
 		: startpos(0.f)
@@ -204,16 +206,19 @@ void ARX_MISSILES_Update() {
 			continue;
 		}
 		
-		PARTICLE_DEF * pd = createParticle();
-		if(pd) {
-			pd->ov = pos;
-			pd->move = missile.velocity;
-			pd->move += Vec3f(3.f, 4.f, 3.f) + Vec3f(-6.f, -12.f, -6.f) * arx::randomVec3f();
-			pd->tolive = Random::getu(500, 1000);
-			pd->tc = g_particleTextures.fire;
-			pd->siz = 12.f * ((missile.tolive - framediff3) / 4s);
-			pd->scale = arx::randomVec(15.f, 20.f);
-			pd->m_flags = FIRE_TO_SMOKE;
+		size_t count = missile.m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 0.03f);
+		for(size_t i = 0; i < count; i++) {
+			PARTICLE_DEF * pd = createParticle(true);
+			if(pd) {
+				pd->ov = pos;
+				pd->move = missile.velocity;
+				pd->move += Vec3f(3.f, 4.f, 3.f) + Vec3f(-6.f, -12.f, -6.f) * arx::randomVec3f();
+				pd->tolive = Random::getu(500, 1000);
+				pd->tc = g_particleTextures.fire;
+				pd->siz = 12.f * ((missile.tolive - framediff3) / 4s);
+				pd->scale = arx::randomVec(15.f, 20.f);
+				pd->m_flags = FIRE_TO_SMOKE;
+			}
 		}
 		
 		missile.lastpos = pos;
