@@ -35,12 +35,14 @@ void FloatingStones::Init(float radius) {
 	
 }
 
-void FloatingStones::Update(GameDuration timeDelta, Vec3f pos) {
+void FloatingStones::Update(GameDuration timeDelta, Vec3f pos, bool addStones) {
 	
-	m_timestone -= timeDelta;
-	if(m_timestone <= 0) {
-		m_timestone = std::chrono::milliseconds(Random::get(50, 150));
-		AddStone(pos + arx::randomOffsetXZ(m_baseRadius));
+	if(addStones) {
+		m_timestone -= timeDelta;
+		if(m_timestone <= 0) {
+			m_timestone = std::chrono::milliseconds(Random::get(50, 150));
+			AddStone(pos + arx::randomOffsetXZ(m_baseRadius));
+		}
 	}
 	
 	if(m_quantizer.update(toMsf(timeDelta) * 0.03f)) {

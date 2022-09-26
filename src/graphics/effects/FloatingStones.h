@@ -31,7 +31,7 @@ class FloatingStones {
 public:
 	
 	void Init(float radius);
-	void Update(GameDuration timeDelta, Vec3f pos);
+	void Update(GameDuration timeDelta, Vec3f pos, bool addStones = true);
 	void AddStone(const Vec3f & pos);
 	void DrawStone();
 	
