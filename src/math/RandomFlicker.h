@@ -20,6 +20,8 @@
 #ifndef ARX_MATH_RANDOMFLICKER_H
 #define ARX_MATH_RANDOMFLICKER_H
 
+#include <cmath>
+
 #include <glm/glm.hpp>
 
 #include "math/Random.h"
@@ -46,7 +48,7 @@ public:
 		if(m_time >= 1.f) {
 			m_lastValue = m_nextValue;
 			m_nextValue = Random::getf();
-			m_time -= long(m_time);
+			m_time -= std::floor(m_time);
 		}
 		
 	}
