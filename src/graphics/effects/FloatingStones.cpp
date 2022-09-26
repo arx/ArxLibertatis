@@ -93,7 +93,13 @@ void FloatingStones::DrawStone() {
 	mat.setBlendType(RenderMaterial::Screen);
 	
 	for(Stone & stone : m_stones) {
-		Color4f col = Color4f(Color3f::white, 1.f - stone.currtime / stone.time);
+		float age = stone.currtime / stone.time;
+		Color4f col = Color4f::white;
+		if(age < 0.2f) {
+			col = Color4f::gray(age * 5.f);
+		} else if(age > 0.5f) {
+			col = Color4f::gray(2.f - age * 2.f);
+		}
 		EERIE_3DOBJ * obj = (stone.numstone == 0) ? stone0 : stone1;
 		Draw3DObject(obj, stone.ang, stone.pos, stone.scale, col, mat);
 	}
