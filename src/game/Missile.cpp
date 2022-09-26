@@ -113,30 +113,24 @@ static long ARX_MISSILES_GetFree() {
 }
 
 // Kills a missile
-static void ARX_MISSILES_Kill(long i) {
+static void ARX_MISSILES_Kill(Missile & missile) {
 	
-	switch (missiles[i].type)
-	{
-		case MISSILE_FIREBALL : {
-			
-			EERIE_LIGHT * light = lightHandleGet(missiles[i].m_light);
-			if(light) {
-				light->duration = 150ms;
-			}
-
-			break;
-		}
-		case MISSILE_NONE: break;
+	EERIE_LIGHT * light = lightHandleGet(missile.m_light);
+	if(light) {
+		light->duration = 150ms;
 	}
-
-	missiles[i].type = MISSILE_NONE;
+	
+	missile.type = MISSILE_NONE;
+	
 }
 
 //-----------------------------------------------------------------------------
 // Clear all missiles
 void ARX_MISSILES_ClearAll() {
 	for(size_t i = 0; i < MAX_MISSILES; i++) {
-		ARX_MISSILES_Kill(i);
+		if(missiles[i].type == MISSILE_NONE) {
+			ARX_MISSILES_Kill(missiles[i]);
+		}
 	}
 }
 
@@ -195,7 +189,7 @@ void ARX_MISSILES_Update() {
 		
 		GameDuration framediff3 = now - missiles[i].timecreation;
 		if(framediff3 > missiles[i].tolive) {
-			ARX_MISSILES_Kill(i);
+			ARX_MISSILES_Kill(missiles[i]);
 			continue;
 		}
 		
@@ -238,7 +232,7 @@ void ARX_MISSILES_Update() {
 				}
 				
 				if(hit) {
-					ARX_MISSILES_Kill(i);
+					ARX_MISSILES_Kill(missiles[i]);
 					spawnFireHitParticle(dest, 0);
 					PolyBoomAddScorch(dest);
 					Add3DBoom(dest);
