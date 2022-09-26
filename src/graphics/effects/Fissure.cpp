@@ -365,15 +365,18 @@ void CRiseDead::RenderFissure() {
 	}
 }
 
-void CRiseDead::Update(GameDuration timeDelta)
-{
+void CRiseDead::Update(GameDuration timeDelta) {
+	
 	m_elapsed += timeDelta;
 	
-	m_stones.Update(timeDelta, m_eSrc);
+	m_stones.Update(timeDelta, m_eSrc, m_elapsed < m_duration);
+	
 }
 
 // render the space time tearing
 void CRiseDead::Render() {
+	
+	m_stones.DrawStone();
 	
 	if(m_elapsed >= m_duration) {
 		return;
@@ -397,8 +400,6 @@ void CRiseDead::Render() {
 	}
 	
 	RenderFissure();
-	
-	m_stones.DrawStone();
 	
 }
 
