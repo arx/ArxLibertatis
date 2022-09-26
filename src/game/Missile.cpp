@@ -139,40 +139,32 @@ void ARX_MISSILES_ClearAll() {
 void ARX_MISSILES_Spawn(Entity * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f & startpos, const Vec3f & targetpos) {
 	
 	long i(ARX_MISSILES_GetFree());
-
-	if (i == -1) return;
-
-	missiles[i].owner = (io == nullptr) ? EntityHandle() : io->index();
-	missiles[i].type = type;
-	missiles[i].lastpos = missiles[i].startpos = startpos;
-
-	float dist;
-
-	dist = 1.f / fdist(startpos, targetpos);
-	missiles[i].velocity = (targetpos - startpos) * dist;
-	missiles[i].lastupdate = missiles[i].timecreation = g_gameTime.now();
-
-	switch (type)
-	{
-		case MISSILE_NONE: break;
-		case MISSILE_FIREBALL:
-		{
-			missiles[i].tolive = 6s;
-			missiles[i].velocity *= 0.8f;
-			
-			EERIE_LIGHT * light = dynLightCreate(missiles[i].m_light);
-			if(light) {
-				light->intensity = 1.3f;
-				light->fallend = 420.f;
-				light->fallstart = 250.f;
-				light->rgb = Color3f(1.f, .8f, .6f);
-				light->pos = startpos;
-			}
-
-			ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_WIND_LOOP, &missiles[i].startpos, 2.f);
-			ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_LAUNCH, &missiles[i].startpos, 2.f);
-		}
+	if(i == -1 || type == MISSILE_NONE) {
+		return;
 	}
+	
+	Missile & missile = missiles[i];
+	
+	missile.owner = (io == nullptr) ? EntityHandle() : io->index();
+	missile.type = type;
+	missile.lastpos = missile.startpos = startpos;
+	missile.velocity = glm::normalize(targetpos - startpos) * 0.8f;
+	missile.lastupdate = missile.timecreation = g_gameTime.now();
+	
+	missile.tolive = 6s;
+	
+	EERIE_LIGHT * light = dynLightCreate(missile.m_light);
+	if(light) {
+		light->intensity = 1.3f;
+		light->fallend = 420.f;
+		light->fallstart = 250.f;
+		light->rgb = Color3f(1.f, .8f, .6f);
+		light->pos = startpos;
+	}
+	
+	ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_WIND_LOOP, &missile.startpos, 2.f);
+	ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_LAUNCH, &missile.startpos, 2.f);
+	
 }
 
 //-----------------------------------------------------------------------------
