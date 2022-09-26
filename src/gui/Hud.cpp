@@ -155,7 +155,7 @@ void BookIconGui::requestFX() {
 	
 	for(int i = 0; i < 5; i++) {
 		
-		PARTICLE_DEF * pd = createParticle();
+		PARTICLE_DEF * pd = createParticle(true);
 		if(!pd) {
 			break;
 		}
