@@ -41,7 +41,7 @@ public:
 	
 	void update(float time) {
 		
-		m_time += time * Random::getf(0.f, 2.f);
+		m_time += time;
 		
 		if(m_time >= 1.f) {
 			m_lastValue = m_nextValue;

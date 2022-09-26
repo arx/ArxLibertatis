@@ -364,7 +364,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 			lightt.fallin *= g_sizeRatio.y;
 			lightt.fallout *= g_sizeRatio.y;
 			
-			flicker.update(FDIFF * SPEEDINTENSITYRND);
+			flicker.update(FDIFF * SPEEDINTENSITYRND * Random::getf(0.f, 2.f));
 			LightRND =  std::min(lightt.intensity + lightt.intensiternd * flicker.get(), 1.f);
 			
 			l = &lightt;
@@ -408,7 +408,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 			lightt.fallin *= g_sizeRatio.y;
 			lightt.fallout *= g_sizeRatio.y;
 			
-			flickerd.update(FDIFF * SPEEDINTENSITYRND);
+			flickerd.update(FDIFF * SPEEDINTENSITYRND * Random::getf(0.f, 2.f));
 			LightRND =  std::min(lightt.intensity + lightt.intensiternd * flickerd.get(), 1.f);
 			
 			l = &lightt;
