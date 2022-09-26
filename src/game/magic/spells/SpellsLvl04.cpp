@@ -38,11 +38,11 @@
 
 
 BlessSpell::BlessSpell()
-	: m_pos(0.f)
+	: tex_p1(nullptr)
+	, tex_sol(nullptr)
+	, m_pos(0.f)
 	, m_yaw(0)
 	, m_scale(0)
-	, tex_p1(nullptr)
-	, tex_sol(nullptr)
 	, fRot(0)
 { }
 
@@ -141,13 +141,12 @@ void BlessSpell::Update() {
 	drawQuadRTP(mat, q);
 	}
 	
-	for(int i = 0; i < 12; i++) {
-		
-		PARTICLE_DEF * pd = createParticle();
+	size_t count = m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 0.36f);
+	for(size_t i = 0; i < count; i++) {
+		PARTICLE_DEF * pd = createParticle(true);
 		if(!pd) {
 			break;
 		}
-		
 		pd->ov = m_pos - Vec3f(0.f, 20.f, 0.f);
 		pd->move = arx::linearRand(Vec3f(-3.f, 0.f, -3.f), Vec3f(3.f, 0.5f, 3.f));
 		pd->siz = 0.005f;
@@ -157,6 +156,7 @@ void BlessSpell::Update() {
 		pd->m_rotation = 0.0000001f;
 		pd->rgb = Color3f(0.7f, 0.6f, 0.2f);
 	}
+	
 }
 
 Vec3f BlessSpell::getPosition() const {

@@ -21,7 +21,9 @@
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL04_H
 
 #include "game/magic/Spell.h"
+#include "math/Quantizer.h"
 #include "platform/Platform.h"
+
 
 class BlessSpell final : public Spell {
 	
@@ -38,13 +40,14 @@ public:
 	
 private:
 	
+	TextureContainer * tex_p1;
+	TextureContainer * tex_sol;
+	
 	Vec3f m_pos;
 	float m_yaw;
 	float m_scale;
-	
-	TextureContainer * tex_p1;
-	TextureContainer * tex_sol;
 	float fRot;
+	math::Quantizer m_quantizer;
 	
 };
 
