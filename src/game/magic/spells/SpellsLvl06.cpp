@@ -36,7 +36,7 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-void RiseDeadSpell::GetTargetAndBeta(Vec3f & target, float & beta) {
+void RaiseDeadSpell::GetTargetAndBeta(Vec3f & target, float & beta) {
 	
 	bool displace = true;
 	
@@ -53,15 +53,15 @@ void RiseDeadSpell::GetTargetAndBeta(Vec3f & target, float & beta) {
 	}
 }
 
-RiseDeadSpell::RiseDeadSpell()
+RaiseDeadSpell::RaiseDeadSpell()
 	: m_targetPos(0.f)
 	, m_creationFailed(false)
 { }
 
-bool RiseDeadSpell::CanLaunch() {
+bool RaiseDeadSpell::CanLaunch() {
 	
 	// TODO Always cancel spell even if new one can't be launched ?
-	spells.endByCaster(m_caster, SPELL_RISE_DEAD);
+	spells.endByCaster(m_caster, SPELL_RAISE_DEAD);
 	
 	float beta;
 	Vec3f target;
@@ -76,7 +76,7 @@ bool RiseDeadSpell::CanLaunch() {
 	return true;
 }
 
-void RiseDeadSpell::Launch() {
+void RaiseDeadSpell::Launch() {
 	
 	float beta;
 	Vec3f target;
@@ -113,7 +113,7 @@ void RiseDeadSpell::Launch() {
 	m_duration = m_fissure.GetDuration();
 }
 
-void RiseDeadSpell::End() {
+void RaiseDeadSpell::End() {
 	
 	Entity * entity = entities.get(m_entity);
 	if(entity) {
@@ -142,7 +142,7 @@ void RiseDeadSpell::End() {
 	endLightDelayed(m_light, 500ms);
 }
 
-void RiseDeadSpell::Update() {
+void RaiseDeadSpell::Update() {
 	
 	if(m_creationFailed) {
 		m_light = LightHandle();

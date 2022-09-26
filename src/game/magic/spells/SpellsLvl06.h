@@ -26,11 +26,11 @@
 #include "graphics/effects/Field.h"
 #include "platform/Platform.h"
 
-class RiseDeadSpell final : public Spell {
+class RaiseDeadSpell final : public Spell {
 	
 public:
 	
-	RiseDeadSpell();
+	RaiseDeadSpell();
 	
 	bool CanLaunch() override;
 	void Launch() override;

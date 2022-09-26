@@ -71,7 +71,7 @@ enum SpellType {
 	SPELL_POISON_PROJECTILE,     // = 55,
 	
 	// LEVEL 6
-	SPELL_RISE_DEAD,             // = 61,
+	SPELL_RAISE_DEAD,            // = 61,
 	SPELL_PARALYSE,              // = 62,
 	SPELL_CREATE_FIELD,          // = 63,
 	SPELL_DISARM_TRAP,           // = 64,

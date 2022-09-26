@@ -338,7 +338,7 @@ const char * getSpellName(SpellType num) {
 		case SPELL_REPEL_UNDEAD          : return "repel_undead";
 		case SPELL_POISON_PROJECTILE     : return "poison_projectile";
 		// Level 6
-		case SPELL_RISE_DEAD             : return "raise_dead";
+		case SPELL_RAISE_DEAD            : return "raise_dead";
 		case SPELL_PARALYSE              : return "paralyse";
 		case SPELL_CREATE_FIELD          : return "create_field";
 		case SPELL_DISARM_TRAP           : return "disarm_trap";
@@ -724,7 +724,7 @@ float ARX_SPELLS_GetManaCost(SpellType spell, float casterLevel) {
 		case SPELL_DISPELL_FIELD:         return   7.f;
 		case SPELL_RUNE_OF_GUARDING:      return   9.f;
 		case SPELL_CURE_POISON:           return  10.f;
-		case SPELL_RISE_DEAD:             return  12.f;
+		case SPELL_RAISE_DEAD:            return  12.f;
 		case SPELL_DISARM_TRAP:           return  15.f;
 		case SPELL_FIRE_FIELD:            return  15.f;
 		case SPELL_ICE_FIELD:             return  15.f;
@@ -788,7 +788,7 @@ static std::unique_ptr<Spell> createSpellInstance(SpellType type) {
 		case SPELL_REPEL_UNDEAD: return std::make_unique<RepelUndeadSpell>();
 		case SPELL_POISON_PROJECTILE: return std::make_unique<PoisonProjectileSpell>();
 		// LEVEL 6
-		case SPELL_RISE_DEAD: return std::make_unique<RiseDeadSpell>();
+		case SPELL_RAISE_DEAD: return std::make_unique<RaiseDeadSpell>();
 		case SPELL_PARALYSE: return std::make_unique<ParalyseSpell>();
 		case SPELL_CREATE_FIELD: return std::make_unique<CreateFieldSpell>();
 		case SPELL_DISARM_TRAP: return std::make_unique<DisarmTrapSpell>();

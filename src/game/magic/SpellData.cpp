@@ -340,11 +340,11 @@ void spellDataInit() {
 	}
 	
 	{ // Raise Dead Level 6
-		SPELL_ICON & s = spellicons[SPELL_RISE_DEAD];
+		SPELL_ICON & s = spellicons[SPELL_RAISE_DEAD];
 		s.name = "system_spell_name_raise_dead";
 		s.description = "system_spell_description_raise_dead";
 		s.level = 6;
-		s.spellid = SPELL_RISE_DEAD;
+		s.spellid = SPELL_RAISE_DEAD;
 		s.bAudibleAtStart = true;
 		s.tc = TextureContainer::LoadUI("graph/interface/icons/spell_raise_dead");
 		s.symbols[0] = RUNE_AAM;
