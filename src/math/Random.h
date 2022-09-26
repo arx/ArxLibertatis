@@ -21,11 +21,8 @@
 #define ARX_MATH_RANDOM_H
 
 #include <limits>
+#include <random>
 #include <type_traits>
-
-#include <boost/random/mersenne_twister.hpp>
-#include <boost/random/uniform_int_distribution.hpp>
-#include <boost/random/uniform_real_distribution.hpp>
 
 #include "platform/Platform.h"
 
@@ -70,7 +67,7 @@ public:
 	
 private:
 	
-	typedef boost::random::mt19937 Generator;
+	typedef std::mt19937 Generator;
 	
 	static thread_local Generator * rng;
 };
@@ -80,8 +77,7 @@ private:
 template <class IntType>
 IntType Random::get(IntType min, IntType max) {
 	static_assert(std::is_integral<IntType>::value, "get must be called with ints");
-	
-	return typename boost::random::uniform_int_distribution<IntType>(min, max)(*rng);
+	return std::uniform_int_distribution<IntType>(min, max)(*rng);
 }
 
 template <class IntType>
@@ -100,8 +96,7 @@ inline unsigned int Random::getu(unsigned int min, unsigned int max) {
 template <class RealType>
 RealType Random::getf(RealType min, RealType max) {
 	static_assert(std::is_floating_point<RealType>::value, "getf must be called with floats");
-	
-	return typename boost::random::uniform_real_distribution<RealType>(min, max)(*rng);
+	return std::uniform_real_distribution<RealType>(min, max)(*rng);
 }
 
 template <class RealType>

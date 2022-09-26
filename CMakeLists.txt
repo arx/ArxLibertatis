@@ -551,12 +551,6 @@ if(NOT Boost_VERSION_MACRO LESS 106200 AND Boost_VERSION_MACRO LESS 106300)
 		add_definitions("-DBOOST_NO_CXX14_CONSTEXPR")
 	endif()
 endif()
-# Boost 1.69 has warnings about deprecated headers when using Boost.Random
-# https://github.com/boostorg/random/issues/49
-if(NOT Boost_VERSION_MACRO LESS 106900 AND Boost_VERSION_MACRO LESS 107000)
-	message("Suppressing warnings for deprecated headers used internally in Boost")
-	add_definitions("-DBOOST_ALLOW_DEPRECATED_HEADERS")
-endif()
 # Prevent warning in boost/crc.cpp
 # warning C4245: 'initializing': conversion from 'int' to 'const boost::detail::mask_uint_t<8>::least', signed/unsigned mismatch
 # warning C4245: 'initializing': conversion from 'int' to 'const boost::detail::mask_uint_t<16>::least', signed/unsigned mismatch
