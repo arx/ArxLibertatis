@@ -292,7 +292,7 @@ public:
 				pos.y -= 80.f;
 			}
 			
-			ARX_MISSILES_Spawn(io, MISSILE_FIREBALL, pos, io->target);
+			ARX_MISSILES_Spawn(io, pos, io->target);
 			
 		} else {
 			ScriptWarning << "unexpected type: " << type;

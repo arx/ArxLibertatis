@@ -120,11 +120,7 @@ void ARX_MISSILES_ClearAll() {
 	
 }
 
-void ARX_MISSILES_Spawn(Entity * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f & startpos, const Vec3f & targetpos) {
-	
-	if(type == MISSILE_NONE) {
-		return;
-	}
+void ARX_MISSILES_Spawn(Entity * io, const Vec3f & startpos, const Vec3f & targetpos) {
 	
 	Missile & missile = g_missiles.emplace_back();
 	

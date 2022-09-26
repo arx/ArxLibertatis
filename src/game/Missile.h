@@ -49,12 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class Entity;
 
-enum ARX_SPELLS_MISSILE_TYPE {
-	MISSILE_NONE = 0,
-	MISSILE_FIREBALL = 1
-};
-
-void ARX_MISSILES_Spawn(Entity * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f & startpos, const Vec3f & targetpos);
+void ARX_MISSILES_Spawn(Entity * io, const Vec3f & startpos, const Vec3f & targetpos);
 void ARX_MISSILES_Update();
 void ARX_MISSILES_ClearAll();
 
