@@ -926,7 +926,7 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 		
 		for(long k = 0 ; k < 14 ; k++) {
 			
-			PARTICLE_DEF * pd = createParticle();
+			PARTICLE_DEF * pd = createParticle(true);
 			if(!pd) {
 				break;
 			}
