@@ -48,7 +48,6 @@ private:
 	
 	Vec3f conevertex[VertexCount];
 	TexturedVertexUntransformed coned3d[VertexCount];
-	unsigned short coneind[VertexCount];
 	
 };
 

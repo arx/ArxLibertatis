@@ -35,16 +35,12 @@ RotatingCone::RotatingCone()
 void RotatingCone::Init(float rbase, float rhaut, float hauteur) {
 	
 	Vec3f * vertex = conevertex;
-	unsigned short * pind = coneind;
-	unsigned short ind = 0;
 	float a = 0.f;
 	float da = 360.f / float(Def);
 	
 	int nb = VertexCount / 2;
 	
 	while(nb) {
-		*pind++ = ind++;
-		*pind++ = ind++;
 		*vertex++ = Vec3f(rhaut * std::cos(glm::radians(a)), -hauteur, rhaut * std::sin(glm::radians(a)));
 		*vertex++ = Vec3f(rbase * std::cos(glm::radians(a)), 0.f, rbase * std::sin(glm::radians(a)));
 		a += da;
