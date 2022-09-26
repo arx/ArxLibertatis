@@ -64,6 +64,11 @@ void RotatingCone::Update(GameDuration timeDelta, Vec3f pos, float coneScale) {
 		m_currdurationang = 0;
 		m_ang = 1.f;
 	}
+	
+	for(math::RandomFlicker & flicker : m_flicker) {
+		flicker.update(toMsf(timeDelta) * 0.03f);
+	}
+	
 }
 
 void RotatingCone::Render() {
@@ -72,35 +77,26 @@ void RotatingCone::Render() {
 	float du = 2.f / float(Def);
 	
 	Vec3f * vertex = conevertex;
+	math::RandomFlicker * flicker = m_flicker;
 	TexturedVertexUntransformed * d3dv = coned3d;
 	int nb = VertexCount / 2;
 	
 	while(nb) {
 		
 		d3dv->p = m_pos + *(vertex + 1) + ((*vertex - *(vertex + 1)) * m_coneScale);
-		
-		// TODO per-frame randomness
-		int col = Random::get(0, 80);
-		if(!g_gameTime.isPaused()) {
-			d3dv->color = Color::gray(float(col) / 255.f).toRGB(col);
-		}
-		
+		d3dv->color = Color4f::gray(flicker->get() * 0.32f, flicker->get() * 0.32f).toRGBA();
 		d3dv->uv.x = u;
 		d3dv->uv.y = 0.f;
 		vertex++;
+		flicker++;
 		d3dv++;
 		
 		d3dv->p = m_pos + Vec3f(vertex->x, 0.f, vertex->z);
-		
-		// TODO per-frame randomness
-		col = Random::get(0, 80);
-		if(!g_gameTime.isPaused()) {
-			d3dv->color = Color::black.toRGB(col);
-		}
-		
+		d3dv->color = Color4f::gray(0.f, flicker->get() * 0.32f).toRGBA();
 		d3dv->uv.x = u;
 		d3dv->uv.y = 1.f;
 		vertex++;
+		flicker++;
 		d3dv++;
 		
 		u += du;

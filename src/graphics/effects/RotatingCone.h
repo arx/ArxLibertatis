@@ -21,6 +21,8 @@
 #define ARX_GRAPHICS_EFFECTS_ROTATINGCONE_H
 
 #include "graphics/effects/SpellEffects.h"
+#include "math/RandomFlicker.h"
+
 
 class RotatingCone {
 	
@@ -48,6 +50,7 @@ private:
 	
 	Vec3f conevertex[VertexCount];
 	TexturedVertexUntransformed coned3d[VertexCount];
+	math::RandomFlicker m_flicker[VertexCount];
 	
 };
 
