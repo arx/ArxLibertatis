@@ -107,9 +107,10 @@ public:
 	
 private:
 	
-	Vec3f m_pos;
 	TextureContainer * tex_p1;
+	Vec3f m_pos;
 	float fRot;
+	math::Quantizer m_quantizer;
 	
 };
 

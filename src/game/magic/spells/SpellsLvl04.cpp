@@ -376,8 +376,8 @@ void TelekinesisSpell::End() {
 }
 
 CurseSpell::CurseSpell()
-	: m_pos(0.f)
-	, tex_p1(nullptr)
+	: tex_p1(nullptr)
+	, m_pos(0.f)
 	, fRot(0.f)
 { }
 
@@ -433,13 +433,12 @@ void CurseSpell::Update() {
 	
 	Draw3DObject(svoodoo, Anglef(0, fRot, 0), m_pos, Vec3f(1.f), Color3f::white, mat);
 	
-	for(int i = 0; i < 4; i++) {
-		
-		PARTICLE_DEF * pd = createParticle();
+	size_t count = m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 0.12f);
+	for(size_t i = 0; i < count; i++) {
+		PARTICLE_DEF * pd = createParticle(true);
 		if(!pd) {
 			break;
 		}
-		
 		pd->ov = m_pos;
 		pd->move = arx::linearRand(Vec3f(-2.f, -20.f, -2.f), Vec3f(2.f, -10.f, 2.f));
 		pd->siz = 0.015f;
@@ -448,6 +447,7 @@ void CurseSpell::Update() {
 		pd->m_flags = ROTATING | DISSIPATING | SUBSTRACT | GRAVITY;
 		pd->m_rotation = 0.0000001f;
 	}
+	
 }
 
 Vec3f CurseSpell::getPosition() const {
