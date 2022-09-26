@@ -21,10 +21,11 @@
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL07_H
 
 #include "game/magic/Spell.h"
-
-#include "graphics/particle/ParticleSystem.h"
 #include "graphics/effects/Lightning.h"
+#include "graphics/particle/ParticleSystem.h"
+#include "math/Quantizer.h"
 #include "platform/Platform.h"
+
 
 class FlyingEyeSpell final : public Spell {
 	
@@ -42,9 +43,9 @@ public:
 private:
 	
 	GameInstant m_lastupdate;
-	
 	LightHandle m_light1;
 	LightHandle m_light2;
+	math::Quantizer m_quantizer;
 	
 };
 

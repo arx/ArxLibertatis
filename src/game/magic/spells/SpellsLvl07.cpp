@@ -86,13 +86,11 @@ void FlyingEyeSpell::Launch() {
 	
 	eyeball.angle = player.angle;
 	
-	for(long n = 0; n < 12; n++) {
-		
-		PARTICLE_DEF * pd = createParticle();
+	for(size_t n = 0; n < 12; n++) {
+		PARTICLE_DEF * pd = createParticle(true);
 		if(!pd) {
 			break;
 		}
-		
 		pd->ov = eyeball.pos + arx::randomVec(-5.f, 5.f);
 		pd->move = arx::randomVec(-2.f, 2.f);
 		pd->siz = 28.f;
@@ -121,12 +119,10 @@ void FlyingEyeSpell::End() {
 	eyeball.exist = -100;
 	
 	for(long n = 0; n < 12; n++) {
-		
-		PARTICLE_DEF * pd = createParticle();
+		PARTICLE_DEF * pd = createParticle(true);
 		if(!pd) {
 			break;
 		}
-		
 		pd->ov = eyeball.pos + arx::randomVec(-5.f, 5.f);
 		pd->move = arx::randomVec(-2.f, 2.f);
 		pd->siz = 28.f;
@@ -144,7 +140,7 @@ void FlyingEyeSpell::End() {
 	lightHandleDestroy(m_light2);
 }
 
-static void FlyingEyeSpellUpdateHand(const Vec3f & pos, LightHandle & light) {
+static void FlyingEyeSpellUpdateHand(const Vec3f & pos, LightHandle & light, size_t particles) {
 	
 	EERIE_LIGHT * el = dynLightCreate(light);
 	if(el) {
@@ -155,13 +151,11 @@ static void FlyingEyeSpellUpdateHand(const Vec3f & pos, LightHandle & light) {
 		el->pos = pos;
 	}
 	
-	for(long kk = 0; kk < 2; kk++) {
-		
-		PARTICLE_DEF * pd = createParticle();
+	for(size_t i = 0; i < particles; i++) {
+		PARTICLE_DEF * pd = createParticle(true);
 		if(!pd) {
 			break;
 		}
-		
 		pd->ov = pos + arx::randomVec(-1.f, 1.f);
 		pd->move = Vec3f(0.1f, 0.f, 0.1f) + Vec3f(-0.2f, -2.2f, -0.2f) * arx::randomVec3f();
 		pd->siz = 5.f;
@@ -173,6 +167,7 @@ static void FlyingEyeSpellUpdateHand(const Vec3f & pos, LightHandle & light) {
 		pd->m_rotation = 0.0000001f;
 		pd->rgb = Color3f(.7f, .3f, 1.f) + Color3f(-.1f, -.1f, -.1f) * randomColor3f();
 	}
+	
 }
 
 void FlyingEyeSpell::Update() {
@@ -196,15 +191,18 @@ void FlyingEyeSpell::Update() {
 	
 	Entity * io = entities.player();
 	
+	size_t particles = m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 0.06f);
+	
 	if(io->obj->fastaccess.primary_attach != ActionPoint()) {
 		Vec3f pos = actionPointPosition(io->obj, io->obj->fastaccess.primary_attach);
-		FlyingEyeSpellUpdateHand(pos, m_light1);
+		FlyingEyeSpellUpdateHand(pos, m_light1, particles);
 	}
 	
 	if(io->obj->fastaccess.left_attach != ActionPoint()) {
 		Vec3f pos = actionPointPosition(io->obj, io->obj->fastaccess.left_attach);
-		FlyingEyeSpellUpdateHand(pos, m_light2);
+		FlyingEyeSpellUpdateHand(pos, m_light2, particles);
 	}
+	
 }
 
 Vec3f FlyingEyeSpell::getPosition() const {

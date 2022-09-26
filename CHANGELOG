@@ -9,7 +9,7 @@ Gameplay:
 Graphics:
 
 * Fixed increased fog particle count with high framerates
-* Fixed increased effect particle count for the control and negate magic spells with high framerates
+* Fixed increased effect particle count for the control, flying eye and negate magic spells with high framerates
 * Fixed increased magic damage particle count for the chaos, harm, life drain, lightning strike and mana drain spells with high framerates
 * Fixed fogs starting out with 0 particles after coming into view
 
