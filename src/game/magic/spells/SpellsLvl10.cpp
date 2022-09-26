@@ -236,8 +236,7 @@ void ControlTargetSpell::Launch() {
 
 void ControlTargetSpell::Update() {
 	
-	int n = BEZIERPrecision;
-	float delta = 1.0f / n;
+	constexpr int n = BEZIERPrecision;
 	
 	float fTrail = (m_elapsed / m_duration) * 9.f * float(n + 2);
 	
@@ -251,19 +250,19 @@ void ControlTargetSpell::Update() {
 		const Vec3f v4 = pathways[std::min(9, i + 2)];
 		
 		for(int toto = 1; toto < n; toto++) {
-			if(fTrail < i * n + toto)
+			
+			if(fTrail < float(i * n + toto)) {
 				break;
-
-			float t = toto * delta;
+			}
 			
-			Vec3f newpos = arx::catmullRom(v1, v2, v3, v4, t);
+			Vec3f newpos = arx::catmullRom(v1, v2, v3, v4, float(toto) * (1.f / float(n)));
 			
-			if(fTrail - (i * n + toto) <= 70) {
-				float c = 1.0f - (fTrail - (i * n + toto)) / 70.0f;
+			if(fTrail - float(i * n + toto) <= 70.f) {
+				float c = 1.f - (fTrail - float(i * n + toto)) / 70.f;
 				PARTICLE_DEF * pd = createParticle();
 				if(pd) {
 					pd->ov = lastpos;
-					pd->siz = 5 * c;
+					pd->siz = 5.f * c;
 					pd->tolive = Random::getu(10, 110);
 					pd->tc = tex_mm;
 					pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
@@ -277,15 +276,18 @@ void ControlTargetSpell::Update() {
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
 				pd->ov = lastpos;
-				pd->siz = 5;
+				pd->siz = 5.f;
 				pd->tolive = Random::getu(10, 110);
 				pd->tc = tex_mm;
 				pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 				pd->m_rotation = 0.0000001f;
 				pd->rgb = Color3f::gray(0.1f);
 			}
+			
 		}
+		
 	}
+	
 }
 
 
