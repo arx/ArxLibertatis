@@ -23,9 +23,9 @@
 #include <vector>
 
 #include "game/magic/Spell.h"
-
 #include "graphics/effects/Trail.h"
 #include "graphics/particle/ParticleSystem.h"
+#include "math/Quantizer.h"
 #include "platform/Platform.h"
 
 
@@ -124,6 +124,7 @@ private:
 	};
 	
 	std::vector<Icicle> m_icicles;
+	math::Quantizer m_quantizer;
 	
 };
 
