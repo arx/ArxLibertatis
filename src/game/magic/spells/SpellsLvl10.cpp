@@ -236,6 +236,10 @@ void ControlTargetSpell::Launch() {
 
 void ControlTargetSpell::Update() {
 	
+	if(m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 0.03f) < 1) {
+		return;
+	}
+	
 	constexpr int n = BEZIERPrecision;
 	
 	float fTrail = (m_elapsed / m_duration) * 9.f * float(n + 2);
@@ -259,7 +263,7 @@ void ControlTargetSpell::Update() {
 			
 			if(fTrail - float(i * n + toto) <= 70.f) {
 				float c = 1.f - (fTrail - float(i * n + toto)) / 70.f;
-				PARTICLE_DEF * pd = createParticle();
+				PARTICLE_DEF * pd = createParticle(true);
 				if(pd) {
 					pd->ov = lastpos;
 					pd->siz = 5.f * c;
@@ -273,7 +277,7 @@ void ControlTargetSpell::Update() {
 			
 			lastpos = newpos;
 			
-			PARTICLE_DEF * pd = createParticle();
+			PARTICLE_DEF * pd = createParticle(true);
 			if(pd) {
 				pd->ov = lastpos;
 				pd->siz = 5.f;

@@ -24,9 +24,10 @@
 #include <memory>
 
 #include "game/magic/Spell.h"
-
 #include "graphics/effects/Lightning.h"
+#include "math/Quantizer.h"
 #include "platform/Platform.h"
+
 
 class MassLightningStrikeSpell final : public Spell {
 	
@@ -63,6 +64,7 @@ private:
 	Vec3f eTarget;
 	TextureContainer * tex_mm;
 	std::array<Vec3f, 10> pathways;
+	math::Quantizer m_quantizer;
 	
 };
 
