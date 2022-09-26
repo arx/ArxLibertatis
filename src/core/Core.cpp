@@ -306,7 +306,6 @@ void levelInit() {
 	LogDebug("Initializing level ...");
 	
 	g_particleTextures.init();
-	ARX_PARTICLES_FirstInit();
 	g_renderBatcher.reset();
 	
 	progressBarAdvance(2.f);

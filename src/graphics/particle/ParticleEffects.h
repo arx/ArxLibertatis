@@ -145,7 +145,6 @@ void MakeCoolFx(const Vec3f & pos);
 PARTICLE_DEF * createParticle(bool allocateWhilePaused = false);
 long getParticleCount();
 
-void ARX_PARTICLES_FirstInit();
 void ARX_PARTICLES_ClearAll();
 void ARX_PARTICLES_Update();
 void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle source);

@@ -486,10 +486,6 @@ void Add3DBoom(const Vec3f & position) {
 	}
 }
 
-void ARX_PARTICLES_FirstInit() {
-	
-}
-
 void ARX_PARTICLES_ClearAll() {
 	
 	std::fill(g_particles, g_particles + MAX_PARTICLES, PARTICLE_DEF());
