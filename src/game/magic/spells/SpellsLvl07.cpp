@@ -291,42 +291,43 @@ void FireFieldSpell::Update() {
 		el->extras = 0;
 	}
 	
-	if(VisibleSphere(Sphere(m_pos - Vec3f(0.f, 120.f, 0.f), 350.f))) {
+	if(!VisibleSphere(Sphere(m_pos - Vec3f(0.f, 120.f, 0.f), 350.f))) {
+		return;
+	}
+	
+	pPSStream.Render();
+	pPSStream1.Render();
+	
+	size_t count = size_t(m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 0.125f));
+	for(size_t i = 0; i < count; i++) {
 		
-		pPSStream.Render();
-		pPSStream1.Render();
-		
-		size_t count = size_t(m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 0.125f));
-		for(size_t i = 0; i < count; i++) {
-			
-			PARTICLE_DEF * pd = createParticle(true);
-			if(!pd) {
-				break;
-			}
-			float t = Random::getf() * (glm::pi<float>() * 2.f) - glm::pi<float>();
-			float ts = std::sin(t);
-			float tc = std::cos(t);
-			pd->ov = m_pos + Vec3f(120.f * ts, 15.f * ts, 120.f * tc) * arx::randomVec();
-			pd->move = Vec3f(2.f, 1.f, 2.f) + Vec3f(-4.f, -8.f, -4.f) * arx::randomVec3f();
-			pd->siz = 7.f;
-			pd->tolive = Random::getu(500, 1500);
-			pd->tc = g_particleTextures.fire2;
-			pd->m_flags = ROTATING | FIRE_TO_SMOKE;
-			pd->m_rotation = Random::getf(-0.1f, 0.1f);
-			pd->scale = Vec3f(-8.f);
-			
-			PARTICLE_DEF copy = *pd;
-			
-			PARTICLE_DEF * pd2 = createParticle(true);
-			if(!pd2) {
-				break;
-			}
-			*pd2 = copy;
-			pd2->delay = Random::getu(60, 210);
-			
+		PARTICLE_DEF * pd = createParticle(true);
+		if(!pd) {
+			break;
 		}
+		float t = Random::getf() * (glm::pi<float>() * 2.f) - glm::pi<float>();
+		float ts = std::sin(t);
+		float tc = std::cos(t);
+		pd->ov = m_pos + Vec3f(120.f * ts, 15.f * ts, 120.f * tc) * arx::randomVec();
+		pd->move = Vec3f(2.f, 1.f, 2.f) + Vec3f(-4.f, -8.f, -4.f) * arx::randomVec3f();
+		pd->siz = 7.f;
+		pd->tolive = Random::getu(500, 1500);
+		pd->tc = g_particleTextures.fire2;
+		pd->m_flags = ROTATING | FIRE_TO_SMOKE;
+		pd->m_rotation = Random::getf(-0.1f, 0.1f);
+		pd->scale = Vec3f(-8.f);
+		
+		PARTICLE_DEF copy = *pd;
+		
+		PARTICLE_DEF * pd2 = createParticle(true);
+		if(!pd2) {
+			break;
+		}
+		*pd2 = copy;
+		pd2->delay = Random::getu(60, 210);
 		
 	}
+	
 }
 
 Vec3f FireFieldSpell::getPosition() const {
