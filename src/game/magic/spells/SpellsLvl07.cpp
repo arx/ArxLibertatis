@@ -472,12 +472,16 @@ void IceFieldSpell::Update() {
 		Draw3DObject(obj, stiteangle, stitepos, stitescale, stitecolor, mat);
 	}
 	
-	for(int i = 0; i < iMax * 0.5f; i++) {
+	if(m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 0.03f) < 1) {
+		return;
+	}
+	
+	for(int i = 0; i < iMax / 2; i++) {
 		
 		float t = Random::getf();
 		if(t < 0.01f) {
 			
-			PARTICLE_DEF * pd = createParticle();
+			PARTICLE_DEF * pd = createParticle(true);
 			if(pd) {
 				pd->ov = tPos[i] + arx::randomVec(-5.f, 5.f);
 				pd->move = arx::randomVec(-2.f, 2.f);
@@ -491,7 +495,7 @@ void IceFieldSpell::Update() {
 			
 		} else if(t > 0.095f) {
 			
-			PARTICLE_DEF * pd = createParticle();
+			PARTICLE_DEF * pd = createParticle(true);
 			if(pd) {
 				pd->ov = tPos[i] + arx::randomVec(-5.f, 5.f) + Vec3f(0.f, 50.f, 0.f);
 				pd->move = Vec3f(0.f, Random::getf(-2.f, 2.f), 0.f);

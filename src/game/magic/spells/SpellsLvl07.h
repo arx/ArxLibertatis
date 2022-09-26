@@ -90,6 +90,7 @@ private:
 	DamageHandle m_damage;
 	
 	Vec3f m_pos;
+	math::Quantizer m_quantizer;
 	TextureContainer * tex_p1;
 	TextureContainer * tex_p2;
 	
