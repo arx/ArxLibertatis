@@ -21,9 +21,10 @@
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL09_H
 
 #include "game/magic/Spell.h"
-
 #include "graphics/effects/Fissure.h"
+#include "math/Quantizer.h"
 #include "platform/Platform.h"
+
 
 class SummonCreatureSpell final : public Spell {
 	
@@ -85,6 +86,7 @@ private:
 	Vec3f m_pos;
 	TextureContainer * tex_p2;
 	TextureContainer * tex_sol;
+	math::Quantizer m_quantizer;
 	
 	void LaunchAntiMagicField();
 	

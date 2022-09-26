@@ -346,8 +346,9 @@ void NegateMagicSpell::Update() {
 	
 	Vec3f stitepos = m_pos - Vec3f(0.f, 10.f, 0.f);
 	
-	for(size_t i = 0; i < Random::getCount(360, 0.04f); i++) {
-		PARTICLE_DEF * pd = createParticle();
+	size_t count = Random::getCount(m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 10.8f), 0.04f);
+	for(size_t i = 0; i < count; i++) {
+		PARTICLE_DEF * pd = createParticle(true);
 		if(!pd) {
 			break;
 		}
