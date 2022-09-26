@@ -20,32 +20,38 @@
 #ifndef ARX_GRAPHICS_EFFECTS_FLOATINGSTONES_H
 #define ARX_GRAPHICS_EFFECTS_FLOATINGSTONES_H
 
+#include <vector>
+
 #include "graphics/effects/SpellEffects.h"
 
+
 class FloatingStones {
+	
 public:
+	
 	void Init(float radius);
 	void Update(GameDuration timeDelta, Vec3f pos);
 	void AddStone(const Vec3f & pos);
 	void DrawStone();
 	
-	struct T_STONE {
-		short actif;
-		short numstone;
+private:
+	
+	struct Stone {
 		Vec3f pos;
 		float yvel;
 		Anglef ang;
 		Anglef angvel;
 		Vec3f scale;
+		short numstone;
 		GameDuration time;
 		GameDuration currtime;
 	};
 	
+	std::vector<Stone> m_stones;
 	float m_baseRadius;
 	GameDuration m_currframetime;
 	GameDuration m_timestone;
-	int m_nbstone;
-	T_STONE m_tstone[256];
+	
 };
 
 #endif // ARX_GRAPHICS_EFFECTS_FLOATINGSTONES_H
