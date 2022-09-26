@@ -161,7 +161,6 @@ ControlTargetSpell::ControlTargetSpell()
 	: eSrc(0.f)
 	, eTarget(0.f)
 	, tex_mm(nullptr)
-	, fTrail(0)
 { }
 
 bool ControlTargetSpell::CanLaunch() {
@@ -221,8 +220,6 @@ void ControlTargetSpell::Launch() {
 	m_duration = 1s;
 	m_hasDuration = true;
 	
-	fTrail = 0.f;
-	
 	tex_mm = TextureContainer::Load("graph/obj3d/textures/(fx)_ctrl_target");
 	
 	pathways[0] = eSrc + Vec3f(0.f, 100.f, 0.f);
@@ -235,21 +232,15 @@ void ControlTargetSpell::Launch() {
 		}
 	}
 	
-	fTrail = 0;
 }
 
 void ControlTargetSpell::Update() {
 	
-	// -------------------
-	fTrail += 1;
-
-	if (fTrail >= 300) fTrail = 0;
-
 	int n = BEZIERPrecision;
 	float delta = 1.0f / n;
 	
-	fTrail = (m_elapsed / m_duration) * 9.f * float(n + 2);
-
+	float fTrail = (m_elapsed / m_duration) * 9.f * float(n + 2);
+	
 	Vec3f lastpos = pathways[0];
 	
 	for(int i = 0; i < 9; i++) {

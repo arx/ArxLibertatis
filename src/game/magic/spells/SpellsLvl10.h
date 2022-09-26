@@ -63,7 +63,6 @@ private:
 	Vec3f eTarget;
 	TextureContainer * tex_mm;
 	std::array<Vec3f, 10> pathways;
-	float fTrail;
 	
 };
 
