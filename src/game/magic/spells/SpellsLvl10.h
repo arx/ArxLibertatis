@@ -55,7 +55,6 @@ public:
 	
 	bool CanLaunch() override;
 	void Launch() override;
-	void End() override;
 	void Update() override;
 	
 private:

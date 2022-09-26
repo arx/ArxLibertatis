@@ -238,10 +238,6 @@ void ControlTargetSpell::Launch() {
 	fTrail = 0;
 }
 
-void ControlTargetSpell::End() {
-	
-}
-
 void ControlTargetSpell::Update() {
 	
 	// -------------------
