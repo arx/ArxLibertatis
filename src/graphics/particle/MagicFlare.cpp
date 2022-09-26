@@ -237,20 +237,20 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 		flare.size = Random::getf(64.f, 102.f) * sm;
 		flare.tolive = std::chrono::microseconds(Random::get(3400000, 4400000));
 	}
-
+	
 	flare.dynlight = LightHandle();
-
+	
 	for(unsigned int kk = 0; kk < 3; kk++) {
-
+		
 		if(Random::getf() < 0.5f) {
 			continue;
 		}
-
-		PARTICLE_DEF * pd = createParticle();
+		
+		PARTICLE_DEF * pd = createParticle(true);
 		if(!pd) {
 			break;
 		}
-
+		
 		if(!bookDraw) {
 			pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 			if(!io) {
@@ -259,7 +259,7 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 		} else {
 			pd->m_flags = FADE_IN_AND_OUT;
 		}
-
+		
 		pd->ov = flare.p + arx::randomVec(-5.f, 5.f);
 		pd->move = Vec3f(0.f, 5.f, 0.f);
 		pd->scale = Vec3f(-2.f);
@@ -278,6 +278,7 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 		}
 		
 	}
+	
 }
 
 //! Helper for FlareLine
