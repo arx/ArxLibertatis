@@ -101,7 +101,7 @@ public:
 	};
 	
 	MiniMap()
-		: m_currentLevel(0)
+		: m_currentLevel(-1)
 		, m_entities(nullptr)
 		, m_activeBkg(nullptr)
 		, m_worldToMapOffset(0.f)

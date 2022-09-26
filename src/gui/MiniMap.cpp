@@ -201,7 +201,6 @@ void MiniMap::firstInit(ARXCHARACTER * pl, PakReader * pakRes, EntityManager * e
 	m_playerLastPosX = -999999.f;
 	m_playerLastPosZ = -999999.f;
 	
-	m_currentLevel = 0;
 	m_entities = entityMng;
 	m_activeBkg = nullptr;
 	
