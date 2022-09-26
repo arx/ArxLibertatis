@@ -340,20 +340,11 @@ void NegateMagicSpell::Update() {
 	
 	if(m_target == EntityHandle_Player) {
 		m_pos = player.basePosition();
-	} else {
-		Entity * target = entities.get(m_target);
-		if(target) {
-			m_pos = target->pos;
-		}
+	} else if(Entity * target = entities.get(m_target)) {
+		m_pos = target->pos;
 	}
 	
 	Vec3f stitepos = m_pos - Vec3f(0.f, 10.f, 0.f);
-	
-	RenderMaterial mat;
-	mat.setLayer(RenderMaterial::Decal);
-	mat.setDepthTest(true);
-	mat.setTexture(tex_sol);
-	mat.setBlendType(RenderMaterial::Additive);
 	
 	for(int i = 0; i < 360; i++) {
 		float t = Random::getf();
@@ -374,22 +365,26 @@ void NegateMagicSpell::Update() {
 		}
 	}
 	
-	float rot = timeWaveSaw(g_gameTime.now(), 18s) * 360.f;
-	
-	Anglef stiteangle(0.f, -rot, 0.f);
+	RenderMaterial mat;
+	mat.setLayer(RenderMaterial::Decal);
+	mat.setDepthTest(true);
+	mat.setTexture(tex_sol);
+	mat.setBlendType(RenderMaterial::Additive);
+	Anglef stiteangle(0.f, -timeWaveSaw(g_gameTime.now(), 18s) * 360.f, 0.f);
 	float scalediff = timeWaveSin(g_gameTime.now(), 500ms * glm::pi<float>());
 	
 	{
-	Color3f stitecolor = Color3f::gray(.4f);
-	Vec3f stitescale = Vec3f(3.f + 0.5f * scalediff);
-	Draw3DObject(ssol, stiteangle, stitepos, stitescale, stitecolor, mat);
+		Color3f stitecolor = Color3f::gray(.4f);
+		Vec3f stitescale = Vec3f(3.f + 0.5f * scalediff);
+		Draw3DObject(ssol, stiteangle, stitepos, stitescale, stitecolor, mat);
 	}
 	
 	{
-	Color3f stitecolor = Color3f(.5f, 0.f, .5f);
-	Vec3f stitescale = Vec3f(3.1f + 0.2f * scalediff);
-	Draw3DObject(ssol, stiteangle, stitepos, stitescale, stitecolor, mat);
+		Color3f stitecolor = Color3f(.5f, 0.f, .5f);
+		Vec3f stitescale = Vec3f(3.1f + 0.2f * scalediff);
+		Draw3DObject(ssol, stiteangle, stitepos, stitescale, stitecolor, mat);
 	}
+	
 }
 
 void NegateMagicSpell::LaunchAntiMagicField() {
