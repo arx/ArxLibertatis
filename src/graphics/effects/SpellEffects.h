@@ -57,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct RenderMaterial;
 
-const int BEZIERPrecision = 32;
+constexpr int BEZIERPrecision = 32;
 
 class alignas(16) CSpellFx {
 	
