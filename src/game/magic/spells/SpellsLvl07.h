@@ -63,12 +63,12 @@ public:
 	
 private:
 	
-	Vec3f m_pos;
-	LightHandle m_light;
-	DamageHandle m_damage;
-	
 	ParticleSystem pPSStream;
 	ParticleSystem pPSStream1;
+	Vec3f m_pos;
+	math::Quantizer m_quantizer;
+	LightHandle m_light;
+	DamageHandle m_damage;
 	
 };
 

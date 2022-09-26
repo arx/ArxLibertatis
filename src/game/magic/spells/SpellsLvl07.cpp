@@ -296,16 +296,13 @@ void FireFieldSpell::Update() {
 		pPSStream.Render();
 		pPSStream1.Render();
 		
-		float fDiff = g_gameTime.lastFrameDuration() / 8ms;
-		int nTime = checked_range_cast<int>(fDiff);
-		
-		for(long nn = 0; nn <= nTime + 1; nn++) {
+		size_t count = size_t(m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 0.125f));
+		for(size_t i = 0; i < count; i++) {
 			
-			PARTICLE_DEF * pd = createParticle();
+			PARTICLE_DEF * pd = createParticle(true);
 			if(!pd) {
 				break;
 			}
-			
 			float t = Random::getf() * (glm::pi<float>() * 2.f) - glm::pi<float>();
 			float ts = std::sin(t);
 			float tc = std::cos(t);
@@ -318,13 +315,15 @@ void FireFieldSpell::Update() {
 			pd->m_rotation = Random::getf(-0.1f, 0.1f);
 			pd->scale = Vec3f(-8.f);
 			
-			PARTICLE_DEF * pd2 = createParticle();
+			PARTICLE_DEF copy = *pd;
+			
+			PARTICLE_DEF * pd2 = createParticle(true);
 			if(!pd2) {
 				break;
 			}
-			
-			*pd2 = *pd;
+			*pd2 = copy;
 			pd2->delay = Random::getu(60, 210);
+			
 		}
 		
 	}
