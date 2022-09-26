@@ -73,7 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class TextureContainer;
 
-struct ARX_MISSILE {
+struct Missile {
 	
 	ARX_SPELLS_MISSILE_TYPE type;
 	Vec3f startpos;
@@ -85,7 +85,7 @@ struct ARX_MISSILE {
 	LightHandle m_light;
 	EntityHandle owner;
 	
-	ARX_MISSILE()
+	Missile()
 		: type(MISSILE_NONE)
 		, startpos(0.f)
 		, velocity(0.f)
@@ -98,7 +98,7 @@ struct ARX_MISSILE {
 };
 
 static const size_t MAX_MISSILES = 100;
-static ARX_MISSILE missiles[MAX_MISSILES];
+static Missile missiles[MAX_MISSILES];
 
 // Gets a Free Projectile Slot
 static long ARX_MISSILES_GetFree() {
