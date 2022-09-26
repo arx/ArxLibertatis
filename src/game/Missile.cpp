@@ -182,83 +182,78 @@ void ARX_MISSILES_Update() {
 	ARX_PROFILE_FUNC();
 	
 	GameInstant now = g_gameTime.now();
-
-	for(unsigned long i(0); i < MAX_MISSILES; i++) {
-		if(missiles[i].type == MISSILE_NONE)
-			continue;
+	
+	for(Missile & missile : missiles) {
 		
-		GameDuration framediff3 = now - missiles[i].timecreation;
-		if(framediff3 > missiles[i].tolive) {
-			ARX_MISSILES_Kill(missiles[i]);
+		if(missile.type == MISSILE_NONE) {
 			continue;
 		}
 		
-		switch(missiles[i].type) {
-			case MISSILE_NONE:
-			break;
-			case MISSILE_FIREBALL: {
-				
-				Vec3f pos = missiles[i].startpos + missiles[i].velocity * Vec3f(toMsf(framediff3));
-				
-				EERIE_LIGHT * light = lightHandleGet(missiles[i].m_light);
-				if(light) {
-					light->pos = pos;
-				}
-
-				Vec3f orgn = missiles[i].lastpos;
-				Vec3f dest = pos;
-				
-				EERIEPOLY * ep = GetMinPoly(dest);
-				EERIEPOLY * epp = GetMaxPoly(dest);
-				
-				bool hit = false;
-				
-				if(closerThan(player.pos, dest, 200.f) || (ep && ep->center.y < dest.y) || (epp && epp->center.y > dest.y)) {
+		GameDuration framediff3 = now - missile.timecreation;
+		if(framediff3 > missile.tolive) {
+			ARX_MISSILES_Kill(missile);
+			continue;
+		}
+		
+		Vec3f pos = missile.startpos + missile.velocity * Vec3f(toMsf(framediff3));
+		
+		EERIE_LIGHT * light = lightHandleGet(missile.m_light);
+		if(light) {
+			light->pos = pos;
+		}
+		
+		Vec3f orgn = missile.lastpos;
+		Vec3f dest = pos;
+		
+		EERIEPOLY * ep = GetMinPoly(dest);
+		EERIEPOLY * epp = GetMaxPoly(dest);
+		
+		bool hit = false;
+		
+		if(closerThan(player.pos, dest, 200.f) || (ep && ep->center.y < dest.y) || (epp && epp->center.y > dest.y)) {
+			hit = true;
+		} else {
+			RaycastResult ray = raycastScene(orgn, dest);
+			if(ray.hit) {
+				dest = ray.pos;
+				hit = true;
+			} else if(!CheckInPoly(dest) || EEIsUnderWater(dest)) {
+				hit = true;
+			} else {
+				Vec3f tro = Vec3f(70.f);
+				Entity * ici = getCollidingEntityAt(dest, tro);
+				if(ici && ici->index() != missile.owner) {
 					hit = true;
-				} else {
-					RaycastResult ray = raycastScene(orgn, dest);
-					if(ray.hit) {
-						dest = ray.pos;
-						hit = true;
-					} else if(!CheckInPoly(dest) || EEIsUnderWater(dest)) {
-						hit = true;
-					} else {
-						Vec3f tro = Vec3f(70.f);
-						Entity * ici = getCollidingEntityAt(dest, tro);
-						if(ici && ici->index() != missiles[i].owner) {
-							hit = true;
-						}
-					}
 				}
-				
-				if(hit) {
-					ARX_MISSILES_Kill(missiles[i]);
-					spawnFireHitParticle(dest, 0);
-					PolyBoomAddScorch(dest);
-					Add3DBoom(dest);
-					doSphericDamage(Sphere(dest, 200.f), 180.f, DAMAGE_AREAHALF, nullptr,
-					                       DAMAGE_TYPE_FAKESPELL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
-					break;
-				}
-				
-				PARTICLE_DEF * pd = createParticle();
-				if(pd) {
-					pd->ov = pos;
-					pd->move = missiles[i].velocity;
-					pd->move += Vec3f(3.f, 4.f, 3.f) + Vec3f(-6.f, -12.f, -6.f) * arx::randomVec3f();
-					pd->tolive = Random::getu(500, 1000);
-					pd->tc = g_particleTextures.fire;
-					pd->siz = 12.f * ((missiles[i].tolive - framediff3) / 4s);
-					pd->scale = arx::randomVec(15.f, 20.f);
-					pd->m_flags = FIRE_TO_SMOKE;
-				}
-				
-				missiles[i].lastpos = pos;
-				
-				break;
 			}
 		}
-
-		missiles[i].lastupdate = now;
+		
+		if(hit) {
+			ARX_MISSILES_Kill(missile);
+			spawnFireHitParticle(dest, 0);
+			PolyBoomAddScorch(dest);
+			Add3DBoom(dest);
+			doSphericDamage(Sphere(dest, 200.f), 180.f, DAMAGE_AREAHALF, nullptr,
+			                DAMAGE_TYPE_FAKESPELL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
+			continue;
+		}
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(pd) {
+			pd->ov = pos;
+			pd->move = missile.velocity;
+			pd->move += Vec3f(3.f, 4.f, 3.f) + Vec3f(-6.f, -12.f, -6.f) * arx::randomVec3f();
+			pd->tolive = Random::getu(500, 1000);
+			pd->tc = g_particleTextures.fire;
+			pd->siz = 12.f * ((missile.tolive - framediff3) / 4s);
+			pd->scale = arx::randomVec(15.f, 20.f);
+			pd->m_flags = FIRE_TO_SMOKE;
+		}
+		
+		missile.lastpos = pos;
+		
+		missile.lastupdate = now;
+		
 	}
+	
 }
