@@ -23,9 +23,10 @@
 #include <memory>
 
 #include "game/magic/Spell.h"
-
 #include "graphics/spells/Spells05.h"
+#include "math/Quantizer.h"
 #include "platform/Platform.h"
+
 
 class RuneOfGuardingSpell final : public Spell {
 	
@@ -104,6 +105,7 @@ private:
 	Vec3f m_pos;
 	float m_yaw;
 	TextureContainer * tex_p2;
+	math::Quantizer m_quantizer;
 	
 };
 

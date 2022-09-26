@@ -434,18 +434,14 @@ void RepelUndeadSpell::Update() {
 	
 	Draw3DObject(ssol, eObjAngle, m_pos + Vec3f(0.f, -5.f, 0.f), Vec3f(vv), Color3f(0.6f, 0.6f, 0.8f), mat);
 	
-	vv *= 100.f;
-	
-	for(int n = 0; n < 4; n++) {
-		
-		PARTICLE_DEF * pd = createParticle();
+	size_t count = m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 0.12f);
+	for(size_t i = 0; i < count; i++) {
+		PARTICLE_DEF * pd = createParticle(true);
 		if(!pd) {
 			break;
 		}
-		
 		// XXX was this supposed to be sphericalRand ?
-		Vec2f d = arx::diskRand(vv);
-		
+		Vec2f d = arx::diskRand(vv * 100.f);
 		pd->ov = m_pos + Vec3f(d.x, 0.f, d.y);
 		pd->move = arx::linearRand(Vec3f(-0.8f, -4.f, -0.8f), Vec3f(0.8f, 0.f, 0.8f));
 		pd->scale = Vec3f(-0.1f);
@@ -466,8 +462,10 @@ void RepelUndeadSpell::Update() {
 		light->creationTime = g_gameTime.now();
 	}
 	
-	if (m_target == EntityHandle_Player)
+	if(m_target == EntityHandle_Player) {
 		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+	}
+	
 }
 
 
