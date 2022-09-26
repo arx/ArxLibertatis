@@ -38,11 +38,33 @@ void FloatingStones::Init(float radius) {
 void FloatingStones::Update(GameDuration timeDelta, Vec3f pos) {
 	
 	m_timestone -= timeDelta;
-	m_currframetime = timeDelta;
-	
 	if(m_timestone <= 0) {
 		m_timestone = std::chrono::milliseconds(Random::get(50, 150));
 		AddStone(pos + arx::randomOffsetXZ(m_baseRadius));
+	}
+	
+	if(m_quantizer.update(toMsf(timeDelta) * 0.03f)) {
+		for(Stone & stone : m_stones) {
+			stone.yvel *= 1.f - (1.f / 100.f);
+			PARTICLE_DEF * pd = createParticle(true);
+			if(!pd) {
+				continue;
+			}
+			pd->ov = stone.pos;
+			pd->move = Vec3f(0.f, Random::getf(0.f, 3.f), 0.f);
+			pd->siz = Random::getf(3.f, 6.f);
+			pd->tolive = 1000;
+			pd->timcreation = -(toMsi(g_gameTime.now()) + 1000l); // TODO WTF
+			pd->m_flags = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | DISSIPATING;
+			pd->m_rotation = 0.0000001f;
+		}
+	}
+	
+	for(Stone & stone : m_stones) {
+		float a = timeDelta / stone.time * 100.f;
+		stone.pos.y += stone.yvel * a;
+		stone.ang += stone.angvel * a;
+		stone.currtime += timeDelta;
 	}
 	
 	util::unordered_remove_if(m_stones, [](const Stone & stone) { return stone.currtime > stone.time; });
@@ -50,10 +72,6 @@ void FloatingStones::Update(GameDuration timeDelta, Vec3f pos) {
 }
 
 void FloatingStones::AddStone(const Vec3f & pos) {
-	
-	if(g_gameTime.isPaused()) {
-		return;
-	}
 	
 	Stone & stone = m_stones.emplace_back();
 	
@@ -75,33 +93,9 @@ void FloatingStones::DrawStone() {
 	mat.setBlendType(RenderMaterial::Screen);
 	
 	for(Stone & stone : m_stones) {
-		
-		float a = stone.currtime / stone.time;
-		
-		Color4f col = Color4f(Color3f::white, 1.f - a);
+		Color4f col = Color4f(Color3f::white, 1.f - stone.currtime / stone.time);
 		EERIE_3DOBJ * obj = (stone.numstone == 0) ? stone0 : stone1;
 		Draw3DObject(obj, stone.ang, stone.pos, stone.scale, col, mat);
-		
-		PARTICLE_DEF * pd = createParticle();
-		if(pd) {
-			pd->ov = stone.pos;
-			pd->move = Vec3f(0.f, Random::getf(0.f, 3.f), 0.f);
-			pd->siz = Random::getf(3.f, 6.f);
-			pd->tolive = 1000;
-			pd->timcreation = -(toMsi(g_gameTime.now()) + 1000l); // TODO WTF
-			pd->m_flags = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | DISSIPATING;
-			pd->m_rotation = 0.0000001f;
-		}
-		
-		// Update mvt
-		if(!g_gameTime.isPaused()) {
-			a = (m_currframetime * 100) / stone.time;
-			stone.pos.y += stone.yvel * a;
-			stone.ang += stone.angvel * a;
-			stone.yvel *= 1.f - (1.f / 100.f);
-			stone.currtime += m_currframetime;
-		}
-		
 	}
 	
 }

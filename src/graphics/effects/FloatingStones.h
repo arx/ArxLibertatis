@@ -23,6 +23,7 @@
 #include <vector>
 
 #include "graphics/effects/SpellEffects.h"
+#include "math/Quantizer.h"
 
 
 class FloatingStones {
@@ -48,9 +49,9 @@ private:
 	};
 	
 	std::vector<Stone> m_stones;
-	float m_baseRadius;
-	GameDuration m_currframetime;
 	GameDuration m_timestone;
+	float m_baseRadius;
+	math::Quantizer m_quantizer;
 	
 };
 
