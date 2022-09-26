@@ -66,6 +66,7 @@ private:
 	RotatingCone cone1;
 	RotatingCone cone2;
 	FloatingStones m_stones;
+	math::Quantizer m_quantizer;
 	
 	void createDustParticle();
 	

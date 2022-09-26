@@ -234,14 +234,14 @@ void LevitateSpell::Update() {
 	m_pos = target;
 	
 	float coneScale = 0.f;
-	int dustParticles = 0;
+	size_t dustParticles = 0;
 	
 	if(m_elapsed < 1s) {
 		coneScale = m_elapsed / 1s;
-		dustParticles = 3;
+		dustParticles = m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 0.09f);
 	} else {
 		coneScale = 1.f;
-		dustParticles = 10;
+		dustParticles = m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 0.3f);
 	}
 	
 	cone1.Update(g_gameTime.lastFrameDuration(), m_pos, coneScale);
@@ -249,7 +249,7 @@ void LevitateSpell::Update() {
 	
 	m_stones.Update(g_gameTime.lastFrameDuration(), m_pos);
 	
-	for(int i = 0; i < dustParticles; i++) {
+	for(size_t i = 0; i < dustParticles; i++) {
 		createDustParticle();
 	}
 	
@@ -262,13 +262,11 @@ void LevitateSpell::Update() {
 
 void LevitateSpell::createDustParticle() {
 	
-	PARTICLE_DEF * pd = createParticle();
+	PARTICLE_DEF * pd = createParticle(true);
 	if(!pd) {
 		return;
 	}
-	
 	Vec2f pos = arx::circularRand(m_baseRadius);
-	
 	pd->ov = m_pos + Vec3f(pos.x, 0.f, pos.y);
 	float t = fdist(pd->ov, m_pos);
 	Vec3f moveFactor = arx::linearRand(Vec3f(5.f, 0.f, 5.f), Vec3f(10.f, 3.f, 10.f));
@@ -278,6 +276,7 @@ void LevitateSpell::createDustParticle() {
 	pd->timcreation = -(toMsi(g_gameTime.now()) + 3000l); // TODO WTF
 	pd->m_flags = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 	pd->m_rotation = 0.0000001f;
+	
 }
 
 CurePoisonSpell::CurePoisonSpell()
