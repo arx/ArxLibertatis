@@ -101,7 +101,6 @@ struct PARTICLE_DEF {
 	Vec3f * source;
 	EntityHandle sourceionum;
 	float m_rotation;
-	char cval2;
 	
 	PARTICLE_DEF()
 		: exist(false)
@@ -119,7 +118,6 @@ struct PARTICLE_DEF {
 		, m_flags(0)
 		, source(nullptr)
 		, m_rotation(0.f)
-		, cval2(0)
 	{ }
 	
 };
