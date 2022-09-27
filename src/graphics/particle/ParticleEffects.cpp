@@ -975,20 +975,19 @@ void TreatBackgroundActions() {
 			ARX_SOUND_RefreshPosition(light.sample, light.pos);
 		}
 		
-		float amount = 2.f;
+		float amount = 0.122f;
 		if(dist < square(g_camera->cdepth * (1.f / 6))) {
-			amount = 3.f;
+			amount = 0.183f;
 		} else if(dist < square(g_camera->cdepth * (1.f / 3))) {
-			amount = 2.5f;
+			amount = 0.1525f;
 		}
-		const float targetFPS = 61.f;
-		const float targetDelay = 1000.f / targetFPS;
-		long count = light.m_storedFlameTime.update(amount * g_framedelay * (1.f / targetDelay));
 		
-		for(long n = 0; n < count; n++) {
+		size_t count = light.m_storedFlameTime.update(toMsf(g_gameTime.lastFrameDuration()) * amount);
+		
+		for(size_t n = 0; n < count; n++) {
 			
 			if(Random::getf() < light.ex_frequency) {
-				PARTICLE_DEF * pd = createParticle();
+				PARTICLE_DEF * pd = createParticle(true);
 				if(pd) {
 					float t = Random::getf() * glm::pi<float>();
 					Vec3f s = Vec3f(std::sin(t), std::sin(t), std::cos(t)) * arx::randomVec();
@@ -1013,7 +1012,7 @@ void TreatBackgroundActions() {
 			}
 			
 			if(Random::getf() < light.ex_frequency) {
-				PARTICLE_DEF * pd = createParticle();
+				PARTICLE_DEF * pd = createParticle(true);
 				if(pd) {
 					float t = Random::getf() * (glm::pi<float>() * 2.f) - glm::pi<float>();
 					Vec3f s = Vec3f(std::sin(t), std::sin(t), std::cos(t)) * arx::randomVec();
