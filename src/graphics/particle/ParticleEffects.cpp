@@ -622,7 +622,6 @@ void SpawnFireballTail(const Vec3f & poss, const Vec3f & vecto, float level, lon
 			pd->tolive = Random::getu(800, 900);
 		}
 		
-		pd->cval1 = 0;
 		pd->cval2 = g_particleTextures.MAX_EXPLO - 1;
 		
 		if(nn == 1) {
@@ -655,7 +654,6 @@ void LaunchFireballBoom(const Vec3f & poss, float level, Vec3f * direction, cons
 	pd->siz = level * 3.f + Random::getf(0.f, 2.f);
 	pd->scale = Vec3f(level * 3.f);
 	pd->zdec = true;
-	pd->cval1 = 0;
 	pd->cval2 = g_particleTextures.MAX_EXPLO - 1;
 	if(rgb) {
 		pd->rgb = *rgb;
@@ -870,9 +868,9 @@ void ARX_PARTICLES_Update()  {
 		
 		TextureContainer * tc = part->tc;
 		if(tc == g_particleTextures.explo[0] && (part->m_flags & PARTICLE_ANIMATED)) {
-			long animrange = part->cval2 - part->cval1;
+			long animrange = part->cval2;
 			long num = long(float(framediff2) / float(part->tolive) * animrange);
-			num = glm::clamp(num, long(part->cval1), long(part->cval2));
+			num = glm::clamp(num, 0l, long(part->cval2));
 			tc = g_particleTextures.explo[num];
 		}
 		
