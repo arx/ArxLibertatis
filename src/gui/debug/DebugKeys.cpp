@@ -24,11 +24,7 @@
 #include "gui/debug/DebugPanel.h"
 #include "input/Input.h"
 
-static const PlatformDuration g_debugTriggersDecayDuration = 200ms;
-
 bool g_debugToggles[10];
-bool g_debugTriggers[10];
-PlatformInstant g_debugTriggersTime[10] = { 0 };
 float g_debugValues[10];
 
 static bool g_debugTogglesEnabled = false;
@@ -44,26 +40,16 @@ void debug_keysUpdate() {
 	}
 	
 	for(size_t i = 0; i < std::size(g_debugToggles); i++) {
-		g_debugTriggers[i] = false;
-		
-		if(GInput->isKeyPressed(Keyboard::Key_NumPadEnter)) {
-			if(   GInput->isKeyPressed(Keyboard::Key_NumPad0 + i)
-			   && g_platformTime.frameStart() - g_debugTriggersTime[i] > g_debugTriggersDecayDuration
-			) {
-				g_debugTriggersTime[i] = g_platformTime.frameStart();
-				g_debugTriggers[i] = true;
-			}
-		} else {
-			if(GInput->isKeyPressedNowPressed(Keyboard::Key_NumPad0 + i)) {
-				g_debugToggles[i] = !g_debugToggles[i];
-			}
-			if(GInput->isKeyPressed(Keyboard::Key_LeftShift)
-			   && GInput->isKeyPressed(Keyboard::Key_LeftAlt)
-			   && GInput->isKeyPressedNowPressed(Keyboard::Key_0 + i)) {
-				g_debugToggles[i] = !g_debugToggles[i];
-			}
+		if(GInput->isKeyPressedNowPressed(Keyboard::Key_NumPad0 + i)) {
+			g_debugToggles[i] = !g_debugToggles[i];
+		}
+		if(GInput->isKeyPressed(Keyboard::Key_LeftShift)
+		   && GInput->isKeyPressed(Keyboard::Key_LeftAlt)
+		   && GInput->isKeyPressedNowPressed(Keyboard::Key_0 + i)) {
+			g_debugToggles[i] = !g_debugToggles[i];
 		}
 	}
+	
 }
 
 void ShowDebugToggles() {
@@ -73,12 +59,11 @@ void ShowDebugToggles() {
 	}
 	
 	DebugBox togglesBox = DebugBox(Vec2i(10, 10), "Debug Keys");
-	togglesBox.add("Key", "Tog", "Trig", "Val");
+	togglesBox.add("Key", "Tog", "Val");
 	
 	for(size_t i = 0; i < std::size(g_debugToggles); i++) {
-		bool trigg = (g_platformTime.frameStart() - g_debugTriggersTime[i] <= g_debugTriggersDecayDuration);
-		
-		togglesBox.add(i, g_debugToggles[i] ? "on" : "off", trigg ? "X" : "", g_debugValues[i]);
+		togglesBox.add(i, g_debugToggles[i] ? "on" : "off", g_debugValues[i]);
 	}
 	togglesBox.print(g_size.bottomRight());
+	
 }

@@ -21,7 +21,6 @@
 #define ARX_GUI_DEBUG_DEBUGKEYS_H
 
 extern bool g_debugToggles[10];
-extern bool g_debugTriggers[10];
 extern float g_debugValues[10];
 
 void debug_keysUpdate();
