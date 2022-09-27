@@ -1945,9 +1945,6 @@ void ArxGame::render() {
 	// Updates Externalview
 	EXTERNALVIEW = false;
 	
-	if(g_debugTriggers[1])
-		g_hudRoot.bookIconGui.requestFX();
-	
 	if(ARXmenu.mode() != Mode_MainMenu) {
 		Menu2_Close();
 	}
