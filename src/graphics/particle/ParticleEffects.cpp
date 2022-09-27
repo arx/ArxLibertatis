@@ -528,7 +528,7 @@ PARTICLE_DEF * createParticle(bool allocateWhilePaused) {
 
 void MagFX(const Vec3f & pos, float size) {
 	
-	PARTICLE_DEF * pd = createParticle();
+	PARTICLE_DEF * pd = createParticle(true);
 	if(!pd) {
 		return;
 	}
