@@ -51,8 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <vector>
 
-#include <boost/container/flat_set.hpp>
-
 #include "animation/Animation.h"
 #include "audio/AudioTypes.h"
 #include "game/Damage.h" // TODO needed for DamageType

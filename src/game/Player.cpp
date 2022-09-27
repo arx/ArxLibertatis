@@ -52,8 +52,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <limits>
 
-#include <boost/container/flat_set.hpp>
-
 #include "animation/Animation.h"
 #include "animation/AnimationRender.h"
 
