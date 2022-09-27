@@ -695,7 +695,7 @@ void spawnFireHitParticle(const Vec3f & poss, long type) {
 
 void spawn2DFireParticle(const Vec2f & pos, float scale) {
 	
-	PARTICLE_DEF * pd = createParticle();
+	PARTICLE_DEF * pd = createParticle(true);
 	if(!pd) {
 		return;
 	}
@@ -709,6 +709,7 @@ void spawn2DFireParticle(const Vec2f & pos, float scale) {
 	pd->rgb = Color3f(1.f, .6f, .5f);
 	pd->siz = 14.f * scale;
 	pd->is2D = true;
+	
 }
 
 

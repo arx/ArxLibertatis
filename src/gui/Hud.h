@@ -26,6 +26,8 @@
 #include "game/GameTypes.h"
 #include "gui/hud/HudCommon.h"
 #include "math/Types.h"
+#include "math/Quantizer.h"
+
 
 /*!
  * \brief the hit strength diamond shown at the bottom of the UI.
@@ -134,10 +136,12 @@ class CurrentTorchIconGui : public HudItem {
 	bool m_isActive;
 	TextureContainer * m_tex;
 	Vec2f m_size;
+	math::Quantizer m_quantizer;
+	
 	bool isVisible();
-	void createFireParticle();
 	
 public:
+	
 	CurrentTorchIconGui();
 	
 	void init();
@@ -145,6 +149,7 @@ public:
 	void updateInput();
 	void update();
 	void draw();
+	
 };
 
 class ChangeLevelIconGui : public HudItem {

@@ -514,8 +514,9 @@ void CurrentTorchIconGui::updateInput() {
 
 void CurrentTorchIconGui::update() {
 	
-	if(!isVisible())
+	if(!isVisible()) {
 		return;
+	}
 	
 	if(g_note.isOpen() && g_secondaryInventoryHud.isVisible()
 	   && (g_note.type() == Note::BigNote || g_note.type() == Note::Book)) {
@@ -527,25 +528,23 @@ void CurrentTorchIconGui::update() {
 	m_tex = player.torch->m_icon;
 	arx_assert(m_tex);
 	
-	if(Random::getf() <= 0.2f) {
+	if(m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 0.03f) < 1 || Random::getf() < 0.2f) {
 		return;
 	}
 	
-	createFireParticle();
-}
-
-void CurrentTorchIconGui::createFireParticle() {
-	
 	Vec2f pos = m_rect.topLeft() + arx::linearRand(Vec2f(9.f, 0.f), Vec2f(12.f, 6.f)) * m_scale;
 	spawn2DFireParticle(pos, m_scale);
+	
 }
 
 void CurrentTorchIconGui::draw() {
 	
-	if(!isVisible())
+	if(!isVisible()) {
 		return;
+	}
 	
 	EERIEDrawBitmap(m_rect, 0.001f, m_tex, Color::white);
+	
 }
 
 ChangeLevelIconGui::ChangeLevelIconGui()
