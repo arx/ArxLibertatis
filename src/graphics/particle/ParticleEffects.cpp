@@ -1007,11 +1007,11 @@ void TreatBackgroundActions() {
 				}
 			}
 			
-			if(!(light.extras & EXTRAS_SPAWNFIRE) || Random::getf() <= 0.95f) {
+			if(!(light.extras & EXTRAS_SPAWNFIRE)) {
 				continue;
 			}
 			
-			if(Random::getf() < light.ex_frequency) {
+			if(Random::getf() < light.ex_frequency * 0.05f) {
 				PARTICLE_DEF * pd = createParticle(true);
 				if(pd) {
 					float t = Random::getf() * (glm::pi<float>() * 2.f) - glm::pi<float>();
