@@ -35,6 +35,8 @@
 #include "io/log/Logger.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
+#include "util/Range.h"
+
 
 HealSpell::HealSpell()
 	: m_pos(0.f)
@@ -98,23 +100,16 @@ void HealSpell::Update() {
 		light->duration = 200ms;
 		light->extras = 0;
 	}
-
-	GameDuration ff = m_duration - m_elapsed;
 	
+	GameDuration ff = m_duration - m_elapsed;
 	if(ff < 1500ms) {
 		m_particles.m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;
 		m_particles.m_parameters.m_gravity = Vec3f(0.f);
-
-		std::list<Particle *>::iterator i;
-
-		for(i = m_particles.listParticle.begin(); i != m_particles.listParticle.end(); ++i) {
-			Particle * pP = *i;
-
-			if(pP->isAlive()) {
-				pP->fColorEnd.a = 0;
-
-				if(pP->m_age + ff < pP->m_timeToLive) {
-					pP->m_age = pP->m_timeToLive - ff;
+		for(Particle & particle : util::dereference(m_particles.listParticle)) {
+			if(particle.isAlive()) {
+				particle.fColorEnd.a = 0;
+				if(particle.m_age + ff < particle.m_timeToLive) {
+					particle.m_age = particle.m_timeToLive - ff;
 				}
 			}
 		}
