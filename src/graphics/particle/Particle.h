@@ -72,8 +72,6 @@ public:
 	int iTexTime;
 	int iTexNum;
 	
-	Color ulColor;
-	
 	Particle();
 	
 	void Regen();

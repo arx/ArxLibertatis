@@ -325,13 +325,14 @@ void ParticleSystem::Render() {
 		
 		Vec3f pos = m_nextPosition + particle.p3Pos;
 		float size = glm::mix(particle.fSizeStart, particle.fSizeEnd, t);
+		Color color = Color(particle.fColorStart + (particle.fColorEnd - particle.fColorStart) * t);
 		
 		if(m_parameters.m_rotation != 0) {
 			float rotation = particle.fRotStart;
 			rotation += (particle.iRot == 1 ? 1.f : -1.f) * m_parameters.m_rotation * toMsf(particle.m_age);
-			EERIEAddSprite(mat, pos, std::max(size, 0.f), particle.ulColor, 2, rotation);
+			EERIEAddSprite(mat, pos, std::max(size, 0.f), color, 2, rotation);
 		} else {
-			EERIEAddSprite(mat, pos, size, particle.ulColor, 2);
+			EERIEAddSprite(mat, pos, size, color, 2);
 		}
 		
 	}

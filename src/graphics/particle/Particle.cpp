@@ -98,12 +98,9 @@ void Particle::Update(GameDuration delta) {
 	
 	if(m_age < m_timeToLive) {
 		
-		float ft = m_age / m_timeToLive;
-		
 		// update new pos
 		p3Pos += p3Velocity * fTimeSec;
 		
-		ulColor = Color(fColorStart + (fColorEnd - fColorStart) * ft);
 	}
 	
 }
