@@ -19,6 +19,8 @@
 
 #include "game/magic/spells/SpellsLvl01.h"
 
+#include <utility>
+
 #include "core/Application.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
@@ -87,39 +89,32 @@ void MagicSightSpell::Update() {
 
 static void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat) {
 	
-	ParticleParams cp = g_particleParameters[ParticleParam_MagicMissileExplosion];
-	
+	std::unique_ptr<ParticleSystem> particles = std::make_unique<ParticleSystem>();
 	if(mrCheat) {
-		cp = g_particleParameters[ParticleParam_MagicMissileExplosionMar];
+		particles->SetParams(g_particleParameters[ParticleParam_MagicMissileExplosionMar]);
+	} else {
+		particles->SetParams(g_particleParameters[ParticleParam_MagicMissileExplosion]);
 	}
-	
-	ParticleSystem * pPS = new ParticleSystem();
-	pPS->SetParams(cp);
-	pPS->SetPos(_ePos);
-	pPS->Update(0);
+	particles->SetPos(_ePos);
+	g_particleManager.AddSystem(std::move(particles));
 	
 	EERIE_LIGHT * light = dynLightCreate();
 	if(light) {
 		light->intensity = 2.3f;
 		light->fallstart = 250.f;
 		light->fallend   = 420.f;
-
 		if(mrCheat) {
 			light->rgb = Color3f(1.f, 0.3f, .8f);
 		} else {
 			light->rgb = Color3f(0.f, 0.f, .8f);
 		}
-
 		light->pos = _ePos;
 		light->duration = 1500ms;
 	}
 	
-	g_particleManager.AddSystem(pPS);
-	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_MM_HIT, &_ePos);
+	
 }
-
-
 
 MagicMissileSpell::MagicMissileSpell()
 	: m_mrCheat(false)

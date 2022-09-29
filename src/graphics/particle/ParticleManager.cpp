@@ -44,64 +44,42 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleManager.h"
 
 #include "graphics/particle/ParticleSystem.h"
-
 #include "platform/profiler/Profiler.h"
+#include "util/Range.h"
+
 
 ParticleManager g_particleManager;
 
-ParticleManager::ParticleManager() {
-	listParticleSystem.clear();
-}
+ParticleManager::ParticleManager() = default;
 
-ParticleManager::~ParticleManager() {
-	Clear();
-}
+ParticleManager::~ParticleManager() = default;
 
 void ParticleManager::Clear() {
-	
-	for(ParticleSystem * p : listParticleSystem) {
-		delete p;
-	}
-	
-	listParticleSystem.clear();
+	m_systems.clear();
 }
 
-void ParticleManager::AddSystem(ParticleSystem * _pPS) {
-	listParticleSystem.insert(listParticleSystem.end(), _pPS);
+void ParticleManager::AddSystem(std::unique_ptr<ParticleSystem> system) {
+	m_systems.emplace_back(std::move(system));
 }
 
 void ParticleManager::Update(GameDuration delta) {
 	
 	ARX_PROFILE_FUNC();
 	
-	if(listParticleSystem.empty())
-		return;
-
-	std::list<ParticleSystem *>::iterator i;
-	i = listParticleSystem.begin();
-
-	while(i != listParticleSystem.end()) {
-		ParticleSystem * p = *i;
-		++i;
-
-		if(!p->IsAlive()) {
-			delete p;
-			listParticleSystem.remove(p);
-		} else {
-			p->Update(delta);
-		}
+	util::unordered_remove_if(m_systems, [](const auto & system) { return !system->IsAlive(); });
+	
+	for(ParticleSystem & system : util::dereference(m_systems)) {
+		system.Update(delta);
 	}
+	
 }
 
 void ParticleManager::Render() {
 	
 	ARX_PROFILE_FUNC();
 	
-	std::list<ParticleSystem *>::iterator i;
-
-	for(i = listParticleSystem.begin(); i != listParticleSystem.end(); ++i) {
-		ParticleSystem * p = *i;
-		p->Render();
+	for(ParticleSystem & system : util::dereference(m_systems)) {
+		system.Render();
 	}
+	
 }
-

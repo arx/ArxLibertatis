@@ -44,17 +44,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_PARTICLE_PARTICLEMANAGER_H
 #define ARX_GRAPHICS_PARTICLE_PARTICLEMANAGER_H
 
-#include <list>
+#include <memory>
+#include <vector>
 
 #include "core/TimeTypes.h"
 
+
+// TODO this is ONLY used for the magic missile explosion effect - consider using createParticle() instead
 class ParticleSystem;
 
 class ParticleManager {
 	
 private:
 	
-	std::list<ParticleSystem *> listParticleSystem;
+	std::vector<std::unique_ptr<ParticleSystem>> m_systems;
 	
 public:
 	
@@ -63,7 +66,7 @@ public:
 	
 	void Clear();
 	
-	void AddSystem(ParticleSystem * ps);
+	void AddSystem(std::unique_ptr<ParticleSystem> system);
 	
 	void Update(GameDuration delta);
 	void Render();
