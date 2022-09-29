@@ -44,9 +44,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_PARTICLE_PARTICLE_H
 #define ARX_GRAPHICS_PARTICLE_PARTICLE_H
 
+#include <type_traits>
+
 #include "core/TimeTypes.h"
 #include "graphics/Color.h"
 #include "math/Vector.h"
+
 
 class Particle {
 	
@@ -89,5 +92,7 @@ public:
 	void Validate();
 	
 };
+
+static_assert(std::is_trivially_copyable_v<Particle>);
 
 #endif // ARX_GRAPHICS_PARTICLE_PARTICLE_H
