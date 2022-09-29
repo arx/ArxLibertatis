@@ -168,7 +168,7 @@ void BookIconGui::requestFX() {
 		pd->tolive = Random::getu(1200, 1600);
 		pd->tc = m_tex;
 		pd->rgb = Color3f(1.f - i * 0.1f, i * 0.1f, 0.5f - i * 0.1f);
-		pd->siz = m_rect.width() + s * 4.f;
+		pd->size = m_rect.width() + s * 4.f;
 		pd->is2D = true;
 	}
 	

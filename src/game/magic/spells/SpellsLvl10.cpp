@@ -266,7 +266,7 @@ void ControlTargetSpell::Update() {
 				PARTICLE_DEF * pd = createParticle(true);
 				if(pd) {
 					pd->ov = lastpos;
-					pd->siz = 5.f * c;
+					pd->size = 5.f * c;
 					pd->tolive = Random::getu(10, 110);
 					pd->tc = tex_mm;
 					pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
@@ -280,7 +280,7 @@ void ControlTargetSpell::Update() {
 			PARTICLE_DEF * pd = createParticle(true);
 			if(pd) {
 				pd->ov = lastpos;
-				pd->siz = 5.f;
+				pd->size = 5.f;
 				pd->tolive = Random::getu(10, 110);
 				pd->tc = tex_mm;
 				pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;

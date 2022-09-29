@@ -93,7 +93,7 @@ struct PARTICLE_DEF {
 	Vec3f ov;
 	Vec3f move;
 	float sizeDelta;
-	float siz;
+	float size;
 	long timcreation;
 	u32 tolive;
 	u32 delay;
@@ -111,7 +111,7 @@ struct PARTICLE_DEF {
 		, ov(0.f)
 		, move(0.f)
 		, sizeDelta(0.f)
-		, siz(0.f)
+		, size(0.f)
 		, timcreation(0)
 		, tolive(0)
 		, delay(0)

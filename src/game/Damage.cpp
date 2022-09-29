@@ -932,7 +932,7 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 			}
 			
 			pd->ov = vertPos + arx::randomVec(-5.f, 5.f);
-			pd->siz = glm::clamp(dmg, 5.f, 15.f);
+			pd->size = glm::clamp(dmg, 5.f, 15.f);
 			pd->sizeDelta = -10.f;
 			pd->m_flags = ROTATING | FIRE_TO_SMOKE;
 			pd->tolive = Random::getu(500, 900);

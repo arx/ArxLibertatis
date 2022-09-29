@@ -215,7 +215,7 @@ void ARX_MISSILES_Update() {
 				pd->move += Vec3f(3.f, 4.f, 3.f) + Vec3f(-6.f, -12.f, -6.f) * arx::randomVec3f();
 				pd->tolive = Random::getu(500, 1000);
 				pd->tc = g_particleTextures.fire;
-				pd->siz = 12.f * ((missile.tolive - framediff3) / 4s);
+				pd->size = 12.f * ((missile.tolive - framediff3) / 4s);
 				pd->sizeDelta = Random::getf(15.f, 20.f);
 				pd->m_flags = FIRE_TO_SMOKE;
 			}

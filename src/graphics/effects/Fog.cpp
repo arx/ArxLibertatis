@@ -145,7 +145,7 @@ void ARX_FOGS_Render() {
 			pd->tolive = tolive;
 			pd->timcreation = toMsi(g_gameTime.now()) - count * s64(period);
 			pd->tc = g_particleTextures.smoke;
-			pd->siz = (fog.size + Random::getf(0.f, 2.f) * fog.size) * (1.0f / 3);
+			pd->size = (fog.size + Random::getf(0.f, 2.f) * fog.size) * (1.0f / 3);
 			pd->rgb = fog.rgb;
 			if(fog.rgbRandom != Color3f::black) {
 				pd->rgb += randomColor3f() * fog.rgbRandom;

@@ -267,9 +267,9 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 		pd->tc = g_particleTextures.fire2;
 		if(kk == 1) {
 			pd->move.y = 4.f;
-			pd->siz = 1.5f;
+			pd->size = 1.5f;
 		} else {
-			pd->siz = Random::getf(1.f, 2.f);
+			pd->size = Random::getf(1.f, 2.f);
 		}
 		pd->rgb = flare.rgb * (2.f / 3);
 		pd->m_rotation = 1.2f;
