@@ -21,6 +21,7 @@
 #define ARX_MATH_RANDOM_H
 
 #include <stddef.h>
+#include <chrono>
 #include <limits>
 #include <random>
 #include <type_traits>
@@ -59,6 +60,18 @@ public:
 	//! Return a random const_iterator in the given container.
 	template <class Container>
 	static typename Container::const_iterator getIterator(const Container & container);
+	
+	template <typename Rep, typename Period>
+	[[nodiscard]] static std::chrono::duration<Rep, Period> get(std::chrono::duration<Rep, Period> min,
+	                                                            std::chrono::duration<Rep, Period> max) {
+		if constexpr(std::is_floating_point_v<Rep>) {
+			return std::chrono::duration<Rep, Period>(getf(min.count(), max.count()));
+		} else if constexpr(std::is_signed_v<Rep>) {
+			return std::chrono::duration<Rep, Period>(get(min.count(), max.count()));
+		} else {
+			return std::chrono::duration<Rep, Period>(getu(min.count(), max.count()));
+		}
+	}
 	
 	//! Seed the random number generator using the current time.
 	static void seed();
