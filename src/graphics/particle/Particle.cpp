@@ -69,27 +69,6 @@ void Particle::Regen() {
 	iTexNum = 0;
 }
 
-void Particle::Validate() {
-	
-	fSizeStart = std::max(fSizeStart, 1.f);
-	fSizeEnd = std::max(fSizeEnd, 1.f);
-	
-	fColorStart.r = glm::clamp(fColorStart.r, 0.f, 1.f);
-	fColorStart.g = glm::clamp(fColorStart.g, 0.f, 1.f);
-	fColorStart.b = glm::clamp(fColorStart.b, 0.f, 1.f);
-	fColorStart.a = glm::clamp(fColorStart.a, 0.f, 1.f);
-	
-	fColorEnd.r = glm::clamp(fColorEnd.r, 0.f, 1.f);
-	fColorEnd.g = glm::clamp(fColorEnd.g, 0.f, 1.f);
-	fColorEnd.b = glm::clamp(fColorEnd.b, 0.f, 1.f);
-	fColorEnd.a = glm::clamp(fColorEnd.a, 0.f, 1.f);
-	
-	if(m_timeToLive < 100ms) {
-		m_timeToLive = 100ms;
-	}
-	
-}
-
 void Particle::Update(GameDuration delta) {
 	
 	m_age += delta;

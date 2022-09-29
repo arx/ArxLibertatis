@@ -81,8 +81,6 @@ public:
 		return (m_age < m_timeToLive);
 	}
 	
-	void Validate();
-	
 };
 
 static_assert(std::is_trivially_copyable_v<Particle>);

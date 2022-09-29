@@ -178,7 +178,7 @@ void ParticleSystem::SetParticleParams(Particle * particle) {
 	particle->p3Pos *= m_parameters.m_pos;
 	
 	float fTTL = m_parameters.m_life + Random::getf() * m_parameters.m_lifeRandom;
-	particle->m_timeToLive = std::chrono::duration<float, std::milli>(fTTL);
+	particle->m_timeToLive = std::max<GameDuration>(std::chrono::duration<float, std::milli>(fTTL), 100ms);
 	
 	float fAngleX = Random::getf() * m_parameters.m_angle;
 	
@@ -188,16 +188,20 @@ void ParticleSystem::SetParticleParams(Particle * particle) {
 	
 	float fSpeed = m_parameters.m_speed + Random::getf() * m_parameters.m_speedRandom;
 	particle->p3Velocity = vvz * fSpeed;
-	particle->fSizeStart = m_parameters.m_startSegment.m_size + Random::getf() * m_parameters.m_startSegment.m_sizeRandom;
+	particle->fSizeStart = std::max(m_parameters.m_startSegment.m_size +
+	                                Random::getf() * m_parameters.m_startSegment.m_sizeRandom, 1.f);
 	{
 		Color4f rndColor = Color4f(Random::getf(), Random::getf(), Random::getf(), Random::getf());
-		particle->fColorStart = m_parameters.m_startSegment.m_color + rndColor * m_parameters.m_startSegment.m_colorRandom;
+		particle->fColorStart = clamp(m_parameters.m_startSegment.m_color +
+		                              rndColor * m_parameters.m_startSegment.m_colorRandom);
 	}
-
-	particle->fSizeEnd = m_parameters.m_endSegment.m_size + Random::getf() * m_parameters.m_endSegment.m_sizeRandom;
+	
+	particle->fSizeEnd = std::max(m_parameters.m_endSegment.m_size +
+	                              Random::getf() * m_parameters.m_endSegment.m_sizeRandom, 1.f);
 	{
 		Color4f rndColor = Color4f(Random::getf(), Random::getf(), Random::getf(), Random::getf());
-		particle->fColorEnd = m_parameters.m_endSegment.m_color + rndColor * m_parameters.m_endSegment.m_colorRandom;
+		particle->fColorEnd = clamp(m_parameters.m_endSegment.m_color +
+		                            rndColor * m_parameters.m_endSegment.m_colorRandom);
 	}
 	
 	if(m_parameters.m_rotationRandomDirection) {
@@ -255,7 +259,6 @@ void ParticleSystem::Update(GameDuration delta) {
 			} else {
 				pP->Regen();
 				SetParticleParams(pP);
-				pP->Validate();
 				pP->Update(0);
 				iParticleNbAlive++;
 				++i;
@@ -274,7 +277,6 @@ void ParticleSystem::Update(GameDuration delta) {
 		for(size_t iNb = 0; iNb < t; iNb++) {
 			Particle * pP  = new Particle();
 			SetParticleParams(pP);
-			pP->Validate();
 			pP->Update(0);
 			listParticle.insert(listParticle.end(), pP);
 			iParticleNbAlive++;
@@ -284,6 +286,7 @@ void ParticleSystem::Update(GameDuration delta) {
 	if(!m_parameters.m_looping) {
 		StopEmission();
 	}
+	
 }
 
 void ParticleSystem::Render() {
