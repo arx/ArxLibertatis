@@ -31,6 +31,7 @@
 
 #include <glm/gtc/constants.hpp>
 
+#include "graphics/Math.h"
 #include "platform/Platform.h"
 
 
@@ -107,15 +108,21 @@ public:
 	
 	template <typename Rep, typename Period>
 	/* implicit */ constexpr DurationType(std::chrono::duration<Rep, Period> duration) noexcept
-		: m_value(std::chrono::duration_cast<std::chrono::microseconds>(duration).count())
+		: m_value(checked_range_cast<T>(std::chrono::duration_cast<std::chrono::microseconds>(duration).count()))
 	{ }
 	
 	/* implicit */ constexpr DurationType(Zero /* zero */ = 0) noexcept : m_value(0) { }
 	
 	template <typename NullPtr, typename = std::enable_if_t<
-		std::is_same_v<std::remove_cv_t<std::remove_reference_t<NullPtr>>, decltype(nullptr)>>
-	>
+		std::is_same_v<std::remove_cv_t<std::remove_reference_t<NullPtr>>, decltype(nullptr)>
+	>>
 	/* implicit */ DurationType(NullPtr /* nullptr */) = delete;
+	
+	// TODO C++20 use conditional explicit to allow implicit non-narrowing conversions
+	template <typename T2>
+	[[nodiscard]] explicit constexpr operator DurationType<Tag, T2>() const noexcept {
+		return DurationType<Tag, T2>::ofRaw(checked_range_cast<T2>(m_value));
+	}
 	
 };
 
@@ -175,8 +182,8 @@ public:
 	/* implicit */ constexpr InstantType(Zero /* zero */ = 0) noexcept : t(0) { }
 	
 	template <typename NullPtr, typename = std::enable_if_t<
-		std::is_same_v<std::remove_cv_t<std::remove_reference_t<NullPtr>>, decltype(nullptr)>>
-	>
+		std::is_same_v<std::remove_cv_t<std::remove_reference_t<NullPtr>>, decltype(nullptr)>
+	>>
 	/* implicit */ InstantType(NullPtr /* nullptr */) = delete;
 	
 };
@@ -218,6 +225,7 @@ template <typename Tag, typename T, typename Rep, typename Period>
 // in microseconds
 typedef InstantType <struct GameTime_Tag, s64> GameInstant;
 typedef DurationType<struct GameTime_Tag, s64> GameDuration;
+typedef DurationType<struct GameTime_Tag, s32> ShortGameDuration;
 
 [[nodiscard]] inline constexpr s64 toUs(GameDuration val) noexcept {
 	return std::chrono::microseconds(val).count();
