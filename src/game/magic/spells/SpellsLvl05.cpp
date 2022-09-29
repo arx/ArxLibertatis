@@ -136,7 +136,7 @@ void RuneOfGuardingSpell::Update() {
 		pd->ov = pos + arx::randomOffsetXZ(40.f);
 		pd->move = arx::linearRand(Vec3f(-0.8f, -4.f, -0.8f), Vec3f(0.8f, 0.f, 0.8f));
 		pd->sizeDelta = -0.1f;
-		pd->tolive = Random::getu(2600, 3200);
+		pd->duration = Random::get(2600ms, 3200ms);
 		pd->tc = tex_p2;
 		pd->size = 0.3f;
 		pd->rgb = Color3f(.4f, .4f, .6f);
@@ -272,7 +272,7 @@ void LevitateSpell::createDustParticle() {
 	Vec3f moveFactor = arx::linearRand(Vec3f(5.f, 0.f, 5.f), Vec3f(10.f, 3.f, 10.f));
 	pd->move = moveFactor * Vec3f((pd->ov.x - m_pos.x) / t, 1.f, (pd->ov.z - m_pos.z) / t);
 	pd->size = Random::getf(30.f, 60.f);
-	pd->tolive = 3000;
+	pd->duration = 3s;
 	pd->timcreation = -(toMsi(g_gameTime.now()) + 3000l); // TODO WTF
 	pd->m_flags = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 	pd->m_rotation = 0.0000001f;
@@ -438,7 +438,7 @@ void RepelUndeadSpell::Update() {
 		pd->ov = m_pos + Vec3f(d.x, 0.f, d.y);
 		pd->move = arx::linearRand(Vec3f(-0.8f, -4.f, -0.8f), Vec3f(0.8f, 0.f, 0.8f));
 		pd->sizeDelta = -0.1f;
-		pd->tolive = Random::getu(2600, 3200);
+		pd->duration = Random::get(2600ms, 3200ms);
 		pd->tc = tex_p2;
 		pd->size = 0.3f;
 		pd->rgb = Color3f(.4f, .4f, .6f);

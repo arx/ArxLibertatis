@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_PARTICLE_PARTICLEEFFECTS_H
 
 #include <stddef.h>
+#include <chrono>
 #include <type_traits>
 #include <vector>
 
@@ -95,7 +96,7 @@ struct PARTICLE_DEF {
 	float sizeDelta;
 	float size;
 	long timcreation;
-	u32 tolive;
+	std::chrono::duration<s32, std::milli> duration;
 	u32 delay;
 	TextureContainer * tc;
 	Color3f rgb;
@@ -111,7 +112,7 @@ struct PARTICLE_DEF {
 		, sizeDelta(0.f)
 		, size(0.f)
 		, timcreation(0)
-		, tolive(0)
+		, duration(0)
 		, delay(0)
 		, tc(nullptr)
 		, rgb(Color3f::black)

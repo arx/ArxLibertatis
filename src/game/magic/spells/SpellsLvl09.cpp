@@ -355,7 +355,7 @@ void NegateMagicSpell::Update() {
 		pd->ov = stitepos + arx::randomOffsetXZ(150.f);
 		pd->move = Vec3f(0.f, Random::getf(-3.f, 0.f), 0.f);
 		pd->size = 0.3f;
-		pd->tolive = Random::getu(2000, 4000);
+		pd->duration = Random::get(2000ms, 4000ms);
 		pd->tc = tex_p2;
 		pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING | SUBSTRACT;
 		pd->m_rotation = 0.0000001f;

@@ -55,7 +55,7 @@ void FloatingStones::Update(GameDuration timeDelta, Vec3f pos, bool addStones) {
 			pd->ov = stone.pos;
 			pd->move = Vec3f(0.f, Random::getf(0.f, 3.f), 0.f);
 			pd->size = Random::getf(3.f, 6.f);
-			pd->tolive = 1000;
+			pd->duration = 1s;
 			pd->timcreation = -(toMsi(g_gameTime.now()) + 1000l); // TODO WTF
 			pd->m_flags = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 			pd->m_rotation = 0.0000001f;

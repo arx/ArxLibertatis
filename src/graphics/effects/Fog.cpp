@@ -142,7 +142,7 @@ void ARX_FOGS_Render() {
 				pd->move *= Vec3f(fog.speed * 0.2f,  1.f / 15, fog.speed * 0.2f);
 			}
 			pd->sizeDelta = fog.sizeDelta;
-			pd->tolive = tolive;
+			pd->duration = std::chrono::milliseconds(tolive);
 			pd->timcreation = toMsi(g_gameTime.now()) - count * s64(period);
 			pd->tc = g_particleTextures.smoke;
 			pd->size = (fog.size + Random::getf(0.f, 2.f) * fog.size) * (1.0f / 3);

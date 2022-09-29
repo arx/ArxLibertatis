@@ -510,9 +510,8 @@ void IceProjectileSpell::Update() {
 				pd->ov = icicle.pos + arx::randomVec(-5.f, 5.f);
 				pd->move = arx::randomVec(-2.f, 2.f);
 				pd->size = 20.f;
-				float tolive = std::min(Random::getf(2000.f, 4000.f),
-				                        toMsf(m_duration - m_elapsed) + Random::getf(0.f, 500.0f));
-				pd->tolive = checked_range_cast<u32>(tolive);
+				pd->duration = std::min(Random::get(2000ms, 4000ms),
+				                        std::chrono::milliseconds(m_duration - m_elapsed) + Random::get(0ms, 500ms));
 				pd->tc = tex_p2;
 				pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 				pd->m_rotation = 0.0000001f;
@@ -526,9 +525,8 @@ void IceProjectileSpell::Update() {
 				pd->ov = icicle.pos + arx::randomVec(-5.f, 5.f) - Vec3f(0.f, 50.f, 0.f);
 				pd->move = Vec3f(0.f, Random::getf(-2.f, 2.f), 0.f);
 				pd->size = 0.5f;
-				float tolive = std::min(Random::getf(2000.f, 3000.f),
-				                        toMsf(m_duration - m_elapsed) + Random::getf(0.f, 500.0f));
-				pd->tolive = checked_range_cast<u32>(tolive);
+				pd->duration = std::min(Random::get(2000ms, 3000ms),
+				                        std::chrono::milliseconds(m_duration - m_elapsed) + Random::get(0ms, 500ms));
 				pd->tc = tex_p1;
 				pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 				pd->m_rotation = 0.0000001f;

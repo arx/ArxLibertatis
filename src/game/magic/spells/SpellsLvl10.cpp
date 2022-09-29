@@ -267,7 +267,7 @@ void ControlTargetSpell::Update() {
 				if(pd) {
 					pd->ov = lastpos;
 					pd->size = 5.f * c;
-					pd->tolive = Random::getu(10, 110);
+					pd->duration = Random::get(10ms, 110ms);
 					pd->tc = tex_mm;
 					pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 					pd->m_rotation = 0.0000001f;
@@ -281,7 +281,7 @@ void ControlTargetSpell::Update() {
 			if(pd) {
 				pd->ov = lastpos;
 				pd->size = 5.f;
-				pd->tolive = Random::getu(10, 110);
+				pd->duration = Random::get(10ms, 110ms);
 				pd->tc = tex_mm;
 				pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 				pd->m_rotation = 0.0000001f;

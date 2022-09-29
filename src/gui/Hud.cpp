@@ -162,7 +162,7 @@ void BookIconGui::requestFX() {
 		pd->ov = Vec3f(m_rect.topLeft() - Vec2f(s * 2, s * 2), z);
 		pd->move = Vec3f(s * -0.5f, s * -0.5f, 0.f);
 		pd->sizeDelta = s * 10;
-		pd->tolive = Random::getu(1200, 1600);
+		pd->duration = Random::get(1200ms, 1600ms);
 		pd->tc = m_tex;
 		pd->rgb = Color3f(1.f - i * 0.1f, i * 0.1f, 0.5f - i * 0.1f);
 		pd->size = m_rect.width() + s * 4.f;

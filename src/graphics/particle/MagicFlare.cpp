@@ -263,7 +263,7 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 		pd->ov = flare.p + arx::randomVec(-5.f, 5.f);
 		pd->move = Vec3f(0.f, 5.f, 0.f);
 		pd->sizeDelta = -2.f;
-		pd->tolive = 1300 + kk * 100 + Random::getu(0, 800);
+		pd->duration = 1300ms + kk * 100ms + Random::get(0ms, 800ms);
 		pd->tc = g_particleTextures.fire2;
 		if(kk == 1) {
 			pd->move.y = 4.f;
