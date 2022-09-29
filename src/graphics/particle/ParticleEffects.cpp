@@ -782,14 +782,10 @@ void ARX_PARTICLES_Update()  {
 		}
 		
 		float fd = float(elapsed) / float(part->duration.count());
+		
 		float r = 1.f - fd;
 		if(part->m_flags & FADE_IN_AND_OUT) {
-			long t = part->duration.count() / 2;
-			if(elapsed <= t) {
-				r = float(elapsed) / float(t);
-			} else {
-				r = 1.f - float(elapsed - t) / float(t);
-			}
+			r = (fd <= 0.5f) ? 2.f * fd : 2.f - 2.f * fd;
 		}
 		
 		if(!(part->m_flags & PARTICLE_2D)) {
