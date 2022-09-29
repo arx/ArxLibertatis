@@ -366,6 +366,11 @@ bool DanaeLoadLevel(long level, bool loadEntities) {
 		fd->directional = (dlf->special & 1) != 0;
 		fd->speed = dlf->speed;
 		fd->duration = std::chrono::milliseconds(dlf->tolive);
+		GameDuration max = std::chrono::duration<s32, std::micro>::max() / 4;
+		if(arx_unlikely(fd->duration > max)) {
+			LogWarning << "Excessive duration for fog #" << i;
+			fd->duration = max;
+		}
 		Vec3f out = VRotateY(Vec3f(1.f, 0.f, 0.f), MAKEANGLE(fd->angle.getYaw()));
 		fd->move = VRotateX(out, MAKEANGLE(fd->angle.getPitch()));
 	}
