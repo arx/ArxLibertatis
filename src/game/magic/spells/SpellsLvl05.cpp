@@ -36,6 +36,7 @@
 #include "graphics/effects/PolyBoom.h"
 #include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleEffects.h"
+#include "graphics/particle/ParticleTextures.h"
 #include "graphics/spells/Spells05.h"
 
 #include "math/RandomVector.h"
@@ -262,20 +263,25 @@ void LevitateSpell::Update() {
 
 void LevitateSpell::createDustParticle() {
 	
+	if(Random::getf() <= 0.7f) {
+		return;
+	}
 	PARTICLE_DEF * pd = createParticle(true);
 	if(!pd) {
 		return;
 	}
-	Vec2f pos = arx::circularRand(m_baseRadius);
-	pd->ov = m_pos + Vec3f(pos.x, 0.f, pos.y);
-	float t = fdist(pd->ov, m_pos);
-	Vec3f moveFactor = arx::linearRand(Vec3f(5.f, 0.f, 5.f), Vec3f(10.f, 3.f, 10.f));
-	pd->move = moveFactor * Vec3f((pd->ov.x - m_pos.x) / t, 1.f, (pd->ov.z - m_pos.z) / t);
-	pd->size = Random::getf(30.f, 60.f);
-	pd->duration = 3s;
-	pd->timcreation = -(toMsi(g_gameTime.now()) + 3000l); // TODO WTF
-	pd->m_flags = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | DISSIPATING;
+	Vec2f pos = arx::circularRand(1.f);
+	Vec3f p = Vec3f(pos.x, 0.f, pos.y);
+	Vec3f move = arx::linearRand(Vec3f(5.f, 0.f, 5.f), Vec3f(10.f, 3.f, 10.f)) * (p + Vec3f(0.f, 1.f, 0.f));
+	pd->ov = m_pos + p * m_baseRadius + move;
+	pd->move = move * 0.5f;
+	pd->size = Random::getf(10.f, 20.f);
+	pd->sizeDelta = 2.4f;
+	pd->duration = 4125ms;
+	pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 	pd->m_rotation = 0.0000001f;
+	pd->tc = g_particleTextures.smoke;
+	pd->rgb = Color3f::gray(.45f);
 	
 }
 
