@@ -324,7 +324,7 @@ void FireFieldSpell::Update() {
 			break;
 		}
 		*pd2 = copy;
-		pd2->delay = Random::get(60ms, 210ms);
+		pd2->elapsed = -Random::get(60ms, 210ms);
 		
 	}
 	

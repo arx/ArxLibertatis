@@ -102,17 +102,15 @@ long getParticleCount() {
 }
 
 void createFireParticles(Vec3f pos, int perPos, int delay) {
+	
 	for(long nn = 0 ; nn < perPos; nn++) {
-
 		if(Random::getf() >= 0.4f) {
 			continue;
 		}
-
 		PARTICLE_DEF * pd = createParticle();
 		if(!pd) {
 			break;
 		}
-
 		pd->ov = pos;
 		pd->move = Vec3f(2.f, 2.f, 2.f) - Vec3f(4.f, 22.f, 4.f) * arx::randomVec3f();
 		pd->size = 7.f;
@@ -122,8 +120,9 @@ void createFireParticles(Vec3f pos, int perPos, int delay) {
 		pd->m_rotation = Random::getf(-0.1f, 0.1f);
 		pd->sizeDelta = -8.f;
 		pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
-		pd->delay = nn * std::chrono::milliseconds(delay);
+		pd->elapsed = -nn * std::chrono::milliseconds(delay);
 	}
+	
 }
 
 void createObjFireParticles(const EERIE_3DOBJ * obj, int particlePositions, int perPos, int delay) {
@@ -311,27 +310,26 @@ void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle sourc
 	// Decides number of blood particles...
 	const unsigned int spawn_nb = glm::clamp(long(dmgs * 2.f), 5l, 26l);
 	
-	ShortGameDuration totdelay = 0;
+	ShortGameDuration elapsed = 0;
 	
 	for(unsigned int k = 0; k < spawn_nb; k++) {
-		
 		PARTICLE_DEF * pd = createParticle();
 		if(!pd) {
 			return;
 		}
-		
 		pd->size = 0.f;
 		pd->sizeDelta = float(spawn_nb);
 		pd->m_flags = GRAVITY | ROTATING | DELAY_FOLLOW_SOURCE;
 		pd->source = &sourceIo->obj->vertexWorldPositions[nearest].v;
 		pd->sourceionum = source;
 		pd->duration = 1200ms + spawn_nb * 5ms;
-		totdelay += 45ms + Random::get(0ms, 150ms - std::chrono::milliseconds(spawn_nb));
-		pd->delay = totdelay;
+		elapsed -= 45ms + Random::get(0ms, 150ms - std::chrono::milliseconds(spawn_nb));
+		pd->elapsed = elapsed;
 		pd->rgb = Color3f(.9f, 0.f, 0.f);
 		pd->tc = g_particleTextures.bloodsplat[0];
 		pd->m_rotation = Random::getf(-0.05f, 0.05f);
 	}
+	
 }
 
 
@@ -393,7 +391,7 @@ void ARX_PARTICLES_Add_Smoke(const Vec3f & pos, long flags, long amount, const C
 		}
 		pd->m_flags = ROTATING | FADE_IN_AND_OUT;
 		pd->duration = Random::get(1100ms, 1500ms);
-		pd->delay = amount * 120ms + Random::get(0ms, 100ms);
+		pd->elapsed = -(amount * 120ms + Random::get(0ms, 100ms));
 		pd->move = arx::linearRand(Vec3f(-0.25f, -0.7f, -0.25f), Vec3f(0.25f, 0.3f, 0.25f));
 		pd->rgb = rgb;
 		pd->tc = g_particleTextures.smoke;
@@ -515,7 +513,6 @@ PARTICLE_DEF * createParticle(bool allocateWhilePaused) {
 		pd->tc = nullptr;
 		pd->m_flags = 0;
 		pd->source = nullptr;
-		pd->delay = 0;
 		pd->move = Vec3f(0.f);
 		pd->sizeDelta = 1.f;
 		
@@ -618,7 +615,7 @@ void SpawnFireballTail(const Vec3f & poss, const Vec3f & vecto, float level, lon
 		
 		if(nn == 1) {
 			unsigned delay = Random::getu(150, 250);
-			pd->delay = std::chrono::milliseconds(delay);
+			pd->elapsed = -std::chrono::milliseconds(delay);
 			pd->ov = poss + vecto * Vec3f(delay);
 		} else {
 			pd->ov = poss;
@@ -731,23 +728,18 @@ void ARX_PARTICLES_Update()  {
 		}
 		
 		arx_assume(part->duration > 0 && part->duration <= ShortGameDuration::max() / 2);
-		arx_assume(part->elapsed >= 0);
 		
 		ShortGameDuration elapsed = part->elapsed;
 		part->elapsed += delta;
-		if(elapsed < part->delay) {
-			continue;
-		}
-		
-		if(part->delay > 0) {
-			part->elapsed -= part->delay;
-			part->delay = 0;
-			Entity * target = entities.get(part->sourceionum);
-			if((part->m_flags & DELAY_FOLLOW_SOURCE) && target) {
-				part->ov = *part->source;
-				Vec3f vector = (part->ov - target->pos) * Vec3f(1.f, 0.5f, 1.f);
-				vector = glm::normalize(vector);
-				part->move = vector * Vec3f(18.f, 5.f, 18.f) + arx::randomVec(-0.5f, 0.5f);
+		if(elapsed < 0) {
+			if(part->elapsed >= 0) {
+				Entity * target = entities.get(part->sourceionum);
+				if((part->m_flags & DELAY_FOLLOW_SOURCE) && target) {
+					part->ov = *part->source;
+					Vec3f vector = (part->ov - target->pos) * Vec3f(1.f, 0.5f, 1.f);
+					vector = glm::normalize(vector);
+					part->move = vector * Vec3f(18.f, 5.f, 18.f) + arx::randomVec(-0.5f, 0.5f);
+				}
 			}
 			continue;
 		}

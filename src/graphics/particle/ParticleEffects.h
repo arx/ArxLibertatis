@@ -97,7 +97,6 @@ struct PARTICLE_DEF {
 	float size;
 	ShortGameDuration elapsed;
 	ShortGameDuration duration;
-	ShortGameDuration delay;
 	TextureContainer * tc;
 	Color3f rgb;
 	ParticlesTypeFlags m_flags;
@@ -113,7 +112,6 @@ struct PARTICLE_DEF {
 		, size(0.f)
 		, elapsed(0)
 		, duration(0)
-		, delay(0)
 		, tc(nullptr)
 		, rgb(Color3f::black)
 		, m_flags(0)
