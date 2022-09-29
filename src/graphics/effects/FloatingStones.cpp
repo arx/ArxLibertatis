@@ -40,7 +40,7 @@ void FloatingStones::Update(GameDuration timeDelta, Vec3f pos, bool addStones) {
 	if(addStones) {
 		m_timestone -= timeDelta;
 		if(m_timestone <= 0) {
-			m_timestone = std::chrono::milliseconds(Random::get(50, 150));
+			m_timestone = Random::get(50ms, 150ms);
 			AddStone(pos + arx::randomOffsetXZ(m_baseRadius));
 		}
 	}
@@ -83,7 +83,7 @@ void FloatingStones::AddStone(const Vec3f & pos) {
 	stone.ang = Anglef(Random::getf(), Random::getf(), Random::getf()) * Anglef(360.f, 360.f, 360.f);
 	stone.angvel = Anglef(Random::getf(), Random::getf(), Random::getf()) * Anglef(5.f, 6.f, 3.f);
 	stone.scale = Vec3f(Random::getf(0.2f, 0.5f));
-	stone.time = std::chrono::milliseconds(Random::get(2000, 2500));
+	stone.time = Random::get(2000ms, 2500ms);
 	stone.currtime = 0;
 	
 }
