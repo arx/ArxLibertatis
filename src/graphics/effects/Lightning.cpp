@@ -278,7 +278,8 @@ void CLightning::ReCreate(float rootSize) {
 	
 	m_nodes.resize(m_nodes.size() - 1);
 	
-	m_iTTL = std::chrono::milliseconds(Random::get(500, 1500));
+	m_iTTL = Random::get(500ms, 1500ms);
+	
 }
 
 void CLightning::Update(GameDuration timeDelta)
