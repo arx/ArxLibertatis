@@ -51,33 +51,28 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 
 
-class Particle {
+class alignas(16) Particle {
 	
 public:
 	
 	Vec3f p3Pos;
+	float fSizeStart;
 	Vec3f p3Velocity;
+	float fSizeEnd;
 	
-	// time
+	Color4f fColorStart;
+	Color4f fColorEnd;
+	
 	GameDuration m_age;
 	GameDuration m_timeToLive;
 	
-	// size
-	float fSizeStart;
-	float fSizeEnd;
-	
-	// color
-	Color4f fColorStart;
-	Color4f fColorEnd;
-	Color ulColor;
-	
-	// rotation
 	int iRot;
 	float fRotStart;
 	
-	// tex infos
 	int iTexTime;
 	int iTexNum;
+	
+	Color ulColor;
 	
 	Particle();
 	

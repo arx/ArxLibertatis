@@ -49,21 +49,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 Particle::Particle()
 	: p3Pos(arx::randomVec(-5.f, 5.f))
-	, p3Velocity(arx::randomVec(-10.f, 10.f))
-	, m_age(0)
 	, fSizeStart(1.f)
+	, p3Velocity(arx::randomVec(-10.f, 10.f))
 	, fSizeEnd(1.f)
+	, fColorStart(1.f, 1.f, 1.f, 0.5f)
+	, fColorEnd(1.f, 1.f, 1.f, 0.1f)
+	, m_age(0)
+	, m_timeToLive(std::chrono::microseconds(Random::get(2000, 5000)))
 	, iRot(1)
 	, fRotStart(0.f)
 	, iTexTime(0)
 	, iTexNum(0)
-{
-	
-	m_timeToLive = std::chrono::microseconds(Random::get(2000, 5000));
-	
-	fColorStart = Color4f(1, 1, 1, 0.5f);
-	fColorEnd = Color4f(1, 1, 1, 0.1f);
-}
+{ }
 
 void Particle::Regen() {
 	p3Pos = Vec3f(0.f);
