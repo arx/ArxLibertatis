@@ -88,35 +88,35 @@ enum ParticlesTypeFlag {
 DECLARE_FLAGS(ParticlesTypeFlag, ParticlesTypeFlags)
 DECLARE_FLAGS_OPERATORS(ParticlesTypeFlags)
 
-struct PARTICLE_DEF {
+struct alignas(16) PARTICLE_DEF {
 	
-	bool exist;
 	Vec3f ov;
+	float size;
 	Vec3f move;
 	float sizeDelta;
-	float size;
+	Color3f rgb;
+	ParticlesTypeFlags m_flags;
 	ShortGameDuration elapsed;
 	ShortGameDuration duration;
 	TextureContainer * tc;
-	Color3f rgb;
-	ParticlesTypeFlags m_flags;
 	Vec3f * source;
 	EntityHandle sourceionum;
 	float m_rotation;
+	bool exist;
 	
 	PARTICLE_DEF()
-		: exist(false)
-		, ov(0.f)
+		: ov(0.f)
+		, size(0.f)
 		, move(0.f)
 		, sizeDelta(0.f)
-		, size(0.f)
+		, rgb(Color3f::black)
+		, m_flags(0)
 		, elapsed(0)
 		, duration(0)
 		, tc(nullptr)
-		, rgb(Color3f::black)
-		, m_flags(0)
 		, source(nullptr)
 		, m_rotation(0.f)
+		, exist(false)
 	{ }
 	
 };
