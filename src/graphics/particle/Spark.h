@@ -20,13 +20,15 @@
 #ifndef ARX_GRAPHICS_PARTICLE_SPARK_H
 #define ARX_GRAPHICS_PARTICLE_SPARK_H
 
+#include <stddef.h>
+
 #include "graphics/Color.h"
 #include "math/Types.h"
 
 void ParticleSparkClear();
 size_t ParticleSparkCount();
 
-void ParticleSparkSpawn(const Vec3f & pos, unsigned count,
+void ParticleSparkSpawn(const Vec3f & pos, size_t count,
                         ColorRGBA color = Color3f(.3f, .3f, 0.f).toRGB());
 void ParticleSparkSpawnContinous(const Vec3f & pos, unsigned rate,
                                  ColorRGBA color = Color3f(.3f, .3f, 0.f).toRGB());

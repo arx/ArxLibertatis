@@ -20,6 +20,7 @@
 #include "graphics/particle/Spark.h"
 
 #include <cmath>
+#include <algorithm>
 #include <type_traits>
 #include <vector>
 
@@ -67,7 +68,7 @@ void ParticleSparkSpawnContinous(const Vec3f & pos, unsigned rate, ColorRGBA col
 	
 	float amount = float(rate) * (g_platformTime.lastFrameDuration() / (PlatformDuration(200ms) / 3));
 	
-	unsigned count = unsigned(amount);
+	size_t count = size_t(amount);
 	if(Random::getf() < (amount - float(count))) {
 		count++;
 	}
@@ -75,24 +76,21 @@ void ParticleSparkSpawnContinous(const Vec3f & pos, unsigned rate, ColorRGBA col
 	ParticleSparkSpawn(pos, count, color);
 }
 
-void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, ColorRGBA color) {
+void ParticleSparkSpawn(const Vec3f & pos, size_t count, ColorRGBA color) {
 	
 	if(g_gameTime.isPaused()) {
 		return;
 	}
 	
-	u32 len = glm::clamp(count / 3, 3u, 8u);
+	size_t len = std::clamp<size_t>(count / 3, 3u, 8u);
 	
-	for(unsigned int k = 0; k < count; k++) {
-		
+	for(size_t k = 0; k < count; k++) {
 		SparkParticle & spark = g_sparkParticles.emplace_back();
-		
 		spark.pos = pos + arx::randomVec(-5.f, 5.f);
 		spark.move = arx::randomVec(-6.f, 6.f);
 		spark.duration = std::chrono::milliseconds(len * 90 + count);
 		spark.color = color;
 		spark.tail = glm::normalize(-spark.move) * (len + Random::getf() * len);
-		
 	}
 	
 }
