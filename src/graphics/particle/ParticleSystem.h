@@ -45,12 +45,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_PARTICLE_PARTICLESYSTEM_H
 
 #include <array>
-#include <list>
+#include <vector>
 
 #include "core/TimeTypes.h"
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Renderer.h"
 #include "graphics/Draw.h"
+#include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleParams.h"
 #include "math/Types.h"
 #include "math/Vector.h"
@@ -58,7 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Alignment.h"
 #include "util/Flags.h"
 
-class Particle;
+
 class ParticleParams;
 class TextureContainer;
 
@@ -66,13 +67,12 @@ class ParticleSystem {
 	
 public:
 	
-	std::list<Particle *> listParticle;
+	std::vector<Particle> m_particles;
 	
 	// these are used for the particles it creates
 	ParticleParams m_parameters;
 	
 	ParticleSystem();
-	~ParticleSystem();
 	
 	void SetParams(const ParticleParams & params);
 	

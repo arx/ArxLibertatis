@@ -79,7 +79,6 @@ public:
 	CurePoisonSpell();
 	
 	void Launch() override;
-	void End() override;
 	void Update() override;
 	
 private:

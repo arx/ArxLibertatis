@@ -105,15 +105,6 @@ ParticleSystem::ParticleSystem()
 	
 }
 
-ParticleSystem::~ParticleSystem() {
-	
-	for(Particle * p : listParticle) {
-		delete p;
-	}
-	
-	listParticle.clear();
-}
-
 void ParticleSystem::SetPos(const Vec3f & pos) {
 	
 	m_nextPosition = pos;
@@ -243,42 +234,34 @@ void ParticleSystem::Update(GameDuration delta) {
 	
 	iParticleNbAlive = 0;
 	
-	std::list<Particle *>::iterator i;
-	for(i = listParticle.begin(); i != listParticle.end(); ) {
-		Particle * pP = *i;
+	for(Particle & particle : m_particles) {
 		
-		if(pP->isAlive()) {
-			pP->Update(delta);
-			pP->p3Velocity += m_parameters.m_gravity * fTimeSec;
+		if(particle.isAlive()) {
+			particle.Update(delta);
+			particle.p3Velocity += m_parameters.m_gravity * fTimeSec;
 			iParticleNbAlive++;
-			++i;
+		} else if(iParticleNbAlive >= m_parameters.m_nbMax) {
+			particle.m_timeToLive = 0;
 		} else {
-			if(iParticleNbAlive >= m_parameters.m_nbMax) {
-				delete pP;
-				i = listParticle.erase(i);
-			} else {
-				pP->Regen();
-				SetParticleParams(pP);
-				pP->Update(0);
-				iParticleNbAlive++;
-				++i;
-			}
+			particle.Regen();
+			SetParticleParams(&particle);
+			iParticleNbAlive++;
 		}
 	}
-
+	
+	util::unordered_remove_if(m_particles, [](const Particle & particle) {
+		return particle.m_timeToLive == 0;
+	});
+	
 	// création de particules en fct de la fréquence
 	if(iParticleNbAlive < m_parameters.m_nbMax) {
 		size_t t = m_parameters.m_nbMax - iParticleNbAlive;
-		
 		if(m_parameters.m_freq != -1.f) {
 			t = std::min(size_t(m_storedTime.update(fTimeSec * m_parameters.m_freq)), t);
 		}
-		
 		for(size_t iNb = 0; iNb < t; iNb++) {
-			Particle * pP  = new Particle();
-			SetParticleParams(pP);
-			pP->Update(0);
-			listParticle.insert(listParticle.end(), pP);
+			Particle & particle = m_particles.emplace_back();
+			SetParticleParams(&particle);
 			iParticleNbAlive++;
 		}
 	}
@@ -297,7 +280,7 @@ void ParticleSystem::Render() {
 	
 	std::list<Particle *>::iterator i;
 	
-	for(Particle & particle : util::dereference(listParticle)) {
+	for(Particle & particle : m_particles) {
 		
 		if(!particle.isAlive()) {
 			continue;

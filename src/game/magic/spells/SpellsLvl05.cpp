@@ -318,10 +318,6 @@ void CurePoisonSpell::Launch() {
 	}
 }
 
-void CurePoisonSpell::End() {
-	
-}
-
 void CurePoisonSpell::Update() {
 	
 	m_pos = entities[m_target]->pos;
@@ -336,7 +332,7 @@ void CurePoisonSpell::Update() {
 		m_particles.m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;
 		m_particles.m_parameters.m_gravity = Vec3f(0.f);
 		
-		for(Particle & particle : util::dereference(m_particles.listParticle)) {
+		for(Particle & particle : m_particles.m_particles) {
 			if(particle.isAlive()) {
 				particle.fColorEnd.a = 0;
 				if(particle.m_age + ff < particle.m_timeToLive) {

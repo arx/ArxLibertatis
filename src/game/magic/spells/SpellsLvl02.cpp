@@ -35,7 +35,6 @@
 #include "io/log/Logger.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
-#include "util/Range.h"
 
 
 HealSpell::HealSpell()
@@ -105,7 +104,7 @@ void HealSpell::Update() {
 	if(ff < 1500ms) {
 		m_particles.m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;
 		m_particles.m_parameters.m_gravity = Vec3f(0.f);
-		for(Particle & particle : util::dereference(m_particles.listParticle)) {
+		for(Particle & particle : m_particles.m_particles) {
 			if(particle.isAlive()) {
 				particle.fColorEnd.a = 0;
 				if(particle.m_age + ff < particle.m_timeToLive) {

@@ -43,8 +43,6 @@
 #include "scene/GameSound.h"
 #include "scene/Object.h"
 
-#include "util/Range.h"
-
 
 SpeedSpell::SpeedTrail::SpeedTrail(short vertex)
 	: Trail(std::chrono::milliseconds(Random::get(130, 260)), Color3f::gray(Random::getf(0.1f, 0.2f)),
@@ -342,7 +340,7 @@ void CreateFoodSpell::Update() {
 		m_particles.m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;
 		m_particles.m_parameters.m_gravity = Vec3f(0.f);
 		
-		for(Particle & particle : util::dereference(m_particles.listParticle)) {
+		for(Particle & particle : m_particles.m_particles) {
 			if(particle.isAlive()) {
 				particle.fColorEnd.a = 0;
 				if(particle.m_age + timeRemaining < particle.m_timeToLive) {
