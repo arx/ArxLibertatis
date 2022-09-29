@@ -39,14 +39,14 @@ struct alignas(16) SparkParticle {
 	ShortGameDuration elapsed;
 	Vec3f move;
 	ShortGameDuration duration;
+	Vec3f tail;
 	ColorRGBA color;
-	float tailLength;
 	
 	SparkParticle()
 		: pos(0.f)
 		, move(0.f)
+		, tail(0.f)
 		, color(Color::black.toRGB())
-		, tailLength(0.f)
 	{ }
 	
 };
@@ -91,7 +91,7 @@ void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, ColorRGBA color) 
 		spark.move = arx::randomVec(-6.f, 6.f);
 		spark.duration = std::chrono::milliseconds(len * 90 + count);
 		spark.color = color;
-		spark.tailLength = len + Random::getf() * len;
+		spark.tail = glm::normalize(-spark.move) * (len + Random::getf() * len);
 		
 	}
 	
@@ -119,23 +119,21 @@ void ParticleSparkUpdate() {
 		float t = spark.elapsed / 100ms;
 		spark.elapsed += delta;
 		
-		Vec3f in = spark.pos + spark.move * t;
-		
-		Vec3f tailDirection = glm::normalize(-spark.move);
+		Vec3f pos = spark.pos + spark.move * t;
 		
 		TexturedVertex tv[3];
 		tv[0].color = spark.color;
 		tv[1].color = Color::gray(0.4f).toRGBA();
 		tv[2].color = Color::black.toRGBA();
 		
-		worldToClipSpace(in, tv[0]);
+		worldToClipSpace(pos, tv[0]);
 		
 		if(tv[0].w < 0 || tv[0].p.z > g_camera->cdepth * fZFogEnd * tv[0].w) {
 			continue;
 		}
 		
-		Vec3f temp1 = in + Vec3f(Random::getf(0.f, 0.5f), 0.8f, Random::getf(0.f, 0.5f));
-		Vec3f temp2 = in + tailDirection * spark.tailLength;
+		Vec3f temp1 = pos + Vec3f(Random::getf(0.f, 0.5f), 0.8f, Random::getf(0.f, 0.5f));
+		Vec3f temp2 = pos + spark.tail;
 		
 		worldToClipSpace(temp1, tv[1]);
 		worldToClipSpace(temp2, tv[2]);
