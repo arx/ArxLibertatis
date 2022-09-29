@@ -20,6 +20,7 @@
 #include "graphics/particle/Spark.h"
 
 #include <cmath>
+#include <type_traits>
 #include <vector>
 
 #include "core/Core.h"
@@ -33,25 +34,25 @@
 #include "platform/profiler/Profiler.h"
 #include "util/Range.h"
 
-struct SparkParticle {
+struct alignas(16) SparkParticle {
 	
-	u32 m_duration;
-	Vec3f m_pos;
+	Vec3f pos;
+	ShortGameDuration elapsed;
 	Vec3f move;
-	long timcreation;
+	ShortGameDuration duration;
 	ColorRGBA rgb;
-	float m_tailLength;
+	float tailLength;
 	
 	SparkParticle()
-		: m_duration(0)
-		, m_pos(0.f)
+		: pos(0.f)
 		, move(0.f)
-		, timcreation(0)
 		, rgb(Color::black.toRGB())
-		, m_tailLength(0.f)
+		, tailLength(0.f)
 	{ }
 	
 };
+
+static_assert(std::is_trivially_copyable_v<SparkParticle>);
 
 static std::vector<SparkParticle> g_sparkParticles;
 
@@ -87,10 +88,9 @@ void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType ty
 		
 		SparkParticle & spark = g_sparkParticles.emplace_back();
 		
-		spark.timcreation = toMsi(g_gameTime.now());
-		spark.m_pos = pos + arx::randomVec(-5.f, 5.f);
+		spark.pos = pos + arx::randomVec(-5.f, 5.f);
 		spark.move = arx::randomVec(-6.f, 6.f);
-		spark.m_duration = len * 90 + count;
+		spark.duration = std::chrono::milliseconds(len * 90 + count);
 		
 		switch(type) {
 			case SpawnSparkType_Default:
@@ -104,7 +104,7 @@ void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType ty
 				break;
 		}
 		
-		spark.m_tailLength = len + Random::getf() * len;
+		spark.tailLength = len + Random::getf() * len;
 		
 	}
 	
@@ -118,20 +118,21 @@ void ParticleSparkUpdate() {
 		return;
 	}
 	
-	const GameInstant now = g_gameTime.now();
+	ShortGameDuration delta(g_gameTime.lastFrameDuration());
+	arx_assume(delta <= ShortGameDuration::max() / 2);
 	
 	RenderMaterial sparkMaterial;
 	sparkMaterial.setBlendType(RenderMaterial::Additive);
 	
 	for(SparkParticle & spark : g_sparkParticles) {
 		
-		u32 age = u32(toMsi(now) - spark.timcreation);
-		if(age > spark.m_duration) {
-			spark.m_duration = 0;
-			continue;
-		}
+		arx_assume(spark.duration > 0 && spark.duration <= ShortGameDuration::max() / 2);
+		arx_assume(spark.elapsed >= 0 && spark.elapsed <= spark.duration);
 		
-		Vec3f in = spark.m_pos + spark.move * (age * 0.01f);
+		float t = spark.elapsed / 100ms;
+		spark.elapsed += delta;
+		
+		Vec3f in = spark.pos + spark.move * t;
 		
 		Vec3f tailDirection = glm::normalize(-spark.move);
 		
@@ -147,7 +148,7 @@ void ParticleSparkUpdate() {
 		}
 		
 		Vec3f temp1 = in + Vec3f(Random::getf(0.f, 0.5f), 0.8f, Random::getf(0.f, 0.5f));
-		Vec3f temp2 = in + tailDirection * spark.m_tailLength;
+		Vec3f temp2 = in + tailDirection * spark.tailLength;
 		
 		worldToClipSpace(temp1, tv[1]);
 		worldToClipSpace(temp2, tv[2]);
@@ -157,7 +158,7 @@ void ParticleSparkUpdate() {
 	}
 	
 	util::unordered_remove_if(g_sparkParticles, [](const SparkParticle & spark) {
-		return spark.m_duration == 0;
+		return spark.elapsed > spark.duration;
 	});
 	
 }
