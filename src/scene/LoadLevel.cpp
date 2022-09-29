@@ -361,7 +361,7 @@ bool DanaeLoadLevel(long level, bool loadEntities) {
 		fd->blend = dlf->blend;
 		fd->frequency = dlf->frequency;
 		fd->rotatespeed = dlf->rotatespeed;
-		fd->scale = Vec3f(dlf->scale);
+		fd->sizeDelta = dlf->scale;
 		fd->size = dlf->size;
 		fd->directional = (dlf->special & 1) != 0;
 		fd->speed = dlf->speed;

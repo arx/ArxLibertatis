@@ -66,7 +66,7 @@ struct FOG_DEF {
 	Color3f rgbRandom;
 	float size;
 	bool directional;
-	Vec3f scale;
+	float sizeDelta;
 	Vec3f move;
 	Anglef angle;
 	float speed;
@@ -86,7 +86,7 @@ struct FOG_DEF {
 		, rgbRandom(Color3f::black)
 		, size(0.f)
 		, directional(false)
-		, scale(0.f)
+		, sizeDelta(0.f)
 		, move(0.f)
 		, speed(1.f)
 		, speedRandom(2.f)

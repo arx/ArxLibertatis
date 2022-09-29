@@ -541,7 +541,7 @@ void PoisonProjectileSpell::Launch() {
 		fog.frequency = m_level + 7;
 		fog.speedRandom = 1.f;
 		fog.rotatespeed = 0.001f;
-		fog.scale = Vec3f(8.f, 8.f, 10.f);
+		fog.sizeDelta = 8.f;
 		fog.tolive = 4500;
 		fog.rgb = Color3f(0, 1.f, 0);
 		fog.rgbRandom = Color3f(1.f / 3, 0.f, 0.1f);
