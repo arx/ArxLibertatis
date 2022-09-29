@@ -51,7 +51,6 @@ Particle::Particle()
 	: p3Pos(arx::randomVec(-5.f, 5.f))
 	, p3Velocity(arx::randomVec(-10.f, 10.f))
 	, m_age(0)
-	, fSize(1.f)
 	, fSizeStart(1.f)
 	, fSizeEnd(1.f)
 	, iRot(1)
@@ -69,14 +68,12 @@ Particle::Particle()
 void Particle::Regen() {
 	p3Pos = Vec3f(0.f);
 	m_age = 0;
-	fSize = 1;
 	iTexTime = 0;
 	iTexNum = 0;
 }
 
 void Particle::Validate() {
 	
-	fSize = std::max(fSize, 1.f);
 	fSizeStart = std::max(fSizeStart, 1.f);
 	fSizeEnd = std::max(fSizeEnd, 1.f);
 	
@@ -93,6 +90,7 @@ void Particle::Validate() {
 	if(m_timeToLive < 100ms) {
 		m_timeToLive = 100ms;
 	}
+	
 }
 
 void Particle::Update(GameDuration delta) {
@@ -108,8 +106,7 @@ void Particle::Update(GameDuration delta) {
 		// update new pos
 		p3Pos += p3Velocity * fTimeSec;
 		
-		fSize = fSizeStart + (fSizeEnd - fSizeStart) * ft;
-		
 		ulColor = Color(fColorStart + (fColorEnd - fColorStart) * ft);
 	}
+	
 }

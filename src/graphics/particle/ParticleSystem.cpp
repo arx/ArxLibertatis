@@ -300,12 +300,13 @@ void ParticleSystem::Render() {
 			continue;
 		}
 		
+		float t = particle.m_age / particle.m_timeToLive;
+		
 		int inumtex = 0;
 		if(iNbTex > 0) {
 			inumtex = particle.iTexNum;
 			if(iTexTime == 0) {
-				float fNbTex = (particle.m_age / particle.m_timeToLive) * iNbTex;
-				inumtex = std::min(checked_range_cast<int>(fNbTex), iNbTex - 1);
+				inumtex = std::min(checked_range_cast<int>(t * iNbTex), iNbTex - 1);
 			} else if(particle.iTexTime > iTexTime) {
 				particle.iTexTime -= iTexTime;
 				particle.iTexNum++;
@@ -320,16 +321,17 @@ void ParticleSystem::Render() {
 			continue;
 		}
 		
-		Vec3f pos = particle.p3Pos + m_nextPosition;
-		
 		mat.setTexture(tex_tab[inumtex]);
+		
+		Vec3f pos = m_nextPosition + particle.p3Pos;
+		float size = glm::mix(particle.fSizeStart, particle.fSizeEnd, t);
 		
 		if(m_parameters.m_rotation != 0) {
 			float rotation = particle.fRotStart;
 			rotation += (particle.iRot == 1 ? 1.f : -1.f) * m_parameters.m_rotation * toMsf(particle.m_age);
-			EERIEAddSprite(mat, pos, std::max(particle.fSize, 0.f), particle.ulColor, 2, rotation);
+			EERIEAddSprite(mat, pos, std::max(size, 0.f), particle.ulColor, 2, rotation);
 		} else {
-			EERIEAddSprite(mat, pos, particle.fSize, particle.ulColor, 2);
+			EERIEAddSprite(mat, pos, size, particle.ulColor, 2);
 		}
 		
 	}

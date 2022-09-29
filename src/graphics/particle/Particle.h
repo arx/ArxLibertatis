@@ -63,7 +63,6 @@ public:
 	GameDuration m_timeToLive;
 	
 	// size
-	float fSize;
 	float fSizeStart;
 	float fSizeEnd;
 	
