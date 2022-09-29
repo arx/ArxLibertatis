@@ -45,7 +45,7 @@
 
 
 SpeedSpell::SpeedTrail::SpeedTrail(short vertex)
-	: Trail(std::chrono::milliseconds(Random::get(130, 260)), Color3f::gray(Random::getf(0.1f, 0.2f)),
+	: Trail(Random::get(130ms, 260ms), Color3f::gray(Random::getf(0.1f, 0.2f)),
 	        Color3f::black, Random::getf(1.f, 1.5f), 0.f)
 	, vertexIndex(vertex)
 { }
