@@ -76,7 +76,7 @@ void MassLightningStrikeSpell::Launch() {
 	for(int i = 0; i < number; i++) {
 		
 		Vec3f target = m_pos + angleToVectorXZ(i * ft) * 500.0f;
-		GameDuration duration = minDuration + std::chrono::milliseconds(Random::getu(0, 5000));
+		GameDuration duration = minDuration + Random::get(0ms, 5000ms);
 		maxDuration = std::max(maxDuration, duration);
 		
 		std::unique_ptr<CLightning> lightning = std::make_unique<CLightning>(this);
