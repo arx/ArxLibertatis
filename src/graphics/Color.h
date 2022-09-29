@@ -403,4 +403,15 @@ template <typename T>
 	return Color4<T>(c0.r * scale, c0.g * scale, c0.b * scale, c0.a * scale);
 }
 
+template <typename T>
+[[nodiscard]] constexpr Color3<T> clamp(Color3<T> color, T min = 0, T max = ColorTraits<T>::max()) noexcept {
+	using std::clamp;
+	return Color3<T>(clamp(color.r, min, max), clamp(color.g, min, max), clamp(color.b, min, max));
+}
+template <typename T>
+[[nodiscard]] constexpr Color4<T> clamp(Color4<T> color, T min = 0, T max = ColorTraits<T>::max()) noexcept {
+	using std::clamp;
+	return Color4<T>(clamp(Color3<T>(color), min, max), clamp(color.a, min, max));
+}
+
 #endif // ARX_GRAPHICS_COLOR_H
