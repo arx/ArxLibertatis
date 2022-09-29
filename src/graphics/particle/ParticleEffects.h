@@ -95,9 +95,9 @@ struct PARTICLE_DEF {
 	Vec3f move;
 	float sizeDelta;
 	float size;
-	long timcreation;
+	std::chrono::duration<s32, std::milli> elapsed;
 	std::chrono::duration<s32, std::milli> duration;
-	u32 delay;
+	std::chrono::duration<s32, std::milli> delay;
 	TextureContainer * tc;
 	Color3f rgb;
 	ParticlesTypeFlags m_flags;
@@ -111,7 +111,7 @@ struct PARTICLE_DEF {
 		, move(0.f)
 		, sizeDelta(0.f)
 		, size(0.f)
-		, timcreation(0)
+		, elapsed(0)
 		, duration(0)
 		, delay(0)
 		, tc(nullptr)

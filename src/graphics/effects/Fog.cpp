@@ -148,7 +148,7 @@ void ARX_FOGS_Render() {
 			pd->sizeDelta = fog.sizeDelta;
 			arx_assert(duration <= decltype(pd->duration)::max() / 2);
 			pd->duration = std::chrono::duration_cast<decltype(pd->duration)>(duration.value());
-			pd->timcreation = toMsi(g_gameTime.now()) - count * std::chrono::milliseconds(period).count();
+			pd->elapsed = count * std::chrono::milliseconds(period);
 			pd->tc = g_particleTextures.smoke;
 			pd->size = (fog.size + Random::getf(0.f, 2.f) * fog.size) * (1.0f / 3);
 			pd->rgb = fog.rgb;
