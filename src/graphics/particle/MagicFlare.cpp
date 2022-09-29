@@ -222,20 +222,20 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 		if(zz < 0.2f) {
 			flare.type = 2;
 			flare.size = Random::getf(42.f, 84.f);
-			flare.tolive = std::chrono::microseconds(Random::get(1600000, 3200000));
+			flare.tolive = Random::get(1600000us, 3200000us);
 		} else if(zz < 0.5f) {
 			flare.type = 3;
 			flare.size = Random::getf(16.f, 68.f);
-			flare.tolive = std::chrono::microseconds(Random::get(1600000, 3200000));
+			flare.tolive = Random::get(1600000us, 3200000us);
 		} else {
 			flare.type = 1;
 			flare.size = Random::getf(32.f, 56.f) * sm;
-			flare.tolive = std::chrono::microseconds(Random::get(3400000, 4400000));
+			flare.tolive = Random::get(3400000us, 4400000us);
 		}
 	} else {
 		flare.type = (Random::getf() > 0.8f) ? 1 : 4;
 		flare.size = Random::getf(64.f, 102.f) * sm;
-		flare.tolive = std::chrono::microseconds(Random::get(3400000, 4400000));
+		flare.tolive = Random::get(3400000us, 4400000us);
 	}
 	
 	flare.dynlight = LightHandle();
