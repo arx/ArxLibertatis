@@ -61,13 +61,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/profiler/Profiler.h"
 #include "scene/Light.h"
 
+
 static constexpr float PATHFINDER_HEURISTIC_MIN = 0.2f;
 static constexpr float PATHFINDER_HEURISTIC_MAX = PathFinder::HEURISTIC_MAX;
 static constexpr float PATHFINDER_HEURISTIC_RANGE = PATHFINDER_HEURISTIC_MAX - PATHFINDER_HEURISTIC_MIN;
 static constexpr float PATHFINDER_DISTANCE_MAX = 5000.0f;
-
-// Pathfinder Definitions
-static constexpr PlatformDuration PATHFINDER_UPDATE_INTERVAL = 10ms;
 
 class PathFinderThread final : public StoppableThread {
 	
@@ -133,7 +131,7 @@ void PathFinderThread::run() {
 	
 	PathFinder pathfinder(g_anchors.size(), g_anchors.data(), &g_staticLights);
 	
-	for(; !isStopRequested(); m_busy = false, sleep(PATHFINDER_UPDATE_INTERVAL)) {
+	for(; !isStopRequested(); m_busy = false, sleep(10ms)) {
 		
 		std::scoped_lock lock(m_mutex);
 		
