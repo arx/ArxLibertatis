@@ -135,7 +135,7 @@ void RuneOfGuardingSpell::Update() {
 		}
 		pd->ov = pos + arx::randomOffsetXZ(40.f);
 		pd->move = arx::linearRand(Vec3f(-0.8f, -4.f, -0.8f), Vec3f(0.8f, 0.f, 0.8f));
-		pd->scale = Vec3f(-0.1f);
+		pd->scale = -0.1f;
 		pd->tolive = Random::getu(2600, 3200);
 		pd->tc = tex_p2;
 		pd->siz = 0.3f;
@@ -437,7 +437,7 @@ void RepelUndeadSpell::Update() {
 		Vec2f d = arx::diskRand(vv * 100.f);
 		pd->ov = m_pos + Vec3f(d.x, 0.f, d.y);
 		pd->move = arx::linearRand(Vec3f(-0.8f, -4.f, -0.8f), Vec3f(0.8f, 0.f, 0.8f));
-		pd->scale = Vec3f(-0.1f);
+		pd->scale = -0.1f;
 		pd->tolive = Random::getu(2600, 3200);
 		pd->tc = tex_p2;
 		pd->siz = 0.3f;

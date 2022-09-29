@@ -141,7 +141,7 @@ void ARX_FOGS_Render() {
 				pd->move = Vec3f(fog.speed) - arx::randomVec3f() * fog.speedRandom;
 				pd->move *= Vec3f(fog.speed * 0.2f,  1.f / 15, fog.speed * 0.2f);
 			}
-			pd->scale = fog.scale;
+			pd->scale = fog.scale.x;
 			pd->tolive = tolive;
 			pd->timcreation = toMsi(g_gameTime.now()) - count * s64(period);
 			pd->tc = g_particleTextures.smoke;
