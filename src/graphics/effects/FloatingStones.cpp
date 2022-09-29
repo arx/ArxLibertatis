@@ -22,6 +22,7 @@
 #include "core/GameTime.h"
 #include "graphics/RenderBatcher.h"
 #include "graphics/particle/ParticleEffects.h"
+#include "graphics/particle/ParticleTextures.h"
 #include "math/Random.h"
 #include "math/RandomVector.h"
 #include "util/Range.h"
@@ -48,17 +49,23 @@ void FloatingStones::Update(GameDuration timeDelta, Vec3f pos, bool addStones) {
 	if(m_quantizer.update(toMsf(timeDelta) * 0.03f)) {
 		for(Stone & stone : m_stones) {
 			stone.yvel *= 1.f - (1.f / 100.f);
+			if(Random::getf() <= 0.7f) {
+				continue;
+			}
 			PARTICLE_DEF * pd = createParticle(true);
 			if(!pd) {
 				continue;
 			}
-			pd->ov = stone.pos;
-			pd->move = Vec3f(0.f, Random::getf(0.f, 3.f), 0.f);
-			pd->size = Random::getf(3.f, 6.f);
-			pd->duration = 1s;
-			pd->timcreation = -(toMsi(g_gameTime.now()) + 1000l); // TODO WTF
-			pd->m_flags = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | DISSIPATING;
+			Vec3f move = Vec3f(0.f, Random::getf(0.f, 3.f), 0.f);
+			pd->ov = stone.pos + move;
+			pd->move = move * 0.5f;
+			pd->size = Random::getf(1.f, 2.f);
+			pd->sizeDelta = 2.4f;
+			pd->duration = 1375ms;
+			pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 			pd->m_rotation = 0.0000001f;
+			pd->tc = g_particleTextures.smoke;
+			pd->rgb = Color3f::gray(.45f);
 		}
 	}
 	
