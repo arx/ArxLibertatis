@@ -521,7 +521,7 @@ void PoisonProjectileSpell::Launch() {
 	for(CPoisonProjectile & projectile : util::dereference(m_projectiles)) {
 		
 		projectile.Create(srcPos, afBeta + Random::getf(-10.f, 10.f));
-		GameDuration lTime = m_duration + std::chrono::milliseconds(Random::getu(0, 5000));
+		GameDuration lTime = m_duration + Random::get(0ms, 5000ms);
 		projectile.SetDuration(lTime);
 		lMax = std::max(lMax, lTime);
 		
