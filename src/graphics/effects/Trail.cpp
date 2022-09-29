@@ -302,7 +302,7 @@ void Trail::Render() {
 }
 
 ArrowTrail::ArrowTrail()
-	: Trail(std::chrono::milliseconds(Random::get(130, 260)), Color3f::gray(Random::getf(0.2f, 0.4f)),
+	: Trail(Random::get(130ms, 260ms), Color3f::gray(Random::getf(0.2f, 0.4f)),
 	        Color3f::black, Random::getf(2.f, 4.f), 0.f)
 {}
 
