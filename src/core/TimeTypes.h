@@ -80,12 +80,12 @@ public:
 	}
 	
 	template <class Type, typename = std::enable_if_t<std::is_integral_v<Type> || std::is_same_v<Type, float>>>
-	[[nodiscard]] constexpr DurationType operator*(Type rhs) noexcept {
+	[[nodiscard]] constexpr DurationType operator*(Type rhs) const noexcept {
 		return value() * rhs;
 	}
 	
 	template <class Type, typename = std::enable_if_t<std::is_integral_v<Type> || std::is_same_v<Type, float>>>
-	[[nodiscard]] constexpr DurationType operator/(Type rhs) noexcept {
+	[[nodiscard]] constexpr DurationType operator/(Type rhs) const noexcept {
 		return value() / rhs;
 	}
 	
@@ -272,10 +272,6 @@ typedef DurationType<struct PlatformTimeTag, s64> PlatformDuration;
 // AnimationTime
 // in microseconds
 typedef DurationType<struct AnimationTimeTag, s64> AnimationDuration;
-
-[[nodiscard]] inline constexpr AnimationDuration operator*(AnimationDuration v, float scalar) noexcept {
-	return v.value() * scalar;
-}
 
 [[nodiscard]] inline constexpr s64 toMsi(AnimationDuration val) noexcept {
 	return std::chrono::milliseconds(val).count();
