@@ -125,8 +125,7 @@ void ARX_FOGS_Render() {
 				continue;
 			}
 			
-			GameDuration duration = fog.duration;
-			duration += Random::get(std::chrono::nanoseconds(0), std::chrono::nanoseconds(fog.duration));
+			GameDuration duration = fog.duration + Random::get(GameDuration(0).value(), fog.duration.value());
 			if(duration <= period * count) {
 				continue;
 			}
@@ -146,8 +145,8 @@ void ARX_FOGS_Render() {
 				pd->move *= Vec3f(fog.speed * 0.2f,  1.f / 15, fog.speed * 0.2f);
 			}
 			pd->sizeDelta = fog.sizeDelta;
-			arx_assert(duration <= decltype(pd->duration)::max() / 2);
-			pd->duration = std::chrono::duration_cast<decltype(pd->duration)>(duration.value());
+			arx_assume(duration <= GameDuration(ShortGameDuration::max() / 2));
+			pd->duration = ShortGameDuration(duration);
 			pd->elapsed = count * std::chrono::milliseconds(period);
 			pd->tc = g_particleTextures.smoke;
 			pd->size = (fog.size + Random::getf(0.f, 2.f) * fog.size) * (1.0f / 3);

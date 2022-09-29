@@ -48,10 +48,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_PARTICLE_PARTICLEEFFECTS_H
 
 #include <stddef.h>
-#include <chrono>
 #include <type_traits>
 #include <vector>
 
+#include "core/TimeTypes.h"
 #include "game/GameTypes.h"
 #include "graphics/Color.h"
 #include "graphics/Vertex.h"
@@ -95,9 +95,9 @@ struct PARTICLE_DEF {
 	Vec3f move;
 	float sizeDelta;
 	float size;
-	std::chrono::duration<s32, std::milli> elapsed;
-	std::chrono::duration<s32, std::milli> duration;
-	std::chrono::duration<s32, std::milli> delay;
+	ShortGameDuration elapsed;
+	ShortGameDuration duration;
+	ShortGameDuration delay;
 	TextureContainer * tc;
 	Color3f rgb;
 	ParticlesTypeFlags m_flags;

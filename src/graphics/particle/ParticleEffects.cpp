@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include <algorithm>
+#include <chrono>
 
 #include <boost/format.hpp>
 
@@ -310,7 +311,7 @@ void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle sourc
 	// Decides number of blood particles...
 	const unsigned int spawn_nb = glm::clamp(long(dmgs * 2.f), 5l, 26l);
 	
-	std::chrono::milliseconds totdelay(0);
+	ShortGameDuration totdelay = 0;
 	
 	for(unsigned int k = 0; k < spawn_nb; k++) {
 		
@@ -508,13 +509,13 @@ PARTICLE_DEF * createParticle(bool allocateWhilePaused) {
 		
 		ParticleCount++;
 		pd->exist = true;
-		pd->elapsed = std::chrono::milliseconds(0);
+		pd->elapsed = 0;
 		
 		pd->rgb = Color3f::white;
 		pd->tc = nullptr;
 		pd->m_flags = 0;
 		pd->source = nullptr;
-		pd->delay = std::chrono::milliseconds(0);
+		pd->delay = 0;
 		pd->move = Vec3f(0.f);
 		pd->sizeDelta = 1.f;
 		
@@ -729,17 +730,18 @@ void ARX_PARTICLES_Update()  {
 			continue;
 		}
 		
-		arx_assume(part->duration.count() > 0);
+		arx_assume(part->duration > 0 && part->duration <= ShortGameDuration::max() / 2);
+		arx_assume(part->elapsed >= 0);
 		
-		std::chrono::duration<s32, std::milli> elapsed = part->elapsed;
-		part->elapsed += std::chrono::milliseconds(delta);
+		ShortGameDuration elapsed = part->elapsed;
+		part->elapsed += delta;
 		if(elapsed < part->delay) {
 			continue;
 		}
 		
-		if(part->delay.count() > 0) {
+		if(part->delay > 0) {
 			part->elapsed -= part->delay;
-			part->delay = std::chrono::milliseconds(0);
+			part->delay = 0;
 			Entity * target = entities.get(part->sourceionum);
 			if((part->m_flags & DELAY_FOLLOW_SOURCE) && target) {
 				part->ov = *part->source;
@@ -759,15 +761,15 @@ void ARX_PARTICLES_Update()  {
 		if(elapsed >= part->duration) {
 			if((part->m_flags & FIRE_TO_SMOKE) && Random::getf() > 0.7f) {
 				part->ov += part->move;
-				part->duration = std::chrono::duration_cast<decltype(part->duration)>(part->duration * 1.375f);
+				part->duration = part->duration * 1.375f;
 				part->m_flags &= ~FIRE_TO_SMOKE;
 				part->tc = g_particleTextures.smoke;
 				part->sizeDelta = glm::abs(part->sizeDelta * 2.4f);
 				part->rgb = Color3f::gray(.45f);
 				part->move *= 0.5f;
 				part->size *= 1.f / 3;
-				part->elapsed = std::chrono::milliseconds(delta);
-				elapsed = std::chrono::milliseconds(0);
+				part->elapsed = delta;
+				elapsed = 0;
 			} else {
 				part->exist = false;
 				ParticleCount--;
@@ -775,7 +777,7 @@ void ARX_PARTICLES_Update()  {
 			}
 		}
 		
-		float val = std::chrono::milliseconds(elapsed).count() * 0.01f;
+		float val = elapsed / 100ms;
 		
 		Vec3f in = part->ov + part->move * val;
 		Vec3f inn = in;
@@ -784,7 +786,7 @@ void ARX_PARTICLES_Update()  {
 			in.y = inn.y = inn.y + 1.47f * val * val;
 		}
 		
-		float fd = float(std::chrono::milliseconds(elapsed).count()) / float(part->duration.count());
+		float fd = elapsed / part->duration;
 		
 		float r = 1.f - fd;
 		if(part->m_flags & FADE_IN_AND_OUT) {
@@ -880,7 +882,7 @@ void ARX_PARTICLES_Update()  {
 		if(part->m_flags & PARTICLE_2D) {
 			EERIEAddBitmap(mat, in, siz, siz, tc, color);
 		}  else if(part->m_flags & ROTATING) {
-			float rott = MAKEANGLE(float(toMsi(now + std::chrono::milliseconds(elapsed))) * part->m_rotation); // TODO wat
+			float rott = MAKEANGLE(float(toMsi(now + GameDuration(elapsed))) * part->m_rotation); // TODO wat
 			float size = std::max(siz, 0.f);
 			EERIEAddSprite(mat, in, size, color, zpos, rott);
 		} else {
