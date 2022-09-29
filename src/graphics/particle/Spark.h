@@ -20,19 +20,16 @@
 #ifndef ARX_GRAPHICS_PARTICLE_SPARK_H
 #define ARX_GRAPHICS_PARTICLE_SPARK_H
 
+#include "graphics/Color.h"
 #include "math/Types.h"
-
-enum SpawnSparkType {
-	SpawnSparkType_Default = 0,
-	SpawnSparkType_Failed = 1,
-	SpawnSparkType_Success = 2
-};
 
 void ParticleSparkClear();
 size_t ParticleSparkCount();
 
-void ParticleSparkSpawn(const Vec3f & pos, unsigned count, SpawnSparkType type);
-void ParticleSparkSpawnContinous(const Vec3f & pos, unsigned rate, SpawnSparkType type);
+void ParticleSparkSpawn(const Vec3f & pos, unsigned count,
+                        ColorRGBA color = Color3f(.3f, .3f, 0.f).toRGB());
+void ParticleSparkSpawnContinous(const Vec3f & pos, unsigned rate,
+                                 ColorRGBA color = Color3f(.3f, .3f, 0.f).toRGB());
 
 void ParticleSparkUpdate();
 

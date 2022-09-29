@@ -567,7 +567,7 @@ void ManageCombatModeAnimations() {
 									player.m_weaponBlocked = layer1.ctime;
 								}
 								
-								ParticleSparkSpawnContinous(sphere.origin, unsigned(dmgs), SpawnSparkType_Success);
+								ParticleSparkSpawnContinous(sphere.origin, unsigned(dmgs), Color3f(0.45f, 0.1f, 0.f).toRGB());
 								
 								if(hit) {
 									static PlatformInstant lastHit = 0;

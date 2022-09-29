@@ -354,7 +354,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(Projectile & projectile, GameDura
 		RaycastResult result = raycastScene(original_pos, v0, POLY_WATER | POLY_TRANS | POLY_NOCOL);
 		if(result || IsPointInField(v0)) {
 			
-			ParticleSparkSpawn(v0, result ? 14 : 24, SpawnSparkType_Default);
+			ParticleSparkSpawn(v0, result ? 14 : 24);
 			CheckExp(projectile);
 			
 			if(Entity * source  = entities.get(projectile.source)) {
@@ -439,7 +439,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(Projectile & projectile, GameDura
 							
 						} else {
 							spawnAudibleSound(v0, *entities.player());
-							ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
+							ParticleSparkSpawn(v0, 14);
 						}
 						
 					}
@@ -453,7 +453,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(Projectile & projectile, GameDura
 						spawnAudibleSound(v0, *source);
 					}
 					
-					ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
+					ParticleSparkSpawn(v0, 14);
 					
 					CheckExp(projectile);
 					

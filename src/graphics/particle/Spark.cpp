@@ -26,7 +26,6 @@
 #include "core/Core.h"
 #include "core/GameTime.h"
 #include "game/Camera.h"
-#include "graphics/Color.h"
 #include "graphics/GlobalFog.h"
 #include "graphics/Math.h"
 #include "graphics/RenderBatcher.h"
@@ -40,13 +39,13 @@ struct alignas(16) SparkParticle {
 	ShortGameDuration elapsed;
 	Vec3f move;
 	ShortGameDuration duration;
-	ColorRGBA rgb;
+	ColorRGBA color;
 	float tailLength;
 	
 	SparkParticle()
 		: pos(0.f)
 		, move(0.f)
-		, rgb(Color::black.toRGB())
+		, color(Color::black.toRGB())
 		, tailLength(0.f)
 	{ }
 	
@@ -64,7 +63,7 @@ size_t ParticleSparkCount() {
 	return g_sparkParticles.size();
 }
 
-void ParticleSparkSpawnContinous(const Vec3f & pos, unsigned rate, SpawnSparkType type) {
+void ParticleSparkSpawnContinous(const Vec3f & pos, unsigned rate, ColorRGBA color) {
 	
 	float amount = float(rate) * (g_platformTime.lastFrameDuration() / (PlatformDuration(200ms) / 3));
 	
@@ -73,10 +72,10 @@ void ParticleSparkSpawnContinous(const Vec3f & pos, unsigned rate, SpawnSparkTyp
 		count++;
 	}
 	
-	ParticleSparkSpawn(pos, count, type);
+	ParticleSparkSpawn(pos, count, color);
 }
 
-void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType type) {
+void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, ColorRGBA color) {
 	
 	if(g_gameTime.isPaused()) {
 		return;
@@ -91,19 +90,7 @@ void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType ty
 		spark.pos = pos + arx::randomVec(-5.f, 5.f);
 		spark.move = arx::randomVec(-6.f, 6.f);
 		spark.duration = std::chrono::milliseconds(len * 90 + count);
-		
-		switch(type) {
-			case SpawnSparkType_Default:
-				spark.rgb = Color3f(.3f, .3f, 0.f).toRGB();
-				break;
-			case SpawnSparkType_Failed:
-				spark.rgb = Color3f(.2f, .2f, .1f).toRGB();
-				break;
-			case SpawnSparkType_Success:
-				spark.rgb = Color3f(.45f, .1f, 0.f).toRGB();
-				break;
-		}
-		
+		spark.color = color;
 		spark.tailLength = len + Random::getf() * len;
 		
 	}
@@ -137,7 +124,7 @@ void ParticleSparkUpdate() {
 		Vec3f tailDirection = glm::normalize(-spark.move);
 		
 		TexturedVertex tv[3];
-		tv[0].color = spark.rgb;
+		tv[0].color = spark.color;
 		tv[1].color = Color::gray(0.4f).toRGBA();
 		tv[2].color = Color::black.toRGBA();
 		
