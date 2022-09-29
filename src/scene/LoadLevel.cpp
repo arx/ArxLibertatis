@@ -365,7 +365,7 @@ bool DanaeLoadLevel(long level, bool loadEntities) {
 		fd->size = dlf->size;
 		fd->directional = (dlf->special & 1) != 0;
 		fd->speed = dlf->speed;
-		fd->tolive = dlf->tolive;
+		fd->duration = std::chrono::milliseconds(dlf->tolive);
 		Vec3f out = VRotateY(Vec3f(1.f, 0.f, 0.f), MAKEANGLE(fd->angle.getYaw()));
 		fd->move = VRotateX(out, MAKEANGLE(fd->angle.getPitch()));
 	}

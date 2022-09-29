@@ -46,6 +46,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/effects/Fog.h"
 
+#include <chrono>
+
 #include "animation/AnimationRender.h"
 
 #include "core/Config.h"
@@ -61,6 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/RandomVector.h"
 
 #include "scene/Tiles.h"
+
 
 std::vector<FOG_DEF> g_fogs;
 
@@ -92,7 +95,7 @@ void ARX_FOGS_Render() {
 		g_fogs.pop_back();
 	}
 	
-	float period = float(1 << (4 - config.video.levelOfDetail));
+	GameDuration period = std::chrono::milliseconds(1 << (4 - config.video.levelOfDetail));
 	
 	for(FOG_DEF & fog : g_fogs) {
 		
@@ -106,10 +109,10 @@ void ARX_FOGS_Render() {
 			continue;
 		}
 		
-		float maxCount = 2.f * float(fog.tolive) / period;
+		float maxCount = 2.f * (fog.duration / period);
 		
 		if(fog.visible) {
-			fog.elapsed.add(g_framedelay / period);
+			fog.elapsed.add(g_gameTime.lastFrameDuration() / period);
 		} else {
 			fog.elapsed.add(std::min(toMsf(g_gameTime.now() - fog.creationTime), 1.f + maxCount));
 			fog.visible = true;
@@ -122,8 +125,9 @@ void ARX_FOGS_Render() {
 				continue;
 			}
 			
-			u32 tolive = fog.tolive + Random::get(0, fog.tolive);
-			if(tolive <= count * s64(period)) {
+			GameDuration duration = fog.duration;
+			duration += Random::get(std::chrono::nanoseconds(0), std::chrono::nanoseconds(fog.duration));
+			if(duration <= period * count) {
 				continue;
 			}
 			
@@ -142,8 +146,9 @@ void ARX_FOGS_Render() {
 				pd->move *= Vec3f(fog.speed * 0.2f,  1.f / 15, fog.speed * 0.2f);
 			}
 			pd->sizeDelta = fog.sizeDelta;
-			pd->duration = std::chrono::milliseconds(tolive);
-			pd->timcreation = toMsi(g_gameTime.now()) - count * s64(period);
+			arx_assert(duration <= decltype(pd->duration)::max() / 2);
+			pd->duration = std::chrono::duration_cast<decltype(pd->duration)>(duration.value());
+			pd->timcreation = toMsi(g_gameTime.now()) - count * std::chrono::milliseconds(period).count();
 			pd->tc = g_particleTextures.smoke;
 			pd->size = (fog.size + Random::getf(0.f, 2.f) * fog.size) * (1.0f / 3);
 			pd->rgb = fog.rgb;

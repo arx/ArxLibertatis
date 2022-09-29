@@ -50,11 +50,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 
 #include "core/GameTime.h"
+#include "core/TimeTypes.h"
 #include "math/Types.h"
 #include "math/Angle.h"
 #include "math/Vector.h"
 #include "math/Quantizer.h"
 #include "graphics/Color.h"
+
 
 struct EERIE_3DOBJ;
 
@@ -72,7 +74,7 @@ struct FOG_DEF {
 	float speed;
 	float speedRandom;
 	float rotatespeed;
-	long tolive;
+	GameDuration duration;
 	long blend;
 	float frequency;
 	math::Quantizer elapsed;
@@ -91,7 +93,7 @@ struct FOG_DEF {
 		, speed(1.f)
 		, speedRandom(2.f)
 		, rotatespeed(0.f)
-		, tolive(0)
+		, duration(0)
 		, blend(0)
 		, frequency(0.f)
 		, visible(false)
