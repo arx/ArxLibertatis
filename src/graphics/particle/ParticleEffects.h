@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_PARTICLE_PARTICLEEFFECTS_H
 
 #include <stddef.h>
+#include <type_traits>
 #include <vector>
 
 #include "game/GameTypes.h"
@@ -57,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 #include "math/Angle.h"
 #include "util/Flags.h"
+
 
 struct EERIEPOLY;
 struct Sphere;
@@ -121,6 +123,8 @@ struct PARTICLE_DEF {
 	{ }
 	
 };
+
+static_assert(std::is_trivially_copyable_v<PARTICLE_DEF>);
 
 //-----------------------------------------------------------------------------
 
