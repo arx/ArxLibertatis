@@ -62,6 +62,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Random.h"
 #include "math/RandomVector.h"
 
+#include "util/Range.h"
+
+
 ParticleSystem::ParticleSystem()
 	: m_nextPosition(0.f)
 	, iParticleNbAlive(0)
@@ -291,35 +294,25 @@ void ParticleSystem::Render() {
 	
 	std::list<Particle *>::iterator i;
 	
-	for(i = listParticle.begin(); i != listParticle.end(); ++i) {
-		Particle * p = *i;
+	for(Particle & particle : util::dereference(listParticle)) {
 		
-		if(!p->isAlive()) {
+		if(!particle.isAlive()) {
 			continue;
 		}
 		
 		int inumtex = 0;
 		if(iNbTex > 0) {
-			inumtex = p->iTexNum;
+			inumtex = particle.iTexNum;
 			if(iTexTime == 0) {
-				float fNbTex = (p->m_age / p->m_timeToLive) * (iNbTex);
-				inumtex = checked_range_cast<int>(fNbTex);
-				if(inumtex >= iNbTex) {
-					inumtex = iNbTex - 1;
+				float fNbTex = (particle.m_age / particle.m_timeToLive) * iNbTex;
+				inumtex = std::min(checked_range_cast<int>(fNbTex), iNbTex - 1);
+			} else if(particle.iTexTime > iTexTime) {
+				particle.iTexTime -= iTexTime;
+				particle.iTexNum++;
+				if(particle.iTexNum > iNbTex - 1) {
+					particle.iTexNum = bTexLoop ? 0 : iNbTex - 1;
 				}
-			} else {
-				if(p->iTexTime > iTexTime) {
-					p->iTexTime -= iTexTime;
-					p->iTexNum++;
-					if(p->iTexNum > iNbTex - 1) {
-						if(bTexLoop) {
-							p->iTexNum = 0;
-						} else {
-							p->iTexNum = iNbTex - 1;
-						}
-					}
-					inumtex = p->iTexNum;
-				}
+				inumtex = particle.iTexNum;
 			}
 		}
 		
@@ -327,15 +320,16 @@ void ParticleSystem::Render() {
 			continue;
 		}
 		
-		Vec3f pos = p->p3Pos + m_nextPosition;
+		Vec3f pos = particle.p3Pos + m_nextPosition;
 		
 		mat.setTexture(tex_tab[inumtex]);
 		
 		if(m_parameters.m_rotation != 0) {
-			float fRot = (p->iRot == 1 ? 1.f : -1.f) * m_parameters.m_rotation * toMsf(p->m_age) + p->fRotStart;
-			EERIEAddSprite(mat, pos, std::max(p->fSize, 0.f), p->ulColor, 2, fRot);
+			float rotation = particle.fRotStart;
+			rotation += (particle.iRot == 1 ? 1.f : -1.f) * m_parameters.m_rotation * toMsf(particle.m_age);
+			EERIEAddSprite(mat, pos, std::max(particle.fSize, 0.f), particle.ulColor, 2, rotation);
 		} else {
-			EERIEAddSprite(mat, pos, p->fSize, p->ulColor, 2);
+			EERIEAddSprite(mat, pos, particle.fSize, particle.ulColor, 2);
 		}
 		
 	}
