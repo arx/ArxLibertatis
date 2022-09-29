@@ -257,7 +257,7 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 				pd->m_flags |= PARTICLE_NOZBUFFER;
 			}
 		} else {
-			pd->m_flags = FADE_IN_AND_OUT;
+			pd->m_flags = FADE_IN_AND_OUT | PARTICLE_2D;
 		}
 		
 		pd->ov = flare.p + arx::randomVec(-5.f, 5.f);
@@ -273,9 +273,6 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 		}
 		pd->rgb = flare.rgb * (2.f / 3);
 		pd->m_rotation = 1.2f;
-		if(bookDraw) {
-			pd->is2D = true;
-		}
 		
 	}
 	

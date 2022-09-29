@@ -149,19 +149,16 @@ void BookIconGui::requestFX() {
 	static const float z = 0.00001f;
 	
 	for(long i = 0; i < 12; i++) {
-		
 		MagFX(Vec3f(m_rect.topLeft(), z), m_scale);
 	}
 	
 	for(int i = 0; i < 5; i++) {
-		
 		PARTICLE_DEF * pd = createParticle(true);
 		if(!pd) {
 			break;
 		}
-		
 		float s = i * m_scale;
-		
+		pd->m_flags = PARTICLE_2D;
 		pd->ov = Vec3f(m_rect.topLeft() - Vec2f(s * 2, s * 2), z);
 		pd->move = Vec3f(s * -0.5f, s * -0.5f, 0.f);
 		pd->sizeDelta = s * 10;
@@ -169,10 +166,10 @@ void BookIconGui::requestFX() {
 		pd->tc = m_tex;
 		pd->rgb = Color3f(1.f - i * 0.1f, i * 0.1f, 0.5f - i * 0.1f);
 		pd->size = m_rect.width() + s * 4.f;
-		pd->is2D = true;
 	}
 	
 	NewSpell = 1;
+	
 }
 
 BookIconGui::BookIconGui()

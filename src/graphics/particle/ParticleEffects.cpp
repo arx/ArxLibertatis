@@ -510,7 +510,6 @@ PARTICLE_DEF * createParticle(bool allocateWhilePaused) {
 		pd->exist = true;
 		pd->timcreation = toMsi(g_gameTime.now());
 		
-		pd->is2D = false;
 		pd->rgb = Color3f::white;
 		pd->tc = nullptr;
 		pd->m_flags = 0;
@@ -532,6 +531,7 @@ void MagFX(const Vec3f & pos, float size) {
 		return;
 	}
 	
+	pd->m_flags = PARTICLE_2D;
 	pd->ov = pos + Vec3f(Random::getf(0.f, 6.f) - Random::getf(0.f, 12.f), Random::getf(0.f, 6.f) - Random::getf(0.f, 12.f), 0.f);
 	pd->move = Vec3f(Random::getf(-6.f, 6.f), Random::getf(-8.f, 8.f), 0.f);
 	pd->sizeDelta = 4.4f;
@@ -539,7 +539,6 @@ void MagFX(const Vec3f & pos, float size) {
 	pd->tc = g_particleTextures.healing;
 	pd->rgb = Color3f::magenta;
 	pd->size = 56.f * size;
-	pd->is2D = true;
 	
 }
 
@@ -692,7 +691,7 @@ void spawn2DFireParticle(const Vec2f & pos, float scale) {
 		return;
 	}
 	
-	pd->m_flags = FIRE_TO_SMOKE;
+	pd->m_flags = FIRE_TO_SMOKE | PARTICLE_2D;
 	pd->ov = Vec3f(pos, 0.0000001f);
 	pd->move = Vec3f(Random::getf(-1.5f, 1.5f), Random::getf(-6.f, -5.f), 0.f) * scale;
 	pd->sizeDelta = 1.8f;
@@ -700,7 +699,6 @@ void spawn2DFireParticle(const Vec2f & pos, float scale) {
 	pd->tc = g_particleTextures.fire2;
 	pd->rgb = Color3f(1.f, .6f, .5f);
 	pd->size = 14.f * scale;
-	pd->is2D = true;
 	
 }
 
@@ -749,7 +747,7 @@ void ARX_PARTICLES_Update()  {
 			continue;
 		}
 		
-		if(!part->is2D && !g_tiles->isInActiveTile(part->ov)) {
+		if(!(part->m_flags & PARTICLE_2D) && !g_tiles->isInActiveTile(part->ov)) {
 			part->exist = false;
 			ParticleCount--;
 			continue;
@@ -797,7 +795,7 @@ void ARX_PARTICLES_Update()  {
 			}
 		}
 		
-		if(!part->is2D) {
+		if(!(part->m_flags & PARTICLE_2D)) {
 			
 			Sphere sp;
 			sp.origin = in;
@@ -884,14 +882,12 @@ void ARX_PARTICLES_Update()  {
 		
 		float zpos = (part->m_flags & PARTICLE_ZDEC) ? 0.0001f : 2.f;
 		
-		if(part->m_flags & ROTATING) {
-			if(!part->is2D) {
-				float rott = MAKEANGLE(float(toMsi(now) + framediff2) * part->m_rotation);
-				float size = std::max(siz, 0.f);
-				EERIEAddSprite(mat, in, size, color, zpos, rott);
-			}
-		} else if(part->is2D) {
+		if(part->m_flags & PARTICLE_2D) {
 			EERIEAddBitmap(mat, in, siz, siz, tc, color);
+		}  else if(part->m_flags & ROTATING) {
+			float rott = MAKEANGLE(float(toMsi(now) + framediff2) * part->m_rotation);
+			float size = std::max(siz, 0.f);
+			EERIEAddSprite(mat, in, size, color, zpos, rott);
 		} else {
 			EERIEAddSprite(mat, in, siz, color, zpos);
 		}

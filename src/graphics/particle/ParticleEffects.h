@@ -81,6 +81,7 @@ enum ParticlesTypeFlag {
 	PARTICLE_GOLDRAIN   = 1 << 18,
 	PARTICLE_NOZBUFFER  = 1 << 19,
 	PARTICLE_ZDEC       = 1 << 20,
+	PARTICLE_2D         = 1 << 21,
 };
 
 DECLARE_FLAGS(ParticlesTypeFlag, ParticlesTypeFlags)
@@ -89,7 +90,6 @@ DECLARE_FLAGS_OPERATORS(ParticlesTypeFlags)
 struct PARTICLE_DEF {
 	
 	bool exist;
-	bool is2D;
 	Vec3f ov;
 	Vec3f move;
 	float sizeDelta;
@@ -106,7 +106,6 @@ struct PARTICLE_DEF {
 	
 	PARTICLE_DEF()
 		: exist(false)
-		, is2D(false)
 		, ov(0.f)
 		, move(0.f)
 		, sizeDelta(0.f)
