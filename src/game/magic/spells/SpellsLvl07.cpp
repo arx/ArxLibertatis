@@ -95,7 +95,7 @@ void FlyingEyeSpell::Launch() {
 		pd->move = arx::randomVec(-2.f, 2.f);
 		pd->siz = 28.f;
 		pd->tolive = Random::getu(2000, 6000);
-		pd->scale = 12.f;
+		pd->sizeDelta = 12.f;
 		pd->tc = g_particleTextures.smoke;
 		pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 		pd->m_rotation = 0.0000001f;
@@ -127,7 +127,7 @@ void FlyingEyeSpell::End() {
 		pd->move = arx::randomVec(-2.f, 2.f);
 		pd->siz = 28.f;
 		pd->tolive = Random::getu(2000, 6000);
-		pd->scale = 12.f;
+		pd->sizeDelta = 12.f;
 		pd->tc = g_particleTextures.smoke;
 		pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 		pd->m_rotation = 0.0000001f;
@@ -160,7 +160,7 @@ static void FlyingEyeSpellUpdateHand(const Vec3f & pos, LightHandle & light, siz
 		pd->move = Vec3f(0.1f, 0.f, 0.1f) + Vec3f(-0.2f, -2.2f, -0.2f) * arx::randomVec3f();
 		pd->siz = 5.f;
 		pd->tolive = Random::getu(1500, 3500);
-		pd->scale = 0.2f;
+		pd->sizeDelta = 0.2f;
 		pd->tc = g_particleTextures.smoke;
 		pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 		pd->sourceionum = EntityHandle_Player;
@@ -315,7 +315,7 @@ void FireFieldSpell::Update() {
 		pd->tc = g_particleTextures.fire2;
 		pd->m_flags = ROTATING | FIRE_TO_SMOKE;
 		pd->m_rotation = Random::getf(-0.1f, 0.1f);
-		pd->scale = -8.f;
+		pd->sizeDelta = -8.f;
 		
 		PARTICLE_DEF copy = *pd;
 		

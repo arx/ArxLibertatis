@@ -92,7 +92,7 @@ struct PARTICLE_DEF {
 	bool zdec;
 	Vec3f ov;
 	Vec3f move;
-	float scale;
+	float sizeDelta;
 	float siz;
 	long timcreation;
 	u32 tolive;
@@ -110,7 +110,7 @@ struct PARTICLE_DEF {
 		, zdec(false)
 		, ov(0.f)
 		, move(0.f)
-		, scale(0.f)
+		, sizeDelta(0.f)
 		, siz(0.f)
 		, timcreation(0)
 		, tolive(0)
