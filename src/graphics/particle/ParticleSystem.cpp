@@ -288,63 +288,56 @@ void ParticleSystem::Render() {
 	RenderMaterial mat;
 	mat.setBlendType(m_parameters.m_blendMode);
 	mat.setDepthTest(true);
-
-	int inumtex = 0;
-
+	
 	std::list<Particle *>::iterator i;
-
+	
 	for(i = listParticle.begin(); i != listParticle.end(); ++i) {
 		Particle * p = *i;
-
-		if(p->isAlive()) {
-
-			if(iNbTex > 0) {
-				inumtex = p->iTexNum;
-
-				if(iTexTime == 0) {
-					float fNbTex = (p->m_age / p->m_timeToLive) * (iNbTex);
-
-					inumtex = checked_range_cast<int>(fNbTex);
-					if(inumtex >= iNbTex) {
-						inumtex = iNbTex - 1;
-					}
-				} else {
-					if(p->iTexTime > iTexTime) {
-						p->iTexTime -= iTexTime;
-						p->iTexNum++;
-
-						if(p->iTexNum > iNbTex - 1) {
-							if(bTexLoop) {
-								p->iTexNum = 0;
-							} else {
-								p->iTexNum = iNbTex - 1;
-							}
+		
+		if(!p->isAlive()) {
+			continue;
+		}
+		
+		int inumtex = 0;
+		if(iNbTex > 0) {
+			inumtex = p->iTexNum;
+			if(iTexTime == 0) {
+				float fNbTex = (p->m_age / p->m_timeToLive) * (iNbTex);
+				inumtex = checked_range_cast<int>(fNbTex);
+				if(inumtex >= iNbTex) {
+					inumtex = iNbTex - 1;
+				}
+			} else {
+				if(p->iTexTime > iTexTime) {
+					p->iTexTime -= iTexTime;
+					p->iTexNum++;
+					if(p->iTexNum > iNbTex - 1) {
+						if(bTexLoop) {
+							p->iTexNum = 0;
+						} else {
+							p->iTexNum = iNbTex - 1;
 						}
-
-						inumtex = p->iTexNum;
 					}
+					inumtex = p->iTexNum;
 				}
 			}
-			
-			Vec3f p3pos = p->p3Pos + m_nextPosition;
-			
-			mat.setTexture(tex_tab[inumtex]);
-			
-			if(m_parameters.m_rotation != 0) {
-				float fRot;
-				if(p->iRot == 1)
-					fRot = (m_parameters.m_rotation) * toMsf(p->m_age) + p->fRotStart;
-				else
-					fRot = (-m_parameters.m_rotation) * toMsf(p->m_age) + p->fRotStart;
-
-				float size = std::max(p->fSize, 0.f);
-				
-				if(tex_tab[inumtex])
-					EERIEAddSprite(mat, p3pos, size, p->ulColor, 2, fRot);
-			} else {
-				if(tex_tab[inumtex])
-					EERIEAddSprite(mat, p3pos, p->fSize, p->ulColor, 2);
-			}
 		}
+		
+		if(!tex_tab[inumtex]) {
+			continue;
+		}
+		
+		Vec3f pos = p->p3Pos + m_nextPosition;
+		
+		mat.setTexture(tex_tab[inumtex]);
+		
+		if(m_parameters.m_rotation != 0) {
+			float fRot = (p->iRot == 1 ? 1.f : -1.f) * m_parameters.m_rotation * toMsf(p->m_age) + p->fRotStart;
+			EERIEAddSprite(mat, pos, std::max(p->fSize, 0.f), p->ulColor, 2, fRot);
+		} else {
+			EERIEAddSprite(mat, pos, p->fSize, p->ulColor, 2);
+		}
+		
 	}
+	
 }
