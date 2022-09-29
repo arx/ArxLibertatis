@@ -729,10 +729,8 @@ void ARX_PARTICLES_Update()  {
 		arx_assume(part->duration.count() > 0);
 		
 		static_assert(std::is_same_v<decltype(part->duration)::period, std::milli>);
-		long framediff = part->timcreation + part->duration.count() - toMsi(now);
-		long framediff2 = toMsi(now) - part->timcreation;
-		
-		if(framediff2 < long(part->delay)) {
+		long elapsed = toMsi(now) - part->timcreation;
+		if(elapsed < long(part->delay)) {
 			continue;
 		}
 		
@@ -755,9 +753,8 @@ void ARX_PARTICLES_Update()  {
 			continue;
 		}
 		
-		if(framediff <= 0) {
+		if(elapsed >= part->duration.count()) {
 			if((part->m_flags & FIRE_TO_SMOKE) && Random::getf() > 0.7f) {
-				
 				part->ov += part->move;
 				part->duration = std::chrono::duration_cast<decltype(part->duration)>(part->duration * 1.375f);
 				part->m_flags &= ~FIRE_TO_SMOKE;
@@ -767,9 +764,7 @@ void ARX_PARTICLES_Update()  {
 				part->move *= 0.5f;
 				part->size *= 1.f / 3;
 				part->timcreation = toMsi(now);
-				
-				framediff = part->duration.count();
-				
+				elapsed = 0;
 			} else {
 				part->exist = false;
 				ParticleCount--;
@@ -777,7 +772,7 @@ void ARX_PARTICLES_Update()  {
 			}
 		}
 		
-		float val = (part->duration.count() - framediff) * 0.01f;
+		float val = elapsed * 0.01f;
 		
 		Vec3f in = part->ov + part->move * val;
 		Vec3f inn = in;
@@ -786,14 +781,14 @@ void ARX_PARTICLES_Update()  {
 			in.y = inn.y = inn.y + 1.47f * val * val;
 		}
 		
-		float fd = float(framediff2) / float(part->duration.count());
+		float fd = float(elapsed) / float(part->duration.count());
 		float r = 1.f - fd;
 		if(part->m_flags & FADE_IN_AND_OUT) {
 			long t = part->duration.count() / 2;
-			if(framediff2 <= t) {
-				r = float(framediff2) / float(t);
+			if(elapsed <= t) {
+				r = float(elapsed) / float(t);
 			} else {
-				r = 1.f - float(framediff2 - t) / float(t);
+				r = 1.f - float(elapsed - t) / float(t);
 			}
 		}
 		
@@ -886,7 +881,7 @@ void ARX_PARTICLES_Update()  {
 		if(part->m_flags & PARTICLE_2D) {
 			EERIEAddBitmap(mat, in, siz, siz, tc, color);
 		}  else if(part->m_flags & ROTATING) {
-			float rott = MAKEANGLE(float(toMsi(now) + framediff2) * part->m_rotation);
+			float rott = MAKEANGLE(float(toMsi(now) + elapsed) * part->m_rotation); // TODO wat
 			float size = std::max(siz, 0.f);
 			EERIEAddSprite(mat, in, size, color, zpos, rott);
 		} else {
