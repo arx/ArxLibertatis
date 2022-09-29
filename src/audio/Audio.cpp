@@ -750,8 +750,6 @@ void ambianceStop(AmbianceId ambianceId, PlatformDuration fadeInterval) {
 	g_ambiances[ambianceId]->stop(fadeInterval);
 }
 
-static constexpr PlatformDuration ARX_SOUND_UPDATE_INTERVAL = 100ms;
-
 class SoundUpdateThread final : public StoppableThread {
 	
 	void update();
@@ -762,7 +760,7 @@ class SoundUpdateThread final : public StoppableThread {
 			
 			ARX_PROFILE("SoundUpdate");
 			
-			sleep(ARX_SOUND_UPDATE_INTERVAL);
+			sleep(100ms);
 			
 			update();
 		}
