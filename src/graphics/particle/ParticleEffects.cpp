@@ -516,7 +516,6 @@ PARTICLE_DEF * createParticle(bool allocateWhilePaused) {
 		pd->m_flags = 0;
 		pd->source = nullptr;
 		pd->delay = 0;
-		pd->zdec = false;
 		pd->move = Vec3f(0.f);
 		pd->sizeDelta = 1.f;
 		
@@ -555,14 +554,13 @@ void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col) {
 		if(!pd) {
 			return;
 		}
-		pd->m_flags = PARTICLE_SUB2 | SUBSTRACT | GRAVITY;
+		pd->m_flags = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | PARTICLE_ZDEC;
 		pd->ov = pos;
 		pd->move = arx::randomVec(-11.5f, 11.5f);
 		pd->tolive = tolive;
 		pd->tc = g_particleTextures.blood_splat;
 		pd->size = 0.3f + 0.01f * power;
 		pd->sizeDelta = 0.2f + 0.3f * power;
-		pd->zdec = true;
 		pd->rgb = Color3f(col);
 	}
 }
@@ -578,16 +576,14 @@ void ARX_PARTICLES_SpawnWaterSplash(const Vec3f & _ePos) {
 			return;
 		}
 		
-		pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING | GRAVITY | SPLAT_WATER;
+		pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING | GRAVITY | SPLAT_WATER | PARTICLE_ZDEC;
 		pd->m_rotation = 0.f; // TODO maybe remove ROTATING
 		pd->ov = _ePos + Vec3f(30.f, -20.f, 30.f) * arx::randomVec3f();
 		pd->move = arx::linearRand(Vec3f(-6.5f, -11.5f, -6.5f), Vec3f(6.5f, 0.f, 6.5f));
 		pd->tolive = Random::getu(1000, 1300);
 		pd->tc = g_particleTextures.water_drop[Random::get(0, 2)];
 		pd->size = 0.4f;
-		float s = Random::getf();
-		pd->zdec = true;
-		pd->rgb = Color3f::gray(s);
+		pd->rgb = Color3f::gray(Random::getf());
 		
 	}
 	
@@ -646,14 +642,13 @@ void LaunchFireballBoom(const Vec3f & poss, float level, Vec3f * direction, cons
 		return;
 	}
 	
-	pd->m_flags = FIRE_TO_SMOKE | FADE_IN_AND_OUT | PARTICLE_ANIMATED;
+	pd->m_flags = FIRE_TO_SMOKE | FADE_IN_AND_OUT | PARTICLE_ANIMATED | PARTICLE_ZDEC;
 	pd->ov = poss;
 	pd->move = (direction) ? *direction : Vec3f(0.f, Random::getf(-5.f, 0.f), 0.f);
 	pd->tolive = Random::getu(1600, 2200);
 	pd->tc = g_particleTextures.explo[0];
 	pd->size = level * 3.f + Random::getf(0.f, 2.f);
 	pd->sizeDelta = level * 3.f;
-	pd->zdec = true;
 	if(rgb) {
 		pd->rgb = *rgb;
 	}
@@ -664,24 +659,24 @@ void spawnFireHitParticle(const Vec3f & poss, long type) {
 	
 	PARTICLE_DEF * pd = createParticle(true);
 	if(pd) {
+		pd->m_flags = PARTICLE_ZDEC;
 		pd->ov = poss;
 		pd->move = Vec3f(3.f, 4.f, 3.f) - Vec3f(6.f, 12.f, 6.f) * arx::randomVec3f();
 		pd->tolive = Random::getu(600, 700);
 		pd->tc = g_particleTextures.fire_hit;
 		pd->size = Random::getf(100.f, 110.f) * ((type == 1) ? 2.f : 1.f);
-		pd->zdec = true;
 		if(type == 1) {
 			pd->rgb = Color3f(.4f, .4f, 1.f);
 		}
 		
 		pd = createParticle(true);
 		if(pd) {
+			pd->m_flags = PARTICLE_ZDEC;
 			pd->ov = poss;
 			pd->move = Vec3f(3.f , 4.f, 3.f) - Vec3f(6.f, 12.f, 6.f) * arx::randomVec3f();
 			pd->tolive = Random::getu(600, 700);
 			pd->tc = g_particleTextures.fire_hit;
 			pd->size = Random::getf(40.f, 70.f) * ((type == 1) ? 2.f : 1.f);
-			pd->zdec = true;
 			if(type == 1) {
 				pd->rgb = Color3f(.4f, .4f, 1.f);
 			}
@@ -887,7 +882,7 @@ void ARX_PARTICLES_Update()  {
 			mat.setBlendType(RenderMaterial::Additive);
 		}
 		
-		float zpos = (part->zdec) ? 0.0001f : 2.f;
+		float zpos = (part->m_flags & PARTICLE_ZDEC) ? 0.0001f : 2.f;
 		
 		if(part->m_flags & ROTATING) {
 			if(!part->is2D) {
