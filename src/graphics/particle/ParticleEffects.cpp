@@ -101,7 +101,7 @@ long getParticleCount() {
 	return ParticleCount;
 }
 
-void createFireParticles(Vec3f pos, int perPos, int delay) {
+void createFireParticles(Vec3f pos, int perPos, ShortGameDuration delay) {
 	
 	for(long nn = 0 ; nn < perPos; nn++) {
 		if(Random::getf() >= 0.4f) {
@@ -120,12 +120,13 @@ void createFireParticles(Vec3f pos, int perPos, int delay) {
 		pd->m_rotation = Random::getf(-0.1f, 0.1f);
 		pd->sizeDelta = -8.f;
 		pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
-		pd->elapsed = -nn * std::chrono::milliseconds(delay);
+		pd->elapsed = delay * -nn;
 	}
 	
 }
 
-void createObjFireParticles(const EERIE_3DOBJ * obj, int particlePositions, int perPos, int delay) {
+void createObjFireParticles(const EERIE_3DOBJ * obj, int particlePositions, int perPos,
+                            ShortGameDuration delay) {
 	
 	for(int i = 0; i < particlePositions; i++) {
 		
@@ -144,10 +145,11 @@ void createObjFireParticles(const EERIE_3DOBJ * obj, int particlePositions, int 
 		
 		if(notok < 0) {
 			Vec3f pos = obj->vertexWorldPositions[it->vid[0]].v;
-			
 			createFireParticles(pos, perPos, delay);
 		}
+		
 	}
+	
 }
 
 

@@ -2724,7 +2724,7 @@ void ManageIgnition(Entity & io) {
 		io.ignition = 25.f;
 		
 		if(addParticles && io.obj && !io.obj->facelist.empty()) {
-			createObjFireParticles(io.obj, 4, 1, 1);
+			createObjFireParticles(io.obj, 4, 1, 1ms);
 		}
 	} else if(io.obj && io.obj->fastaccess.fire != ActionPoint() && io.ignition > 0.f) {
 		
@@ -2739,7 +2739,7 @@ void ManageIgnition(Entity & io) {
 		
 		if(addParticles) {
 			Vec3f pos = actionPointPosition(io.obj, io.obj->fastaccess.fire);
-			createFireParticles(pos, 2, 2);
+			createFireParticles(pos, 2, 2ms);
 		}
 	} else {
 		io.ignition -= g_framedelay * 0.01f;
@@ -2748,7 +2748,7 @@ void ManageIgnition(Entity & io) {
 			float p = io.ignition * g_framedelay * 0.001f * float(io.obj->facelist.size()) * 0.001f * 2.f;
 			int positions = std::min(int(std::ceil(p)), 10);
 			
-			createObjFireParticles(io.obj, positions, 6, 180);
+			createObjFireParticles(io.obj, positions, 6, 180ms);
 		}
 	}
 	

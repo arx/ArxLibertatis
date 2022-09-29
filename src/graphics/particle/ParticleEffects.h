@@ -152,9 +152,10 @@ void ARX_PARTICLES_Add_Smoke(const Vec3f & pos, long flags, long amount, const C
 void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col);
 void ARX_PARTICLES_SpawnWaterSplash(const Vec3f & pos);
 
-void createFireParticles(Vec3f pos, int perPos, int delay);
+void createFireParticles(Vec3f pos, int perPos, ShortGameDuration delay);
 
-void createObjFireParticles(const EERIE_3DOBJ * obj, int particlePositions, int perPos, int delay);
+void createObjFireParticles(const EERIE_3DOBJ * obj, int particlePositions, int perPos,
+                            ShortGameDuration delay);
 
 void LaunchFireballBoom(const Vec3f & poss, float level, Vec3f * direction = nullptr,
                         const Color3f * rgb = nullptr);

@@ -309,7 +309,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(Projectile & projectile, GameDura
 			light->extras |= EXTRAS_FLARE;
 			light->duration = std::chrono::duration<float, std::milli>(g_framedelay * 0.5f);
 		}
-		createObjFireParticles(projectile.obj, 6, 2, 180);
+		createObjFireParticles(projectile.obj, 6, 2, 180ms);
 	}
 	
 	Vec3f original_pos = projectile.position;
