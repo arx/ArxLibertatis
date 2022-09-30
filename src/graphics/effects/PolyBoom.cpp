@@ -144,19 +144,18 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 				continue;
 			}
 			
-			Decal & pb = g_decals.emplace_back();
-			
-			pb.type = ScorchMarkDecal;
-			pb.fastdecay = false;
-			pb.ep = &ep;
-			pb.tc = g_particleTextures.boom;
-			pb.tolive = 10s;
-			pb.timecreation = g_gameTime.now();
-			pb.rgb = Color3f::black;
+			Decal & decal = g_decals.emplace_back();
+			decal.type = ScorchMarkDecal;
+			decal.fastdecay = false;
+			decal.ep = &ep;
+			decal.tc = g_particleTextures.boom;
+			decal.tolive = 10s;
+			decal.timecreation = g_gameTime.now();
+			decal.rgb = Color3f::black;
 			for(size_t k = 0; k < nbvert; k++) {
-				pb.v[k] = pb.u[k] = temp_uv1[k];
+				decal.v[k] = decal.u[k] = temp_uv1[k];
 			}
-			pb.nbvert = short(nbvert);
+			decal.nbvert = short(nbvert);
 			
 		}
 	}
