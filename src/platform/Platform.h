@@ -269,7 +269,7 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 	arx_format_printf(4, 5)
 	void assertionFailed(const char * expression, const char * file, unsigned line, const char * message, ...);
 #define arx_assert_impl(Expression, ExpressionString, ...) \
-	(arx_unlikely(Expression) ? (void)0 : (assertionFailed(ExpressionString, ARX_FILE, __LINE__, __VA_ARGS__), arx_trap()))
+	(arx_likely(Expression) ? (void)0 : (assertionFailed(ExpressionString, ARX_FILE, __LINE__, __VA_ARGS__), arx_trap()))
 #else // ARX_DEBUG
 	#define arx_assert_impl(Expression, ExpressionString, ...) \
 		ARX_DISCARD(Expression, ExpressionString, __VA_ARGS__)
