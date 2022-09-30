@@ -91,7 +91,6 @@ struct Decal {
 	Color3f rgb;
 	DecalType type;
 	bool fastdecay;
-	short nbvert;
 	TextureContainer * tc;
 	ShortGameDuration elapsed;
 	ShortGameDuration duration;
@@ -154,7 +153,6 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 			for(size_t k = 0; k < nbvert; k++) {
 				decal.v[k] = decal.u[k] = temp_uv1[k];
 			}
-			decal.nbvert = short(nbvert);
 			
 		}
 	}
@@ -320,8 +318,6 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 					
 				}
 				
-				decal.nbvert = short(nbvert);
-				
 			}
 			
 		}
@@ -356,11 +352,12 @@ void PolyBoomDraw() {
 	
 	for(const Decal & decal : g_decals) {
 		
-		arx_assume(decal.nbvert == 3 || decal.nbvert == 4);
 		arx_assume(decal.duration > 0 && decal.duration <= ShortGameDuration::max() / 2);
 		arx_assume(decal.elapsed >= 0 && decal.elapsed < decal.duration);
 		
 		float t = 1.f - decal.elapsed / decal.duration;
+		
+		size_t nbvert = (decal.polygon->type & POLY_QUAD) ? 4 : 3;
 		
 		switch(decal.type) {
 			
@@ -371,11 +368,11 @@ void PolyBoomDraw() {
 				
 				std::array<TexturedVertexUntransformed, 4> ltv;
 				
-				for(long k = 0; k < decal.nbvert; k++) {
-					ltv[k].p = decal.polygon->v[k].p;
-					ltv[k].uv.x = decal.u[k];
-					ltv[k].uv.y = decal.v[k];
-					ltv[k].color = col;
+				for(size_t i = 0; i < nbvert; i++) {
+					ltv[i].p = decal.polygon->v[i].p;
+					ltv[i].uv.x = decal.u[i];
+					ltv[i].uv.y = decal.v[i];
+					ltv[i].color = col;
 				}
 				
 				if(player.m_improve) {
@@ -386,7 +383,7 @@ void PolyBoomDraw() {
 				mat.setTexture(g_particleTextures.boom);
 				
 				drawTriangle(mat, ltv.data());
-				if(decal.nbvert == 4) {
+				if(nbvert == 4) {
 					drawTriangle(mat, ltv.data() + 1);
 				}
 				
@@ -401,18 +398,18 @@ void PolyBoomDraw() {
 				
 				std::array<TexturedVertexUntransformed, 4> ltv;
 				
-				for(long k = 0; k < decal.nbvert; k++) {
-					ltv[k].p = decal.polygon->v[k].p;
-					ltv[k].uv.x = ( decal.u[k] - 0.5f) * tr + 0.5f;
-					ltv[k].uv.y = ( decal.v[k] - 0.5f) * tr + 0.5f;
-					ltv[k].color = col;
+				for(size_t i = 0; i < nbvert; i++) {
+					ltv[i].p = decal.polygon->v[i].p;
+					ltv[i].uv.x = ( decal.u[i] - 0.5f) * tr + 0.5f;
+					ltv[i].uv.y = ( decal.v[i] - 0.5f) * tr + 0.5f;
+					ltv[i].color = col;
 				}
 				
 				mat.setBlendType(RenderMaterial::Subtractive2);
 				mat.setTexture(decal.tc);
 				
 				drawTriangle(mat, ltv.data());
-				if(decal.nbvert == 4) {
+				if(nbvert == 4) {
 					drawTriangle(mat, ltv.data() + 1);
 				}
 				
@@ -428,30 +425,30 @@ void PolyBoomDraw() {
 				
 				std::array<TexturedVertexUntransformed, 4> ltv;
 				
-				for(long k = 0; k < decal.nbvert; k++) {
-					ltv[k].p = decal.polygon->v[k].p;
-					ltv[k].uv.x = ( decal.u[k] - 0.5f) * tr + 0.5f;
-					ltv[k].uv.y = ( decal.v[k] - 0.5f) * tr + 0.5f;
-					ltv[k].color = col;
+				for(size_t i = 0; i < nbvert; i++) {
+					ltv[i].p = decal.polygon->v[i].p;
+					ltv[i].uv.x = ( decal.u[i] - 0.5f) * tr + 0.5f;
+					ltv[i].uv.y = ( decal.v[i] - 0.5f) * tr + 0.5f;
+					ltv[i].color = col;
 				}
 				
 				if(ltv[0].uv.x < 0.f && ltv[1].uv.x < 0.f && ltv[2].uv.x < 0.f
-				   && ( decal.nbvert != 4 || ltv[3].uv.x < 0.f)) {
+				   && (nbvert != 4 || ltv[3].uv.x < 0.f)) {
 					break;
 				}
 				
 				if(ltv[0].uv.y < 0.f && ltv[1].uv.y < 0.f && ltv[2].uv.y < 0.f
-				   && ( decal.nbvert != 4 || ltv[3].uv.y < 0.f)) {
+				   && (nbvert != 4 || ltv[3].uv.y < 0.f)) {
 					break;
 				}
 				
 				if(ltv[0].uv.x > 1.f && ltv[1].uv.x > 1.f && ltv[2].uv.x > 1.f
-				   && ( decal.nbvert != 4 || ltv[3].uv.x > 1.f)) {
+				   && (nbvert != 4 || ltv[3].uv.x > 1.f)) {
 					break;
 				}
 				
 				if(ltv[0].uv.y > 1.f && ltv[1].uv.y > 1.f && ltv[2].uv.y > 1.f
-				   && ( decal.nbvert != 4 || ltv[3].uv.y > 1.f)) {
+				   && (nbvert != 4 || ltv[3].uv.y > 1.f)) {
 					break;
 				}
 				
@@ -459,7 +456,7 @@ void PolyBoomDraw() {
 				mat.setTexture(decal.tc);
 				
 				drawTriangle(mat, ltv.data());
-				if(decal.nbvert == 4) {
+				if(nbvert == 4) {
 					drawTriangle(mat, ltv.data() + 1);
 				}
 				
