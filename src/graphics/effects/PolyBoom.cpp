@@ -93,8 +93,8 @@ struct Decal {
 	bool fastdecay;
 	short nbvert;
 	TextureContainer * tc;
-	GameInstant timecreation;
-	GameDuration tolive;
+	ShortGameDuration elapsed;
+	ShortGameDuration duration;
 	
 };
 
@@ -149,8 +149,7 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 			decal.fastdecay = false;
 			decal.ep = &ep;
 			decal.tc = g_particleTextures.boom;
-			decal.tolive = 10s;
-			decal.timecreation = g_gameTime.now();
+			decal.duration = 10s;
 			decal.rgb = Color3f::black;
 			for(size_t k = 0; k < nbvert; k++) {
 				decal.v[k] = decal.u[k] = temp_uv1[k];
@@ -240,8 +239,6 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 	
 	float div = 1.f / (size * 2);
 	
-	GameInstant now = g_gameTime.now();
-	
 	for(Decal & decal : g_decals) {
 		decal.fastdecay = true;
 	}
@@ -291,17 +288,16 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 					decal.type = WaterDecal;
 					long num = Random::get(0, 2);
 					decal.tc = g_particleTextures.water_splat[num];
-					decal.tolive = 1500ms;
+					decal.duration = 1500ms;
 				} else {
 					decal.type = BloodDecal;
 					long num = Random::get(0, 5);
 					decal.tc = g_particleTextures.bloodsplat[num];
-					decal.tolive = 400ms * size;
+					decal.duration = 400ms * size;
 				}
 				
 				decal.fastdecay = false;
 				decal.ep = &polygon;
-				decal.timecreation = now;
 				decal.rgb = col;
 				
 				for(size_t k = 0; k < nbvert; k++) {
@@ -338,23 +334,19 @@ void PolyBoomDraw() {
 	
 	ARX_PROFILE_FUNC();
 	
-	GRenderer->SetFogColor(Color::none); // TODO: not handled by RenderMaterial
-	GameInstant now = g_gameTime.now();
+	ShortGameDuration delta(g_gameTime.lastFrameDuration());
+	arx_assume(delta <= ShortGameDuration::max() / 6);
 	
 	for(Decal & decal : g_decals) {
-		if(decal.fastdecay) {
-			if(decal.timecreation - g_gameTime.lastFrameDuration() > 0) {
-				decal.timecreation -= g_gameTime.lastFrameDuration();
-			}
-			if(decal.timecreation - g_gameTime.lastFrameDuration() > 0) {
-				decal.timecreation -= g_gameTime.lastFrameDuration();
-			}
-		}
+		arx_assume(decal.elapsed <= ShortGameDuration::max() / 2);
+		decal.elapsed += delta * (decal.fastdecay ? 3 : 1);
 	}
 	
-	util::unordered_remove_if(g_decals, [now](const Decal & pb) {
-		return pb.timecreation + pb.tolive <= now;
+	util::unordered_remove_if(g_decals, [](const Decal & decal) {
+		return decal.elapsed >= decal.duration;
 	});
+	
+	GRenderer->SetFogColor(Color::none); // TODO: not handled by RenderMaterial
 	
 	RenderMaterial mat;
 	mat.setDepthTest(true);
@@ -365,14 +357,16 @@ void PolyBoomDraw() {
 	for(const Decal & decal : g_decals) {
 		
 		arx_assume(decal.nbvert == 3 || decal.nbvert == 4);
+		arx_assume(decal.duration > 0 && decal.duration <= ShortGameDuration::max() / 2);
+		arx_assume(decal.elapsed >= 0 && decal.elapsed < decal.duration);
 		
-		GameDuration t = decal.timecreation + decal.tolive - now;
+		float t = 1.f - decal.elapsed / decal.duration;
 		
 		switch(decal.type) {
 			
 			case ScorchMarkDecal: {
 				
-				float tt = t / decal.tolive * 0.8f;
+				float tt = t * 0.8f;
 				ColorRGBA col = (player.m_improve ? (Color3f::red * (tt * 0.5f)) : Color3f::gray(tt)).toRGB();
 				
 				std::array<TexturedVertexUntransformed, 4> ltv;
@@ -401,7 +395,7 @@ void PolyBoomDraw() {
 			
 			case BloodDecal: {
 				
-				float tt = t / decal.tolive;
+				float tt = t;
 				float tr = std::max(1.f, tt * 2 - 0.5f);
 				ColorRGBA col = Color4f(decal.rgb * tt, glm::clamp(tt * 1.5f, 0.f, 1.f)).toRGBA();
 				
@@ -427,7 +421,7 @@ void PolyBoomDraw() {
 			
 			case WaterDecal: {
 				
-				float tt = t / decal.tolive;
+				float tt = t;
 				float tr = std::max(1.f, tt * 2 - 0.5f);
 				float ttt = tt * 0.5f;
 				ColorRGBA col = (decal.rgb * ttt).toRGB();
@@ -471,6 +465,7 @@ void PolyBoomDraw() {
 				
 				break;
 			}
+			
 		}
 		
 	}
