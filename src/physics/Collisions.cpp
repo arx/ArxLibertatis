@@ -623,14 +623,14 @@ float CheckAnythingInCylinder(const Cylinder & cylinder, Entity * source, Collis
 		
 		float nearest = 99999999.f;
 		for(long num = 0; num < 4; num++) {
-			Vec2f near = Vec2f(tile) * g_backgroundTileSize;
+			Vec2f pos = Vec2f(tile) * g_backgroundTileSize;
 			if(num == 1 || num == 2) {
-				near.x += g_backgroundTileSize.x;
+				pos.x += g_backgroundTileSize.x;
 			}
 			if(num == 2 || num == 3) {
-				near.y += g_backgroundTileSize.y;
+				pos.y += g_backgroundTileSize.y;
 			}
-			float dd = fdist(near, getXZ(cylinder.origin));
+			float dd = fdist(pos, getXZ(cylinder.origin));
 			if(dd < nearest) {
 				nearest = dd;
 			}
