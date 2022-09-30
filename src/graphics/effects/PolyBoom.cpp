@@ -55,6 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Config.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
+#include "core/TimeTypes.h"
 
 #include "game/Entity.h"
 #include "game/Player.h"
@@ -100,16 +101,16 @@ struct Decal {
 static_assert(std::is_trivially_copyable_v<Decal>);
 
 static const size_t MAX_POLYBOOM = 4000;
-static std::vector<Decal> polyboom;
+static std::vector<Decal> g_decals;
 
 static const float BOOM_RADIUS = 420.f;
 
 size_t PolyBoomCount() {
-	return polyboom.size();
+	return g_decals.size();
 }
 
 void PolyBoomClear() {
-	polyboom.clear();
+	g_decals.clear();
 }
 
 void PolyBoomAddScorch(const Vec3f & poss) {
@@ -139,11 +140,11 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 				continue;
 			}
 			
-			if(polyboom.size() >= MAX_POLYBOOM) {
+			if(g_decals.size() >= MAX_POLYBOOM) {
 				continue;
 			}
 			
-			Decal & pb = polyboom.emplace_back();
+			Decal & pb = g_decals.emplace_back();
 			
 			pb.type = ScorchMarkDecal;
 			pb.fastdecay = false;
@@ -164,46 +165,39 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 
 void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 	
-	Vec3f poss = sp.origin;
-	float size = sp.radius;
-	
-	if(polyboom.size() > (MAX_POLYBOOM >> 2) - 30)
+	if(g_decals.size() > (MAX_POLYBOOM >> 2) - 30 || (g_decals.size() > 250 && sp.radius < 10)) {
 		return;
-	
-	if(polyboom.size() > 250 && size < 10)
-		return;
-	
-	float splatsize = 90;
-	
-	if(size > 40.f)
-		size = 40.f;
-	
-	size *= 0.75f;
-	
-	switch(config.video.levelOfDetail) {
-		case 2:
-			if(polyboom.size() > 160)
-				return;
-			
-			splatsize = 90;
-			size *= 1.f;
-		break;
-		case 1:
-			if(polyboom.size() > 60)
-				return;
-			
-			splatsize = 60;
-			size *= 0.5f;
-		break;
-		default:
-			if(polyboom.size() > 10)
-				return;
-			
-			splatsize = 30;
-			size *= 0.25f;
-		break;
 	}
 	
+	float splatsize = 90;
+	float size = std::min(sp.radius, 40.f) * 0.75f;
+	switch(config.video.levelOfDetail) {
+		case 2: {
+			if(g_decals.size() > 160) {
+				return;
+			}
+			splatsize = 90;
+			size *= 1.f;
+			break;
+		}
+		case 1: {
+			if(g_decals.size() > 60) {
+				return;
+			}
+			splatsize = 60;
+			size *= 0.5f;
+			break;
+		}
+		default: {
+			if(g_decals.size() > 10) {
+				return;
+			}
+			splatsize = 30;
+			size *= 0.25f;
+		}
+	}
+	
+	Vec3f poss = sp.origin;
 	float py;
 	if(!CheckInPoly(poss + Vec3f(0.f, -40, 0.f), &py)) {
 		return;
@@ -248,7 +242,7 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 	
 	GameInstant now = g_gameTime.now();
 	
-	for(Decal & pb : polyboom) {
+	for(Decal & pb : g_decals) {
 		pb.fastdecay = true;
 	}
 	
@@ -289,9 +283,9 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 				oki = true;
 			}
 			
-			if(oki && polyboom.size() < MAX_POLYBOOM) {
+			if(oki && g_decals.size() < MAX_POLYBOOM) {
 				
-				Decal & pb = polyboom.emplace_back();
+				Decal & pb = g_decals.emplace_back();
 				
 				if(flags & 2) {
 					pb.type = WaterDecal;
@@ -353,7 +347,7 @@ void PolyBoomDraw() {
 	GRenderer->SetFogColor(Color::none); // TODO: not handled by RenderMaterial
 	GameInstant now = g_gameTime.now();
 	
-	for(Decal & pb : polyboom) {
+	for(Decal & pb : g_decals) {
 		if(pb.fastdecay) {
 			if(pb.timecreation - g_gameTime.lastFrameDuration() > 0) {
 				pb.timecreation -= g_gameTime.lastFrameDuration();
@@ -364,7 +358,7 @@ void PolyBoomDraw() {
 		}
 	}
 	
-	util::unordered_remove_if(polyboom, [now](const Decal & pb) {
+	util::unordered_remove_if(g_decals, [now](const Decal & pb) {
 		return pb.timecreation + pb.tolive <= now;
 	});
 	
@@ -374,7 +368,7 @@ void PolyBoomDraw() {
 	mat.setLayer(RenderMaterial::Decal);
 	mat.setWrapMode(TextureStage::WrapClamp);
 	
-	for(const Decal & pb : polyboom) {
+	for(const Decal & pb : g_decals) {
 		
 		arx_assume(pb.nbvert == 3 || pb.nbvert == 4);
 		
