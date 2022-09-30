@@ -85,7 +85,7 @@ enum DecalType {
 
 struct Decal {
 	
-	EERIEPOLY * ep;
+	EERIEPOLY * polygon;
 	float u[4];
 	float v[4];
 	Color3f rgb;
@@ -147,7 +147,7 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 			Decal & decal = g_decals.emplace_back();
 			decal.type = ScorchMarkDecal;
 			decal.fastdecay = false;
-			decal.ep = &ep;
+			decal.polygon = &ep;
 			decal.tc = g_particleTextures.boom;
 			decal.duration = 10s;
 			decal.rgb = Color3f::black;
@@ -297,7 +297,7 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 				}
 				
 				decal.fastdecay = false;
-				decal.ep = &polygon;
+				decal.polygon = &polygon;
 				decal.rgb = col;
 				
 				for(size_t k = 0; k < nbvert; k++) {
@@ -372,7 +372,7 @@ void PolyBoomDraw() {
 				std::array<TexturedVertexUntransformed, 4> ltv;
 				
 				for(long k = 0; k < decal.nbvert; k++) {
-					ltv[k].p = decal.ep->v[k].p;
+					ltv[k].p = decal.polygon->v[k].p;
 					ltv[k].uv.x = decal.u[k];
 					ltv[k].uv.y = decal.v[k];
 					ltv[k].color = col;
@@ -402,7 +402,7 @@ void PolyBoomDraw() {
 				std::array<TexturedVertexUntransformed, 4> ltv;
 				
 				for(long k = 0; k < decal.nbvert; k++) {
-					ltv[k].p = decal.ep->v[k].p;
+					ltv[k].p = decal.polygon->v[k].p;
 					ltv[k].uv.x = ( decal.u[k] - 0.5f) * tr + 0.5f;
 					ltv[k].uv.y = ( decal.v[k] - 0.5f) * tr + 0.5f;
 					ltv[k].color = col;
@@ -429,7 +429,7 @@ void PolyBoomDraw() {
 				std::array<TexturedVertexUntransformed, 4> ltv;
 				
 				for(long k = 0; k < decal.nbvert; k++) {
-					ltv[k].p = decal.ep->v[k].p;
+					ltv[k].p = decal.polygon->v[k].p;
 					ltv[k].uv.x = ( decal.u[k] - 0.5f) * tr + 0.5f;
 					ltv[k].uv.y = ( decal.v[k] - 0.5f) * tr + 0.5f;
 					ltv[k].color = col;
