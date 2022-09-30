@@ -86,8 +86,7 @@ enum DecalType {
 struct Decal {
 	
 	EERIEPOLY * polygon;
-	float u[4];
-	float v[4];
+	Vec2f uv[4];
 	Color3f rgb;
 	DecalType type;
 	bool fastdecay;
@@ -151,7 +150,7 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 			decal.duration = 10s;
 			decal.rgb = Color3f::black;
 			for(size_t k = 0; k < nbvert; k++) {
-				decal.v[k] = decal.u[k] = temp_uv1[k];
+				decal.uv[k] = Vec2f(temp_uv1[k]);
 			}
 			
 		}
@@ -301,23 +300,10 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 			decal.rgb = col;
 			
 			for(size_t k = 0; k < nbvert; k++) {
-				
 				float vdiff = glm::abs(polygon.v[k].p.y - RealSplatStart.y);
-				
-				decal.u[k] = (polygon.v[k].p.x - RealSplatStart.x) * div;
-				if(decal.u[k] < 0.5f) {
-					decal.u[k] -= vdiff * div;
-				} else {
-					decal.u[k] += vdiff * div;
-				}
-				
-				decal.v[k] = (polygon.v[k].p.z - RealSplatStart.z) * div;
-				if(decal.v[k] < 0.5f) {
-					decal.v[k] -= vdiff * div;
-				} else {
-					decal.v[k] += vdiff * div;
-				}
-				
+				decal.uv[k] = getXZ(polygon.v[k].p - RealSplatStart) * div;
+				decal.uv[k].x += vdiff * div * (decal.uv[k].x < 0.5f ? -1.f : 1.f);
+				decal.uv[k].y += vdiff * div * (decal.uv[k].y < 0.5f ? -1.f : 1.f);
 			}
 			
 		}
@@ -368,8 +354,7 @@ void PolyBoomDraw() {
 				ColorRGBA color = (player.m_improve ? Color3f::red * (t * 0.4f) : Color3f::gray(t * 0.8f)).toRGB();
 				for(size_t i = 0; i < nbvert; i++) {
 					vertices[i].p = decal.polygon->v[i].p;
-					vertices[i].uv.x = decal.u[i];
-					vertices[i].uv.y = decal.v[i];
+					vertices[i].uv = decal.uv[i];
 					vertices[i].color = color;
 				}
 				
@@ -380,14 +365,11 @@ void PolyBoomDraw() {
 			
 			case BloodDecal: {
 				
-				float tr = std::max(1.f, t * 2.f - 0.5f);
-				ColorRGBA col = Color4f(decal.rgb * t, glm::clamp(t * 1.5f, 0.f, 1.f)).toRGBA();
-				
+				ColorRGBA color = Color4f(decal.rgb * t, glm::clamp(t * 1.5f, 0.f, 1.f)).toRGBA();
 				for(size_t i = 0; i < nbvert; i++) {
 					vertices[i].p = decal.polygon->v[i].p;
-					vertices[i].uv.x = (decal.u[i] - 0.5f) * tr + 0.5f;
-					vertices[i].uv.y = (decal.v[i] - 0.5f) * tr + 0.5f;
-					vertices[i].color = col;
+					vertices[i].uv = (decal.uv[i] - 0.5f) * std::max(1.f, t * 2.f - 0.5f) + 0.5f;
+					vertices[i].color = color;
 				}
 				
 				mat.setBlendType(RenderMaterial::Subtractive2);
@@ -397,15 +379,12 @@ void PolyBoomDraw() {
 			
 			case WaterDecal: {
 				
-				float tr = std::max(1.f, t * 2.f - 0.5f);
-				ColorRGBA col = (decal.rgb * (t * 0.5f)).toRGB();
-				
+				ColorRGBA color = (decal.rgb * (t * 0.5f)).toRGB();
 				bool cullXlow = true, cullXhigh = true, cullYlow = true, cullYhigh = true;
 				for(size_t i = 0; i < nbvert; i++) {
 					vertices[i].p = decal.polygon->v[i].p;
-					vertices[i].uv.x = (decal.u[i] - 0.5f) * tr + 0.5f;
-					vertices[i].uv.y = (decal.v[i] - 0.5f) * tr + 0.5f;
-					vertices[i].color = col;
+					vertices[i].uv = (decal.uv[i] - 0.5f) * std::max(1.f, t * 2.f - 0.5f) + 0.5f;
+					vertices[i].color = color;
 					cullXlow = cullXlow && vertices[i].uv.x < 0.f;
 					cullXhigh = cullXhigh && vertices[i].uv.x > 1.f;
 					cullYlow = cullYlow && vertices[i].uv.y < 0.f;
