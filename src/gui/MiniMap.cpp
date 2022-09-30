@@ -145,7 +145,7 @@ void MiniMap::validatePlayerPos(int currentLevel, bool blockPlayerControls, ARX_
 			req = 80.f;
 		}
 		
-		if(fartherThan(Vec2f(m_playerLastPosX, m_playerLastPosZ), Vec2f(m_player->pos.x, m_player->pos.z), req)) {
+		if(fartherThan(Vec2f(m_playerLastPosX, m_playerLastPosZ), getXZ(m_player->pos), req)) {
 			m_playerLastPosX = m_player->pos.x;
 			m_playerLastPosZ = m_player->pos.z;
 			validatePos();
@@ -672,7 +672,7 @@ void MiniMap::drawDetectedEntities(Vec2f start, float zoom) {
 		
 		Vec2f fp = start + worldToMapPos(npc.pos + Vec3f(-100.f, 0.f, 200.f), zoom);
 		
-		float d = fdist(Vec2f(m_player->pos.x, m_player->pos.z), Vec2f(npc.pos.x, npc.pos.z));
+		float d = fdist(getXZ(m_player->pos), getXZ(npc.pos));
 		if(d > 800 || glm::abs(ents.player()->pos.y - npc.pos.y) > 250.f) {
 			continue; // the NPC is too far away to be detected
 		}
