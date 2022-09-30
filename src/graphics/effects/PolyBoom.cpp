@@ -90,7 +90,7 @@ struct Decal {
 	Color3f rgb;
 	DecalType type;
 	bool fastdecay;
-	TextureContainer * tc;
+	TextureContainer * material;
 	ShortGameDuration elapsed;
 	ShortGameDuration duration;
 	
@@ -146,7 +146,7 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 			decal.type = ScorchMarkDecal;
 			decal.fastdecay = false;
 			decal.polygon = &polygon;
-			decal.tc = g_particleTextures.boom;
+			decal.material = g_particleTextures.boom;
 			decal.duration = 10s;
 			decal.rgb = Color3f::black;
 			for(size_t k = 0; k < nbvert; k++) {
@@ -286,12 +286,12 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 			if(flags & 2) {
 				decal.type = WaterDecal;
 				long num = Random::get(0, 2);
-				decal.tc = g_particleTextures.water_splat[num];
+				decal.material = g_particleTextures.water_splat[num];
 				decal.duration = 1500ms;
 			} else {
 				decal.type = BloodDecal;
 				long num = Random::get(0, 5);
-				decal.tc = g_particleTextures.bloodsplat[num];
+				decal.material = g_particleTextures.bloodsplat[num];
 				decal.duration = 400ms * size;
 			}
 			
@@ -404,7 +404,7 @@ void PolyBoomDraw() {
 			
 		}
 		
-		mat.setTexture(decal.tc);
+		mat.setTexture(decal.material );
 		
 		drawTriangle(mat, vertices.data());
 		if(nbvert == 4) {
