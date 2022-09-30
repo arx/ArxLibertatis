@@ -224,21 +224,19 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 	}
 	
 	C_UV * uvs = grille->m_uvs.data();
-	for(std::vector<C_INDEXED>::iterator it = grille->m_mats.begin(); it != grille->m_mats.end(); ++it)
-	{
-		C_INDEXED * mat = &*it;
-
-		arx_assert(mat->tex);
-		GRenderer->SetTexture(0, mat->tex);
+	for(const C_INDEXED & mat : grille->m_mats) {
 		
-		int nb2 = mat->nbvertexs;
+		arx_assert(mat.tex);
+		GRenderer->SetTexture(0, mat.tex);
+		
+		int nb2 = mat.nbvertexs;
 		while(nb2--) {
 			AllTLVertex[uvs->indvertex].uv = uvs->uv;
 			
 			if(fadeEdges) {
 				
 				// Reconstruct position in the bitmap
-				Vec2f p = Vec2f(mat->bitmapdep) + uvs->uv * Vec2f(mat->tex->getStoredSize());
+				Vec2f p = Vec2f(mat.bitmapdep) + uvs->uv * Vec2f(mat.tex->getStoredSize());
 				
 				// Roughen up the lines
 				Vec2f f = 0.75f + glm::sin(p) * 0.25f;
@@ -269,7 +267,7 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 		}
 		
 		GRenderer->drawIndexed(Renderer::TriangleList, AllTLVertex, grille->m_nbvertexs,
-		                       &grille->m_inds.data()->i1 + mat->startind, mat->nbind);
+		                       &grille->m_inds.data()->i1 + mat.startind, mat.nbind);
 	}
 	
 }
