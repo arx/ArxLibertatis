@@ -84,21 +84,16 @@ void ANCHOR_BLOCK_By_IO(Entity * io, bool blocked) {
 			EERIEPOLY ep;
 			ep.type = 0;
 			
-			float cx = 0;
-			float cz = 0;
-			
+			Vec3f center(0.f);
 			for(size_t kk = 0; kk < 3; kk++) {
 				ep.v[kk].p = io->obj->vertexlist[face.vid[kk]].v + io->pos;
-				cx += ep.v[kk].p.x;
-				cz += ep.v[kk].p.z;
+				center += ep.v[kk].p;
 			}
-			
-			cx *= 1.f / 3;
-			cz *= 1.f / 3;
+			center /= 3.f;
 			
 			for(size_t kk = 0; kk < 3; kk++) {
-				ep.v[kk].p.x = (ep.v[kk].p.x - cx) * 3.5f + cx;
-				ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
+				ep.v[kk].p.x = (ep.v[kk].p.x - center.x) * 3.5f + center.x;
+				ep.v[kk].p.z = (ep.v[kk].p.z - center.z) * 3.5f + center.z;
 			}
 			
 			if(PointIn2DPolyXZ(&ep, ad.pos.x, ad.pos.z)) {
