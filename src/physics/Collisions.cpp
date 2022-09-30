@@ -85,7 +85,7 @@ static float IsPolyInCylinder(const EERIEPOLY & ep, const Cylinder & cyl, Collis
 	long to = (ep.type & POLY_QUAD) ? 4 : 3;
 	float nearest = 99999999.f;
 	for(long num = 0; num < to; num++) {
-		float dd = fdist(Vec2f(ep.v[num].p.x, ep.v[num].p.z), Vec2f(cyl.origin.x, cyl.origin.z));
+		float dd = fdist(getXZ(ep.v[num].p), getXZ(cyl.origin));
 		if(dd < nearest) {
 			nearest = dd;
 		}
@@ -264,7 +264,7 @@ void PushIO_ON_Top(const Entity & platform, float ydec) {
 			continue;
 		}
 		
-		if(!closerThan(Vec2f(entity.pos.x, entity.pos.z), Vec2f(platform.pos.x, platform.pos.z), 450.f)) {
+		if(!closerThan(getXZ(entity.pos), getXZ(platform.pos), 450.f)) {
 			continue;
 		}
 		
@@ -368,8 +368,7 @@ static long NPC_IN_CYLINDER = 0;
 static void CheckAnythingInCylinder_Platform(const Cylinder & cylinder, const Entity & target,
                                              float & anything) {
 	
-	if(!closerThan(Vec2f(target.pos.x, target.pos.z), Vec2f(cylinder.origin.x, cylinder.origin.z),
-	               cylinder.radius + 440.f) ||
+	if(!closerThan(getXZ(target.pos), getXZ(cylinder.origin), cylinder.radius + 440.f) ||
 	   !In3DBBoxTolerance(cylinder.origin, target.bbox3D, cylinder.radius + 80.f)) {
 		return;
 	}
@@ -624,15 +623,14 @@ float CheckAnythingInCylinder(const Cylinder & cylinder, Entity * source, Collis
 		
 		float nearest = 99999999.f;
 		for(long num = 0; num < 4; num++) {
-			float nearx = float(tile.x) * g_backgroundTileSize.x;
-			float nearz = float(tile.y) * g_backgroundTileSize.y;
+			Vec2f near = Vec2f(tile) * g_backgroundTileSize;
 			if(num == 1 || num == 2) {
-				nearx += g_backgroundTileSize.x;
+				near.x += g_backgroundTileSize.x;
 			}
 			if(num == 2 || num == 3) {
-				nearz += g_backgroundTileSize.y;
+				near.y += g_backgroundTileSize.y;
 			}
-			float dd = fdist(Vec2f(nearx, nearz), Vec2f(cylinder.origin.x, cylinder.origin.z));
+			float dd = fdist(near, getXZ(cylinder.origin));
 			if(dd < nearest) {
 				nearest = dd;
 			}
@@ -800,8 +798,7 @@ const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) {
 bool platformCollides(const Entity & platform, const Sphere & sphere) {
 	
 	if(!In3DBBoxTolerance(sphere.origin, platform.bbox3D, sphere.radius) ||
-	   !closerThan(Vec2f(platform.pos.x, platform.pos.z), Vec2f(sphere.origin.x, sphere.origin.z),
-	               sphere.radius + 440.f)) {
+	   !closerThan(getXZ(platform.pos), getXZ(sphere.origin), sphere.radius + 440.f)) {
 		return false;
 	}
 	
@@ -812,7 +809,7 @@ bool platformCollides(const Entity & platform, const Sphere & sphere) {
 		Vec2f center(0.f);
 		for(size_t i = 0; i < std::size(face.vid); i++) {
 			ep.v[i].p = platform.obj->vertexWorldPositions[face.vid[i]].v;
-			center += Vec2f(ep.v[i].p.x, ep.v[i].p.z);
+			center += getXZ(ep.v[i].p);
 		}
 		center /= float(std::size(face.vid));
 		
