@@ -394,7 +394,7 @@ bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f & pos, float * ret) {
 		return false;
 	}
 	
-	float y = glm::dot(ep->v[0].p - Vec3f(pos.x, 0.f, pos.z), n) / n.y;
+	float y = glm::dot(ep->v[0].p - toXZ(pos), n) / n.y;
 	
 	// Perhaps we can remove the clamp... (need to test)
 	*ret = glm::clamp(y, ep->min.y, ep->max.y);
@@ -410,7 +410,7 @@ bool GetTruePolyY(const RoomPortal & portal, const Vec3f & pos, float * ret) {
 		return false;
 	}
 	
-	float y = glm::dot(portal.p[0] - Vec3f(pos.x, 0.f, pos.z), n) / n.y;
+	float y = glm::dot(portal.p[0] - toXZ(pos), n) / n.y;
 	
 	// Perhaps we can remove the clamp... (need to test)
 	*ret = glm::clamp(y, portal.minY, portal.maxY);
