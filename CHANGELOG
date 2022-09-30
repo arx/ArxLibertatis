@@ -12,6 +12,7 @@ Graphics:
 * Fixed increased effect particle count for the bless, confuse, control, curse, fire field, flying eye, ice field, ice projection, levitate, negate magic, repel undead and trap spells with high framerates
 * Fixed increased magic damage particle count for the chaos, harm, life drain, lightning strike and mana drain spells with high framerates
 * Fixed rendering issues with the levitate spell effect
+* Fixed missing fire animation in the fire field spell
 * Fixed fogs starting out with 0 particles after coming into view
 
 Interface:

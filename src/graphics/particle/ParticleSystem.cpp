@@ -135,7 +135,7 @@ void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime) {
 		std::ostringstream oss;
 		for(int i = 0; i < _iNbTex; i++) {
 			oss.str(std::string());
-			oss << _pszTex << std::setfill('0') << std::setw(4) << (i + 1);
+			oss << _pszTex << '_' << std::setfill('0') << std::setw(4) << (i + 1);
 			tex_tab[i] = TextureContainer::Load(oss.str());
 		}
 		
