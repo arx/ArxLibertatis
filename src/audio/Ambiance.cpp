@@ -47,6 +47,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <utility>
 
+#include <boost/range/adaptor/reversed.hpp>
+
 #include "audio/AudioBackend.h"
 #include "audio/AudioGlobal.h"
 #include "audio/AudioResource.h"
@@ -68,6 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "util/String.h"
 
 #include "Configure.h"
+
 
 namespace ARX_ANONYMOUS_NAMESPACE {
 
@@ -251,12 +254,11 @@ private:
 	Ambiance * ambiance; // Ambiance id
 	
 	TrackFlags flags;
-
+	
 	typedef std::vector<TrackKey> KeyList;
 	KeyList keys; // Key list
 	KeyList::iterator key_i;
 	
-
 	size_t loopc; // How often the sample still needs to loop.
 	size_t queued; // How many loop counts are already queued.
 	
@@ -437,10 +439,9 @@ void Ambiance::Track::onSampleEnd(Source & source) {
 				LogDebug("ambiance " << ambiance->getName() << ": master track ended");
 				
 				if(ambiance->isLooped()) {
-					TrackList::iterator i = ambiance->m_tracks.begin();
-					for(; i != ambiance->m_tracks.end(); ++i) {
-						if(!(i->flags & Track::PREFETCHED)) {
-							i->key_i = i->keys.begin();
+					for(Track & track : ambiance->m_tracks) {
+						if(!(track.flags & Track::PREFETCHED)) {
+							track.key_i = track.keys.begin();
 						}
 					}
 					ambiance->m_start = session_time;
@@ -574,16 +575,14 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 	
 	// Read settings for each key
 	if(version < AMBIANCE_FILE_VERSION_1003) {
-		Track::KeyList::iterator key;
-		for(key = keys.begin(); key != keys.end(); ++key) {
-			if(!key->load(file)) {
+		for(TrackKey & key : keys) {
+			if(!key.load(file)) {
 				return AAL_ERROR_FILEIO;
 			}
 		}
 	} else {
-		Ambiance::Track::KeyList::reverse_iterator key;
-		for(key = keys.rbegin(); key != keys.rend(); ++key) {
-			if(!key->load(file)) {
+		for(TrackKey & key : boost::adaptors::reverse(keys)) {
+			if(!key.load(file)) {
 				return AAL_ERROR_FILEIO;
 			}
 		}
@@ -641,9 +640,8 @@ aalError Ambiance::load() {
 	}
 	m_tracks.resize(nbtracks, Track(this));
 	
-	Ambiance::TrackList::iterator track = m_tracks.begin();
-	for(; track != m_tracks.end(); ++track) {
-		if(aalError error = track->load(file.get(), version)) {
+	for(Track & track : m_tracks) {
+		if(aalError error = track.load(file.get(), version)) {
 			return error;
 		}
 	}
@@ -663,14 +661,14 @@ void Ambiance::setVolume(float volume) {
 		return;
 	}
 	
-	TrackList::const_iterator track = m_tracks.begin();
-	for(; track != m_tracks.end(); ++track) {
-		if(Source * source = backend->getSource(track->s_id)) {
-			if(track->key_i != track->keys.end()) {
-				source->setVolume(track->key_i->volume.cur * m_channel.volume);
+	for(Track & track : m_tracks) {
+		if(Source * source = backend->getSource(track.s_id)) {
+			if(track.key_i != track.keys.end()) {
+				source->setVolume(track.key_i->volume.cur * m_channel.volume);
 			}
 		}
 	}
+	
 }
 
 void Ambiance::play(const Channel & channel, bool loop, PlatformDuration fadeInterval) {
@@ -693,31 +691,27 @@ void Ambiance::play(const Channel & channel, bool loop, PlatformDuration fadeInt
 		m_fade = None;
 	}
 	
-	TrackList::iterator track = m_tracks.begin();
-	for(; track != m_tracks.end(); ++track) {
+	for(Track & track : m_tracks) {
 		
 		// Init track keys
-		Track::KeyList::iterator key = track->keys.begin();
-		for(; key != track->keys.end(); ++key) {
-			
-			key->delay = key->delay_max;
-			key->updateSynch();
-			key->n_start = key->start + key->delay;
-			
-			key->volume.reset();
-			key->pitch.reset();
-			key->pan.reset();
-			key->x.reset();
-			key->y.reset();
-			key->z.reset();
+		for(TrackKey & key : track.keys) {
+			key.delay = key.delay_max;
+			key.updateSynch();
+			key.n_start = key.start + key.delay;
+			key.volume.reset();
+			key.pitch.reset();
+			key.pan.reset();
+			key.x.reset();
+			key.y.reset();
+			key.z.reset();
 		}
 		
-		arx_assert(backend->getSource(track->s_id) == nullptr
-		           || backend->getSource(track->s_id)->isIdle());
+		arx_assert(backend->getSource(track.s_id) == nullptr || backend->getSource(track.s_id)->isIdle());
 		
-		track->key_i = track->keys.begin();
-		track->loopc = track->key_i->loop;
-		track->queued = 0;
+		track.key_i = track.keys.begin();
+		track.loopc = track.key_i->loop;
+		track.queued = 0;
+		
 	}
 	
 	m_status = Playing;
@@ -745,13 +739,13 @@ void Ambiance::stop(PlatformDuration fadeInterval) {
 	m_status = Idle;
 	m_time = 0;
 	
-	TrackList::iterator track = m_tracks.begin();
-	for(; track != m_tracks.end(); ++track) {
-		if(Source * source = backend->getSource(track->s_id)) {
+	for(Track & track : m_tracks) {
+		if(Source * source = backend->getSource(track.s_id)) {
 			source->stop();
 		}
-		track->s_id.clearSource();
+		track.s_id.clearSource();
 	}
+	
 }
 
 void Ambiance::pause() {
@@ -763,13 +757,13 @@ void Ambiance::pause() {
 	m_status = Paused;
 	m_time = session_time - m_start;
 	
-	TrackList::iterator track = m_tracks.begin();
-	for(; track != m_tracks.end(); ++track) {
-		if(Source * source = backend->getSource(track->s_id)) {
+	for(Track & track : m_tracks) {
+		if(Source * source = backend->getSource(track.s_id)) {
 			source->pause();
-			track->flags |= Track::PAUSED;
+			track.flags |= Track::PAUSED;
 		}
 	}
+	
 }
 
 void Ambiance::resume() {
@@ -778,18 +772,18 @@ void Ambiance::resume() {
 		return;
 	}
 	
-	TrackList::iterator track = m_tracks.begin();
-	for(; track != m_tracks.end(); ++track) {
-		if(track->flags & Track::PAUSED) {
-			if(Source * source = backend->getSource(track->s_id)) {
+	for(Track & track : m_tracks) {
+		if(track.flags & Track::PAUSED) {
+			if(Source * source = backend->getSource(track.s_id)) {
 				source->resume();
 			}
-			track->flags &= ~Track::PAUSED;
+			track.flags &= ~Track::PAUSED;
 		}
 	}
 	
 	m_status = Playing;
 	m_start = session_time - m_time;
+	
 }
 
 void Ambiance::update() {
@@ -823,10 +817,10 @@ void Ambiance::update() {
 	}
 	
 	// Update tracks
-	TrackList::iterator track = m_tracks.begin();
-	for(; track != m_tracks.end(); ++track) {
-		track->update(m_time, interval);
+	for(Track & track : m_tracks) {
+		track.update(m_time, interval);
 	}
+	
 }
 
 } // namespace audio

@@ -84,7 +84,6 @@ public:
 	void update();
 	
 	struct Track;
-	typedef std::vector<Track> TrackList;
 	
 private:
 	
@@ -105,7 +104,7 @@ private:
 	PlatformInstant m_start;
 	PlatformDuration m_time;
 	
-	TrackList m_tracks;
+	std::vector<Track> m_tracks;
 	
 	res::path m_name;
 	
