@@ -161,7 +161,7 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 
 void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 	
-	if(g_decals.size() > (MAX_POLYBOOM >> 2) - 30 || (g_decals.size() > 250 && sp.radius < 10)) {
+	if(g_decals.size() > (MAX_POLYBOOM / 4) - 30 || (g_decals.size() > 250 && sp.radius < 10)) {
 		return;
 	}
 	
@@ -278,44 +278,44 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 				oki = true;
 			}
 			
-			if(oki && g_decals.size() < MAX_POLYBOOM) {
+			if(!oki || g_decals.size() >= MAX_POLYBOOM) {
+				continue;
+			}
+			
+			Decal & decal = g_decals.emplace_back();
+			
+			if(flags & 2) {
+				decal.type = WaterDecal;
+				long num = Random::get(0, 2);
+				decal.tc = g_particleTextures.water_splat[num];
+				decal.duration = 1500ms;
+			} else {
+				decal.type = BloodDecal;
+				long num = Random::get(0, 5);
+				decal.tc = g_particleTextures.bloodsplat[num];
+				decal.duration = 400ms * size;
+			}
+			
+			decal.fastdecay = false;
+			decal.polygon = &polygon;
+			decal.rgb = col;
+			
+			for(size_t k = 0; k < nbvert; k++) {
 				
-				Decal & decal = g_decals.emplace_back();
+				float vdiff = glm::abs(polygon.v[k].p.y - RealSplatStart.y);
 				
-				if(flags & 2) {
-					decal.type = WaterDecal;
-					long num = Random::get(0, 2);
-					decal.tc = g_particleTextures.water_splat[num];
-					decal.duration = 1500ms;
+				decal.u[k] = (polygon.v[k].p.x - RealSplatStart.x) * div;
+				if(decal.u[k] < 0.5f) {
+					decal.u[k] -= vdiff * div;
 				} else {
-					decal.type = BloodDecal;
-					long num = Random::get(0, 5);
-					decal.tc = g_particleTextures.bloodsplat[num];
-					decal.duration = 400ms * size;
+					decal.u[k] += vdiff * div;
 				}
 				
-				decal.fastdecay = false;
-				decal.polygon = &polygon;
-				decal.rgb = col;
-				
-				for(size_t k = 0; k < nbvert; k++) {
-					
-					float vdiff = glm::abs(polygon.v[k].p.y - RealSplatStart.y);
-					
-					decal.u[k] = (polygon.v[k].p.x - RealSplatStart.x) * div;
-					if(decal.u[k] < 0.5f) {
-						decal.u[k] -= vdiff * div;
-					} else {
-						decal.u[k] += vdiff * div;
-					}
-					
-					decal.v[k] = (polygon.v[k].p.z - RealSplatStart.z) * div;
-					if(decal.v[k] < 0.5f) {
-						decal.v[k] -= vdiff * div;
-					} else {
-						decal.v[k] += vdiff * div;
-					}
-					
+				decal.v[k] = (polygon.v[k].p.z - RealSplatStart.z) * div;
+				if(decal.v[k] < 0.5f) {
+					decal.v[k] -= vdiff * div;
+				} else {
+					decal.v[k] += vdiff * div;
 				}
 				
 			}
