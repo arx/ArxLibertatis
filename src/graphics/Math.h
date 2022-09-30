@@ -261,12 +261,12 @@ arx_force_inline constexpr bool is_in_range(From value) noexcept {
 			return false;
 		}
 	}
-	if constexpr(sizeof(From) > sizeof(To) && std::is_signed_v<From> && std::is_signed_v<To>) {
-		if(value < From(std::numeric_limits<To>::min())) {
-			return false;
+	if constexpr(!std::is_floating_point_v<From> || sizeof(From) > sizeof(To)) {
+		if constexpr(std::is_signed_v<From> && std::is_signed_v<To>) {
+			if(value < From(std::numeric_limits<To>::min())) {
+				return false;
+			}
 		}
-	}
-	if constexpr(sizeof(From) > sizeof(To)) {
 		if(value > From(std::numeric_limits<To>::max())) {
 			return false;
 		}
