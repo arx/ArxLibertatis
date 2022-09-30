@@ -138,7 +138,7 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 				continue;
 			}
 			
-			POLYBOOM pb;
+			POLYBOOM & pb = polyboom.emplace_back();
 			
 			pb.type = ScorchMarkDecal;
 			pb.fastdecay = false;
@@ -151,8 +151,6 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 				pb.v[k] = pb.u[k] = temp_uv1[k];
 			}
 			pb.nbvert = short(nbvert);
-			
-			polyboom.push_back(pb);
 			
 		}
 	}
@@ -286,58 +284,55 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 				oki = true;
 			}
 			
-			if(oki) {
+			if(oki && polyboom.size() < MAX_POLYBOOM) {
 				
-				if(polyboom.size() < MAX_POLYBOOM) {
-					POLYBOOM pb;
+				POLYBOOM & pb = polyboom.emplace_back();
+				
+				if(flags & 2) {
+					pb.type = WaterDecal;
 					
-					if(flags & 2) {
-						pb.type = WaterDecal;
-						
-						long num = Random::get(0, 2);
-						pb.tc = g_particleTextures.water_splat[num];
-						
-						pb.tolive = 1500ms;
-					} else {
-						pb.type = BloodDecal;
-						
-						long num = Random::get(0, 5);
-						pb.tc = g_particleTextures.bloodsplat[num];
-						
-						pb.tolive = 400ms * size;
-					}
+					long num = Random::get(0, 2);
+					pb.tc = g_particleTextures.water_splat[num];
 					
-					pb.fastdecay = false;
+					pb.tolive = 1500ms;
+				} else {
+					pb.type = BloodDecal;
 					
-					pb.ep = &polygon;
+					long num = Random::get(0, 5);
+					pb.tc = g_particleTextures.bloodsplat[num];
 					
-					pb.timecreation = now;
-					pb.rgb = col;
-					
-					for(size_t k = 0; k < nbvert; k++) {
-						
-						float vdiff = glm::abs(polygon.v[k].p.y - RealSplatStart.y);
-						
-						pb.u[k] = (polygon.v[k].p.x - RealSplatStart.x) * div;
-						if(pb.u[k] < 0.5f) {
-							pb.u[k] -= vdiff * div;
-						} else {
-							pb.u[k] += vdiff * div;
-						}
-						
-						pb.v[k] = (polygon.v[k].p.z - RealSplatStart.z) * div;
-						if(pb.v[k] < 0.5f) {
-							pb.v[k] -= vdiff * div;
-						} else {
-							pb.v[k] += vdiff * div;
-						}
-						
-					}
-					
-					pb.nbvert = short(nbvert);
-					
-					polyboom.push_back(pb);
+					pb.tolive = 400ms * size;
 				}
+				
+				pb.fastdecay = false;
+				
+				pb.ep = &polygon;
+				
+				pb.timecreation = now;
+				pb.rgb = col;
+				
+				for(size_t k = 0; k < nbvert; k++) {
+					
+					float vdiff = glm::abs(polygon.v[k].p.y - RealSplatStart.y);
+					
+					pb.u[k] = (polygon.v[k].p.x - RealSplatStart.x) * div;
+					if(pb.u[k] < 0.5f) {
+						pb.u[k] -= vdiff * div;
+					} else {
+						pb.u[k] += vdiff * div;
+					}
+					
+					pb.v[k] = (polygon.v[k].p.z - RealSplatStart.z) * div;
+					if(pb.v[k] < 0.5f) {
+						pb.v[k] -= vdiff * div;
+					} else {
+						pb.v[k] += vdiff * div;
+					}
+					
+				}
+				
+				pb.nbvert = short(nbvert);
+				
 			}
 			
 		}
