@@ -1015,7 +1015,7 @@ void FaceTarget2(Entity * io) {
 	GetTargetPos(io);
 	Vec3f tv = io->pos;
 	
-	if(!fartherThan(Vec2f(tv.x, tv.z), Vec2f(io->target.x, io->target.z), 5.f)) {
+	if(!fartherThan(getXZ(tv), getXZ(io->target), 5.f)) {
 		return;
 	}
 
@@ -1885,7 +1885,7 @@ static void ManageNPCMovement_End(Entity * io) {
 	}
 	
 	// XS : Moved to top of func
-	float _dist = glm::distance(Vec2f(io->pos.x, io->pos.z), Vec2f(io->target.x, io->target.z));
+	float _dist = glm::distance(getXZ(io->pos), getXZ(io->target));
 	float dis = _dist;
 
 	if(io->_npcdata->pathfind.listnb > 0)
@@ -2101,7 +2101,7 @@ static void ManageNPCMovement_End(Entity * io) {
 	io->physics.cyl = getEntityCylinder(*io);
 	
 	// Compute distance 2D to target.
-	_dist = glm::distance(Vec2f(io->pos.x, io->pos.z), Vec2f(io->target.x, io->target.z));
+	_dist = glm::distance(getXZ(io->pos), getXZ(io->target));
 	dis = _dist;
 
 	if(io->_npcdata->pathfind.listnb > 0)
