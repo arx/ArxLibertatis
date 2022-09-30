@@ -123,12 +123,12 @@ void ParticleSystem::SetParams(const ParticleParams & params) {
 
 void ParticleSystem::SetTexture(std::string_view name, int count, GameDuration delay) {
 
-	if( count == 0) {
+	if(count == 0) {
 		tex_tab[0] = TextureContainer::Load(name);
 		iNbTex = 0;
 	} else {
 		
-		count = std::min( count, 20);
+		count = std::min(count, 20);
 		
 		std::ostringstream oss;
 		for(int i = 0; i < count; i++) {
