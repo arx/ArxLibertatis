@@ -20,10 +20,13 @@
 #ifndef ARX_GUI_MAINMENU_H
 #define ARX_GUI_MAINMENU_H
 
+#include <memory>
+
 #include "gui/MenuWidgets.h"
 #include "gui/widget/Widget.h"
 #include "gui/widget/WidgetContainer.h"
 #include "math/Types.h"
+
 
 class MainMenu {
 	
@@ -31,7 +34,7 @@ public:
 	
 	bool bReInitAll;
 	
-	MenuWindow * m_window;
+	std::unique_ptr<MenuWindow> m_window;
 	
 	MainMenu(const MainMenu &) = delete;
 	MainMenu & operator=(const MainMenu &) = delete;

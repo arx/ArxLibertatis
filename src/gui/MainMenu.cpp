@@ -1788,9 +1788,9 @@ public:
 
 void MainMenu::initWindowPages() {
 	
-	delete m_window, m_window = nullptr;
+	m_window.reset();
 	
-	m_window = new MenuWindow();
+	m_window = std::make_unique<MenuWindow>();
 	
 	m_window->add(std::make_unique<NewQuestMenuPage>());
 	
@@ -1825,7 +1825,6 @@ MainMenu::MainMenu()
 { }
 
 MainMenu::~MainMenu() {
-	delete m_window;
 	delete m_background;
 }
 
