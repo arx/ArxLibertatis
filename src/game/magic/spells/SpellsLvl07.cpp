@@ -589,11 +589,13 @@ void LightningStrikeSpell::Update() {
 		if(caster && entities.get(caster->targetinfo) && caster->targetinfo != m_caster) {
 			const Vec3f & p1 = m_caster_pos;
 			Vec3f p2 = GetChestPos(caster->targetinfo);
-			falpha = MAKEANGLE(glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1.x, p1.z)))));
+			float d = glm::distance(getXZ(p2), getXZ(p1));
+			falpha = MAKEANGLE(glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + d)));
 		} else if(entities.get(m_target)) {
 			const Vec3f & p1 = m_caster_pos;
 			Vec3f p2 = GetChestPos(m_target);
-			falpha = MAKEANGLE(glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1.x, p1.z)))));
+			float d = glm::distance(getXZ(p2), getXZ(p1));
+			falpha = MAKEANGLE(glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + d)));
 		}
 	}
 	
