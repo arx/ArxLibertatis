@@ -123,23 +123,23 @@ void ParticleSystem::SetParams(const ParticleParams & params) {
 	
 }
 
-void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime) {
+void ParticleSystem::SetTexture(std::string_view name, int count, int _iTime) {
 
-	if(_iNbTex == 0) {
-		tex_tab[0] = TextureContainer::Load(_pszTex);
+	if( count == 0) {
+		tex_tab[0] = TextureContainer::Load(name);
 		iNbTex = 0;
 	} else {
 		
-		_iNbTex = std::min(_iNbTex, 20);
+		count = std::min( count, 20);
 		
 		std::ostringstream oss;
-		for(int i = 0; i < _iNbTex; i++) {
+		for(int i = 0; i < count; i++) {
 			oss.str(std::string());
-			oss << _pszTex << '_' << std::setfill('0') << std::setw(4) << (i + 1);
+			oss << name << '_' << std::setfill('0') << std::setw(4) << (i + 1);
 			tex_tab[i] = TextureContainer::Load(oss.str());
 		}
 		
-		iNbTex = _iNbTex;
+		iNbTex = count;
 		iTexTime = _iTime;
 		bTexLoop = true;
 		

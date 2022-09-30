@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_PARTICLE_PARTICLESYSTEM_H
 
 #include <array>
+#include <string_view>
 #include <vector>
 
 #include "core/TimeTypes.h"
@@ -101,7 +102,7 @@ private:
 	
 	void SetParticleParams(Particle * particle);
 	
-	void SetTexture(const char * _pszTex, int _iNbTex, int _iTime);
+	void SetTexture(std::string_view name, int count, int _iTime);
 	
 public:
 	
