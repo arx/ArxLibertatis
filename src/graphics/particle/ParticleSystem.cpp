@@ -196,12 +196,9 @@ void ParticleSystem::SetParticleParams(Particle * particle) {
 	}
 	
 	if(m_parameters.m_rotationRandomDirection) {
-		particle->iRot = Random::get(-1, 1);
-		if(particle->iRot < 0) {
+		particle->iRot = Random::get(0, 1);
+		if(particle->iRot == 0) {
 			particle->iRot = -1;
-		}
-		if(particle->iRot >= 0) {
-			particle->iRot = 1;
 		}
 	} else {
 		particle->iRot = 1;
