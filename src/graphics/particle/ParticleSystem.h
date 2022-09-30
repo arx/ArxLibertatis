@@ -93,8 +93,7 @@ private:
 	
 	std::array<TextureContainer *, 20> tex_tab;
 	int iNbTex;
-	int iTexTime;
-	bool bTexLoop;
+	GameDuration iTexTime;
 	
 	glm::mat4x4 eMat;
 	
@@ -102,7 +101,7 @@ private:
 	
 	void SetParticleParams(Particle * particle);
 	
-	void SetTexture(std::string_view name, int count, int _iTime);
+	void SetTexture(std::string_view name, int count, GameDuration delay);
 	
 public:
 	

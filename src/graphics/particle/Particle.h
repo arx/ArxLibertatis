@@ -69,9 +69,6 @@ public:
 	int iRot;
 	float fRotStart;
 	
-	int iTexTime;
-	int iTexNum;
-	
 	Particle();
 	
 	void Regen();

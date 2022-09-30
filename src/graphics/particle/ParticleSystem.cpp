@@ -69,8 +69,6 @@ ParticleSystem::ParticleSystem()
 	: m_nextPosition(0.f)
 	, iParticleNbAlive(0)
 	, iNbTex(0)
-	, iTexTime(500)
-	, bTexLoop(true)
 	, eMat(1.f)
 {
 	
@@ -119,11 +117,11 @@ void ParticleSystem::SetParams(const ParticleParams & params) {
 	GenerateMatrixUsingVector(eMat, eVect, 0);
 	
 	const ParticleParams::TextureInfo & texInfo = m_parameters.m_texture;
-	SetTexture(texInfo.m_texName, texInfo.m_texNb, texInfo.m_texTime);
+	SetTexture(texInfo.m_texName, texInfo.m_texNb, std::chrono::milliseconds(texInfo.m_texTime));
 	
 }
 
-void ParticleSystem::SetTexture(std::string_view name, int count, int _iTime) {
+void ParticleSystem::SetTexture(std::string_view name, int count, GameDuration delay) {
 
 	if( count == 0) {
 		tex_tab[0] = TextureContainer::Load(name);
@@ -140,8 +138,7 @@ void ParticleSystem::SetTexture(std::string_view name, int count, int _iTime) {
 		}
 		
 		iNbTex = count;
-		iTexTime = _iTime;
-		bTexLoop = true;
+		iTexTime = delay;
 		
 	}
 	
@@ -285,26 +282,17 @@ void ParticleSystem::Render() {
 		
 		float t = particle.m_age / particle.m_timeToLive;
 		
-		int inumtex = 0;
+		int texture = 0;
 		if(iNbTex > 0) {
-			inumtex = particle.iTexNum;
-			if(iTexTime == 0) {
-				inumtex = std::min(checked_range_cast<int>(t * iNbTex), iNbTex - 1);
-			} else if(particle.iTexTime > iTexTime) {
-				particle.iTexTime -= iTexTime;
-				particle.iTexNum++;
-				if(particle.iTexNum > iNbTex - 1) {
-					particle.iTexNum = bTexLoop ? 0 : iNbTex - 1;
-				}
-				inumtex = particle.iTexNum;
-			}
+			arx_assume(iTexTime != 0);
+			texture = checked_range_cast<int>(particle.m_age / iTexTime) % iNbTex;
 		}
 		
-		if(!tex_tab[inumtex]) {
+		if(!tex_tab[texture]) {
 			continue;
 		}
 		
-		mat.setTexture(tex_tab[inumtex]);
+		mat.setTexture(tex_tab[texture]);
 		
 		Vec3f pos = m_nextPosition + particle.p3Pos;
 		float size = glm::mix(particle.fSizeStart, particle.fSizeEnd, t);

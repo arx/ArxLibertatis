@@ -58,27 +58,21 @@ Particle::Particle()
 	, m_timeToLive(Random::get(2000ms, 5000ms))
 	, iRot(1)
 	, fRotStart(0.f)
-	, iTexTime(0)
-	, iTexNum(0)
 { }
 
 void Particle::Regen() {
 	p3Pos = Vec3f(0.f);
 	m_age = 0;
-	iTexTime = 0;
-	iTexNum = 0;
 }
 
 void Particle::Update(GameDuration delta) {
 	
 	m_age += delta;
-	iTexTime += toMsi(delta); // FIXME time, this will break with sub ms deltas
-	float fTimeSec = delta / 1s;
 	
 	if(m_age < m_timeToLive) {
 		
 		// update new pos
-		p3Pos += p3Velocity * fTimeSec;
+		p3Pos += p3Velocity * (delta / 1s);
 		
 	}
 	
