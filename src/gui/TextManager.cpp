@@ -43,6 +43,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/TextManager.h"
 
+#include <algorithm>
 #include <utility>
 
 #include "gui/Text.h"
@@ -50,23 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/font/Font.h"
 #include "io/log/Logger.h"
 
-struct TextManager::ManagedText {
-	
-	Font * pFont;
-	Rect rRect;
-	Rect rRectClipp;
-	std::string lpszUText;
-	float fDeltaY;
-	float fSpeedScrollY;
-	Color lCol;
-	PlatformDuration lTimeScroll;
-	PlatformDuration lTimeOut;
-	
-};
-
-TextManager::~TextManager() {
-	Clear();
-}
 
 bool TextManager::AddText(Font * font, std::string && text, const Rect & bbox, Color color,
                           PlatformDuration displayTime, PlatformDuration scrollTime,
@@ -80,31 +64,26 @@ bool TextManager::AddText(Font * font, std::string && text, const Rect & bbox, C
 		LogWarning << "Adding text with NULL font.";
 		return false;
 	}
-	
-	ManagedText * pArxText = new ManagedText();
-	if(!pArxText) {
-		return false;
-	}
-	
+
 	arx_assert(!bbox.empty());
 	
-	pArxText->pFont = font;
-	pArxText->lpszUText = std::move(text);
-	pArxText->rRect = bbox;
-	pArxText->lCol = color;
-	pArxText->lTimeScroll = scrollTime;
-	pArxText->fDeltaY = 0.f;
-	pArxText->fSpeedScrollY = scrollSpeed;
-	pArxText->lTimeOut = displayTime;
-	pArxText->rRectClipp = pArxText->rRect;
+	ManagedText & entry = entries.emplace_back();
+	
+	entry.pFont = font;
+	entry.lpszUText = std::move(text);
+	entry.rRect = bbox;
+	entry.lCol = color;
+	entry.lTimeScroll = scrollTime;
+	entry.fDeltaY = 0.f;
+	entry.fSpeedScrollY = scrollSpeed;
+	entry.lTimeOut = displayTime;
+	entry.rRectClipp = entry.rRect;
 	
 	if(nLineClipp) {
-		Vec2i sSize = font->getTextSize(pArxText->lpszUText);
+		Vec2i sSize = font->getTextSize(entry.lpszUText);
 		sSize.y *= nLineClipp;
-		pArxText->rRectClipp.bottom = pArxText->rRect.top + sSize.y;
+		entry.rRectClipp.bottom = entry.rRect.top + sSize.y;
 	}
-	
-	entries.push_back(pArxText);
 	
 	return true;
 }
@@ -118,71 +97,55 @@ bool TextManager::AddText(Font * font, std::string && text, Vec2i pos, Color col
 	return AddText(font, std::move(text), bbox, color);
 }
 
-void TextManager::Update(PlatformDuration _iDiffFrame) {
+void TextManager::Update(PlatformDuration delta) {
 	
-	std::vector<ManagedText *>::iterator itManage;
-	for(itManage = entries.begin(); itManage != entries.end();) {
+	entries.erase(std::remove_if(entries.begin(), entries.end(), [](const ManagedText & text) {
+		return text.lTimeOut < 0;
+	}), entries.end());
+	
+	for(ManagedText & entry : entries) {
 		
-		ManagedText * pArxText = *itManage;
+		entry.lTimeOut -= delta;
 		
-		if(pArxText->lTimeOut < 0) {
-			delete pArxText;
-			itManage = entries.erase(itManage);
-			continue;
-		}
-		
-		pArxText->lTimeOut -= _iDiffFrame;
-		
-		if(pArxText->lTimeScroll < 0
-		   && pArxText->fDeltaY < float(pArxText->rRect.bottom - pArxText->rRectClipp.bottom)) {
-			pArxText->fDeltaY += pArxText->fSpeedScrollY * toMs(_iDiffFrame);
-			
-			if(pArxText->fDeltaY >= (pArxText->rRect.bottom - pArxText->rRectClipp.bottom)) {
-				pArxText->fDeltaY = static_cast<float>(pArxText->rRect.bottom - pArxText->rRectClipp.bottom);
+		if(entry.lTimeScroll < 0 && entry.fDeltaY < float(entry.rRect.bottom - entry.rRectClipp.bottom)) {
+			entry.fDeltaY += entry.fSpeedScrollY * toMs(delta);
+			if(entry.fDeltaY >= (entry.rRect.bottom - entry.rRectClipp.bottom)) {
+				entry.fDeltaY = static_cast<float>(entry.rRect.bottom - entry.rRectClipp.bottom);
 			}
 		} else {
-			pArxText->lTimeScroll -= _iDiffFrame;
+			entry.lTimeScroll -= delta;
 		}
 		
-		++itManage;
 	}
 	
 }
 
 void TextManager::Render() {
-	std::vector<ManagedText *>::const_iterator itManage = entries.begin();
-	for(; itManage != entries.end(); ++itManage) {
+	
+	for(ManagedText & entry : entries) {
 		
-		ManagedText * pArxText = *itManage;
-		
-		Rect * pRectClip = nullptr;
-		if(pArxText->rRectClipp.right != Rect::Limits::max() || pArxText->rRectClipp.bottom != Rect::Limits::max()) {
-			pRectClip = &pArxText->rRectClipp;
+		const Rect * pRectClip = nullptr;
+		if(entry.rRectClipp.right != Rect::Limits::max() || entry.rRectClipp.bottom != Rect::Limits::max()) {
+			pRectClip = &entry.rRectClipp;
 		}
 		
 		float maxx;
-		if(pArxText->rRect.right == Rect::Limits::max()) {
+		if(entry.rRect.right == Rect::Limits::max()) {
 			maxx = std::numeric_limits<float>::infinity();
 		} else {
-			maxx = static_cast<float>(pArxText->rRect.right);
+			maxx = static_cast<float>(entry.rRect.right);
 		}
-
-		long height = ARX_UNICODE_DrawTextInRect(pArxText->pFont,
-		                                         Vec2f(pArxText->rRect.left, pArxText->rRect.top - pArxText->fDeltaY),
-		                                         maxx,
-		                                         pArxText->lpszUText, pArxText->lCol, pRectClip);
 		
-		pArxText->rRect.bottom = pArxText->rRect.top + height;
+		long height = ARX_UNICODE_DrawTextInRect(entry.pFont,
+		                                         Vec2f(entry.rRect.left, entry.rRect.top - entry.fDeltaY),
+		                                         maxx, entry.lpszUText, entry.lCol, pRectClip);
+		
+		entry.rRect.bottom = entry.rRect.top + height;
 	}
+	
 }
 
 void TextManager::Clear() {
-	
-	std::vector<ManagedText *>::iterator itManage;
-	for(itManage = entries.begin(); itManage < entries.end(); ++itManage) {
-		delete *itManage;
-	}
-	
 	entries.clear();
 }
 
