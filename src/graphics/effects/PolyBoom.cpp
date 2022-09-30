@@ -362,25 +362,25 @@ void PolyBoomDraw() {
 	mat.setLayer(RenderMaterial::Decal);
 	mat.setWrapMode(TextureStage::WrapClamp);
 	
-	for(const Decal & pb : g_decals) {
+	for(const Decal & decal : g_decals) {
 		
-		arx_assume(pb.nbvert == 3 || pb.nbvert == 4);
+		arx_assume(decal.nbvert == 3 || decal.nbvert == 4);
 		
-		GameDuration t = pb.timecreation + pb.tolive - now;
+		GameDuration t = decal.timecreation + decal.tolive - now;
 		
-		switch(pb.type) {
+		switch(decal.type) {
 			
 			case ScorchMarkDecal: {
 				
-				float tt = t / pb.tolive * 0.8f;
+				float tt = t / decal.tolive * 0.8f;
 				ColorRGBA col = (player.m_improve ? (Color3f::red * (tt * 0.5f)) : Color3f::gray(tt)).toRGB();
 				
 				std::array<TexturedVertexUntransformed, 4> ltv;
 				
-				for(long k = 0; k < pb.nbvert; k++) {
-					ltv[k].p = pb.ep->v[k].p;
-					ltv[k].uv.x = pb.u[k];
-					ltv[k].uv.y = pb.v[k];
+				for(long k = 0; k < decal.nbvert; k++) {
+					ltv[k].p = decal.ep->v[k].p;
+					ltv[k].uv.x = decal.u[k];
+					ltv[k].uv.y = decal.v[k];
 					ltv[k].color = col;
 				}
 				
@@ -392,7 +392,7 @@ void PolyBoomDraw() {
 				mat.setTexture(g_particleTextures.boom);
 				
 				drawTriangle(mat, ltv.data());
-				if(pb.nbvert == 4) {
+				if(decal.nbvert == 4) {
 					drawTriangle(mat, ltv.data() + 1);
 				}
 				
@@ -401,24 +401,24 @@ void PolyBoomDraw() {
 			
 			case BloodDecal: {
 				
-				float tt = t / pb.tolive;
+				float tt = t / decal.tolive;
 				float tr = std::max(1.f, tt * 2 - 0.5f);
-				ColorRGBA col = Color4f(pb.rgb * tt, glm::clamp(tt * 1.5f, 0.f, 1.f)).toRGBA();
+				ColorRGBA col = Color4f(decal.rgb * tt, glm::clamp(tt * 1.5f, 0.f, 1.f)).toRGBA();
 				
 				std::array<TexturedVertexUntransformed, 4> ltv;
 				
-				for(long k = 0; k < pb.nbvert; k++) {
-					ltv[k].p = pb.ep->v[k].p;
-					ltv[k].uv.x = (pb.u[k] - 0.5f) * tr + 0.5f;
-					ltv[k].uv.y = (pb.v[k] - 0.5f) * tr + 0.5f;
+				for(long k = 0; k < decal.nbvert; k++) {
+					ltv[k].p = decal.ep->v[k].p;
+					ltv[k].uv.x = ( decal.u[k] - 0.5f) * tr + 0.5f;
+					ltv[k].uv.y = ( decal.v[k] - 0.5f) * tr + 0.5f;
 					ltv[k].color = col;
 				}
 				
 				mat.setBlendType(RenderMaterial::Subtractive2);
-				mat.setTexture(pb.tc);
+				mat.setTexture(decal.tc);
 				
 				drawTriangle(mat, ltv.data());
-				if(pb.nbvert == 4) {
+				if(decal.nbvert == 4) {
 					drawTriangle(mat, ltv.data() + 1);
 				}
 				
@@ -427,45 +427,45 @@ void PolyBoomDraw() {
 			
 			case WaterDecal: {
 				
-				float tt = t / pb.tolive;
+				float tt = t / decal.tolive;
 				float tr = std::max(1.f, tt * 2 - 0.5f);
 				float ttt = tt * 0.5f;
-				ColorRGBA col = (pb.rgb * ttt).toRGB();
+				ColorRGBA col = (decal.rgb * ttt).toRGB();
 				
 				std::array<TexturedVertexUntransformed, 4> ltv;
 				
-				for(long k = 0; k < pb.nbvert; k++) {
-					ltv[k].p = pb.ep->v[k].p;
-					ltv[k].uv.x = (pb.u[k] - 0.5f) * tr + 0.5f;
-					ltv[k].uv.y = (pb.v[k] - 0.5f) * tr + 0.5f;
+				for(long k = 0; k < decal.nbvert; k++) {
+					ltv[k].p = decal.ep->v[k].p;
+					ltv[k].uv.x = ( decal.u[k] - 0.5f) * tr + 0.5f;
+					ltv[k].uv.y = ( decal.v[k] - 0.5f) * tr + 0.5f;
 					ltv[k].color = col;
 				}
 				
 				if(ltv[0].uv.x < 0.f && ltv[1].uv.x < 0.f && ltv[2].uv.x < 0.f
-				   && (pb.nbvert != 4 || ltv[3].uv.x < 0.f)) {
+				   && ( decal.nbvert != 4 || ltv[3].uv.x < 0.f)) {
 					break;
 				}
 				
 				if(ltv[0].uv.y < 0.f && ltv[1].uv.y < 0.f && ltv[2].uv.y < 0.f
-				   && (pb.nbvert != 4 || ltv[3].uv.y < 0.f)) {
+				   && ( decal.nbvert != 4 || ltv[3].uv.y < 0.f)) {
 					break;
 				}
 				
 				if(ltv[0].uv.x > 1.f && ltv[1].uv.x > 1.f && ltv[2].uv.x > 1.f
-				   && (pb.nbvert != 4 || ltv[3].uv.x > 1.f)) {
+				   && ( decal.nbvert != 4 || ltv[3].uv.x > 1.f)) {
 					break;
 				}
 				
 				if(ltv[0].uv.y > 1.f && ltv[1].uv.y > 1.f && ltv[2].uv.y > 1.f
-				   && (pb.nbvert != 4 || ltv[3].uv.y > 1.f)) {
+				   && ( decal.nbvert != 4 || ltv[3].uv.y > 1.f)) {
 					break;
 				}
 				
 				mat.setBlendType(RenderMaterial::Screen);
-				mat.setTexture(pb.tc);
+				mat.setTexture(decal.tc);
 				
 				drawTriangle(mat, ltv.data());
-				if(pb.nbvert == 4) {
+				if(decal.nbvert == 4) {
 					drawTriangle(mat, ltv.data() + 1);
 				}
 				
