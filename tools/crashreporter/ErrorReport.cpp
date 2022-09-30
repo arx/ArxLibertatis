@@ -261,15 +261,16 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier * pProgressNotifier)
 	}
 	
 	// Send files
+	bool first = true;
 	QString commonPath;
-	for(FileList::const_iterator it = m_AttachedFiles.begin(); it != m_AttachedFiles.end(); ++it) {
+	for(const File & file : m_AttachedFiles) {
 		
 		// Ignore files that were removed by the user.
-		if(!it->attachToReport) {
+		if(!file.attachToReport) {
 			continue;
 		}
 		
-		QFileInfo path(it->path);
+		QFileInfo path(file.path);
 		
 		// One more check to verify that the file still exists.
 		if(!path.exists()) {
@@ -277,19 +278,24 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier * pProgressNotifier)
 		}
 		
 		pProgressNotifier->taskStepStarted(QString("Sending file \"%1\"").arg(path.fileName()));
-		if(server.attachFile(issue_id, it->path, path.fileName(), m_SharedMemoryName)) {
+		
+		if(server.attachFile(issue_id, file.path, path.fileName(), m_SharedMemoryName)) {
 			commonPath.clear();
 		} else {
-			m_failedFiles.append(it->path);
+			m_failedFiles.append(file.path);
 			QString dir = path.dir().path();
-			if(it == m_AttachedFiles.begin()) {
+			if(first) {
 				commonPath = dir;
 			} else if(dir != commonPath) {
 				commonPath.clear();
 			}
 		}
+		first = false;
+		
 		pProgressNotifier->taskStepEnded();
+		
 	}
+	
 	if(!commonPath.isEmpty() && m_failedFiles.count() > 1) {
 		m_failedFiles.clear();
 		m_failedFiles.append(commonPath);
