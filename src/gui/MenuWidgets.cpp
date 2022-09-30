@@ -49,10 +49,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
+#include <algorithm>
 #include <iosfwd>
 #include <limits>
-#include <algorithm>
 #include <sstream>
+#include <utility>
 
 #include "core/Application.h"
 #include "core/ArxGame.h"
@@ -95,7 +96,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "scene/LoadLevel.h"
 
+#include "util/Range.h"
+
 #include "window/RenderWindow.h"
+
 
 void ARX_QuickSave() {
 	
@@ -222,15 +226,9 @@ MenuWindow::MenuWindow()
 	, m_border(TextureContainer::LoadUI("graph/interface/menus/menu_console_background_border"))
 { }
 
-MenuWindow::~MenuWindow() {
-	for(std::vector<MenuPage *>::iterator it = m_pages.begin(), it_end = m_pages.end(); it < it_end; ++it) {
-		delete *it;
-	}
-}
-
-void MenuWindow::add(MenuPage * page) {
+void MenuWindow::add(std::unique_ptr<MenuPage> page) {
 	page->setSize(RATIO_2(Vec2f(292, 395)));
-	m_pages.push_back(page);
+	m_pages.emplace_back(std::move(page));
 }
 
 void MenuWindow::update() {
@@ -289,9 +287,9 @@ void MenuWindow::setCurrentPage(MENUSTATE id) {
 
 MenuPage * MenuWindow::getPage(MENUSTATE id) const {
 	
-	for(MenuPage * page : m_pages) {
-		if(page->id() == id) {
-			return page;
+	for(MenuPage & page : util::dereference(m_pages)) {
+		if(page.id() == id) {
+			return &page;
 		}
 	}
 	

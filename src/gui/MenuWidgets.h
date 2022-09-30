@@ -44,8 +44,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GUI_MENUWIDGETS_H
 #define ARX_GUI_MENUWIDGETS_H
 
+#include <memory>
 #include <vector>
-#include <string>
 
 #include "core/TimeTypes.h"
 #include "graphics/Color.h"
@@ -57,6 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 #include "math/Rectangle.h"
 #include "util/HandleType.h"
+
 
 class TextureContainer;
 class Font;
@@ -78,9 +79,8 @@ public:
 	MenuWindow & operator=(const MenuWindow &) = delete;
 	
 	MenuWindow();
-	~MenuWindow();
 	
-	void add(MenuPage * page);
+	void add(std::unique_ptr<MenuPage> page);
 	void update();
 	void render();
 	
@@ -95,7 +95,7 @@ public:
 	
 private:
 	
-	std::vector<MenuPage *> m_pages;
+	std::vector<std::unique_ptr<MenuPage>> m_pages;
 	
 	float fAngle;
 	

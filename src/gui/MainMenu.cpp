@@ -1792,24 +1792,24 @@ void MainMenu::initWindowPages() {
 	
 	m_window = new MenuWindow();
 	
-	m_window->add(new NewQuestMenuPage());
+	m_window->add(std::make_unique<NewQuestMenuPage>());
 	
-	m_window->add(new ChooseLoadOrSaveMenuPage());
-	m_window->add(new LoadMenuPage());
-	m_window->add(new SaveMenuPage());
-	m_window->add(new SaveConfirmMenuPage());
+	m_window->add(std::make_unique<ChooseLoadOrSaveMenuPage>());
+	m_window->add(std::make_unique<LoadMenuPage>());
+	m_window->add(std::make_unique<SaveMenuPage>());
+	m_window->add(std::make_unique<SaveConfirmMenuPage>());
 	
-	m_window->add(new OptionsMenuPage());
-	m_window->add(new VideoOptionsMenuPage());
-	m_window->add(new RenderOptionsMenuPage());
-	m_window->add(new InterfaceOptionsMenuPage());
-	m_window->add(new AudioOptionsMenuPage());
-	m_window->add(new InputOptionsMenuPage());
-	m_window->add(new ControlOptionsMenuPage1());
-	m_window->add(new ControlOptionsMenuPage2());
+	m_window->add(std::make_unique<OptionsMenuPage>());
+	m_window->add(std::make_unique<VideoOptionsMenuPage>());
+	m_window->add(std::make_unique<RenderOptionsMenuPage>());
+	m_window->add(std::make_unique<InterfaceOptionsMenuPage>());
+	m_window->add(std::make_unique<AudioOptionsMenuPage>());
+	m_window->add(std::make_unique<InputOptionsMenuPage>());
+	m_window->add(std::make_unique<ControlOptionsMenuPage1>());
+	m_window->add(std::make_unique<ControlOptionsMenuPage2>());
 	
-	m_window->add(new QuitConfirmMenuPage());
-	m_window->add(new LocalizationMenuPage());
+	m_window->add(std::make_unique<QuitConfirmMenuPage>());
+	m_window->add(std::make_unique<LocalizationMenuPage>());
 	
 }
 
