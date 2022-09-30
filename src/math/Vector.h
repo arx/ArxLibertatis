@@ -25,20 +25,19 @@
 #include "math/GtxFunctions.h"
 #include "math/Types.h"
 
-// TODO replace calls with their direct glm equivalents!
 
 template <class V>
-bool closerThan(const V & a, const V & b, typename V::value_type d) {
+[[nodiscard]] bool closerThan(const V & a, const V & b, typename V::value_type d) noexcept {
 	return arx::distance2(a, b) < (d * d);
 }
 
 template <class V>
-bool fartherThan(const V & a, const V & b, typename V::value_type d) {
+[[nodiscard]] bool fartherThan(const V & a, const V & b, typename V::value_type d) noexcept {
 	return arx::distance2(a, b) > (d * d);
 }
 
 template <class V>
-bool isallfinite(const V & vec) {
+[[nodiscard]] bool isallfinite(const V & vec) noexcept {
 	
 	for(size_t i = 0; i < size_t(vec.length()); i++) {
 		if(!(std::isfinite)(vec[i])) {
@@ -49,8 +48,20 @@ bool isallfinite(const V & vec) {
 	return true;
 }
 
-inline Vec2f getXZ(Vec3f pos) {
-	return Vec2f(pos.x, pos.z);
+[[nodiscard]] inline constexpr Vec2f getXZ(Vec3f pos) noexcept {
+	return { pos.x, pos.z };
+}
+
+[[nodiscard]] inline constexpr Vec3f toXZ(float pos) noexcept {
+	return { pos, 0.f, pos };
+}
+
+[[nodiscard]] inline constexpr Vec3f toXZ(Vec2f pos) noexcept {
+	return { pos.x, 0.f, pos.y };
+}
+
+[[nodiscard]] inline constexpr Vec3f toXZ(Vec3f pos) noexcept {
+	return { pos.x, 0.f, pos.z };
 }
 
 #endif // ARX_MATH_VECTOR_H
