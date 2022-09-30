@@ -52,7 +52,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "math/Random.h"
 #include "math/Types.h"
-#include "platform/Alignment.h"
 #include "scene/Light.h"
 
 struct RenderMaterial;
@@ -77,7 +76,6 @@ public:
 	virtual void Update(GameDuration timeDelta) = 0;
 	virtual void Render() = 0;
 	
-	ARX_USE_ALIGNED_NEW(CSpellFx)
 };
 
 void Draw3DLineTexNew(const RenderMaterial & mat, Vec3f startPos, Vec3f endPos, Color startColor, Color endColor, float startSize, float endSize);

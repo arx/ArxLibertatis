@@ -57,7 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Types.h"
 #include "math/Vector.h"
 #include "math/Quantizer.h"
-#include "platform/Alignment.h"
 #include "util/Flags.h"
 
 
@@ -103,11 +102,6 @@ private:
 	
 	void SetTexture(std::string_view name, int count, GameDuration delay);
 	
-public:
-	
-	ARX_USE_ALIGNED_NEW(ParticleSystem) // for eMat
 };
-
-ARX_USE_ALIGNED_ALLOCATOR(ParticleSystem) // for eMat
 
 #endif // ARX_GRAPHICS_PARTICLE_PARTICLESYSTEM_H

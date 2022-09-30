@@ -18,20 +18,10 @@
 #cmakedefine01 ARX_HAVE_CXX17_FROM_CHARS_INT
 
 // GCC extensions
-// __attribute__((alloc_align(i)))
-#cmakedefine01 ARX_HAVE_ATTRIBUTE_ALLOC_ALIGN
-// __attribute__((alloc_size(i)))
-#cmakedefine01 ARX_HAVE_ATTRIBUTE_ALLOC_SIZE
 // __attribute__((always_inline))
 #cmakedefine01 ARX_HAVE_ATTRIBUTE_ALWAYS_INLINE
-// __attribute__((assume_aligned(n)))
-#cmakedefine01 ARX_HAVE_ATTRIBUTE_ASSUME_ALIGNED
 // __attribute__((format(printf, i, j)))
 #cmakedefine01 ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
-// __attribute__((malloc))
-#cmakedefine01 ARX_HAVE_ATTRIBUTE_MALLOC
-// __builtin_assume_aligned(e, n)
-#cmakedefine01 ARX_HAVE_BUILTIN_ASSUME_ALIGNED
 // __builtin_trap()
 #cmakedefine01 ARX_HAVE_BUILTIN_TRAP
 // __builtin_unreachable()

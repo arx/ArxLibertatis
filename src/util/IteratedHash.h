@@ -33,7 +33,6 @@
 #include <ostream>
 #include <iomanip>
 
-#include "platform/Alignment.h"
 #include "platform/Platform.h"
 
 namespace util {
@@ -61,6 +60,17 @@ struct safe_shifter<false> {
 };
 
 } // namespace detail
+
+//! Check if a pointer has aparticular alignment.
+inline bool is_aligned_on(const void * p, size_t alignment) {
+	return alignment == 1 || (size_t(p) % alignment == 0);
+}
+
+//! Check if a pointer is aligned for a specific type.
+template <class T>
+bool is_aligned(const void * p) {
+	return is_aligned_on(p, alignof(T));
+}
 
 //! Right-shift a value without shifting past the size of the type or return 0.
 template <unsigned int bits, class T>
@@ -208,7 +218,7 @@ void iterated_hash<T>::update(const char * input, size_t length) {
 template <class T>
 size_t iterated_hash<T>::hash(const char * input, size_t length) {
 	
-	if(byte_order::native() && platform::is_aligned<T>(input)) {
+	if(byte_order::native() && is_aligned<hash_word>(input)) {
 		
 		do {
 			

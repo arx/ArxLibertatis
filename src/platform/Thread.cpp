@@ -43,7 +43,6 @@
 
 #include "math/Random.h"
 
-#include "platform/Alignment.h"
 #include "platform/CrashHandler.h"
 #include "platform/Platform.h"
 #include "platform/WindowsUtils.h"

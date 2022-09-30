@@ -388,38 +388,6 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 #endif
 
 /*!
- * \def arx_return_noalias
- * \brief Annotate a function that returns a pointer that doesn't alias with anything and
- *        points to uninitialized or zeroed memory
- */
-#if ARX_HAVE_ATTRIBUTE_MALLOC
-#define arx_return_noalias __attribute__((malloc))
-#elif ARX_COMPILER_MSVC
-#define arx_return_noalias __declspec(restrict)
-#else
-#define arx_return_noalias
-#endif
-
-/*!
- * \def arx_alloc_size(SizeArg)
- * \brief Annotate a function that returns a pointer to memory of size given by the function
- *        parameter with index SizeArg
- */
-#if ARX_HAVE_ATTRIBUTE_ALLOC_SIZE
-#define arx_alloc_size(SizeArg) __attribute__((alloc_size(SizeArg)))
-#else
-#define arx_alloc_size(SizeArg)
-#endif
-
-/*!
- * \def arx_alloc(SizeArg)
- * \brief Annotate a function that returns a pointer that doesn't alias with anything and
- *        points to uninitialized or zeroed memory of size given by the function
- *        parameter with index SizeArg
- */
-#define arx_alloc(SizeArg) [[nodiscard]] arx_return_noalias arx_alloc_size(SizeArg)
-
-/*!
  * Helper to cast a void * that is really a function pointer back to a function pointer
  */
 class FunctionPointer {

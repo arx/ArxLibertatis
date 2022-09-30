@@ -25,7 +25,6 @@
 
 #include "game/Damage.h"
 #include "graphics/effects/SpellEffects.h"
-#include "platform/Alignment.h"
 #include "scene/Light.h"
 #include "util/Flags.h"
 
@@ -192,10 +191,6 @@ public:
 protected:
 	
 	Vec3f getTargetPos(EntityHandle source, EntityHandle target);
-	
-public:
-	
-	ARX_USE_ALIGNED_NEW(Spell)
 	
 };
 

@@ -24,7 +24,7 @@
 
 #include "graphics/GraphicsTypes.h"
 #include "math/Rectangle.h"
-#include "platform/Alignment.h"
+
 
 struct Camera {
 	
@@ -112,8 +112,6 @@ struct PreparedCamera {
 		, m_screenToView(0.f)
 	{ }
 	
-	ARX_USE_ALIGNED_NEW(PreparedCamera) // for matrices
-	
 };
 
 extern Entity * g_cameraEntity;
@@ -130,7 +128,5 @@ inline void PrepareCamera(Camera * cam, const Rect & viewport) {
 void SetActiveCamera(Camera * cam);
 
 Vec3f screenToWorldSpace(Vec2f pos, float depth = 1.f);
-
-ARX_USE_ALIGNED_ALLOCATOR(PreparedCamera) // for matrices
 
 #endif // ARX_GAME_CAMERA_H

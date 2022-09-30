@@ -20,7 +20,6 @@
 #ifndef ARX_MATH_TYPES_H
 #define ARX_MATH_TYPES_H
 
-#include "platform/Alignment.h"
 #include "platform/Platform.h"
 
 #include <glm/glm.hpp>
@@ -45,7 +44,5 @@ typedef vec_traits<f32, 2>::type Vec2f;
 typedef vec_traits<s16, 3>::type Vec3s;
 typedef vec_traits<f32, 3>::type Vec3f;
 typedef vec_traits<f32, 4>::type Vec4f;
-
-ARX_USE_ALIGNED_ALLOCATOR(Vec4f)
 
 #endif // ARX_MATH_TYPES_H

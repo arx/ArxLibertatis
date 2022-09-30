@@ -660,10 +660,6 @@ endif()
 
 if(MSVC)
 	
-	# Standard library features
-	set(ARX_HAVE_ALIGNED_MALLOC 1)
-	set(ARX_HAVE_ALIGNED_FREE 1)
-	
 	set(ARX_HAVE_XMMINTRIN 1)
 	set(ARX_HAVE_PMMINTRIN 1)
 	
@@ -704,13 +700,8 @@ else(MSVC)
 	
 	# Check compiler builtins & language extensions
 	# These are a symbols, so we can't use check_symbol_exists
-	check_builtin(ARX_HAVE_ATTRIBUTE_ALLOC_ALIGN    "__attribute__((alloc_align(i)))")
-	check_builtin(ARX_HAVE_ATTRIBUTE_ALLOC_SIZE     "__attribute__((alloc_size(i)))")
 	check_builtin(ARX_HAVE_ATTRIBUTE_ALWAYS_INLINE  "__attribute__((always_inline))")
-	check_builtin(ARX_HAVE_ATTRIBUTE_ASSUME_ALIGNED "__attribute__((assume_aligned(n)))")
 	check_builtin(ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF  "__attribute__((format(printf, i, j)))")
-	check_builtin(ARX_HAVE_ATTRIBUTE_MALLOC         "__attribute__((malloc))")
-	check_builtin(ARX_HAVE_BUILTIN_ASSUME_ALIGNED   "__builtin_assume_aligned")
 	check_builtin(ARX_HAVE_BUILTIN_TRAP             "__builtin_trap")
 	if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND
 	   ((NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.5") OR
@@ -720,17 +711,6 @@ else(MSVC)
 		check_builtin(ARX_HAVE_BUILTIN_UNREACHABLE      "__builtin_unreachable")
 	endif()
 	check_builtin(ARX_HAVE_BUILTIN_EXPECT           "__builtin_expect")
-	
-	if(WIN32)
-		check_symbol_exists(_aligned_malloc "malloc.h" ARX_HAVE_ALIGNED_MALLOC)
-		check_symbol_exists(_aligned_free "malloc.h" ARX_HAVE_ALIGNED_FREE)
-	endif()
-	if(NOT ARX_HAVE_ALIGNED_MALLOC OR NOT ARX_HAVE_ALIGNED_FREE)
-		check_symbol_exists(aligned_alloc "stdlib.h" ARX_HAVE_ALIGNED_ALLOC)
-		if(NOT ARX_HAVE_ALIGNED_ALLOC)
-			check_symbol_exists(posix_memalign "stdlib.h" ARX_HAVE_POSIX_MEMALIGN)
-		endif()
-	endif()
 	
 	set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_DL_LIBS})
 	check_symbol_exists(dlsym "dlfcn.h" ARX_HAVE_DLSYM)
@@ -1177,7 +1157,6 @@ set(PHYSICS_SOURCES
 
 # Basic platform abstraction sources
 set(PLATFORM_SOURCES
-	src/platform/Alignment.cpp
 	src/platform/Environment.cpp
 	src/platform/OS.cpp
 	src/platform/Platform.cpp
