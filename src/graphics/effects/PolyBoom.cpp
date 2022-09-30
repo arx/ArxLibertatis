@@ -77,7 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "util/Range.h"
 
 
-enum DecalType {
+enum DecalType : u8 {
 	ScorchMarkDecal,
 	BloodDecal,
 	WaterDecal
@@ -86,11 +86,11 @@ enum DecalType {
 struct Decal {
 	
 	EERIEPOLY * polygon;
+	TextureContainer * material;
 	Vec2f uv[4];
 	Color3f rgb;
 	DecalType type;
 	bool fastdecay;
-	TextureContainer * material;
 	ShortGameDuration elapsed;
 	ShortGameDuration duration;
 	
@@ -310,7 +310,6 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 	}
 	
 }
-
 
 void PolyBoomDraw() {
 	
