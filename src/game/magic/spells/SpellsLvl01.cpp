@@ -156,11 +156,11 @@ void MagicMissileSpell::Launch() {
 		if(Entity * entityTarget = entities.get(io->targetinfo)) {
 			const Vec3f & p1 = m_caster_pos;
 			const Vec3f & p2 = entityTarget->pos;
-			pitch = -(glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1.x, p1.z)))));
+			pitch = -glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + glm::distance(getXZ(p2), getXZ(p1))));
 		} else if(Entity * spellTarget = entities.get(m_target)) {
 			const Vec3f & p1 = m_caster_pos;
 			const Vec3f & p2 = spellTarget->pos;
-			pitch = -(glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1.x, p1.z)))));
+			pitch = -glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + glm::distance(getXZ(p2), getXZ(p1))));
 		}
 	}
 	
