@@ -341,13 +341,13 @@ void PolyBoomDraw() {
 	GRenderer->SetFogColor(Color::none); // TODO: not handled by RenderMaterial
 	GameInstant now = g_gameTime.now();
 	
-	for(Decal & pb : g_decals) {
-		if(pb.fastdecay) {
-			if(pb.timecreation - g_gameTime.lastFrameDuration() > 0) {
-				pb.timecreation -= g_gameTime.lastFrameDuration();
+	for(Decal & decal : g_decals) {
+		if(decal.fastdecay) {
+			if(decal.timecreation - g_gameTime.lastFrameDuration() > 0) {
+				decal.timecreation -= g_gameTime.lastFrameDuration();
 			}
-			if(pb.timecreation - g_gameTime.lastFrameDuration() > 0) {
-				pb.timecreation -= g_gameTime.lastFrameDuration();
+			if(decal.timecreation - g_gameTime.lastFrameDuration() > 0) {
+				decal.timecreation -= g_gameTime.lastFrameDuration();
 			}
 		}
 	}
