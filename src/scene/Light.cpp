@@ -470,7 +470,7 @@ void ComputeTileLights(Vec2s index) {
 	
 	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {
 		EERIE_LIGHT * light = g_culledDynamicLights[i];
-		if(closerThan(tileCenter, Vec2f(light->pos.x, light->pos.z), light->fallend + 60.f)) {
+		if(closerThan(tileCenter, getXZ(light->pos), light->fallend + 60.f)) {
 			tile.lights().push_back(light);
 		}
 	}
