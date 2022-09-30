@@ -83,7 +83,7 @@ private:
 		
 	};
 	
-	std::vector<ManagedText> entries;
+	std::vector<ManagedText> m_entries;
 	
 };
 

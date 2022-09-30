@@ -67,7 +67,7 @@ bool TextManager::AddText(Font * font, std::string && text, const Rect & bbox, C
 
 	arx_assert(!bbox.empty());
 	
-	ManagedText & entry = entries.emplace_back();
+	ManagedText & entry = m_entries.emplace_back();
 	
 	entry.pFont = font;
 	entry.lpszUText = std::move(text);
@@ -99,11 +99,11 @@ bool TextManager::AddText(Font * font, std::string && text, Vec2i pos, Color col
 
 void TextManager::Update(PlatformDuration delta) {
 	
-	entries.erase(std::remove_if(entries.begin(), entries.end(), [](const ManagedText & text) {
+	m_entries.erase(std::remove_if( m_entries.begin(), m_entries.end(), [](const ManagedText & text) {
 		return text.lTimeOut < 0;
-	}), entries.end());
+	}), m_entries.end());
 	
-	for(ManagedText & entry : entries) {
+	for(ManagedText & entry : m_entries ) {
 		
 		entry.lTimeOut -= delta;
 		
@@ -122,7 +122,7 @@ void TextManager::Update(PlatformDuration delta) {
 
 void TextManager::Render() {
 	
-	for(ManagedText & entry : entries) {
+	for(ManagedText & entry : m_entries ) {
 		
 		const Rect * pRectClip = nullptr;
 		if(entry.rRectClipp.right != Rect::Limits::max() || entry.rRectClipp.bottom != Rect::Limits::max()) {
@@ -141,14 +141,15 @@ void TextManager::Render() {
 		                                         maxx, entry.lpszUText, entry.lCol, pRectClip);
 		
 		entry.rRect.bottom = entry.rRect.top + height;
+		
 	}
 	
 }
 
 void TextManager::Clear() {
-	entries.clear();
+	m_entries.clear();
 }
 
 bool TextManager::Empty() const {
-	return entries.empty();
+	return m_entries.empty();
 }
