@@ -102,6 +102,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/profiler/Profiler.h"
 
+#include "util/Range.h"
+
 
 extern bool EXTERNALVIEW; // *sigh*
 
@@ -820,22 +822,15 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 
 static void ARX_PORTALS_Frustrum_ClearIndexCount(size_t room_num) {
 	
-	Room & room = g_rooms->rooms[room_num];
-	
-	std::vector<TextureContainer *>::const_iterator itr;
-	for(itr = room.ppTextureContainer.begin(); itr != room.ppTextureContainer.end(); ++itr) {
-
-		TextureContainer * pTexCurr = *itr;
-		GRenderer->SetTexture(0, pTexCurr);
-
-		SMY_ARXMAT & roomMat = pTexCurr->m_roomBatches[room_num];
-
+	for(TextureContainer & material : util::dereference(g_rooms->rooms[room_num].ppTextureContainer)) {
+		SMY_ARXMAT & roomMat = material.m_roomBatches[room_num];
 		roomMat.count[BatchBucket_Opaque] = 0;
 		roomMat.count[BatchBucket_Blended] = 0;
 		roomMat.count[BatchBucket_Multiplicative] = 0;
 		roomMat.count[BatchBucket_Additive] = 0;
 		roomMat.count[BatchBucket_Subtractive] = 0;
 	}
+	
 }
 
 static void ARX_PORTALS_InitDrawnRooms() {
