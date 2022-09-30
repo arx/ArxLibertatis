@@ -689,15 +689,16 @@ void ARX_INTERACTIVE_MEMO_TWEAK(Entity * io, TweakType type, const res::path & p
 
 void ARX_INTERACTIVE_APPLY_TWEAK_INFO(Entity * io) {
 	
-	for(std::vector<TWEAK_INFO>::const_iterator i = io->tweaks.begin(); i != io->tweaks.end(); ++i) {
-		switch(i->type) {
+	for(const TWEAK_INFO & tweak : io->tweaks) {
+		switch(tweak.type) {
 			case TWEAK_REMOVE: EERIE_MESH_TWEAK_Do(io, TWEAK_REMOVE, res::path()); break;
-			case TWEAK_TYPE_SKIN: EERIE_MESH_TWEAK_Skin(io->obj, i->param1, i->param2); break;
-			case TWEAK_TYPE_ICON: ARX_INTERACTIVE_TWEAK_Icon(io, i->param1); break;
-			case TWEAK_TYPE_MESH: ARX_INTERACTIVE_USEMESH(io, i->param1); break;
-			default: EERIE_MESH_TWEAK_Do(io, i->type, i->param1);
+			case TWEAK_TYPE_SKIN: EERIE_MESH_TWEAK_Skin(io->obj, tweak.param1, tweak.param2); break;
+			case TWEAK_TYPE_ICON: ARX_INTERACTIVE_TWEAK_Icon(io, tweak.param1); break;
+			case TWEAK_TYPE_MESH: ARX_INTERACTIVE_USEMESH(io, tweak.param1); break;
+			default: EERIE_MESH_TWEAK_Do(io, tweak.type, tweak.param1);
 		}
 	}
+	
 }
 
 static void ARX_INTERACTIVE_ClearIODynData(Entity & entity) {
