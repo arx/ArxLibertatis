@@ -65,6 +65,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Time.h"
 #include "platform/profiler/Profiler.h"
 
+#include "util/Range.h"
+
+
 namespace audio {
 
 static std::mutex g_mutex;
@@ -697,21 +700,19 @@ void getAmbianceInfos(std::vector<AmbianceInfo> & infos) {
 	
 	std::scoped_lock lock(g_mutex);
 	
-	for(AmbianceList::const_iterator p = g_ambiances.begin(); p != g_ambiances.end(); ++p) {
-		if(*p) {
-			const Ambiance * ambiance = *p;
-			AmbianceInfo info;
-			info.name = ambiance->getName();
-			info.type = ambiance->getType();
-			if(ambiance->getChannel().flags & FLAG_VOLUME) {
-				info.volume = ambiance->getChannel().volume;
-			} else {
-				info.volume = DEFAULT_VOLUME;
-			}
-			info.isLooped = ambiance->isLooped();
-			infos.push_back(info);
+	for(const Ambiance & ambiance : util::nonnull(g_ambiances)) {
+		AmbianceInfo info;
+		info.name = ambiance.getName();
+		info.type = ambiance.getType();
+		if(ambiance.getChannel().flags & FLAG_VOLUME) {
+			info.volume = ambiance.getChannel().volume;
+		} else {
+			info.volume = DEFAULT_VOLUME;
 		}
+		info.isLooped = ambiance.isLooped();
+		infos.push_back(info);
 	}
+	
 }
 
 
@@ -813,8 +814,8 @@ void SoundUpdateThread::update() {
 			++i;
 		}
 	}
+	
 }
-
 
 static SoundUpdateThread * updateThread = nullptr;
 
