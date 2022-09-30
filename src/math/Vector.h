@@ -49,4 +49,8 @@ bool isallfinite(const V & vec) {
 	return true;
 }
 
+inline Vec2f getXZ(Vec3f pos) {
+	return Vec2f(pos.x, pos.z);
+}
+
 #endif // ARX_MATH_VECTOR_H
