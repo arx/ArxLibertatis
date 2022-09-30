@@ -82,7 +82,8 @@ enum DecalType {
 	WaterDecal
 };
 
-struct POLYBOOM {
+struct Decal {
+	
 	EERIEPOLY * ep;
 	float u[4];
 	float v[4];
@@ -93,12 +94,13 @@ struct POLYBOOM {
 	TextureContainer * tc;
 	GameInstant timecreation;
 	GameDuration tolive;
+	
 };
 
-static_assert(std::is_trivially_copyable_v<POLYBOOM>);
+static_assert(std::is_trivially_copyable_v<Decal>);
 
 static const size_t MAX_POLYBOOM = 4000;
-static std::vector<POLYBOOM> polyboom;
+static std::vector<Decal> polyboom;
 
 static const float BOOM_RADIUS = 420.f;
 
@@ -141,7 +143,7 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 				continue;
 			}
 			
-			POLYBOOM & pb = polyboom.emplace_back();
+			Decal & pb = polyboom.emplace_back();
 			
 			pb.type = ScorchMarkDecal;
 			pb.fastdecay = false;
@@ -246,7 +248,7 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 	
 	GameInstant now = g_gameTime.now();
 	
-	for(POLYBOOM & pb : polyboom) {
+	for(Decal & pb : polyboom) {
 		pb.fastdecay = true;
 	}
 	
@@ -289,7 +291,7 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 			
 			if(oki && polyboom.size() < MAX_POLYBOOM) {
 				
-				POLYBOOM & pb = polyboom.emplace_back();
+				Decal & pb = polyboom.emplace_back();
 				
 				if(flags & 2) {
 					pb.type = WaterDecal;
@@ -351,7 +353,7 @@ void PolyBoomDraw() {
 	GRenderer->SetFogColor(Color::none); // TODO: not handled by RenderMaterial
 	GameInstant now = g_gameTime.now();
 	
-	for(POLYBOOM & pb : polyboom) {
+	for(Decal & pb : polyboom) {
 		if(pb.fastdecay) {
 			if(pb.timecreation - g_gameTime.lastFrameDuration() > 0) {
 				pb.timecreation -= g_gameTime.lastFrameDuration();
@@ -362,7 +364,7 @@ void PolyBoomDraw() {
 		}
 	}
 	
-	util::unordered_remove_if(polyboom, [now](const POLYBOOM & pb) {
+	util::unordered_remove_if(polyboom, [now](const Decal & pb) {
 		return pb.timecreation + pb.tolive <= now;
 	});
 	
@@ -372,10 +374,7 @@ void PolyBoomDraw() {
 	mat.setLayer(RenderMaterial::Decal);
 	mat.setWrapMode(TextureStage::WrapClamp);
 	
-	std::vector<POLYBOOM>::iterator itr = polyboom.begin();
-	while (itr != polyboom.end()) {
-		
-		POLYBOOM & pb = *itr;
+	for(const Decal & pb : polyboom) {
 		
 		arx_assume(pb.nbvert == 3 || pb.nbvert == 4);
 		
@@ -486,8 +485,8 @@ void PolyBoomDraw() {
 			}
 		}
 		
-		++itr;
 	}
 	
 	GRenderer->SetFogColor(g_fogColor);
+	
 }
