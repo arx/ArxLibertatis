@@ -359,7 +359,7 @@ bool CylinderInCylinder(const Cylinder & cyl1, const Cylinder & cyl2) {
 	
 	m1 = cyl1.radius + cyl2.radius;
 	
-	return !fartherThan(Vec2f(cyl1.origin.x, cyl1.origin.z), Vec2f(cyl2.origin.x, cyl2.origin.z), m1);
+	return !fartherThan(getXZ(cyl1.origin), getXZ(cyl2.origin), m1);
 }
 
 // Sort of...
@@ -375,7 +375,7 @@ bool SphereInCylinder(const Cylinder & cyl1, const Sphere & s)
 
 	if (m1 > m2) return false;
 	
-	return !fartherThan(Vec2f(cyl1.origin.x, cyl1.origin.z), Vec2f(s.origin.x, s.origin.z), cyl1.radius + s.radius);
+	return !fartherThan(getXZ(cyl1.origin), getXZ(s.origin), cyl1.radius + s.radius);
 }
 
 glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float ratio)

@@ -227,7 +227,7 @@ inline bool PointInCylinder(const Cylinder & cyl, const Vec3f & pt) {
 		return false;
 	}
 	
-	return !fartherThan(Vec2f(cyl.origin.x, cyl.origin.z), Vec2f(pt.x, pt.z), cyl.radius);
+	return !fartherThan(getXZ(cyl.origin), getXZ(pt), cyl.radius);
 }
 
 inline long PointInUnderCylinder(const Cylinder & cyl, const Vec3f & pt) {
@@ -238,7 +238,7 @@ inline long PointInUnderCylinder(const Cylinder & cyl, const Vec3f & pt) {
 		return 0;
 	}
 	
-	if(!fartherThan(Vec2f(cyl.origin.x, cyl.origin.z), Vec2f(pt.x, pt.z), cyl.radius)) {
+	if(!fartherThan(getXZ(cyl.origin), getXZ(pt), cyl.radius)) {
 		return (pt.y > std::max(cyl.origin.y, pos1)) ? 1 : 2;
 	}
 	
