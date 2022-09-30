@@ -271,6 +271,7 @@ arx_force_inline constexpr bool is_in_range(From value) noexcept {
 			return false;
 		}
 	}
+	ARX_UNUSED(value);
 	return true;
 }
 
