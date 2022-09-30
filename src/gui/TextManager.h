@@ -57,9 +57,9 @@ class TextManager {
 	
 public:
 	
-	bool AddText(Font * font, std::string && text, const Rect & bbox,
+	bool AddText(Font * font, std::string && text, const Rect & bounds,
 	             Color color = Color::white, PlatformDuration displayTime = 0,
-	             PlatformDuration scrollTime = 0, float scrollSpeed = 0.f, int nLineClipp = 0);
+	             PlatformDuration scrollDelay = 0, float scrollSpeed = 0.f, int maxLines = 0);
 	
 	bool AddText(Font * font, std::string && text, Vec2i pos, Color color);
 	void Update(PlatformDuration delta);
@@ -71,15 +71,15 @@ private:
 	
 	struct ManagedText {
 		
-		Font * pFont;
-		Rect rRect;
-		Rect rRectClipp;
-		std::string lpszUText;
-		float fDeltaY;
-		float fSpeedScrollY;
-		Color lCol;
-		PlatformDuration lTimeScroll;
-		PlatformDuration lTimeOut;
+		Font * font;
+		Rect bounds;
+		Rect clipRect;
+		std::string text;
+		float scrollPosition;
+		float scrollSpeed;
+		Color color;
+		PlatformDuration scrollDelay;
+		PlatformDuration displayTime;
 		
 	};
 	

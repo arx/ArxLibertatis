@@ -52,9 +52,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/log/Logger.h"
 
 
-bool TextManager::AddText(Font * font, std::string && text, const Rect & bbox, Color color,
-                          PlatformDuration displayTime, PlatformDuration scrollTime,
-                          float scrollSpeed, int nLineClipp) {
+bool TextManager::AddText(Font * font, std::string && text, const Rect & bounds, Color color,
+                          PlatformDuration displayTime, PlatformDuration scrollDelay,
+                          float scrollSpeed, int maxLines) {
 	
 	if(text.empty()) {
 		return false;
@@ -64,56 +64,57 @@ bool TextManager::AddText(Font * font, std::string && text, const Rect & bbox, C
 		LogWarning << "Adding text with NULL font.";
 		return false;
 	}
-
-	arx_assert(!bbox.empty());
+	
+	arx_assert(!bounds.empty());
 	
 	ManagedText & entry = m_entries.emplace_back();
 	
-	entry.pFont = font;
-	entry.lpszUText = std::move(text);
-	entry.rRect = bbox;
-	entry.lCol = color;
-	entry.lTimeScroll = scrollTime;
-	entry.fDeltaY = 0.f;
-	entry.fSpeedScrollY = scrollSpeed;
-	entry.lTimeOut = displayTime;
-	entry.rRectClipp = entry.rRect;
+	entry.font = font;
+	entry.text = std::move(text);
+	entry.bounds = bounds;
+	entry.color = color;
+	entry.scrollDelay = scrollDelay;
+	entry.scrollPosition = 0.f;
+	entry.scrollSpeed = scrollSpeed;
+	entry.displayTime = displayTime;
+	entry.clipRect = entry.bounds;
 	
-	if(nLineClipp) {
-		Vec2i sSize = font->getTextSize(entry.lpszUText);
-		sSize.y *= nLineClipp;
-		entry.rRectClipp.bottom = entry.rRect.top + sSize.y;
+	if(maxLines) {
+		entry.clipRect.bottom = entry.bounds.top + font->getTextSize(entry.text).height() * maxLines;
 	}
 	
 	return true;
 }
 
 bool TextManager::AddText(Font * font, std::string && text, Vec2i pos, Color color) {
-	Rect bbox;
-	bbox.left = pos.x;
-	bbox.top = pos.y;
-	bbox.right = Rect::Limits::max();
-	bbox.bottom = Rect::Limits::max();
-	return AddText(font, std::move(text), bbox, color);
+	Rect bounds;
+	bounds.left = pos.x;
+	bounds.top = pos.y;
+	bounds.right = Rect::Limits::max();
+	bounds.bottom = Rect::Limits::max();
+	return AddText(font, std::move(text), bounds, color);
 }
 
 void TextManager::Update(PlatformDuration delta) {
 	
 	m_entries.erase(std::remove_if( m_entries.begin(), m_entries.end(), [](const ManagedText & text) {
-		return text.lTimeOut < 0;
+		return text.displayTime < 0;
 	}), m_entries.end());
 	
 	for(ManagedText & entry : m_entries ) {
 		
-		entry.lTimeOut -= delta;
+		entry.displayTime -= delta;
 		
-		if(entry.lTimeScroll < 0 && entry.fDeltaY < float(entry.rRect.bottom - entry.rRectClipp.bottom)) {
-			entry.fDeltaY += entry.fSpeedScrollY * toMs(delta);
-			if(entry.fDeltaY >= (entry.rRect.bottom - entry.rRectClipp.bottom)) {
-				entry.fDeltaY = static_cast<float>(entry.rRect.bottom - entry.rRectClipp.bottom);
+		if(entry.scrollDelay >= 0) {
+			entry.scrollDelay -= delta;
+			continue;
+		}
+		
+		if(entry.scrollPosition < float(entry.bounds.bottom - entry.clipRect.bottom)) {
+			entry.scrollPosition += entry.scrollSpeed * toMs(delta);
+			if(entry.scrollPosition >= entry.bounds.bottom - entry.clipRect.bottom) {
+				entry.scrollPosition = static_cast<float>(entry.bounds.bottom - entry.clipRect.bottom);
 			}
-		} else {
-			entry.lTimeScroll -= delta;
 		}
 		
 	}
@@ -124,23 +125,22 @@ void TextManager::Render() {
 	
 	for(ManagedText & entry : m_entries ) {
 		
-		const Rect * pRectClip = nullptr;
-		if(entry.rRectClipp.right != Rect::Limits::max() || entry.rRectClipp.bottom != Rect::Limits::max()) {
-			pRectClip = &entry.rRectClipp;
+		const Rect * clipRect = nullptr;
+		if(entry.clipRect.right != Rect::Limits::max() || entry.clipRect.bottom != Rect::Limits::max()) {
+			clipRect = &entry.clipRect;
 		}
 		
 		float maxx;
-		if(entry.rRect.right == Rect::Limits::max()) {
+		if(entry.bounds.right == Rect::Limits::max()) {
 			maxx = std::numeric_limits<float>::infinity();
 		} else {
-			maxx = static_cast<float>(entry.rRect.right);
+			maxx = static_cast<float>(entry.bounds.right);
 		}
 		
-		long height = ARX_UNICODE_DrawTextInRect(entry.pFont,
-		                                         Vec2f(entry.rRect.left, entry.rRect.top - entry.fDeltaY),
-		                                         maxx, entry.lpszUText, entry.lCol, pRectClip);
+		Vec2f pos(entry.bounds.left, entry.bounds.top - entry.scrollPosition);
+		long height = ARX_UNICODE_DrawTextInRect(entry.font, pos, maxx, entry.text, entry.color, clipRect);
 		
-		entry.rRect.bottom = entry.rRect.top + height;
+		entry.bounds.bottom = entry.bounds.top + height;
 		
 	}
 	
