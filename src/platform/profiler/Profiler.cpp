@@ -213,11 +213,9 @@ void Profiler::writeProfileLog() {
 	std::vector<SavedProfilerThread> threadsData;
 	std::vector<SavedProfilerSample> samplesData;
 	
-	for(ThreadInfos::const_iterator it = m_threads.begin(); it != m_threads.end(); ++it) {
-		const ProfilerThread & thread = it->second;
-		
+	for(auto & entry : m_threads) {
+		const ProfilerThread & thread = entry.second;
 		u32 stringIndex = stringTable.add(thread.threadName);
-		
 		SavedProfilerThread saved;
 		saved.stringIndex = stringIndex;
 		saved.threadId = thread.threadId;
