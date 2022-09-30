@@ -327,8 +327,6 @@ void PolyBoomDraw() {
 		return decal.elapsed >= decal.duration;
 	});
 	
-	GRenderer->SetFogColor(Color::none); // TODO: not handled by RenderMaterial
-	
 	for(const Decal & decal : g_decals) {
 		
 		arx_assume(decal.duration > 0 && decal.duration <= ShortGameDuration::max() / 2);
@@ -411,7 +409,5 @@ void PolyBoomDraw() {
 		}
 		
 	}
-	
-	GRenderer->SetFogColor(g_fogColor);
 	
 }
