@@ -329,12 +329,14 @@ namespace ARX_ANONYMOUS_NAMESPACE {
  * Unlike arx_assert(Expression) this macro also tells the compiler to assume that Expression is always true
  * in release builds. Expression should be simple because it may otherwise end up being executed in release
  * builds if the compiler cannot prove it does not have any side effects.
+ *
+ * \note Clang provides __builtin_assume() which might seem like it would be a good fit here but unfortnately
+ * only works if all functions called in the expression have been manually marked with [[gnu::pure]] or
+ * [[gnu::const]] - constexpr and inline definition is not enough.
  */
 #ifdef ARX_DEBUG
 	#define arx_assume(Expression) arx_assert(Expression)
-#elif ARX_HAVE_BUILTIN_ASSUME
-	#define arx_assume(Expression) __builtin_assume(Expression)
-#elif ARX_HAVE_ASSUME
+#elif ARX_COMPILER_MSVC
 	#define arx_assume(Expression) __assume(Expression)
 #elif ARX_HAVE_BUILTIN_UNREACHABLE
 	#define arx_assume(Expression) ((Expression) ? (void)0 : __builtin_unreachable())
@@ -379,9 +381,7 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 	#define arx_unreachable() arx_assert_impl(false, "unreachable code", nullptr)
 #elif ARX_HAVE_BUILTIN_UNREACHABLE
 	#define arx_unreachable() __builtin_unreachable()
-#elif ARX_HAVE_BUILTIN_ASSUME
-	#define arx_unreachable() __builtin_assume(0)
-#elif ARX_HAVE_ASSUME
+#elif ARX_COMPILER_MSVC
 	#define arx_unreachable() __assume(0)
 #else
 	#define arx_unreachable() do { } while(true)

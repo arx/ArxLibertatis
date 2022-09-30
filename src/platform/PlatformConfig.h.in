@@ -30,8 +30,6 @@
 #cmakedefine01 ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
 // __attribute__((malloc))
 #cmakedefine01 ARX_HAVE_ATTRIBUTE_MALLOC
-// __builtin_assume(e)
-#cmakedefine01 ARX_HAVE_BUILTIN_ASSUME
 // __builtin_assume_aligned(e, n)
 #cmakedefine01 ARX_HAVE_BUILTIN_ASSUME_ALIGNED
 // __builtin_trap()
@@ -40,10 +38,6 @@
 #cmakedefine01 ARX_HAVE_BUILTIN_UNREACHABLE
 // __builtin_expect(e, v)
 #cmakedefine01 ARX_HAVE_BUILTIN_EXPECT
-
-// MSVC extensions
-// __assume(e)
-#cmakedefine01 ARX_HAVE_ASSUME
 
 // Code generation options
 #cmakedefine01 BUILD_PROFILER_INSTRUMENT

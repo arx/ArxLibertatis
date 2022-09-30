@@ -660,9 +660,6 @@ endif()
 
 if(MSVC)
 	
-	# Compiler builtins & language extensions
-	set(ARX_HAVE_ASSUME 1)
-	
 	# Standard library features
 	set(ARX_HAVE_ALIGNED_MALLOC 1)
 	set(ARX_HAVE_ALIGNED_FREE 1)
@@ -713,10 +710,6 @@ else(MSVC)
 	check_builtin(ARX_HAVE_ATTRIBUTE_ASSUME_ALIGNED "__attribute__((assume_aligned(n)))")
 	check_builtin(ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF  "__attribute__((format(printf, i, j)))")
 	check_builtin(ARX_HAVE_ATTRIBUTE_MALLOC         "__attribute__((malloc))")
-	check_builtin(ARX_HAVE_BUILTIN_ASSUME           "__builtin_assume")
-	if(NOT ARX_HAVE_BUILTIN_ASSUME)
-		check_builtin(ARX_HAVE_ASSUME                 "__assume")
-	endif()
 	check_builtin(ARX_HAVE_BUILTIN_ASSUME_ALIGNED   "__builtin_assume_aligned")
 	check_builtin(ARX_HAVE_BUILTIN_TRAP             "__builtin_trap")
 	if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND
