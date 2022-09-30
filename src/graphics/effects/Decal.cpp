@@ -401,7 +401,7 @@ void PolyBoomDraw() {
 			
 		}
 		
-		mat.setTexture(decal.material );
+		mat.setTexture(decal.material);
 		
 		drawTriangle(mat, vertices.data());
 		if(nbvert == 4) {

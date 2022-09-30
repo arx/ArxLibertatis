@@ -61,4 +61,4 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags);
 
 void PolyBoomDraw();
 
-#endif // ARX_GRAPHICS_EFFECTS_POLYBOOM_H
+#endif // ARX_GRAPHICS_EFFECTS_DECAL_H
