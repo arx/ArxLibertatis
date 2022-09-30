@@ -32,8 +32,8 @@
 #include "game/Spells.h"
 #include "game/effect/ParticleSystems.h"
 
+#include "graphics/effects/Decal.h"
 #include "graphics/effects/Fog.h"
-#include "graphics/effects/PolyBoom.h"
 #include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleTextures.h"

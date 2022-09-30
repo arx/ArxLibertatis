@@ -75,7 +75,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/texture/Texture.h"
 #include "graphics/texture/TextureStage.h"
 #include "graphics/particle/ParticleEffects.h"
-#include "graphics/effects/PolyBoom.h"
+#include "graphics/effects/Decal.h"
 #include "graphics/effects/Halo.h"
 
 #include "gui/Dragging.h"

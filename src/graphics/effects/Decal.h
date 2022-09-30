@@ -44,8 +44,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 
-#ifndef ARX_GRAPHICS_EFFECTS_POLYBOOM_H
-#define ARX_GRAPHICS_EFFECTS_POLYBOOM_H
+#ifndef ARX_GRAPHICS_EFFECTS_DECAL_H
+#define ARX_GRAPHICS_EFFECTS_DECAL_H
+
+#include <stddef.h>
 
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"

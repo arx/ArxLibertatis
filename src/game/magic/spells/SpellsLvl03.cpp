@@ -31,7 +31,7 @@
 #include "game/effect/ParticleSystems.h"
 
 #include "graphics/Raycast.h"
-#include "graphics/effects/PolyBoom.h"
+#include "graphics/effects/Decal.h"
 #include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleParams.h"

@@ -1032,6 +1032,7 @@ set(GRAPHICS_SOURCES
 	src/graphics/data/TextureContainer.cpp
 	src/graphics/effects/BlobShadow.cpp
 	src/graphics/effects/Cabal.cpp
+	src/graphics/effects/Decal.cpp
 	src/graphics/effects/Fade.cpp
 	src/graphics/effects/Field.cpp
 	src/graphics/effects/Fissure.cpp
@@ -1042,7 +1043,6 @@ set(GRAPHICS_SOURCES
 	src/graphics/effects/LightFlare.cpp
 	src/graphics/effects/Lightning.cpp
 	src/graphics/effects/MagicMissile.cpp
-	src/graphics/effects/PolyBoom.cpp
 	src/graphics/effects/RotatingCone.cpp
 	src/graphics/effects/Trail.cpp
 	src/graphics/font/Font.cpp
