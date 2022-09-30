@@ -189,7 +189,7 @@ void FireballSpell::Launch() {
 		}
 		if(Entity * entityTarget = entities.get(caster->targetinfo)) {
 			const Vec3f & end = entityTarget->pos;
-			float d = glm::distance(Vec2f(end.x, end.z), Vec2f(start.x, start.z));
+			float d = glm::distance(getXZ(end), getXZ(start));
 			anglea = glm::degrees(getAngle(start.y, start.z, end.y, end.z + d));
 		}
 		angleb = caster->angle.getYaw();
@@ -249,7 +249,8 @@ void FireballSpell::Update() {
 				Vec3f * p1 = &eCurPos;
 				Vec3f p2 = entityTarget->pos;
 				p2.y -= 60.f;
-				afAlpha = 360.f - (glm::degrees(getAngle(p1->y, p1->z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z)))));
+				float d = glm::distance(getXZ(p2), getXZ(*p1));
+				afAlpha = 360.f - (glm::degrees(getAngle(p1->y, p1->z, p2.y, p2.z + d)));
 			}
 			
 		}
