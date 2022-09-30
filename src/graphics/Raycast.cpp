@@ -40,8 +40,8 @@ void dbg_addPoly(EERIEPOLY * poly, Vec3f hit, Color c);
 template <class F>
 static bool WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 	
-	Vec2f p1 = Vec2f(start.x, start.z);
-	Vec2f p2 = Vec2f(end.x, end.z);
+	Vec2f p1 = getXZ(start);
+	Vec2f p2 = getXZ(end);
 	Vec2f dir = p2 - p1;
 	
 	// Side dimensions of the square cell
@@ -208,7 +208,7 @@ struct ClosestHitRaycast {
 		// Determine hit grid cell coordinates
 		const Vec2f cellSide = g_backgroundTileSize;
 		Vec3f hitPos = start + closestHit * dir;
-		Vec2i hitTile = Vec2i(glm::floor(Vec2f(hitPos.x, hitPos.z) / cellSide));
+		Vec2i hitTile = Vec2i(glm::floor(getXZ(hitPos) / cellSide));
 		
 		// Abort the search if hit in this tile
 		// Otherwise hit is in the next tile, need to check other polygons in that tile
