@@ -276,7 +276,7 @@ void updateDraggedEntity() {
 		pos += Vec3f(0.f, threshold - std::min(result.offsetY - threshold, threshold), 0.f);
 	}
 	
-	ARX_INTERACTIVE_Teleport(entity, pos - Vec3f(result.offset.x, 0.f, result.offset.z), true);
+	ARX_INTERACTIVE_Teleport(entity, pos - toXZ(result.offset), true);
 	
 	if(!result.foundCollision || pos.y < player.pos.y) {
 		// Throw item if there is no collision withthin the maximum distance
@@ -321,7 +321,7 @@ void updateDraggedEntity() {
 			arx_assert(!locateInInventories(unstackedEntity));
 			unstackedEntity->show = SHOW_FLAG_IN_SCENE;
 			if(g_dragStatus == EntityDragStatus_Throw) {
-				Vec3f start = player.pos + Vec3f(0.f, 80.f, 0.f) - Vec3f(result.offset.x, 0.f, result.offset.z);
+				Vec3f start = player.pos + Vec3f(0.f, 80.f, 0.f) - toXZ(result.offset);
 				Vec3f direction = glm::normalize(unstackedEntity->pos - start + arx::randomVec(-1.f, 1.f) * delta);
 				unstackedEntity->pos = start;
 				EERIE_PHYSICS_BOX_Launch(unstackedEntity->obj, unstackedEntity->pos, unstackedEntity->angle, direction);
@@ -335,7 +335,7 @@ void updateDraggedEntity() {
 	
 	if(g_dragStatus == EntityDragStatus_Throw) {
 		
-		Vec3f start = player.pos + Vec3f(0.f, 80.f, 0.f) - Vec3f(result.offset.x, 0.f, result.offset.z);
+		Vec3f start = player.pos + Vec3f(0.f, 80.f, 0.f) - toXZ(result.offset);
 		Vec3f direction = glm::normalize(entity->pos - start);
 		entity->pos = start;
 		EERIE_PHYSICS_BOX_Launch(entity->obj, entity->pos, entity->angle, direction);
