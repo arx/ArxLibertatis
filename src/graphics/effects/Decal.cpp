@@ -85,14 +85,18 @@ enum DecalType : u8 {
 
 struct Decal {
 	
-	EERIEPOLY * polygon;
-	TextureContainer * material;
 	Vec2f uv[4];
 	Color3f rgb;
 	DecalType type;
 	bool fastdecay;
+	TextureContainer * material;
+	EERIEPOLY * polygon;
 	ShortGameDuration elapsed;
 	ShortGameDuration duration;
+	
+	Decal()
+		: fastdecay(false)
+	{ }
 	
 };
 
@@ -144,7 +148,6 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 			
 			Decal & decal = g_decals.emplace_back();
 			decal.type = ScorchMarkDecal;
-			decal.fastdecay = false;
 			decal.polygon = &polygon;
 			decal.material = g_particleTextures.boom;
 			decal.duration = 10s;
@@ -192,55 +195,28 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 		}
 	}
 	
-	Vec3f poss = sp.origin;
 	float py;
-	if(!CheckInPoly(poss + Vec3f(0.f, -40, 0.f), &py)) {
+	if(!CheckInPoly(sp.origin + Vec3f(0.f, -40, 0.f), &py)) {
 		return;
 	}
-	
 	if(flags & 1) {
-		py = poss.y;
+		py = sp.origin.y;
 	}
 	
 	EERIEPOLY TheoricalSplat;
-	TheoricalSplat.v[0].p.x = -splatsize;
-	TheoricalSplat.v[0].p.y = py;
-	TheoricalSplat.v[0].p.z = -splatsize;
-	TheoricalSplat.v[1].p.x = -splatsize;
-	TheoricalSplat.v[1].p.y = py;
-	TheoricalSplat.v[1].p.z = splatsize;
-	TheoricalSplat.v[2].p.x = splatsize;
-	TheoricalSplat.v[2].p.y = py;
-	TheoricalSplat.v[2].p.z = splatsize;
-	TheoricalSplat.v[3].p.x = splatsize;
-	TheoricalSplat.v[3].p.y = py;
-	TheoricalSplat.v[3].p.z = -splatsize;
 	TheoricalSplat.type = POLY_QUAD;
+	TheoricalSplat.v[0].p = sp.origin + Vec3f(-splatsize, 0.f, -splatsize);
+	TheoricalSplat.v[1].p = sp.origin + Vec3f(-splatsize, 0.f, splatsize);
+	TheoricalSplat.v[2].p = sp.origin + Vec3f(splatsize, 0.f, splatsize);
+	TheoricalSplat.v[3].p = sp.origin + Vec3f(splatsize, 0.f, -splatsize);
 	
-	Vec3f RealSplatStart(-size, py, -size);
-	
-	TheoricalSplat.v[0].p.x += poss.x;
-	TheoricalSplat.v[0].p.z += poss.z;
-	
-	TheoricalSplat.v[1].p.x += poss.x;
-	TheoricalSplat.v[1].p.z += poss.z;
-	
-	TheoricalSplat.v[2].p.x += poss.x;
-	TheoricalSplat.v[2].p.z += poss.z;
-	
-	TheoricalSplat.v[3].p.x += poss.x;
-	TheoricalSplat.v[3].p.z += poss.z;
-	
-	RealSplatStart.x += poss.x;
-	RealSplatStart.z += poss.z;
-	
-	float div = 1.f / (size * 2);
+	Vec3f RealSplatStart = toXZ(sp.origin) + toXZ(-size);
 	
 	for(Decal & decal : g_decals) {
 		decal.fastdecay = true;
 	}
 	
-	for(auto tile : g_tiles->tilesAround(g_tiles->getTile(poss), 3)) {
+	for(auto tile : g_tiles->tilesAround(g_tiles->getTile(sp.origin), 3)) {
 		for(EERIEPOLY & polygon : tile.intersectingPolygons()) {
 			
 			if((flags & 2) && !(polygon.type & POLY_WATER)) {
@@ -254,22 +230,17 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 			size_t nbvert = (polygon.type & POLY_QUAD) ? 4 : 3;
 			
 			bool oki = false;
-			
 			for(size_t k = 0; k < nbvert; k++) {
-				
-				if(PointIn2DPolyXZ(&TheoricalSplat, polygon.v[k].p.x, polygon.v[k].p.z)
-				   && glm::abs(polygon.v[k].p.y - py) < 100.f) {
+				Vec3f p = polygon.v[k].p;
+				if(glm::abs(p.y - py) >= 100.f) {
+					continue;
+				}
+				Vec3f midpoint = (p + polygon.center) * 0.5f;
+				if(PointIn2DPolyXZ(&TheoricalSplat, p.x, p.z) ||
+				   PointIn2DPolyXZ(&TheoricalSplat, midpoint.x, midpoint.z)) {
 					oki = true;
 					break;
 				}
-				
-				if(PointIn2DPolyXZ(&TheoricalSplat, (polygon.v[k].p.x + polygon.center.x) * 0.5f,
-				                                    (polygon.v[k].p.z + polygon.center.z) * 0.5f)
-				   && glm::abs(polygon.v[k].p.y - py) < 100.f) {
-					oki = true;
-					break;
-				}
-				
 			}
 			
 			if(!oki && PointIn2DPolyXZ(&TheoricalSplat, polygon.center.x, polygon.center.z)
@@ -285,25 +256,22 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 			
 			if(flags & 2) {
 				decal.type = WaterDecal;
-				long num = Random::get(0, 2);
-				decal.material = g_particleTextures.water_splat[num];
+				decal.material = g_particleTextures.water_splat[Random::get(0, 2)];
 				decal.duration = 1500ms;
 			} else {
 				decal.type = BloodDecal;
-				long num = Random::get(0, 5);
-				decal.material = g_particleTextures.bloodsplat[num];
+				decal.material = g_particleTextures.bloodsplat[Random::get(0, 5)];
 				decal.duration = 400ms * size;
 			}
 			
-			decal.fastdecay = false;
 			decal.polygon = &polygon;
 			decal.rgb = col;
 			
 			for(size_t k = 0; k < nbvert; k++) {
-				float vdiff = glm::abs(polygon.v[k].p.y - RealSplatStart.y);
-				decal.uv[k] = getXZ(polygon.v[k].p - RealSplatStart) * div;
-				decal.uv[k].x += vdiff * div * (decal.uv[k].x < 0.5f ? -1.f : 1.f);
-				decal.uv[k].y += vdiff * div * (decal.uv[k].y < 0.5f ? -1.f : 1.f);
+				float vdiff = glm::abs(polygon.v[k].p.y - py);
+				decal.uv[k] = getXZ(polygon.v[k].p - RealSplatStart) / (size * 2.f);
+				decal.uv[k].x += vdiff / (size * 2.f) * (decal.uv[k].x < 0.5f ? -1.f : 1.f);
+				decal.uv[k].y += vdiff / (size * 2.f) * (decal.uv[k].y < 0.5f ? -1.f : 1.f);
 			}
 			
 		}
