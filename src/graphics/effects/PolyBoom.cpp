@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/PolyBoom.h"
 
 #include <array>
+#include <type_traits>
 
 #include "animation/AnimationRender.h"
 
@@ -90,6 +91,8 @@ struct POLYBOOM {
 	GameInstant timecreation;
 	GameDuration tolive;
 };
+
+static_assert(std::is_trivially_copyable_v<POLYBOOM>);
 
 static const size_t MAX_POLYBOOM = 4000;
 static std::vector<POLYBOOM> polyboom(MAX_POLYBOOM);
