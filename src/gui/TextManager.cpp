@@ -97,11 +97,11 @@ bool TextManager::AddText(Font * font, std::string && text, Vec2i pos, Color col
 
 void TextManager::Update(PlatformDuration delta) {
 	
-	m_entries.erase(std::remove_if( m_entries.begin(), m_entries.end(), [](const ManagedText & text) {
+	m_entries.erase(std::remove_if(m_entries.begin(), m_entries.end(), [](const ManagedText & text) {
 		return text.displayTime < 0;
 	}), m_entries.end());
 	
-	for(ManagedText & entry : m_entries ) {
+	for(ManagedText & entry : m_entries) {
 		
 		entry.displayTime -= delta;
 		
@@ -123,7 +123,7 @@ void TextManager::Update(PlatformDuration delta) {
 
 void TextManager::Render() {
 	
-	for(ManagedText & entry : m_entries ) {
+	for(ManagedText & entry : m_entries) {
 		
 		const Rect * clipRect = nullptr;
 		if(entry.clipRect.right != Rect::Limits::max() || entry.clipRect.bottom != Rect::Limits::max()) {
