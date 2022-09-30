@@ -95,7 +95,7 @@ struct POLYBOOM {
 static_assert(std::is_trivially_copyable_v<POLYBOOM>);
 
 static const size_t MAX_POLYBOOM = 4000;
-static std::vector<POLYBOOM> polyboom(MAX_POLYBOOM);
+static std::vector<POLYBOOM> polyboom;
 
 static const float BOOM_RADIUS = 420.f;
 
