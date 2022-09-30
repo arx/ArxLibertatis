@@ -66,7 +66,7 @@ void TileData::computeIntersectingPolygons() {
 		for(auto neighbour : tilesAround(tile, 2)) {
 			for(EERIEPOLY & ep2 : neighbour.polygons()) {
 				
-				if(fartherThan(bbcenter, Vec2f(ep2.center.x, ep2.center.z), 120.f)) {
+				if(fartherThan(bbcenter, getXZ(ep2.center), 120.f)) {
 					continue;
 				}
 				
