@@ -78,28 +78,29 @@ void ANCHOR_BLOCK_By_IO(Entity * io, bool blocked) {
 		if(fartherThan(ad.pos, io->pos, 600.f) || !closerThan(getXZ(io->pos), getXZ(ad.pos), 440.f)) {
 			continue;
 		}
-			
-		EERIEPOLY ep;
-		ep.type = 0;
 		
-		for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
+		for(const EERIE_FACE & face : io->obj->facelist) {
+			
+			EERIEPOLY ep;
+			ep.type = 0;
+			
 			float cx = 0;
 			float cz = 0;
-
-			for(long kk = 0; kk < 3; kk++) {
-				ep.v[kk].p = io->obj->vertexlist[io->obj->facelist[ii].vid[kk]].v + io->pos;
+			
+			for(size_t kk = 0; kk < 3; kk++) {
+				ep.v[kk].p = io->obj->vertexlist[face.vid[kk]].v + io->pos;
 				cx += ep.v[kk].p.x;
 				cz += ep.v[kk].p.z;
 			}
-
+			
 			cx *= 1.f / 3;
 			cz *= 1.f / 3;
-
-			for(int kk = 0; kk < 3; kk++) {
+			
+			for(size_t kk = 0; kk < 3; kk++) {
 				ep.v[kk].p.x = (ep.v[kk].p.x - cx) * 3.5f + cx;
 				ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
 			}
-
+			
 			if(PointIn2DPolyXZ(&ep, ad.pos.x, ad.pos.z)) {
 				ad.blocked = blocked;
 			}
