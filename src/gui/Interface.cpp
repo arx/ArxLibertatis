@@ -559,7 +559,7 @@ static bool isPlayerLookingAtEnemy() {
 		}
 		
 		// Determine the direction of the entity from the player
-		Vec3f dir = glm::normalize(Vec3f(npc.pos.x, 0.f, npc.pos.z) - Vec3f(player.pos.x, 0.f, player.pos.z));
+		Vec3f dir = glm::normalize(toXZ(npc.pos) - toXZ(player.pos));
 		float cangle = glm::dot(dir, angleToVectorXZ(player.angle.getYaw()));
 		
 		if(cangle > glm::cos(maxLookAtAngle)) {
