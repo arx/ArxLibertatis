@@ -344,12 +344,6 @@ void PolyBoomDraw() {
 	
 	GRenderer->SetFogColor(Color::none); // TODO: not handled by RenderMaterial
 	
-	RenderMaterial mat;
-	mat.setDepthTest(true);
-	mat.setDepthBias(8);
-	mat.setLayer(RenderMaterial::Decal);
-	mat.setWrapMode(TextureStage::WrapClamp);
-	
 	for(const Decal & decal : g_decals) {
 		
 		arx_assume(decal.duration > 0 && decal.duration <= ShortGameDuration::max() / 2);
@@ -359,110 +353,83 @@ void PolyBoomDraw() {
 		
 		size_t nbvert = (decal.polygon->type & POLY_QUAD) ? 4 : 3;
 		
+		std::array<TexturedVertexUntransformed, 4> vertices;
+		
+		RenderMaterial mat;
+		mat.setDepthTest(true);
+		mat.setDepthBias(8);
+		mat.setLayer(RenderMaterial::Decal);
+		mat.setWrapMode(TextureStage::WrapClamp);
+		
 		switch(decal.type) {
 			
 			case ScorchMarkDecal: {
 				
-				float tt = t * 0.8f;
-				ColorRGBA col = (player.m_improve ? (Color3f::red * (tt * 0.5f)) : Color3f::gray(tt)).toRGB();
-				
-				std::array<TexturedVertexUntransformed, 4> ltv;
-				
+				ColorRGBA color = (player.m_improve ? Color3f::red * (t * 0.4f) : Color3f::gray(t * 0.8f)).toRGB();
 				for(size_t i = 0; i < nbvert; i++) {
-					ltv[i].p = decal.polygon->v[i].p;
-					ltv[i].uv.x = decal.u[i];
-					ltv[i].uv.y = decal.v[i];
-					ltv[i].color = col;
+					vertices[i].p = decal.polygon->v[i].p;
+					vertices[i].uv.x = decal.u[i];
+					vertices[i].uv.y = decal.v[i];
+					vertices[i].color = color;
 				}
 				
-				if(player.m_improve) {
-					mat.setBlendType(RenderMaterial::Additive);
-				} else {
-					mat.setBlendType(RenderMaterial::Subtractive);
-				}
-				mat.setTexture(g_particleTextures.boom);
-				
-				drawTriangle(mat, ltv.data());
-				if(nbvert == 4) {
-					drawTriangle(mat, ltv.data() + 1);
-				}
+				mat.setBlendType(player.m_improve ? RenderMaterial::Additive : RenderMaterial::Subtractive);
 				
 				break;
 			}
 			
 			case BloodDecal: {
 				
-				float tt = t;
-				float tr = std::max(1.f, tt * 2 - 0.5f);
-				ColorRGBA col = Color4f(decal.rgb * tt, glm::clamp(tt * 1.5f, 0.f, 1.f)).toRGBA();
-				
-				std::array<TexturedVertexUntransformed, 4> ltv;
+				float tr = std::max(1.f, t * 2.f - 0.5f);
+				ColorRGBA col = Color4f(decal.rgb * t, glm::clamp(t * 1.5f, 0.f, 1.f)).toRGBA();
 				
 				for(size_t i = 0; i < nbvert; i++) {
-					ltv[i].p = decal.polygon->v[i].p;
-					ltv[i].uv.x = ( decal.u[i] - 0.5f) * tr + 0.5f;
-					ltv[i].uv.y = ( decal.v[i] - 0.5f) * tr + 0.5f;
-					ltv[i].color = col;
+					vertices[i].p = decal.polygon->v[i].p;
+					vertices[i].uv.x = (decal.u[i] - 0.5f) * tr + 0.5f;
+					vertices[i].uv.y = (decal.v[i] - 0.5f) * tr + 0.5f;
+					vertices[i].color = col;
 				}
 				
 				mat.setBlendType(RenderMaterial::Subtractive2);
-				mat.setTexture(decal.tc);
-				
-				drawTriangle(mat, ltv.data());
-				if(nbvert == 4) {
-					drawTriangle(mat, ltv.data() + 1);
-				}
 				
 				break;
 			}
 			
 			case WaterDecal: {
 				
-				float tt = t;
-				float tr = std::max(1.f, tt * 2 - 0.5f);
-				float ttt = tt * 0.5f;
-				ColorRGBA col = (decal.rgb * ttt).toRGB();
+				float tr = std::max(1.f, t * 2.f - 0.5f);
+				ColorRGBA col = (decal.rgb * (t * 0.5f)).toRGB();
 				
-				std::array<TexturedVertexUntransformed, 4> ltv;
-				
+				bool cullXlow = true, cullXhigh = true, cullYlow = true, cullYhigh = true;
 				for(size_t i = 0; i < nbvert; i++) {
-					ltv[i].p = decal.polygon->v[i].p;
-					ltv[i].uv.x = ( decal.u[i] - 0.5f) * tr + 0.5f;
-					ltv[i].uv.y = ( decal.v[i] - 0.5f) * tr + 0.5f;
-					ltv[i].color = col;
+					vertices[i].p = decal.polygon->v[i].p;
+					vertices[i].uv.x = (decal.u[i] - 0.5f) * tr + 0.5f;
+					vertices[i].uv.y = (decal.v[i] - 0.5f) * tr + 0.5f;
+					vertices[i].color = col;
+					cullXlow = cullXlow && vertices[i].uv.x < 0.f;
+					cullXhigh = cullXhigh && vertices[i].uv.x > 1.f;
+					cullYlow = cullYlow && vertices[i].uv.y < 0.f;
+					cullYhigh = cullYhigh && vertices[i].uv.y > 1.f;
 				}
 				
-				if(ltv[0].uv.x < 0.f && ltv[1].uv.x < 0.f && ltv[2].uv.x < 0.f
-				   && (nbvert != 4 || ltv[3].uv.x < 0.f)) {
-					break;
-				}
-				
-				if(ltv[0].uv.y < 0.f && ltv[1].uv.y < 0.f && ltv[2].uv.y < 0.f
-				   && (nbvert != 4 || ltv[3].uv.y < 0.f)) {
-					break;
-				}
-				
-				if(ltv[0].uv.x > 1.f && ltv[1].uv.x > 1.f && ltv[2].uv.x > 1.f
-				   && (nbvert != 4 || ltv[3].uv.x > 1.f)) {
-					break;
-				}
-				
-				if(ltv[0].uv.y > 1.f && ltv[1].uv.y > 1.f && ltv[2].uv.y > 1.f
-				   && (nbvert != 4 || ltv[3].uv.y > 1.f)) {
-					break;
+				if(cullXlow || cullXhigh || cullYlow || cullYhigh) {
+					continue;
 				}
 				
 				mat.setBlendType(RenderMaterial::Screen);
-				mat.setTexture(decal.tc);
-				
-				drawTriangle(mat, ltv.data());
-				if(nbvert == 4) {
-					drawTriangle(mat, ltv.data() + 1);
-				}
 				
 				break;
 			}
 			
+			default: arx_unreachable();
+			
+		}
+		
+		mat.setTexture(decal.tc);
+		
+		drawTriangle(mat, vertices.data());
+		if(nbvert == 4) {
+			drawTriangle(mat, vertices.data() + 1);
 		}
 		
 	}
