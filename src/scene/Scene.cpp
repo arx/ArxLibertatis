@@ -1392,48 +1392,42 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 	room.pVertexBuffer->unlock();
 }
 
-
 static void BackgroundRenderOpaque(size_t room_num) {
 	
 	ARX_PROFILE_FUNC();
 	
 	Room & room = g_rooms->rooms[room_num];
 	
-	std::vector<TextureContainer *>::const_iterator itr;
-	for(itr = room.ppTextureContainer.begin(); itr != room.ppTextureContainer.end(); ++itr) {
+	for(TextureContainer & material : util::dereference(room.ppTextureContainer)) {
 		
-		TextureContainer * pTexCurr = *itr;
-		const SMY_ARXMAT & roomMat = pTexCurr->m_roomBatches[room_num];
+		const SMY_ARXMAT & roomMat = material.m_roomBatches[room_num];
+		if(!roomMat.count[BatchBucket_Opaque]) {
+			continue;
+		}
+		
+		GRenderer->SetTexture(0, &material);
 		
 		RenderState baseState = render3D();
-		
-		GRenderer->SetTexture(0, pTexCurr);
-		baseState.setAlphaCutout(pTexCurr->m_pTexture && pTexCurr->m_pTexture->hasAlpha());
-		
+		baseState.setAlphaCutout(material.m_pTexture && material.m_pTexture->hasAlpha());
 		UseRenderState state(baseState);
 		
-		if(roomMat.count[BatchBucket_Opaque]) {
-			if (pTexCurr->userflags & POLY_METAL)
-				GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate2X);
-			else
-				GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
-			
-			room.pVertexBuffer->drawIndexed(
-				Renderer::TriangleList,
-				roomMat.uslNbVertex,
-				roomMat.uslStartVertex,
-				&room.indexBuffer[roomMat.offset[BatchBucket_Opaque]],
-				roomMat.count[BatchBucket_Opaque]);
-			
-			EERIEDrawnPolys += roomMat.count[BatchBucket_Opaque];
+		if(material.userflags & POLY_METAL) {
+			GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate2X);
+		} else {
+			GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
 		}
+		
+		room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex,
+		                                &room.indexBuffer[roomMat.offset[BatchBucket_Opaque]],
+		                                roomMat.count[BatchBucket_Opaque]);
+		
+		EERIEDrawnPolys += roomMat.count[BatchBucket_Opaque];
+		
 	}
 	
 	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
 	
 }
-
-//-----------------------------------------------------------------------------
 
 static constexpr std::array<BatchBucket, 4> transRenderOrder = {
 	BatchBucket_Blended,
