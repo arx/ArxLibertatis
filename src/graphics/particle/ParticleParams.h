@@ -45,7 +45,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_PARTICLE_PARTICLEPARAMS_H
 
 #include "graphics/Draw.h"
+#include "core/TimeTypes.h"
 #include "math/Vector.h"
+
 
 enum ParticleSpawnFlag {
 	PARTICLE_CIRCULAR = 1 << 0,
@@ -74,17 +76,19 @@ public:
 	float m_rotation;
 	
 	struct TextureInfo {
+		
 		bool  m_texLoop;
 		int   m_texNb;
-		int   m_texTime;
+		ShortGameDuration   m_texTime;
 		const char * m_texName;
 		
-		void set(const char * _pszTex, int _iNbTex, int _iTime) {
+		void set(const char * name, int count = 0, ShortGameDuration delay = 0) {
 			m_texLoop = true;
-			m_texName = _pszTex;
-			m_texNb = _iNbTex;
-			m_texTime = _iTime;
+			m_texName = name;
+			m_texNb = count;
+			m_texTime = delay;
 		}
+		
 	};
 	
 	TextureInfo m_texture;

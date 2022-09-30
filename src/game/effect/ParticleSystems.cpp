@@ -45,7 +45,7 @@ void particleParametersInit() {
 	cp.m_endSegment.m_color = Color4f(Color3f::blue * 0.47f, 0.04f);
 	cp.m_endSegment.m_colorRandom = Color4f::gray(0.2f, 0.2f);
 	
-	cp.m_texture.set("graph/particles/magicexplosion", 0, 500);
+	cp.m_texture.set("graph/particles/magicexplosion");
 	
 	cp.m_blendMode = RenderMaterial::Additive;
 	cp.m_spawnFlags = 0;
@@ -76,7 +76,7 @@ void particleParametersInit() {
 	cp.m_endSegment.m_color = Color4f::rgba(1.f, 0.17f, 0.47f, 0.04f);
 	cp.m_endSegment.m_colorRandom = Color4f::gray(0.2f, 0.2f);
 	
-	cp.m_texture.set("graph/particles/(fx)_mr", 0, 500);
+	cp.m_texture.set("graph/particles/(fx)_mr");
 	
 	cp.m_blendMode = RenderMaterial::Additive;
 	cp.m_spawnFlags = 0;
@@ -108,7 +108,7 @@ void particleParametersInit() {
 	cp.m_endSegment.m_colorRandom = Color4f(Color3f::blue * 0.16f, 0.f);
 	
 	cp.m_blendMode = RenderMaterial::Additive;
-	cp.m_texture.set("graph/particles/heal_0005", 0, 100);
+	cp.m_texture.set("graph/particles/heal_0005");
 	cp.m_spawnFlags = PARTICLE_CIRCULAR | PARTICLE_BORDER;
 	g_particleParameters[ParticleParam_Heal] = cp;
 	}
@@ -137,7 +137,7 @@ void particleParametersInit() {
 	cp.m_endSegment.m_colorRandom = Color4f::rgba(0.16f, 0.16f, 0.f, 0.f);
 
 	cp.m_blendMode = RenderMaterial::Additive;
-	cp.m_texture.set("graph/particles/create_food", 0, 100);
+	cp.m_texture.set("graph/particles/create_food");
 	cp.m_spawnFlags = PARTICLE_CIRCULAR | PARTICLE_BORDER;
 	
 	g_particleParameters[ParticleParam_CreateFood] = cp;
@@ -166,7 +166,7 @@ void particleParametersInit() {
 	cp.m_endSegment.m_color = Color4f::rgba(0.02f, 0.08f, 0.02f, 0.f);
 	cp.m_endSegment.m_colorRandom = Color4f(Color3f::green * 0.16f, 0.f);
 	cp.m_blendMode = RenderMaterial::Additive;
-	cp.m_texture.set("graph/particles/cure_poison", 0, 100);
+	cp.m_texture.set("graph/particles/cure_poison");
 	cp.m_spawnFlags = PARTICLE_CIRCULAR | PARTICLE_BORDER;
 	g_particleParameters[ParticleParam_CurePoison] = cp;
 	}
@@ -195,11 +195,10 @@ void particleParametersInit() {
 	cp.m_endSegment.m_sizeRandom = 3;
 	cp.m_endSegment.m_color = Color4f::gray(0.1f, 0.2f);
 	cp.m_endSegment.m_colorRandom = Color4f(Color3f::black, 0.4f);
-	cp.m_texture.m_texLoop = true;
 
 	cp.m_blendMode = RenderMaterial::AlphaAdditive;
 	cp.m_freq = 150;
-	cp.m_texture.set("graph/particles/firebase", 4, 100);
+	cp.m_texture.set("graph/particles/firebase", 4, 100ms);
 	cp.m_spawnFlags = 0;
 	
 	g_particleParameters[ParticleParam_FireFieldBase] = cp;
@@ -229,11 +228,10 @@ void particleParametersInit() {
 	cp.m_endSegment.m_sizeRandom = 10;
 	cp.m_endSegment.m_color = Color4f(Color3f::black, 0.2f);
 	cp.m_endSegment.m_colorRandom = Color4f(Color3f::black, 0.4f);
-	cp.m_texture.m_texLoop = false;
 
 	cp.m_blendMode = RenderMaterial::Additive;
 	cp.m_freq = 150;
-	cp.m_texture.set("graph/particles/fire", 0, 500);
+	cp.m_texture.set("graph/particles/fire");
 	cp.m_spawnFlags = 0;
 	
 	g_particleParameters[ParticleParam_FireFieldFlame] = cp;

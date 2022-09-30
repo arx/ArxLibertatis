@@ -117,7 +117,7 @@ void ParticleSystem::SetParams(const ParticleParams & params) {
 	GenerateMatrixUsingVector(eMat, eVect, 0);
 	
 	const ParticleParams::TextureInfo & texInfo = m_parameters.m_texture;
-	SetTexture(texInfo.m_texName, texInfo.m_texNb, std::chrono::milliseconds(texInfo.m_texTime));
+	SetTexture(texInfo.m_texName, texInfo.m_texNb, GameDuration(texInfo.m_texTime));
 	
 }
 
