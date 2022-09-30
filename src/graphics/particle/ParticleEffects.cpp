@@ -787,6 +787,8 @@ void ARX_PARTICLES_Update()  {
 			r = (fd <= 0.5f) ? 2.f * fd : 2.f - 2.f * fd;
 		}
 		
+		float size = part->size + part->sizeDelta * fd;
+		
 		if(!(part->m_flags & PARTICLE_2D)) {
 			
 			Sphere sp;
@@ -799,8 +801,7 @@ void ARX_PARTICLES_Update()  {
 			}
 			
 			if(part->m_flags & SPLAT_GROUND) {
-				float siz = part->size + part->sizeDelta * fd;
-				sp.radius = siz * 10.f;
+				sp.radius = size * 10.f;
 				if(CheckAnythingInSphere(sp, entities.player(), CAS_NO_NPC_COL)) {
 					if(Random::getf() < 0.9f) {
 						Color3f rgb = part->rgb;
@@ -813,8 +814,7 @@ void ARX_PARTICLES_Update()  {
 			}
 			
 			if(part->m_flags & SPLAT_WATER) {
-				float siz = part->size + part->sizeDelta * fd;
-				sp.radius = siz * Random::getf(10.f, 30.f);
+				sp.radius = size * Random::getf(10.f, 30.f);
 				if(CheckAnythingInSphere(sp, entities.player(), CAS_NO_NPC_COL)) {
 					if(Random::getf() < 0.9f) {
 						Color3f rgb = part->rgb * 0.5f;
@@ -856,8 +856,6 @@ void ARX_PARTICLES_Update()  {
 			tc = g_particleTextures.explo[glm::clamp(long(fd * animrange), 0l, animrange)];
 		}
 		
-		float siz = part->size + part->sizeDelta * fd;
-		
 		RenderMaterial mat;
 		mat.setTexture(tc);
 		mat.setDepthTest(!(part->m_flags & PARTICLE_NOZBUFFER));
@@ -874,13 +872,12 @@ void ARX_PARTICLES_Update()  {
 		float zpos = (part->m_flags & PARTICLE_ZDEC) ? 0.0001f : 2.f;
 		
 		if(part->m_flags & PARTICLE_2D) {
-			EERIEAddBitmap(mat, in, siz, siz, tc, color);
-		}  else if(part->m_flags & ROTATING) {
+			EERIEAddBitmap(mat, in, size, size, tc, color);
+		} else if(part->m_flags & ROTATING) {
 			float rott = MAKEANGLE(float(toMsi(now + GameDuration(elapsed))) * part->m_rotation); // TODO wat
-			float size = std::max(siz, 0.f);
-			EERIEAddSprite(mat, in, size, color, zpos, rott);
+			EERIEAddSprite(mat, in, std::max(size, 0.f), color, zpos, rott);
 		} else {
-			EERIEAddSprite(mat, in, siz, color, zpos);
+			EERIEAddSprite(mat, in, size, color, zpos);
 		}
 		
 		pcc--;
