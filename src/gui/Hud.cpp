@@ -982,10 +982,10 @@ void PrecastSpellsGui::draw() {
 	
 	UseRenderState state(render2D().blendAdditive());
 	
-	std::vector<PrecastSpellIconSlot>::iterator itr;
-	for(itr = m_icons.begin(); itr != m_icons.end(); ++itr) {
-		itr->draw();
+	for(PrecastSpellIconSlot & slot : m_icons) {
+		slot.draw();
 	}
+	
 }
 
 
