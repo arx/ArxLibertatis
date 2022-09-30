@@ -698,9 +698,7 @@ void ConfuseSpell::Update() {
 			break;
 		}
 		
-		Vec2f p = arx::diskRand(15.f);
-		pd->ov = eCurPos + Vec3f(p.x, 0.f, p.y);
-		
+		pd->ov = eCurPos + toXZ(arx::diskRand(15.f));
 		pd->move = Vec3f(0.f, Random::getf(1.f, 4.f), 0.f);
 		pd->size = 0.25f;
 		pd->duration = Random::get(2300ms, 3300ms);
