@@ -270,8 +270,7 @@ void LevitateSpell::createDustParticle() {
 	if(!pd) {
 		return;
 	}
-	Vec2f pos = arx::circularRand(1.f);
-	Vec3f p = Vec3f(pos.x, 0.f, pos.y);
+	Vec3f p = toXZ(arx::circularRand(1.f));
 	Vec3f move = arx::linearRand(Vec3f(5.f, 0.f, 5.f), Vec3f(10.f, 3.f, 10.f)) * (p + Vec3f(0.f, 1.f, 0.f));
 	pd->ov = m_pos + p * m_baseRadius + move;
 	pd->move = move * 0.5f;
@@ -440,8 +439,7 @@ void RepelUndeadSpell::Update() {
 			break;
 		}
 		// XXX was this supposed to be sphericalRand ?
-		Vec2f d = arx::diskRand(vv * 100.f);
-		pd->ov = m_pos + Vec3f(d.x, 0.f, d.y);
+		pd->ov = m_pos + toXZ(arx::diskRand(vv * 100.f));
 		pd->move = arx::linearRand(Vec3f(-0.8f, -4.f, -0.8f), Vec3f(0.8f, 0.f, 0.8f));
 		pd->sizeDelta = -0.1f;
 		pd->duration = Random::get(2600ms, 3200ms);
