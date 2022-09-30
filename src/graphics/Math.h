@@ -47,11 +47,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_MATH_H
 #define ARX_GRAPHICS_MATH_H
 
-#include <algorithm>
 #include <cstdlib>
 #include <cstring>
-
-#include <boost/numeric/conversion/cast.hpp>
+#include <algorithm>
+#include <limits>
+#include <type_traits>
 
 #include "math/GtxFunctions.h"
 
@@ -253,11 +253,31 @@ T positive_modulo(T a, T b) {
 	return (a % b) + T(a < 0) * b;
 }
 
+template <typename To, typename From>
+arx_force_inline constexpr bool is_in_range(From value) noexcept {
+	static_assert(std::is_integral_v<To>);
+	if constexpr(std::is_signed_v<From> && !std::is_signed_v<To>) {
+		if(value < From(0)) {
+			return false;
+		}
+	}
+	if constexpr(sizeof(From) > sizeof(To) && std::is_signed_v<From> && std::is_signed_v<To>) {
+		if(value < From(std::numeric_limits<To>::min())) {
+			return false;
+		}
+	}
+	if constexpr(sizeof(From) > sizeof(To)) {
+		if(value > From(std::numeric_limits<To>::max())) {
+			return false;
+		}
+	}
+	return true;
+}
 
-#ifdef ARX_DEBUG
-#define checked_range_cast boost::numeric_cast
-#else
-#define checked_range_cast static_cast
-#endif
+template <typename To, typename From>
+arx_force_inline constexpr To checked_range_cast(From value) noexcept {
+	arx_assume(is_in_range<To>(value));
+	return static_cast<To>(value);
+}
 
 #endif // ARX_GRAPHICS_MATH_H
