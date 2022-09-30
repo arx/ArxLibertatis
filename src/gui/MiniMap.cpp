@@ -145,9 +145,8 @@ void MiniMap::validatePlayerPos(int currentLevel, bool blockPlayerControls, ARX_
 			req = 80.f;
 		}
 		
-		if(fartherThan(Vec2f(m_playerLastPosX, m_playerLastPosZ), getXZ(m_player->pos), req)) {
-			m_playerLastPosX = m_player->pos.x;
-			m_playerLastPosZ = m_player->pos.z;
+		if(fartherThan(m_playerLastPos, getXZ(m_player->pos), req)) {
+			m_playerLastPos = getXZ(m_player->pos);
 			validatePos();
 		}
 	}
@@ -198,8 +197,7 @@ void MiniMap::firstInit(ARXCHARACTER * pl, PakReader * pakRes, EntityManager * e
 	m_mapMarkerTexCont = nullptr;
 	
 	m_player = pl;
-	m_playerLastPosX = -999999.f;
-	m_playerLastPosZ = -999999.f;
+	m_playerLastPos = Vec2f(-999999.f);
 	
 	m_entities = entityMng;
 	m_activeBkg = nullptr;

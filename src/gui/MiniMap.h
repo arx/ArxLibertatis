@@ -108,8 +108,7 @@ public:
 		, m_pTexDetect(nullptr)
 		, m_mapMarkerTexCont(nullptr)
 		, m_player(nullptr)
-		, m_playerLastPosX(0.f)
-		, m_playerLastPosZ(0.f)
+		, m_playerLastPos(0.f)
 	{ }
 	
 	void mapMarkerRemove(std::string_view name);
@@ -157,8 +156,7 @@ private:
 	TextureContainer * m_mapMarkerTexCont;
 	
 	ARXCHARACTER * m_player;
-	float m_playerLastPosX;
-	float m_playerLastPosZ;
+	Vec2f m_playerLastPos;
 	
 	std::vector<MapMarkerData> m_mapMarkers;
 	std::array<MiniMapData, MAX_MINIMAP_LEVELS> m_levels;
