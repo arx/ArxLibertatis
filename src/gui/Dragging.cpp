@@ -112,16 +112,14 @@ EntityDragResult findSpotForDraggedEntity(Vec3f origin, Vec3f dir, Entity * enti
 	
 	float maxdist = 0.f;
 	for(const EERIE_VERTEX & vertex : entity->obj->vertexlist) {
-		float dist = glm::distance(Vec2f(result.offset.x, result.offset.z), Vec2f(vertex.v.x, vertex.v.z)) - 4.f;
-		maxdist = std::max(maxdist, dist);
+		maxdist = std::max(maxdist, glm::distance(getXZ(result.offset), getXZ(vertex.v)) - 4.f);
 	}
 	
 	if(entity->obj->pbox) {
 		Vec2f tmpVert(entity->obj->pbox->vert[0].initpos.x, entity->obj->pbox->vert[0].initpos.z);
 		for(size_t i = 1; i < entity->obj->pbox->vert.size(); i++) {
 			const PhysicsParticle & physVert = entity->obj->pbox->vert[i];
-			float dist = glm::distance(tmpVert, Vec2f(physVert.initpos.x, physVert.initpos.z)) + 14.f;
-			maxdist = std::max(maxdist, dist);
+			maxdist = std::max(maxdist, glm::distance(tmpVert, getXZ(physVert.initpos)) + 14.f);
 		}
 	}
 	
