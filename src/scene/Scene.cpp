@@ -1465,11 +1465,6 @@ static void BackgroundRenderTransparent(size_t room_num) {
 			
 			RenderState desiredState = baseState;
 			switch(transType) {
-				case BatchBucket_Opaque: {
-					// This should currently not happen
-					arx_assert(false);
-					continue;
-				}
 				case BatchBucket_Blended: {
 					desiredState.setBlend(BlendSrcColor, BlendDstColor);
 					break;
@@ -1486,6 +1481,10 @@ static void BackgroundRenderTransparent(size_t room_num) {
 					desiredState.setDepthOffset(8);
 					desiredState.setBlend(BlendZero, BlendInvSrcColor);
 					break;
+				}
+				case BatchBucket_Opaque: {
+					// This should currently not happen
+					arx_unreachable();
 				}
 			}
 			
