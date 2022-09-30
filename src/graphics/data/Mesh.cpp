@@ -1121,11 +1121,10 @@ void ComputePortalVertexBuffer() {
 		// Allocate space to list all textures for this room
 		room->ppTextureContainer.reserve(room->ppTextureContainer.size() + ntextures);
 		
-		TextureMap::const_iterator it;
-		for(it = infos.begin(); it != infos.end(); ++it) {
+		for(const auto & entry : infos) {
 			
-			TextureContainer * texture = it->first;
-			const SINFO_TEXTURE_VERTEX & info = it->second;
+			TextureContainer * texture = entry.first;
+			const SINFO_TEXTURE_VERTEX & info = entry.second;
 			
 			unsigned short index = 0;
 			
