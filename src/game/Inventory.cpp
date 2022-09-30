@@ -184,7 +184,7 @@ void PutInFrontOfPlayer(Entity * io) {
 		return;
 	}
 	
-	ARX_INTERACTIVE_Teleport(io, result.pos - Vec3f(result.offset.x, 0.f, result.offset.z), true);
+	ARX_INTERACTIVE_Teleport(io, result.pos - toXZ(result.offset), true);
 	
 	if(io->obj && io->obj->pbox) {
 		Vec3f vector = Vec3f(0.f, 100.f, 0.f);
