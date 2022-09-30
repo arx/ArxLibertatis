@@ -36,7 +36,7 @@ Anglef Camera::getLookAtAngle(const Vec3f & origin, const Vec3f & target) {
 	Anglef angle;
 	
 	if(origin != target) {
-		float targetz = origin.z + glm::distance(Vec2f(origin.x, origin.z), Vec2f(target.x, target.z));
+		float targetz = origin.z + glm::distance(getXZ(origin), getXZ(target));
 		angle.setPitch(MAKEANGLE(-glm::degrees(getAngle(origin.y, origin.z, target.y, targetz))));
 		angle.setYaw(MAKEANGLE(glm::degrees(getAngle(origin.x, origin.z, target.x, target.z))));
 		angle.setRoll(0.f);
