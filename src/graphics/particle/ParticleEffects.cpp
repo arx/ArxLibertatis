@@ -774,10 +774,9 @@ void ARX_PARTICLES_Update()  {
 		float val = elapsed / 100ms;
 		
 		Vec3f in = part->ov + part->move * val;
-		Vec3f inn = in;
 		
 		if(part->m_flags & GRAVITY) {
-			in.y = inn.y = inn.y + 1.47f * val * val;
+			in.y += 1.47f * val * val;
 		}
 		
 		float fd = elapsed / part->duration;
@@ -794,7 +793,7 @@ void ARX_PARTICLES_Update()  {
 			Sphere sp;
 			sp.origin = in;
 			
-			Vec4f p = worldToClipSpace(inn);
+			Vec4f p = worldToClipSpace(in);
 			float z = p.z / p.w;
 			if(p.w <= 0.f || z > g_camera->cdepth * fZFogEnd) {
 				continue;
