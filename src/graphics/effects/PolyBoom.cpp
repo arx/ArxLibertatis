@@ -73,6 +73,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "scene/Tiles.h"
 
+#include "util/Range.h"
+
+
 enum DecalType {
 	ScorchMarkDecal,
 	BloodDecal,
@@ -348,10 +351,7 @@ void PolyBoomDraw() {
 	GRenderer->SetFogColor(Color::none); // TODO: not handled by RenderMaterial
 	GameInstant now = g_gameTime.now();
 	
-	for(size_t i = 0; i < polyboom.size(); i++) {
-		
-		POLYBOOM & pb = polyboom[i];
-		
+	for(POLYBOOM & pb : polyboom) {
 		if(pb.fastdecay) {
 			if(pb.timecreation - g_gameTime.lastFrameDuration() > 0) {
 				pb.timecreation -= g_gameTime.lastFrameDuration();
@@ -360,14 +360,11 @@ void PolyBoomDraw() {
 				pb.timecreation -= g_gameTime.lastFrameDuration();
 			}
 		}
-		
-		GameDuration t = pb.timecreation + pb.tolive - now;
-		if(t <= 0) {
-			std::swap(polyboom[i], polyboom.back());
-			polyboom.pop_back();
-			i--;
-		}
 	}
+	
+	util::unordered_remove_if(polyboom, [now](const POLYBOOM & pb) {
+		return pb.timecreation + pb.tolive <= now;
+	});
 	
 	RenderMaterial mat;
 	mat.setDepthTest(true);
