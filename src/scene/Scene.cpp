@@ -1436,21 +1436,26 @@ static constexpr std::array<BatchBucket, 4> transRenderOrder = {
 	BatchBucket_Subtractive
 };
 
-
 static void BackgroundRenderTransparent(size_t room_num) {
 	
 	ARX_PROFILE_FUNC();
 	
 	Room & room = g_rooms->rooms[room_num];
 	
-	for(TextureContainer * pTexCurr : room.ppTextureContainer) {
+	for(TextureContainer & material : util::dereference(room.ppTextureContainer)) {
+		
+		SMY_ARXMAT & roomMat = material.m_roomBatches[room_num];
+		bool empty = std::all_of(transRenderOrder.begin(), transRenderOrder.end(), [&](BatchBucket transType) {
+			return !roomMat.count[transType];
+		});
+		if(empty) {
+			continue;
+		}
+		
+		GRenderer->SetTexture(0, &material);
 		
 		RenderState baseState = render3D().depthWrite(false).depthOffset(2);
-		
-		GRenderer->SetTexture(0, pTexCurr);
-		baseState.setAlphaCutout(pTexCurr->m_pTexture && pTexCurr->m_pTexture->hasAlpha());
-		
-		SMY_ARXMAT & roomMat = pTexCurr->m_roomBatches[room_num];
+		baseState.setAlphaCutout(material.m_pTexture && material.m_pTexture->hasAlpha());
 		
 		for(BatchBucket transType : transRenderOrder) {
 			
@@ -1485,12 +1490,9 @@ static void BackgroundRenderTransparent(size_t room_num) {
 			}
 			
 			UseRenderState state(desiredState);
-			room.pVertexBuffer->drawIndexed(
-				Renderer::TriangleList,
-				roomMat.uslNbVertex,
-				roomMat.uslStartVertex,
-				&room.indexBuffer[roomMat.offset[transType]],
-				roomMat.count[transType]);
+			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex,
+			                                &room.indexBuffer[roomMat.offset[transType]],
+			                                roomMat.count[transType]);
 			
 			EERIEDrawnPolys += roomMat.count[transType];
 			
