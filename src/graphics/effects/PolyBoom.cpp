@@ -116,19 +116,19 @@ void PolyBoomClear() {
 void PolyBoomAddScorch(const Vec3f & poss) {
 	
 	for(auto tile : g_tiles->tilesAround(g_tiles->getTile(poss), 3))  {
-		for(EERIEPOLY & ep : tile.polygons()) {
+		for(EERIEPOLY & polygon : tile.polygons()) {
 			
-			if((ep.type & POLY_TRANS) && !(ep.type & POLY_WATER)) {
+			if((polygon.type & POLY_TRANS) && !(polygon.type & POLY_WATER)) {
 				continue;
 			}
 			
-			size_t nbvert = (ep.type & POLY_QUAD) ? 4 : 3;
+			size_t nbvert = (polygon.type & POLY_QUAD) ? 4 : 3;
 			
 			float temp_uv1[4];
 			
 			bool dod = true;
 			for(size_t k = 0; k < nbvert; k++) {
-				float ddd = fdist(ep.v[k].p, poss);
+				float ddd = fdist(polygon.v[k].p, poss);
 				if(ddd > BOOM_RADIUS) {
 					dod = false;
 					break;
@@ -147,7 +147,7 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 			Decal & decal = g_decals.emplace_back();
 			decal.type = ScorchMarkDecal;
 			decal.fastdecay = false;
-			decal.polygon = &ep;
+			decal.polygon = &polygon;
 			decal.tc = g_particleTextures.boom;
 			decal.duration = 10s;
 			decal.rgb = Color3f::black;
