@@ -112,12 +112,6 @@ static void DisplayCheatText(const char * text) {
 	sp_max_start = g_platformTime.frameStart();
 }
 
-static void MakeSpCol() {
-	
-	ARX_SPSound();
-	
-}
-
 void CheatReset() {
 	
 	sp_max_start = 0;
@@ -178,7 +172,7 @@ static void EERIE_OBJECT_SetBHMode() {
 	} else {
 		BH_MODE = 1;
 		MakeCoolFx(player.pos);
-		MakeSpCol();
+		ARX_SPSound();
 		DisplayCheatText("!!!_Super-Deformed_!!!");
 	}
 }
@@ -200,7 +194,7 @@ static void ApplySPWep() {
 			
 			giveToPlayer(ioo);
 			
-			MakeSpCol();
+			ARX_SPSound();
 			DisplayCheatText("!!!_Grosbillite_!!!");
 		}
 	}
@@ -209,7 +203,7 @@ static void ApplySPWep() {
 
 
 static void ApplyCurSOS() {
-	MakeSpCol();
+	ARX_SPSound();
 	g_miniMap.reveal();
 	DisplayCheatText("!!!_Temple of Elemental Lavis_!!!");
 }
@@ -230,7 +224,7 @@ static void ApplySPBow() {
 		
 		giveToPlayer(ioo);
 		
-		MakeSpCol();
+		ARX_SPSound();
 		DisplayCheatText("!!!_Bow to Samy & Anne_!!!");
 	}
 }
@@ -257,7 +251,7 @@ static void ApplySPArm() {
 		
 		giveToPlayer(ioo);
 		
-		MakeSpCol();
+		ARX_SPSound();
 		
 		switch (sp_arm) {
 			case 0: DisplayCheatText("------ZoliChapo------"); break;
@@ -273,7 +267,7 @@ static void ApplySPArm() {
 
 static void ApplyCurPNux() {
 	
-	MakeSpCol();
+	ARX_SPSound();
 	DisplayCheatText("! PhilNux & Gluonne !");
 	
 	player.m_cheatPnuxActive = (player.m_cheatPnuxActive + 1) % 3;
@@ -284,21 +278,21 @@ static void ApplyCurPNux() {
 }
 
 static void ApplyPasswall() {
-	MakeSpCol();
+	ARX_SPSound();
 	DisplayCheatText("!!! PassWall !!!");
 	USE_PLAYERCOLLISIONS = !USE_PLAYERCOLLISIONS;
 }
 
 static void ApplySPRf() {
 	if(cur_rf == 3) {
-		MakeSpCol();
+		ARX_SPSound();
 		DisplayCheatText("!!! RaFMode !!!");
 	}
 }
 
 static void ApplyCurMr() {
 	if(cur_mr == 3) {
-		MakeSpCol();
+		ARX_SPSound();
 		DisplayCheatText("!!! Marianna !!!");
 	}
 }
@@ -309,7 +303,7 @@ static void ApplySPuw() {
 	ARX_SOUND_PlayCinematic("menestrel_uw2", true);
 	MakeCoolFx(player.pos);
 	if(uw_mode) {
-		MakeSpCol();
+		ARX_SPSound();
 		DisplayCheatText("~-__-~~-__.U.W.__-~~-__-~");
 	}
 }
@@ -320,7 +314,7 @@ static void ApplySPMax() {
 	sp_max = ~sp_max;
 	
 	if (sp_max) {
-		MakeSpCol();
+		ARX_SPSound();
 		DisplayCheatText("!!!_FaNt0mAc1e_!!!");
 		
 		player.skin = 4;
@@ -347,7 +341,7 @@ static void ApplySPMax() {
 }
 
 static void ApplyConsole() {
-	MakeSpCol();
+	ARX_SPSound();
 	DisplayCheatText("!!! Arx Libertatis !!!");
 	g_console.open();
 }
