@@ -20,13 +20,15 @@
 #ifndef ARX_INPUT_INPUTBACKEND_H
 #define ARX_INPUT_INPUTBACKEND_H
 
-class Window;
+#include <string>
 
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
 #include "math/Types.h"
 
+
 class TextInputHandler;
+class Window;
 
 class InputBackend {
 	

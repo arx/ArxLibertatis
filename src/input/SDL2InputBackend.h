@@ -20,8 +20,8 @@
 #ifndef ARX_INPUT_SDL2INPUTBACKEND_H
 #define ARX_INPUT_SDL2INPUTBACKEND_H
 
-#include <string>
 #include <stddef.h>
+#include <string>
 
 #include <SDL.h>
 

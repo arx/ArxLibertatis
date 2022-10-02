@@ -20,6 +20,9 @@
 #ifndef ARX_INPUT_SDL1INPUTBACKEND_H
 #define ARX_INPUT_SDL1INPUTBACKEND_H
 
+#include <stddef.h>
+#include <string>
+
 #include <SDL.h>
 
 #include "input/InputBackend.h"
@@ -30,6 +33,7 @@
 #include "math/Types.h"
 #include "platform/Platform.h"
 #include "window/SDL1Window.h"
+
 
 class SDL1InputBackend final : public InputBackend {
 	
