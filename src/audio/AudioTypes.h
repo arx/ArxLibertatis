@@ -102,21 +102,18 @@ enum PlayingAmbianceType {
 
 // Output format
 struct PCMFormat {
+	
 	u32 frequency; // Samples per second
 	u16 quality; // Bits per sample
 	u16 channels; // Output channels count
+	
 };
 
 // Source falloff
 struct SourceFalloff {
 	
-	float start;
-	float end;
-	
-	SourceFalloff()
-		: start(0.f)
-		, end(0.f)
-	{ }
+	float start = 0.f;
+	float end = 0.f;
 	
 };
 
@@ -126,29 +123,29 @@ typedef HandleType<struct SourceHandleTag,    s32, -1> SourceHandle;
 
 struct SourcedSample {
 	
-	SourcedSample() = default;
+	constexpr SourcedSample() noexcept = default;
 	
-	SourcedSample(SourceHandle source, SampleHandle sample)
+	constexpr SourcedSample(SourceHandle source, SampleHandle sample) noexcept
 		: m_source(source)
 		, m_sample(sample)
 	{ }
 	
-	bool operator==(const SourcedSample & rhs) const {
+	[[nodiscard]] constexpr bool operator==(const SourcedSample & rhs) const noexcept {
 		return m_source == rhs.m_source && m_sample == rhs.m_sample;
 	}
-	bool operator!=(const SourcedSample & rhs) const {
+	[[nodiscard]] constexpr bool operator!=(const SourcedSample & rhs) const noexcept {
 		return m_source != rhs.m_source || m_sample != rhs.m_sample;
 	}
 	
-	SourceHandle source() const {
+	[[nodiscard]] constexpr SourceHandle source() const noexcept {
 		return m_source;
 	}
 	
-	SampleHandle getSampleId() const {
+	[[nodiscard]] constexpr SampleHandle getSampleId() const noexcept {
 		return m_sample;
 	}
 	
-	void clearSource() {
+	constexpr void clearSource() noexcept {
 		m_source = SourceHandle();
 	}
 	
@@ -176,7 +173,7 @@ struct Channel {
 	Vec3f velocity;
 	SourceFalloff falloff;
 	
-	explicit Channel(MixerId _mixer)
+	explicit constexpr Channel(MixerId _mixer) noexcept
 		: flags(0)
 		, mixer(_mixer)
 		, volume(0.f)
