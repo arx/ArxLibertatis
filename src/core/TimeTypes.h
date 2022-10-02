@@ -124,6 +124,12 @@ public:
 		return DurationType<Tag, T2>::ofRaw(checked_range_cast<T2>(m_value));
 	}
 	
+	[[nodiscard]] /* implicit */ constexpr operator DurationType<Tag, s64>() const noexcept {
+		static_assert(is_in_range<s64>(std::numeric_limits<T>::min()) &&
+		              is_in_range<s64>(std::numeric_limits<T>::max()));
+		return DurationType<Tag, s64>::ofRaw(m_value);
+	}
+	
 };
 
 template <typename Rep, typename Period, typename Tag, typename T>
