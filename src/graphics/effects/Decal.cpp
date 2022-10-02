@@ -88,15 +88,11 @@ struct Decal {
 	std::array<Vec2f, 4> uv;
 	Color3f rgb;
 	DecalType type;
-	bool fastdecay;
+	bool fastdecay = false;
 	TextureContainer * material;
 	EERIEPOLY * polygon;
 	ShortGameDuration elapsed;
 	ShortGameDuration duration;
-	
-	Decal()
-		: fastdecay(false)
-	{ }
 	
 };
 
