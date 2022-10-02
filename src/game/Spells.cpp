@@ -272,8 +272,8 @@ Spell & SpellManager::addSpell(std::unique_ptr<Spell> spell) {
 	}
 	
 	spell->m_thisHandle = SpellHandle(m_spells.size());
-	m_spells.emplace_back(std::move(spell));
-	return *m_spells.back();
+	
+	return *m_spells.emplace_back(std::move(spell));
 }
 
 void SpellManager::freeSlot(const Spell * spell) {
