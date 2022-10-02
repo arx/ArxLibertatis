@@ -19,7 +19,7 @@
 
 #include "math/Angle.h"
 
-float AngleDifference(float d, float e) {
+float AngleDifference(float d, float e) noexcept {
 	
 	float da = e - d;
 	
@@ -32,7 +32,7 @@ float AngleDifference(float d, float e) {
 	return da;
 }
 
-float InterpolateAngle(float a1, float a2, float pour) {
+float InterpolateAngle(float a1, float a2, float pour) noexcept {
 	
 	float a = MAKEANGLE(a1);
 	
