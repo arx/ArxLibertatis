@@ -55,9 +55,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class PlatformTime {
 	
 	PlatformInstant m_frameStartTime;
-	PlatformDuration m_lastFrameDuration;
+	ShortPlatformDuration m_lastFrameDuration;
 	
 public:
+	
+	static inline constexpr ShortPlatformDuration MaxFrameDuration = 100ms;
 	
 	PlatformTime()
 		: m_frameStartTime(0)
@@ -66,7 +68,7 @@ public:
 	
 	void updateFrame();
 	
-	void overrideFrameDuration(PlatformDuration duration) {
+	void overrideFrameDuration(ShortPlatformDuration duration) {
 		m_lastFrameDuration = duration;
 	}
 	
@@ -74,7 +76,8 @@ public:
 		return m_frameStartTime;
 	}
 	
-	PlatformDuration lastFrameDuration() {
+	ShortPlatformDuration lastFrameDuration() {
+		arx_assume(m_lastFrameDuration >= 0 && m_lastFrameDuration <= MaxFrameDuration);
 		return m_lastFrameDuration;
 	}
 	
@@ -98,11 +101,13 @@ public:
 private:
 	
 	GameInstant m_now;
-	GameDuration m_lastFrameDuration;
+	ShortGameDuration m_lastFrameDuration;
 	float m_speed;
 	PauseFlags m_paused;
 	
 public:
+	
+	static inline constexpr ShortGameDuration MaxFrameDuration = 100ms;
 	
 	GameTime();
 	
@@ -121,19 +126,26 @@ public:
 		return m_now;
 	}
 	
-	void update(PlatformDuration frameDuration);
+	void update(ShortPlatformDuration frameDuration);
 	
 	PauseFlags isPaused() const {
 		return m_paused;
 	}
 	
-	GameDuration lastFrameDuration() const {
-		arx_assume(m_lastFrameDuration >= 0 && m_lastFrameDuration <= GameDuration(ShortGameDuration::max() / 2));
+	ShortGameDuration lastFrameDuration() const {
+		arx_assume(m_lastFrameDuration >= 0 && m_lastFrameDuration <= MaxFrameDuration);
 		return m_lastFrameDuration;
 	}
 	
-	float speed() const { return m_speed; }
-	void setSpeed(float speed) { m_speed = speed; }
+	float speed() const {
+		arx_assume(m_speed >= 0.f && m_speed <= 1.f);
+		return m_speed;
+	}
+	
+	void setSpeed(float speed) {
+		arx_assume(speed >= 0.f && speed <= 1.f);
+		m_speed = speed;
+	}
 	
 };
 

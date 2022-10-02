@@ -48,9 +48,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Time.h"
 
+
 PlatformTime g_platformTime;
 
 GameTime g_gameTime;
+
+static_assert(PlatformTime::MaxFrameDuration <= ShortPlatformDuration::max() / 2);
+
+static_assert(GameTime::MaxFrameDuration <= ShortGameDuration::max() / 2);
 
 void PlatformTime::updateFrame() {
 	
@@ -61,10 +66,9 @@ void PlatformTime::updateFrame() {
 	}
 	arx_assert(currentTime >= m_frameStartTime);
 	
-	m_lastFrameDuration = currentTime - m_frameStartTime;
-	
 	// Limit simulation time per frame
-	m_lastFrameDuration = std::min(m_lastFrameDuration, PlatformDuration(100ms));
+	PlatformDuration delta = std::min(currentTime - m_frameStartTime, PlatformDuration(MaxFrameDuration));
+	m_lastFrameDuration = ShortPlatformDuration(delta);
 	
 	m_frameStartTime = currentTime;
 }
@@ -80,17 +84,17 @@ void GameTime::reset(const GameInstant time) {
 	m_paused = PauseInitial;
 }
 
-void GameTime::update(PlatformDuration frameDuration) {
+void GameTime::update(ShortPlatformDuration frameDuration) {
 	
-	GameDuration delta = frameDuration.value();
+	ShortGameDuration delta = frameDuration.value();
 	
-	arx_assume(delta >= 0);
+	arx_assume(delta >= 0 && delta <= MaxFrameDuration);
 	
 	if(m_speed != 1.f) {
 		delta -= delta * (1.f - m_speed);
 	}
 	
-	arx_assume(delta >= 0);
+	arx_assume(delta >= 0 && delta <= MaxFrameDuration);
 	
 	if(isPaused()) {
 		delta = 0;

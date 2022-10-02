@@ -279,8 +279,7 @@ void PolyBoomDraw() {
 	
 	ARX_PROFILE_FUNC();
 	
-	ShortGameDuration delta(g_gameTime.lastFrameDuration());
-	arx_assume(delta <= ShortGameDuration::max() / 6);
+	ShortGameDuration delta = g_gameTime.lastFrameDuration();
 	
 	for(Decal & decal : g_decals) {
 		arx_assume(decal.elapsed <= ShortGameDuration::max() / 2);

@@ -717,8 +717,7 @@ void ARX_PARTICLES_Update()  {
 	
 	const GameInstant now = g_gameTime.now();
 	
-	ShortGameDuration delta(g_gameTime.lastFrameDuration());
-	arx_assume(delta <= ShortGameDuration::max() / 2);
+	ShortGameDuration delta = g_gameTime.lastFrameDuration();
 	
 	long pcc = ParticleCount;
 	

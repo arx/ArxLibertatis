@@ -103,8 +103,7 @@ void ParticleSparkUpdate() {
 		return;
 	}
 	
-	ShortGameDuration delta(g_gameTime.lastFrameDuration());
-	arx_assume(delta <= ShortGameDuration::max() / 2);
+	ShortGameDuration delta = g_gameTime.lastFrameDuration();
 	
 	RenderMaterial sparkMaterial;
 	sparkMaterial.setBlendType(RenderMaterial::Additive);
