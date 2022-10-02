@@ -404,9 +404,7 @@ bool DanaeLoadLevel(long level, bool loadEntities) {
 		
 		if(height != 0) {
 			
-			// Zone
-			g_zones.emplace_back(std::move(name), ppos);
-			Zone & zone = g_zones.back();
+			Zone & zone = g_zones.emplace_back(std::move(name), ppos);
 			
 			zone.flags = ZoneFlags::load(dlp->flags); // TODO save/load flags
 			zone.height = height;
@@ -430,9 +428,7 @@ bool DanaeLoadLevel(long level, bool loadEntities) {
 			
 		} else {
 			
-			// Path
-			g_paths.emplace_back(std::move(name), ppos);
-			Path & path = g_paths.back();
+			Path & path = g_paths.emplace_back(std::move(name), ppos);
 			
 			path.pathways.resize(dlp->nb_pathways);
 			for(long j = 0; j < dlp->nb_pathways; j++) {
