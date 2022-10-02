@@ -29,20 +29,17 @@ typedef HandleType<struct SpellHandleTag,   s32, -1> SpellHandle;
 typedef HandleType<struct PrecastHandleTag, s32, -1> PrecastHandle;
 typedef HandleType<struct DamageHandleTag,  s32, -1> DamageHandle;
 
-static const EntityHandle EntityHandle_Player = EntityHandle(0);
-static const EntityHandle EntityHandle_Self   = EntityHandle(-2);
+static inline constexpr EntityHandle EntityHandle_Player = EntityHandle(0);
+static inline constexpr EntityHandle EntityHandle_Self   = EntityHandle(-2);
 
 struct ResourcePool {
 	
-	float current;
-	float max;
+	float current = 0.f;
+	float max = 0.f;
 	
-	ResourcePool()
-		: current(0.f)
-		, max(0.f)
-	{ }
+	constexpr ResourcePool() noexcept = default;
 	
-	explicit ResourcePool(float value)
+	explicit constexpr ResourcePool(float value) noexcept
 		: current(value)
 		, max(value)
 	{ }
