@@ -53,11 +53,9 @@ PlatformTime g_platformTime;
 
 GameTime g_gameTime;
 
-static_assert(PlatformTime::MaxFrameDuration <= ShortPlatformDuration::max() / 2);
-
-static_assert(GameTime::MaxFrameDuration <= ShortGameDuration::max() / 2);
-
 void PlatformTime::updateFrame() {
+	
+	arx_assert(PlatformTime::MaxFrameDuration <= ShortPlatformDuration::max() / 2);
 	
 	PlatformInstant currentTime = platform::getTime();
 	
@@ -85,6 +83,8 @@ void GameTime::reset(const GameInstant time) {
 }
 
 void GameTime::update(ShortPlatformDuration frameDuration) {
+	
+	arx_assert(GameTime::MaxFrameDuration <= ShortGameDuration::max() / 2);
 	
 	ShortGameDuration delta = frameDuration.value();
 	
