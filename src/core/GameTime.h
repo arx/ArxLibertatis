@@ -117,6 +117,7 @@ public:
 	void reset(GameInstant time);
 	
 	GameInstant now() const {
+		arx_assume(m_now >= 0);
 		return m_now;
 	}
 	
