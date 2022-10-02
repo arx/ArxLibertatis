@@ -180,7 +180,7 @@ struct WindowsVersion {
 static WindowsVersion getWindowsVersionFromResourceData(char * data) {
 	
 	UINT valueSize = 0;
-	LPBYTE value = NULL;
+	LPBYTE value = nullptr;
 	if(VerQueryValueW(data, L"\\", reinterpret_cast<LPVOID *>(&value), &valueSize) &&
 	   valueSize >= sizeof(VS_FIXEDFILEINFO)) {
 		const VS_FIXEDFILEINFO * version = reinterpret_cast<const VS_FIXEDFILEINFO *>(value);
