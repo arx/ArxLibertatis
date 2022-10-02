@@ -177,8 +177,9 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 		
 		gui::necklace.runeAngles[i].setYaw(gui::necklace.runeAngles[i].getYaw() - ptDelta * 0.2f);
 		
-		if(gui::necklace.runeAngles[i].getYaw() < 0.f)
+		if(gui::necklace.runeAngles[i].getYaw() < 0.f) {
 			gui::necklace.runeAngles[i].setYaw(0.f);
+		}
 		
 		// Now draw the rune
 		DrawEERIEInter(rune, TransformInfo(pos, toQuaternion(angle)), nullptr, false, 0.f);
