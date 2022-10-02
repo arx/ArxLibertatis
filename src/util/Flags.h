@@ -36,7 +36,7 @@ class Flags {
 	typedef void ** Zero;
 	u32 m_flags;
 	
-	constexpr Flags(u32 flags, bool dummy) noexcept : m_flags(flags) { ARX_UNUSED(dummy); }
+	constexpr Flags(u32 flags, bool /* dummy */) noexcept : m_flags(flags) { }
 	
 public:
 	
