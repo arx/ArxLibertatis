@@ -735,7 +735,6 @@ static int view_pld(const char * dat, size_t size) {
 	if(pld.playthroughStart) {
 		std::time_t time = std::time_t(pld.playthroughStart);
 		const struct tm & t = *std::gmtime(&time);
-		std::ostringstream oss;
 		std::cout << "Playthrough start: " << std::setfill('0') << (t.tm_year + 1900)
 		          << "-" << std::setw(2) << (t.tm_mon + 1)
 		          << "-" << std::setw(2) << t.tm_mday
