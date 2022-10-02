@@ -20,6 +20,7 @@
 #include "graphics/effects/Trail.h"
 
 #include "animation/AnimationRender.h"
+#include "core/GameTime.h"
 #include "math/Random.h"
 #include "graphics/RenderBatcher.h"
 #include "graphics/Vertex.h"
@@ -48,9 +49,11 @@ void Trail::SetNextPosition(const Vec3f & nextPosition)
 	m_nextPosition = nextPosition;
 }
 
-void Trail::Update(GameDuration timeDelta) {
+void Trail::Update(ShortGameDuration timeDelta) {
 	
-	if(timeDelta == GameDuration(0)) {
+	arx_assume(timeDelta >= 0 && timeDelta <= GameTime::MaxFrameDuration);
+	
+	if(timeDelta == 0) {
 		return;
 	}
 	

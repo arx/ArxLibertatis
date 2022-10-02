@@ -35,7 +35,7 @@ public:
 	
 	void SetNextPosition(const Vec3f & nextPosition);
 	
-	void Update(GameDuration timeDelta);
+	void Update(ShortGameDuration timeDelta);
 	void Render();
 	
 	bool emtpy() const {
