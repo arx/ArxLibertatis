@@ -282,14 +282,18 @@ void CLightning::ReCreate(float rootSize) {
 	
 }
 
-void CLightning::Update(GameDuration timeDelta)
-{
+void CLightning::Update(ShortGameDuration timeDelta) {
+	
+	arx_assume(timeDelta >= 0 && timeDelta <= GameTime::MaxFrameDuration);
+	
 	m_elapsed += timeDelta;
 	m_iTTL -= timeDelta;
 	fTotoro += 8;
-
-	if(fMySize > 0.3f)
+	
+	if(fMySize > 0.3f) {
 		fMySize -= 0.1f;
+	}
+	
 }
 
 void CLightning::Render()

@@ -113,21 +113,21 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	fTrail = -1;
 }
 
-void CPoisonProjectile::Update(GameDuration timeDelta)
-{
+void CPoisonProjectile::Update(ShortGameDuration timeDelta) {
+	
+	arx_assume(timeDelta >= 0 && timeDelta <= GameTime::MaxFrameDuration);
+	
 	if(m_elapsed <= 2s) {
 		m_elapsed += timeDelta;
 	}
-
+	
 	// on passe de 5 à 100 partoches en 1.5secs
 	if(m_elapsed >= 750ms) {
 		fTrail = ((m_elapsed - 750ms) / (m_duration - 750ms)) * 9 * (BEZIERPrecision + 2);
 	}
-
-	if(m_elapsed >= m_duration)
-		lightIntensityFactor = 0.f;
-	else
-		lightIntensityFactor = 1.f;
+	
+	lightIntensityFactor = (m_elapsed >= m_duration)  ? 0.f : 1.f;
+	
 }
 
 void CPoisonProjectile::Render() {

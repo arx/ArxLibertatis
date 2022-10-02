@@ -67,7 +67,7 @@ public:
 	CLightning & operator=(const CLightning &) = delete;
 	
 	void Create(Vec3f aeFrom, Vec3f aeTo);
-	void Update(GameDuration timeDelta) override;
+	void Update(ShortGameDuration timeDelta) override;
 	void Render() override;
 	
 	Vec3f m_pos;

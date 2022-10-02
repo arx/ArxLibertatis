@@ -57,7 +57,7 @@ public:
 	void SetTTL(GameDuration aulTTL);
 	
 	void Create(const Vec3f & startPos, const Anglef & angles);
-	void Update(GameDuration timeDelta) final;
+	void Update(ShortGameDuration timeDelta) final;
 	void Render() final;
 	
 	bool bExplo;

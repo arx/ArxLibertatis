@@ -119,9 +119,12 @@ void CMagicMissile::SetTTL(GameDuration aulTTL)
 	m_elapsed = t;
 }
 
-void CMagicMissile::Update(GameDuration timeDelta)
-{
+void CMagicMissile::Update(ShortGameDuration timeDelta) {
+	
+	arx_assume(timeDelta >= 0 && timeDelta <= GameTime::MaxFrameDuration);
+	
 	m_elapsed += timeDelta;
+	
 }
 
 void CMagicMissile::Render() {

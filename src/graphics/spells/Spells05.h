@@ -59,7 +59,7 @@ public:
 	CPoisonProjectile();
 	
 	void Create(Vec3f _eSrc, float _fBeta = 0);
-	void Update(GameDuration timeDelta) override;
+	void Update(ShortGameDuration timeDelta) override;
 	void Render() override;
 	
 	Vec3f eSrc;

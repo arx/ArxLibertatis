@@ -73,7 +73,7 @@ public:
 	
 	virtual void SetDuration(GameDuration duration);
 	
-	virtual void Update(GameDuration timeDelta) = 0;
+	virtual void Update(ShortGameDuration timeDelta) = 0;
 	virtual void Render() = 0;
 	
 };

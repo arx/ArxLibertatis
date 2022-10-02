@@ -54,7 +54,7 @@ public:
 	CCreateField();
 	
 	void Create(Vec3f aeSrc);
-	void Update(GameDuration timeDelta) override;
+	void Update(ShortGameDuration timeDelta) override;
 	void Render() override;
 	
 	Vec3f eSrc;
