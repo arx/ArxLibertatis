@@ -56,7 +56,7 @@ public:
 	GameDuration GetDuration();
 	
 	void Create(Vec3f aeSrc, float afBeta = 0);
-	void Update(GameDuration timeDelta);
+	void Update(ShortGameDuration timeDelta);
 	void Render();
 	
 	Vec3f m_eSrc;
@@ -98,7 +98,7 @@ public:
 	
 	void Create(Vec3f aeSrc, float afBeta = 0);
 	void Kill();
-	void Update(GameDuration timeDelta);
+	void Update(ShortGameDuration timeDelta);
 	void Render();
 	
 private:

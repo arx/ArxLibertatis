@@ -365,11 +365,13 @@ void CRiseDead::RenderFissure() {
 	}
 }
 
-void CRiseDead::Update(GameDuration timeDelta) {
+void CRiseDead::Update(ShortGameDuration timeDelta) {
+	
+	arx_assume(timeDelta >= 0 && timeDelta <= GameTime::MaxFrameDuration);
 	
 	m_elapsed += timeDelta;
 	
-	m_stones.Update(ShortGameDuration(timeDelta), m_eSrc, m_elapsed < m_duration);
+	m_stones.Update(timeDelta, m_eSrc, m_elapsed < m_duration);
 	
 }
 
@@ -653,9 +655,12 @@ void CSummonCreature::RenderFissure() {
 	}
 }
 
-void CSummonCreature::Update(GameDuration timeDelta)
-{
+void CSummonCreature::Update(ShortGameDuration timeDelta) {
+	
+	arx_assume(timeDelta >= 0 && timeDelta <= GameTime::MaxFrameDuration);
+	
 	m_elapsed += timeDelta;
+	
 }
 
 // rendu de la déchirure spatio temporelle
