@@ -272,8 +272,6 @@ void ParticleSystem::Render() {
 	mat.setBlendType(m_parameters.m_blendMode);
 	mat.setDepthTest(true);
 	
-	std::list<Particle *>::iterator i;
-	
 	for(Particle & particle : m_particles) {
 		
 		if(!particle.isAlive()) {
