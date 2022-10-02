@@ -221,6 +221,11 @@ template <typename Tag, typename T, typename Rep, typename Period>
 	return timeWaveCos(t, DurationType<Tag, T>(period));
 }
 
+template <typename Tag, typename T>
+[[nodiscard]] float toMsf(DurationType<Tag, T> duration) noexcept {
+	return std::chrono::duration<float, std::milli>(duration).count();
+}
+
 // GameTime
 // in microseconds
 typedef InstantType <struct GameTime_Tag, s64> GameInstant;
@@ -232,9 +237,6 @@ typedef DurationType<struct GameTime_Tag, s32> ShortGameDuration;
 }
 [[nodiscard]] inline constexpr s64 toMsi(GameDuration val) noexcept {
 	return std::chrono::milliseconds(val).count();
-}
-[[nodiscard]] inline constexpr float toMsf(GameDuration val) noexcept {
-	return std::chrono::duration<float, std::milli>(val).count();
 }
 
 [[nodiscard]] inline constexpr s64 toUs(GameInstant val) noexcept {
@@ -275,9 +277,6 @@ typedef DurationType<struct AnimationTimeTag, s64> AnimationDuration;
 
 [[nodiscard]] inline constexpr s64 toMsi(AnimationDuration val) noexcept {
 	return std::chrono::milliseconds(val).count();
-}
-[[nodiscard]] inline constexpr float toMsf(AnimationDuration val) noexcept {
-	return std::chrono::duration<float, std::milli>(val).count();
 }
 [[nodiscard]] inline constexpr float toS(AnimationDuration val) noexcept {
 	return std::chrono::duration<float>(val).count();
