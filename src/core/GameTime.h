@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_CORE_GAMETIME_H
 
 #include "core/TimeTypes.h"
+#include "platform/Platform.h"
 #include "util/Flags.h"
 
 
@@ -126,6 +127,7 @@ public:
 	}
 	
 	GameDuration lastFrameDuration() const {
+		arx_assume(m_lastFrameDuration >= 0 && m_lastFrameDuration <= GameDuration(ShortGameDuration::max() / 2));
 		return m_lastFrameDuration;
 	}
 	

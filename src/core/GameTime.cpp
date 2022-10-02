@@ -84,13 +84,13 @@ void GameTime::update(PlatformDuration frameDuration) {
 	
 	GameDuration delta = frameDuration.value();
 	
-	arx_assert(delta >= 0);
+	arx_assume(delta >= 0);
 	
 	if(m_speed != 1.f) {
 		delta -= delta * (1.f - m_speed);
 	}
 	
-	arx_assert(delta >= 0);
+	arx_assume(delta >= 0);
 	
 	if(isPaused()) {
 		delta = 0;
