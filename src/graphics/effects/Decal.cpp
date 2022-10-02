@@ -85,7 +85,7 @@ enum DecalType : u8 {
 
 struct Decal {
 	
-	Vec2f uv[4];
+	std::array<Vec2f, 4> uv;
 	Color3f rgb;
 	DecalType type;
 	bool fastdecay;
