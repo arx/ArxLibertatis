@@ -20,12 +20,14 @@
 #ifndef ARX_GAME_GAMETYPES_H
 #define ARX_GAME_GAMETYPES_H
 
+#include "platform/Platform.h"
 #include "util/HandleType.h"
 
-typedef HandleType<struct EntityHandleTag,  long, -1> EntityHandle;
-typedef HandleType<struct SpellHandleTag,   long, -1> SpellHandle;
-typedef HandleType<struct PrecastHandleTag, long, -1> PrecastHandle;
-typedef HandleType<struct DamageHandleTag,  long, -1> DamageHandle;
+
+typedef HandleType<struct EntityHandleTag,  s32, -1> EntityHandle;
+typedef HandleType<struct SpellHandleTag,   s32, -1> SpellHandle;
+typedef HandleType<struct PrecastHandleTag, s32, -1> PrecastHandle;
+typedef HandleType<struct DamageHandleTag,  s32, -1> DamageHandle;
 
 static const EntityHandle EntityHandle_Player = EntityHandle(0);
 static const EntityHandle EntityHandle_Self   = EntityHandle(-2);
