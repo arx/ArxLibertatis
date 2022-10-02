@@ -31,25 +31,27 @@ class FloatingStones {
 public:
 	
 	void Init(float radius);
-	void Update(GameDuration timeDelta, Vec3f pos, bool addStones = true);
+	void Update(ShortGameDuration timeDelta, Vec3f pos, bool addStones = true);
 	void AddStone(const Vec3f & pos);
 	void DrawStone();
 	
 private:
 	
 	struct Stone {
+		
 		Vec3f pos;
 		float yvel;
 		Anglef ang;
+		ShortGameDuration duration;
 		Anglef angvel;
+		ShortGameDuration elapsed;
 		Vec3f scale;
 		short numstone;
-		GameDuration time;
-		GameDuration currtime;
+		
 	};
 	
 	std::vector<Stone> m_stones;
-	GameDuration m_timestone;
+	ShortGameDuration m_timestone;
 	float m_baseRadius = 0.f;
 	math::Quantizer m_quantizer;
 	

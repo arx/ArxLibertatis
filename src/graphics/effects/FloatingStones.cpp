@@ -36,7 +36,9 @@ void FloatingStones::Init(float radius) {
 	
 }
 
-void FloatingStones::Update(GameDuration timeDelta, Vec3f pos, bool addStones) {
+void FloatingStones::Update(ShortGameDuration timeDelta, Vec3f pos, bool addStones) {
+	
+	arx_assume(timeDelta >= 0 && timeDelta <= GameTime::MaxFrameDuration);
 	
 	if(addStones) {
 		m_timestone -= timeDelta;
@@ -70,13 +72,14 @@ void FloatingStones::Update(GameDuration timeDelta, Vec3f pos, bool addStones) {
 	}
 	
 	for(Stone & stone : m_stones) {
-		float a = timeDelta / stone.time * 100.f;
+		arx_assume(stone.duration > 0 && stone.duration <= ShortGameDuration::max() / 2);
+		float a = timeDelta / stone.duration * 100.f;
 		stone.pos.y += stone.yvel * a;
 		stone.ang += stone.angvel * a;
-		stone.currtime += timeDelta;
+		stone.elapsed += timeDelta;
 	}
 	
-	util::unordered_remove_if(m_stones, [](const Stone & stone) { return stone.currtime > stone.time; });
+	util::unordered_remove_if(m_stones, [](const Stone & stone) { return stone.elapsed > stone.duration; });
 	
 }
 
@@ -90,8 +93,7 @@ void FloatingStones::AddStone(const Vec3f & pos) {
 	stone.ang = Anglef(Random::getf(), Random::getf(), Random::getf()) * Anglef(360.f, 360.f, 360.f);
 	stone.angvel = Anglef(Random::getf(), Random::getf(), Random::getf()) * Anglef(5.f, 6.f, 3.f);
 	stone.scale = Vec3f(Random::getf(0.2f, 0.5f));
-	stone.time = Random::get(2000ms, 2500ms);
-	stone.currtime = 0;
+	stone.duration = Random::get(2000ms, 2500ms);
 	
 }
 
@@ -102,7 +104,9 @@ void FloatingStones::DrawStone() {
 	mat.setBlendType(RenderMaterial::Screen);
 	
 	for(Stone & stone : m_stones) {
-		float age = stone.currtime / stone.time;
+		arx_assume(stone.duration > 0 && stone.duration <= ShortGameDuration::max() / 2);
+		arx_assume(stone.elapsed >= 0 && stone.elapsed <= stone.duration);
+		float age = stone.elapsed / stone.duration;
 		Color4f col = Color4f::white;
 		if(age < 0.2f) {
 			col = Color4f::gray(age * 5.f);

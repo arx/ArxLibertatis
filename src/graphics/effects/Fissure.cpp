@@ -369,7 +369,7 @@ void CRiseDead::Update(GameDuration timeDelta) {
 	
 	m_elapsed += timeDelta;
 	
-	m_stones.Update(timeDelta, m_eSrc, m_elapsed < m_duration);
+	m_stones.Update(ShortGameDuration(timeDelta), m_eSrc, m_elapsed < m_duration);
 	
 }
 
