@@ -222,12 +222,10 @@ static void ObjectAddAction(EERIE_3DOBJ * obj, std::string_view name, const EERI
 		}
 	}
 	
-	obj->actionlist.emplace_back();
-	
-	EERIE_ACTIONLIST & action = obj->actionlist.back();
-	
+	EERIE_ACTIONLIST & action = obj->actionlist.emplace_back();
 	action.name = name;
 	action.idx = ActionPoint(newvert);
+	
 }
 
 long ObjectAddMap(EERIE_3DOBJ * obj, TextureContainer * tc) {
