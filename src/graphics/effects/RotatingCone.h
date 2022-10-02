@@ -31,7 +31,7 @@ public:
 	RotatingCone();
 	
 	void Init(float rbase, float rhaut, float hauteur);
-	void Update(GameDuration timeDelta, Vec3f pos, float coneScale);
+	void Update(ShortGameDuration timeDelta, Vec3f pos, float coneScale);
 	void Render();
 	
 private:

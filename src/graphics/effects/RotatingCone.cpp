@@ -51,7 +51,9 @@ void RotatingCone::Init(float rbase, float rhaut, float hauteur) {
 	
 }
 
-void RotatingCone::Update(GameDuration timeDelta, Vec3f pos, float coneScale) {
+void RotatingCone::Update(ShortGameDuration timeDelta, Vec3f pos, float coneScale) {
+	
+	arx_assume(timeDelta >= 0 && timeDelta <= GameTime::MaxFrameDuration);
 	
 	m_currdurationang += timeDelta;
 	
