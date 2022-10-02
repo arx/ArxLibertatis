@@ -29,19 +29,17 @@ class Quantizer {
 	
 public:
 	
-	Quantizer() : m_value(0.f) { }
-	
 	//! Resets the stored value to zero.
-	void reset() { m_value = 0.f; }
+	constexpr void reset() noexcept { m_value = 0.f; }
 	
 	//! Adds a possibly fractional amount to the stored value.
-	void add(float value) { m_value += value; }
+	constexpr void add(float value) noexcept { m_value += value; }
 	
 	/*!
 	 * Consumes the integer portion of the stored value.
 	 * Returns the old integer portion and subtracts it from the stored value.
 	 */
-	int consume() {
+	[[nodiscard]] constexpr int consume() noexcept {
 		int integerValue = static_cast<int>(m_value);
 		m_value -= float(integerValue);
 		return integerValue;
@@ -51,14 +49,14 @@ public:
 	 * Adds a possibly fractional amount to the stored value and then consumes the integer
 	 * portion of the stored value.
 	 */
-	int update(float value) {
+	[[nodiscard]] constexpr int update(float value) noexcept {
 		add(value);
 		return consume();
 	}
 	
 private:
 	
-	float m_value;
+	float m_value = 0.f;
 	
 };
 
