@@ -20,6 +20,7 @@
 #ifndef ARX_GRAPHICS_EFFECTS_FLOATINGSTONES_H
 #define ARX_GRAPHICS_EFFECTS_FLOATINGSTONES_H
 
+#include <type_traits>
 #include <vector>
 
 #include "graphics/effects/SpellEffects.h"
@@ -49,6 +50,8 @@ private:
 		short numstone;
 		
 	};
+	
+	static_assert(std::is_trivially_copyable_v<Stone>);
 	
 	std::vector<Stone> m_stones;
 	ShortGameDuration m_timestone;
