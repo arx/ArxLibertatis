@@ -29,9 +29,9 @@ namespace gui {
 
 struct ARX_NECKLACE {
 	EERIE_3DOBJ * lacet;
-	std::array<Anglef, RUNE_COUNT> runeAngles;
 	std::array<EERIE_3DOBJ *, RUNE_COUNT> runes;
 	std::array<TextureContainer *, RUNE_COUNT> pTexTab;
+	std::array<Anglef, RUNE_COUNT> runeAngles;
 };
 
 extern ARX_NECKLACE necklace;
