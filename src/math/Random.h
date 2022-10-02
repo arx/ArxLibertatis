@@ -77,7 +77,7 @@ public:
 	static void seed();
 	
 	//! Seed the random number generator with the given value.
-	static void seed(unsigned int seedVal);
+	static void seed(u64 seedVal);
 	
 	//! Release all resources held by this threads random generator
 	static void shutdown();

@@ -24,19 +24,15 @@
 thread_local Random::Generator * Random::rng = nullptr;
 
 void Random::seed() {
-	if(!rng) {
-		rng = new Generator;
-	}
-	
-	rng->seed(size_t(std::time(nullptr)));
+	seed(u64(std::time(nullptr)));
 }
 
-void Random::seed(unsigned int seedVal) {
-	if(!rng) {
-		rng = new Generator;
+void Random::seed(u64 seedVal) {
+	if(rng) {
+		rng->seed(seedVal);
+	} else {
+		rng = new Generator(seedVal);
 	}
-	
-	rng->seed(seedVal);
 }
 
 void Random::shutdown() {
