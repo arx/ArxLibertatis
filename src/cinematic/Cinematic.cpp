@@ -349,7 +349,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	
 	
 	static const float SPEEDINTENSITYRND = 60.f / 1000.f;
-	float FDIFF = toMs(frameDuration);
+	float FDIFF = toMsf(frameDuration);
 	
 	{
 		

@@ -1113,7 +1113,7 @@ void ComputeVVPos(Entity * io) {
 			
 			float val;
 			if(io == entities.player()) {
-				val = toMs(g_platformTime.lastFrameDuration());
+				val = toMsf(g_platformTime.lastFrameDuration());
 			} else {
 				val = toMsf(g_gameTime.lastFrameDuration());
 			}

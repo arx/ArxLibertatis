@@ -257,9 +257,6 @@ typedef DurationType<struct PlatformTimeTag, s64> PlatformDuration;
 [[nodiscard]] inline constexpr s64 toMsi(PlatformDuration val) noexcept {
 	return std::chrono::milliseconds(val).count();
 }
-[[nodiscard]] inline constexpr float toMs(PlatformDuration val) noexcept {
-	return std::chrono::duration<float, std::milli>(val).count();
-}
 [[nodiscard]] inline constexpr float toS(PlatformDuration val) noexcept {
 	return std::chrono::duration<float>(val).count();
 }

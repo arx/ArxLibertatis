@@ -197,12 +197,12 @@ public:
 			
 			fadeRequestStart(FadeType_Out, duration);
 			
-			DebugScript(" out " << toMs(duration) << ' ' << color.r << ' ' << color.g << ' ' << color.b);
+			DebugScript(" out " << toMsf(duration) << ' ' << color.r << ' ' << color.g << ' ' << color.b);
 		} else if(inout == "in") {
 			
 			fadeRequestStart(FadeType_In, duration);
 			
-			DebugScript(" in " << toMs(duration));
+			DebugScript(" in " << toMsf(duration));
 		} else {
 			ScriptWarning << "unexpected fade direction: " << inout;
 			return Failed;

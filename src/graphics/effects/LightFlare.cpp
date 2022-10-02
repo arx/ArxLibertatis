@@ -45,7 +45,7 @@ void updateLightFlares() {
 	
 	ARX_PROFILE_FUNC();
 	
-	float temp_increase = toMs(g_platformTime.lastFrameDuration()) * 0.004f;
+	float temp_increase = toMsf(g_platformTime.lastFrameDuration()) * 0.004f;
 	
 	Vec4f zFar = g_preparedCamera.m_viewToScreen * Vec4f(0.f, 0.f, g_camera->cdepth * fZFogEnd, 1.f);
 	float fZFar = zFar.z / zFar.w;

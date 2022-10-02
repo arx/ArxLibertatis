@@ -370,7 +370,7 @@ void ShowFrameDurationPlot() {
 	
 	GRenderer->ResetTexture(0);
 	
-	frameDurationPlotValues.push_front(toMs(g_platformTime.lastFrameDuration()));
+	frameDurationPlotValues.push_front(toMsf(g_platformTime.lastFrameDuration()));
 	
 	float avg = std::accumulate(frameDurationPlotValues.begin(), frameDurationPlotValues.end(), 0.f);
 	avg /= float(frameDurationPlotValues.size());

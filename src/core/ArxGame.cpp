@@ -1222,7 +1222,7 @@ void ArxGame::updateFirstPersonCamera() {
 	   && layer1.cur_anim != alist[ANIM_MISSILE_STRIKE_PART_1]
 	   && layer1.cur_anim != alist[ANIM_MISSILE_STRIKE_PART_2]
 	   && layer1.cur_anim != alist[ANIM_MISSILE_STRIKE_CYCLE]) {
-		player.m_bowAimRatio -= bowZoomFromDuration(toMs(g_platformTime.lastFrameDuration()));
+		player.m_bowAimRatio -= bowZoomFromDuration(toMsf(g_platformTime.lastFrameDuration()));
 		if(player.m_bowAimRatio < 0) {
 			player.m_bowAimRatio = 0;
 		}
@@ -1500,7 +1500,7 @@ void ArxGame::updateTime() {
 void ArxGame::updateInput() {
 
 	// Update input
-	GInput->update(toMs(g_platformTime.lastFrameDuration()));
+	GInput->update(toMsf(g_platformTime.lastFrameDuration()));
 	
 	// Handle double clicks.
 	const ActionKey & button = config.actions[CONTROLS_CUST_ACTION];

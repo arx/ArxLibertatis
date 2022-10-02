@@ -145,7 +145,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 	GRenderer->SetAntialiasing(true);
 	
 	float wave = timeWaveSin(g_platformTime.frameStart(), 400ms * glm::pi<float>());
-	float ptDelta = toMs(g_platformTime.lastFrameDuration());
+	float ptDelta = toMsf(g_platformTime.lastFrameDuration());
 	
 	Camera bookcam;
 	bookcam.angle = Anglef();

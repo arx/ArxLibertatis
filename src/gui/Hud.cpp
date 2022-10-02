@@ -855,7 +855,7 @@ void ScreenArrows::update() {
 		return;
 	}
 	
-	fArrowMove += .5f * toMs(g_platformTime.lastFrameDuration());
+	fArrowMove += .5f * toMsf(g_platformTime.lastFrameDuration());
 	if(fArrowMove > 180.f) {
 		fArrowMove = 0.f;
 	}

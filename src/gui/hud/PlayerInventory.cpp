@@ -124,7 +124,7 @@ void PlayerInventoryHud::updateCombineFlags(Entity * source) {
 
 void PlayerInventoryHud::update() {
 	
-	const float framedelay = toMs(g_platformTime.lastFrameDuration());
+	const float framedelay = toMsf(g_platformTime.lastFrameDuration());
 	
 	if(player.Interface & INTER_INVENTORY) {
 		
@@ -205,7 +205,7 @@ void PlayerInventoryHud::CalculateInventoryCoordinates() {
 //-----------------------------------------------------------------------------
 void PlayerInventoryHud::drawBag(size_t bag, Vec2i i) {
 	
-	fDecPulse += toMs(g_platformTime.lastFrameDuration()) * 0.5f;
+	fDecPulse += toMsf(g_platformTime.lastFrameDuration()) * 0.5f;
 	
 	Vec2f anchorPos = anchorPosition();
 	

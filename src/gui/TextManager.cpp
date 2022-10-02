@@ -109,7 +109,7 @@ void TextManager::Update(PlatformDuration delta) {
 			continue;
 		}
 		
-		entry.scrollPosition = std::min(entry.scrollPosition + entry.scrollSpeed * toMs(delta),
+		entry.scrollPosition = std::min(entry.scrollPosition + entry.scrollSpeed * toMsf(delta),
 		                                entry.bounds.bottom - float(entry.clipRect.bottom));
 		
 	}

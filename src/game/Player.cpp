@@ -934,7 +934,7 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta) {
 	
 	if(delta > 0) {
 		
-		float Framedelay = toMs(delta);
+		float Framedelay = toMsf(delta);
 		
 		UpdateIOInvisibility(entities.player());
 		// Natural LIFE recovery
@@ -1948,7 +1948,7 @@ static void PlayerMovementIterate(float DeltaTime) {
 		if(diff < 600ms) {
 			jump_mul = 0.5f;
 			if(diff >= 300ms) {
-				jump_mul += (toMs(LAST_JUMP_ENDTIME - g_platformTime.frameStart()) + 300.f) * (1.f / 300);
+				jump_mul += (toMsf(LAST_JUMP_ENDTIME - g_platformTime.frameStart()) + 300.f) * (1.f / 300);
 				if(jump_mul > 1.f) {
 					jump_mul = 1.f;
 				}
@@ -2113,7 +2113,7 @@ static void PlayerMovementIterate(float DeltaTime) {
 			const float jump_up_time = 200.f;
 			const float jump_up_height = 130.f;
 			const PlatformInstant now = g_platformTime.frameStart();
-			const float elapsed = toMs(now - player.jumpstarttime);
+			const float elapsed = toMsf(now - player.jumpstarttime);
 			float position = glm::clamp(elapsed / jump_up_time, 0.f, 1.f);
 			
 			float p = (position - player.jumplastposition) * jump_up_height;
@@ -2198,7 +2198,7 @@ static void PlayerMovementIterate(float DeltaTime) {
 		Vec3f vect = g_moveto - player.pos;
 		float divv = glm::length(vect);
 		if(divv > 0.f) {
-			float mul = toMs(g_platformTime.lastFrameDuration()) * 0.001f * 200.f;
+			float mul = toMsf(g_platformTime.lastFrameDuration()) * 0.001f * 200.f;
 			divv = mul / divv;
 			vect *= divv;
 			g_moveto = player.pos + vect;
@@ -2249,7 +2249,7 @@ void ARX_PLAYER_Manage_Movement() {
 
 	static float StoredTime = 0;
 
-	float DeltaTime = std::min(toMs(g_platformTime.lastFrameDuration()), MAX_FRAME_TIME);
+	float DeltaTime = std::min(toMsf(g_platformTime.lastFrameDuration()), MAX_FRAME_TIME);
 	DeltaTime = StoredTime + DeltaTime * speedfactor;
 	
 	if(player.jumpphase != NotJumping) {

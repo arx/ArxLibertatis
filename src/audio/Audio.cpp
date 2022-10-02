@@ -731,7 +731,7 @@ void ambiancePlay(AmbianceId ambianceId, const Channel & channel, bool loop, Pla
 	}
 	
 	LogDebug("AmbiancePlay " << g_ambiances[ambianceId]->getName() << " loop=" << loop
-	         << " fade=" << toMs(fadeInterval));
+	         << " fade=" << toMsf(fadeInterval));
 	
 	g_ambiances[ambianceId]->play(channel, loop, fadeInterval);
 }
@@ -746,7 +746,7 @@ void ambianceStop(AmbianceId ambianceId, PlatformDuration fadeInterval) {
 		return;
 	}
 	
-	LogDebug("AmbianceStop " << g_ambiances[ambianceId]->getName() << " " << toMs(fadeInterval));
+	LogDebug("AmbianceStop " << g_ambiances[ambianceId]->getName() << " " << toMsf(fadeInterval));
 	
 	g_ambiances[ambianceId]->stop(fadeInterval);
 }

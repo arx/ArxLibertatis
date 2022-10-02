@@ -795,7 +795,7 @@ void Ambiance::update() {
 	PlatformDuration interval = session_time - (m_start + m_time);
 	m_time += interval;
 	
-	LogDebug("ambiance \"" << m_name << "\": update to time=" << toMs(m_time));
+	LogDebug("ambiance \"" << m_name << "\": update to time=" << toMsf(m_time));
 	
 	// Fading
 	if(m_fadeInterval != 0 && m_fade != None) {

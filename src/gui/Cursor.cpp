@@ -268,7 +268,7 @@ void ARX_INTERFACE_RenderCursor(bool flag) {
 	}
 	
 	if(FlyingOverIO || g_draggedEntity) {
-		fHighLightAng += toMs(g_platformTime.lastFrameDuration()) * 0.5f;
+		fHighLightAng += toMsf(g_platformTime.lastFrameDuration()) * 0.5f;
 		
 		if(fHighLightAng > 90.f)
 			fHighLightAng = 90.f;

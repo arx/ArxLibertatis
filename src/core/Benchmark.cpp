@@ -109,9 +109,9 @@ static void display(Status type, const Result & result, bool summary = false, bo
 		pprefix = " │  ";
 	}
 	
-	float time = toMs(result.m_totalTime);
-	float tmin = toMs(result.m_minTime);
-	float tmax = toMs(result.m_maxTime);
+	float time = toMsf(result.m_totalTime);
+	float tmin = toMsf(result.m_minTime);
+	float tmax = toMsf(result.m_maxTime);
 	float average = time / float(result.m_frameCount);
 	float framerate = 1000.f / average;
 	float minrate = 1000.f / tmin;
