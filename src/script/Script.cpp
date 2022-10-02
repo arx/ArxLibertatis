@@ -1703,9 +1703,7 @@ SCR_TIMER & createScriptTimer(Entity * io, std::string && name) {
 		}
 	}
 	
-	g_scriptTimers.emplace_back(io, std::move(name));
-	
-	return g_scriptTimers.back();
+	return g_scriptTimers.emplace_back(io, std::move(name));
 }
 
 size_t ARX_SCRIPT_CountTimers() {
