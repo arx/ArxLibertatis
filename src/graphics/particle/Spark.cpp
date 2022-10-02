@@ -90,7 +90,7 @@ void ParticleSparkSpawn(const Vec3f & pos, size_t count, ColorRGBA color) {
 		spark.move = arx::randomVec(-6.f, 6.f);
 		spark.duration = std::chrono::milliseconds(len * 90 + count);
 		spark.color = color;
-		spark.tail = glm::normalize(-spark.move) * (len + Random::getf() * len);
+		spark.tail = glm::normalize(-spark.move) * Random::getf(1.f, 2.f) * float(len);
 	}
 	
 }
