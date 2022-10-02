@@ -50,7 +50,7 @@ private:
 	
 	std::vector<Stone> m_stones;
 	GameDuration m_timestone;
-	float m_baseRadius;
+	float m_baseRadius = 0.f;
 	math::Quantizer m_quantizer;
 	
 };
