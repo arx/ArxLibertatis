@@ -75,9 +75,6 @@ private:
 	
 public:
 	
-	MenuWindow(const MenuWindow &) = delete;
-	MenuWindow & operator=(const MenuWindow &) = delete;
-	
 	MenuWindow();
 	
 	void add(std::unique_ptr<MenuPage> page);
