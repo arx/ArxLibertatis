@@ -76,7 +76,7 @@ extern size_t g_culledDynamicLightsCount;
 
 void culledStaticLightsReset();
 
-typedef HandleType<struct LightHandleTag, long, -1> LightHandle;
+typedef HandleType<struct LightHandleTag, s32, -1> LightHandle;
 
 enum EERIE_TYPES_EXTRAS_MODE
 {
