@@ -72,7 +72,7 @@ private:
 	struct ManagedText {
 		
 		Font * font;
-		Rect bounds;
+		Rectf bounds;
 		Rect clipRect;
 		std::string text;
 		float scrollPosition;

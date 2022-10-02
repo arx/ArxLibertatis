@@ -71,16 +71,22 @@ bool TextManager::AddText(Font * font, std::string && text, const Rect & bounds,
 	
 	entry.font = font;
 	entry.text = std::move(text);
-	entry.bounds = bounds;
+	entry.bounds = Rectf(bounds);
+	if(bounds.right == Rect::Limits::max()) {
+		entry.bounds.right = std::numeric_limits<float>::infinity();
+	}
+	if(bounds.bottom == Rect::Limits::max()) {
+		entry.bounds.bottom = std::numeric_limits<float>::infinity();
+	}
 	entry.color = color;
 	entry.scrollDelay = scrollDelay;
 	entry.scrollPosition = 0.f;
 	entry.scrollSpeed = scrollSpeed;
 	entry.displayTime = displayTime;
-	entry.clipRect = entry.bounds;
+	entry.clipRect = bounds;
 	
 	if(maxLines) {
-		entry.clipRect.bottom = entry.bounds.top + font->getTextSize(entry.text).height() * maxLines;
+		entry.clipRect.bottom = entry.clipRect.top + font->getTextSize(entry.text).height() * maxLines;
 	}
 	
 	return true;
@@ -97,6 +103,8 @@ bool TextManager::AddText(Font * font, std::string && text, Vec2i pos, Color col
 
 void TextManager::Update(PlatformDuration delta) {
 	
+	arx_assume(delta >= 0);
+	
 	m_entries.erase(std::remove_if(m_entries.begin(), m_entries.end(), [](const ManagedText & text) {
 		return text.displayTime < 0;
 	}), m_entries.end());
@@ -110,12 +118,8 @@ void TextManager::Update(PlatformDuration delta) {
 			continue;
 		}
 		
-		if(entry.scrollPosition < float(entry.bounds.bottom - entry.clipRect.bottom)) {
-			entry.scrollPosition += entry.scrollSpeed * toMs(delta);
-			if(entry.scrollPosition >= entry.bounds.bottom - entry.clipRect.bottom) {
-				entry.scrollPosition = static_cast<float>(entry.bounds.bottom - entry.clipRect.bottom);
-			}
-		}
+		entry.scrollPosition = std::min(entry.scrollPosition + entry.scrollSpeed * toMs(delta),
+		                                entry.bounds.bottom - float(entry.clipRect.bottom));
 		
 	}
 	
@@ -130,17 +134,11 @@ void TextManager::Render() {
 			clipRect = &entry.clipRect;
 		}
 		
-		float maxx;
-		if(entry.bounds.right == Rect::Limits::max()) {
-			maxx = std::numeric_limits<float>::infinity();
-		} else {
-			maxx = static_cast<float>(entry.bounds.right);
-		}
+		Vec2f pos = entry.bounds.topLeft() - Vec2f(0.f, entry.scrollPosition);
+		long height = ARX_UNICODE_DrawTextInRect(entry.font, pos, entry.bounds.right, entry.text, entry.color,
+		                                         clipRect);
 		
-		Vec2f pos(entry.bounds.left, entry.bounds.top - entry.scrollPosition);
-		long height = ARX_UNICODE_DrawTextInRect(entry.font, pos, maxx, entry.text, entry.color, clipRect);
-		
-		entry.bounds.bottom = entry.bounds.top + height;
+		entry.bounds.bottom = entry.bounds.top + float(height);
 		
 	}
 	
