@@ -92,15 +92,6 @@ bool TextManager::AddText(Font * font, std::string && text, const Rect & bounds,
 	return true;
 }
 
-bool TextManager::AddText(Font * font, std::string && text, Vec2i pos, Color color) {
-	Rect bounds;
-	bounds.left = pos.x;
-	bounds.top = pos.y;
-	bounds.right = Rect::Limits::max();
-	bounds.bottom = Rect::Limits::max();
-	return AddText(font, std::move(text), bounds, color);
-}
-
 void TextManager::Update(PlatformDuration delta) {
 	
 	arx_assume(delta >= 0);

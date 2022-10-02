@@ -61,7 +61,6 @@ public:
 	             Color color = Color::white, PlatformDuration displayTime = 0,
 	             PlatformDuration scrollDelay = 0, float scrollSpeed = 0.f, int maxLines = 0);
 	
-	bool AddText(Font * font, std::string && text, Vec2i pos, Color color);
 	void Update(PlatformDuration delta);
 	void Render();
 	void Clear();
