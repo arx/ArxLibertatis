@@ -24,6 +24,7 @@
 #include "game/GameTypes.h"
 #include "graphics/GraphicsTypes.h"
 
+
 glm::quat getProjectileQuatFromVector(Vec3f vector);
 
 void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const Vec3f & vect, float gravity,
@@ -31,7 +32,7 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
                              float damages, float poisonous);
 
 void ARX_THROWN_OBJECT_KillAll();
-void ARX_THROWN_OBJECT_Manage(GameDuration timeDelta);
+void ARX_THROWN_OBJECT_Manage(ShortGameDuration timeDelta);
 void ARX_THROWN_OBJECT_Render();
 
 #endif // ARX_PHYSICS_PROJECTILE_H

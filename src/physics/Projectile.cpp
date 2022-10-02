@@ -268,7 +268,9 @@ void ARX_THROWN_OBJECT_Render() {
 	
 }
 
-static void ARX_THROWN_OBJECT_ManageProjectile(Projectile & projectile, GameDuration timeDelta) {
+static void ARX_THROWN_OBJECT_ManageProjectile(Projectile & projectile, ShortGameDuration timeDelta) {
+	
+	arx_assume(timeDelta >= 0 && timeDelta <= GameTime::MaxFrameDuration);
 	
 	arx_assert(projectile.obj);
 	
@@ -481,7 +483,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(Projectile & projectile, GameDura
 	
 }
 
-void ARX_THROWN_OBJECT_Manage(GameDuration timeDelta) {
+void ARX_THROWN_OBJECT_Manage(ShortGameDuration timeDelta) {
 	
 	for(Projectile & projectile : g_projectiles) {
 		ARX_THROWN_OBJECT_ManageProjectile(projectile, timeDelta);
