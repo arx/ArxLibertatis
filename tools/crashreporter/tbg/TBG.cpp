@@ -278,7 +278,6 @@ QString Server::findIssue(const QString & text, int & issue_id) {
 	const QString XML_PATH[] = { "rss", "channel", "item", "link" };
 	
 	size_t currentItem = 0;
-	QString issueLink;
 	while(!xml.atEnd() && !xml.hasError()) {
 		
 		// Read next element
