@@ -53,7 +53,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleSystem.h"
 #include "math/Types.h"
 #include "math/Vector.h"
+#include "math/Quantizer.h"
 #include "platform/Platform.h"
+
 
 // Done By : Didier Pedreno
 class CLightning final : public CSpellFx {
@@ -91,6 +93,7 @@ private:
 	Vec3f m_eSrc;
 	Vec3f m_eDest;
 	GameDuration m_iTTL;
+	math::Quantizer m_quantizer;
 	
 	struct CLightningNode {
 		Vec3f pos;

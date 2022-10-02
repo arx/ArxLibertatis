@@ -288,11 +288,10 @@ void CLightning::Update(ShortGameDuration timeDelta) {
 	
 	m_elapsed += timeDelta;
 	m_iTTL -= timeDelta;
-	fTotoro += 8;
 	
-	if(fMySize > 0.3f) {
-		fMySize -= 0.1f;
-	}
+	fTotoro += m_quantizer.update(toMsf(timeDelta) * 0.24f);
+	
+	fMySize = std::max(0.3f, fMySize - toMsf(timeDelta) * 0.003f);
 	
 }
 
