@@ -80,21 +80,19 @@ class TextureContainer;
 
 struct Missile {
 	
-	Vec3f startpos;
-	Vec3f velocity;
-	Vec3f lastpos;
 	GameInstant timecreation;
 	GameDuration tolive;
+	Vec3f startpos;
 	LightHandle m_light;
+	Vec3f velocity;
 	EntityHandle owner;
+	Vec3f lastpos;
 	math::Quantizer m_quantizer;
 	
 	Missile()
 		: startpos(0.f)
 		, velocity(0.f)
 		, lastpos(0.f)
-		, timecreation(0)
-		, tolive(0)
 	{ }
 	
 };
