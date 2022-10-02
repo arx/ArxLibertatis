@@ -145,7 +145,7 @@ void ARX_FOGS_Render() {
 				pd->move *= Vec3f(fog.speed * 0.2f,  1.f / 15, fog.speed * 0.2f);
 			}
 			pd->sizeDelta = fog.sizeDelta;
-			arx_assume(duration <= GameDuration(ShortGameDuration::max() / 2));
+			arx_assume(duration <= ShortGameDuration::max() / 2);
 			pd->duration = ShortGameDuration(duration);
 			pd->elapsed = count * std::chrono::milliseconds(period);
 			pd->tc = g_particleTextures.smoke;
