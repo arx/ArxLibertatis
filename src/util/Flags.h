@@ -33,14 +33,20 @@
 template <typename Enum_>
 class Flags {
 	
-	typedef void ** Zero;
-	u32 m_flags;
-	
-	constexpr Flags(u32 flags, bool /* dummy */) noexcept : m_flags(flags) { }
-	
 public:
 	
 	typedef Enum_ Enum;
+	typedef std::make_unsigned_t<std::underlying_type_t<Enum_>> Type;
+	
+private:
+	
+	typedef void ** Zero;
+	Type m_flags;
+	
+	constexpr Flags(Type flags, bool /* dummy */) noexcept : m_flags(flags) { }
+	
+public:
+	
 	
 	/* implicit */ constexpr Flags(Enum flag) noexcept : m_flags(flag) { arx_assert(Enum(m_flags) == flag); }
 	
@@ -51,7 +57,7 @@ public:
 	>
 	/* implicit */ Flags(NullPtr /* nullptr */) = delete;
 	
-	[[nodiscard]] static constexpr Flags load(u32 flags) noexcept {
+	[[nodiscard]] static constexpr Flags load(Type flags) noexcept {
 		return Flags(flags, true);
 	}
 	
@@ -75,7 +81,7 @@ public:
 		*this &= ~o;
 	}
 	
-	[[nodiscard]] constexpr operator u32() const noexcept {
+	[[nodiscard]] constexpr operator Type() const noexcept {
 		return m_flags;
 	}
 	
@@ -173,10 +179,10 @@ public:
 	[[nodiscard]] inline constexpr Flagname operator|(Flagname::Enum a, Flagname b) noexcept { \
 		return b | a; \
 	} \
-	inline void operator|(Flagname::Enum a, u32 b) = delete; \
-	inline void operator|(u32 a, Flagname::Enum b) = delete; \
-	inline void operator&(Flagname a, u32 b) = delete; \
-	inline void operator&(u32 a, Flagname b) = delete; \
+	inline void operator|(Flagname::Enum a, Flagname::Type b) = delete; \
+	inline void operator|(Flagname::Type a, Flagname::Enum b) = delete; \
+	inline void operator&(Flagname a, Flagname::Type b) = delete; \
+	inline void operator&(Flagname::Type a, Flagname b) = delete; \
 	[[nodiscard]] inline constexpr Flagname operator~(Flagname::Enum a) noexcept { \
 		return ~Flagname(a); \
 	}
