@@ -618,7 +618,7 @@ void SpawnFireballTail(const Vec3f & poss, const Vec3f & vecto, float level, lon
 		if(nn == 1) {
 			unsigned delay = Random::getu(150, 250);
 			pd->elapsed = -std::chrono::milliseconds(delay);
-			pd->ov = poss + vecto * Vec3f(delay);
+			pd->ov = poss + vecto * Vec3f(float(delay));
 		} else {
 			pd->ov = poss;
 		}
@@ -852,7 +852,7 @@ void ARX_PARTICLES_Update()  {
 		TextureContainer * tc = part->tc;
 		if(tc == g_particleTextures.explo[0] && (part->m_flags & PARTICLE_ANIMATED)) {
 			long animrange = g_particleTextures.MAX_EXPLO - 1;
-			tc = g_particleTextures.explo[glm::clamp(long(fd * animrange), 0l, animrange)];
+			tc = g_particleTextures.explo[glm::clamp(long(fd * float(animrange)), 0l, animrange)];
 		}
 		
 		RenderMaterial mat;
