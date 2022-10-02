@@ -57,8 +57,14 @@ public:
 		return m_value < rhs.m_value;
 	}
 	
-	[[nodiscard]] constexpr float operator/(DurationType b) const noexcept {
-		return float(m_value) / float(b.m_value);
+	template <typename T2>
+	[[nodiscard]] constexpr float operator/(DurationType<Tag, T2> period) const noexcept {
+		return float(m_value) / float(period.value().count());
+	}
+	
+	template <typename Rep, typename Period>
+	[[nodiscard]] constexpr float operator/(std::chrono::duration<Rep, Period> period) const noexcept {
+		return float(m_value) / float(std::chrono::duration_cast<std::chrono::microseconds>(period).count());
 	}
 	
 	constexpr DurationType & operator+=(const DurationType & rhs) noexcept {
