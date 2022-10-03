@@ -62,43 +62,26 @@ struct EERIE_3DOBJ;
 
 struct FOG_DEF {
 	
-	bool exist;
-	Vec3f pos;
+	bool exist = true;
+	Vec3f pos = Vec3f(0.f);
 	Color3f rgb;
 	Color3f rgbRandom;
-	float size;
-	bool directional;
-	float sizeDelta;
-	Vec3f move;
+	float size = 0.f;
+	bool directional = false;
+	float sizeDelta = 0.f;
+	Vec3f move = Vec3f(0.f);
 	Anglef angle;
-	float speed;
-	float speedRandom;
-	float rotatespeed;
+	float speed = 1.f;
+	float speedRandom = 2.f;
+	float rotatespeed = 0.f;
 	GameDuration duration;
-	long blend;
-	float frequency;
+	long blend = 0;
+	float frequency = 0.f;
 	math::Quantizer elapsed;
-	bool visible;
+	bool visible = false;
 	GameInstant creationTime;
 	
-	FOG_DEF()
-		: exist(true)
-		, pos(0.f)
-		, rgb(Color3f::black)
-		, rgbRandom(Color3f::black)
-		, size(0.f)
-		, directional(false)
-		, sizeDelta(0.f)
-		, move(0.f)
-		, speed(1.f)
-		, speedRandom(2.f)
-		, rotatespeed(0.f)
-		, duration(0)
-		, blend(0)
-		, frequency(0.f)
-		, visible(false)
-		, creationTime(0)
-	{ }
+	constexpr FOG_DEF() noexcept { }
 	
 };
 
