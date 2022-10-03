@@ -37,11 +37,11 @@ class RandomFlicker {
 	
 public:
 	
-	RandomFlicker() : m_time(1.f), m_lastValue(0.5f), m_nextValue(0.5f) { }
+	constexpr RandomFlicker() noexcept { }
 	
-	void reset() { m_time = 1.f, m_lastValue = 0.5f, m_nextValue = 0.5f; }
+	constexpr void reset() noexcept { *this = RandomFlicker(); }
 	
-	void update(float time) {
+	void update(float time) noexcept {
 		
 		m_time += time;
 		
@@ -53,13 +53,15 @@ public:
 		
 	}
 	
-	float get() const { return glm::mix(m_lastValue, m_nextValue, m_time); }
+	[[nodiscard]] float get() const noexcept {
+		return glm::mix(m_lastValue, m_nextValue, m_time);
+	}
 	
 private:
 	
-	float m_time;
-	float m_lastValue;
-	float m_nextValue;
+	float m_time = 1.f;
+	float m_lastValue = 0.5f;
+	float m_nextValue = 0.5f;
 	
 };
 
