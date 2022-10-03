@@ -56,7 +56,10 @@ public:
 		QString path;
 		bool attachToReport;
 		
-		File(QString _path, bool _attach) : path(std::move(_path)), attachToReport(_attach) { }
+		File(QString _path, bool _attach) noexcept
+			: path(std::move(_path))
+			, attachToReport(_attach)
+		{ }
 		
 	};
 	
