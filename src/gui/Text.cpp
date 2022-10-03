@@ -224,11 +224,11 @@ long ARX_UNICODE_DrawTextInRect(Font * font, const Vec2f & pos, float maxx, std:
 
 	long height;
 	ARX_UNICODE_FormattingInRect(font, text, rect, col, &height);
-
+	
 	if(pClipRect) {
-		GRenderer->SetScissor(Rect::ZERO);
+		GRenderer->SetScissor(Rect());
 	}
-
+	
 	return height;
 }
 

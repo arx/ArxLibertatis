@@ -112,10 +112,10 @@ struct EERIE_LIGHT {
 	float intensity = 0.f;
 	Color3f rgb;
 	
-	Rectf m_screenRect = Rectf::ZERO;
+	Rectf m_screenRect;
 	
 	float m_flareFader = 0.f;
-	Color3f ex_flicker = Color3f::black;
+	Color3f ex_flicker;
 	float ex_radius = 0.f;
 	float ex_frequency = 0.f;
 	float ex_size = 0.f;
@@ -130,7 +130,7 @@ struct EERIE_LIGHT {
 	audio::SourcedSample sample;
 	math::Quantizer m_storedFlameTime;
 	
-	EERIE_LIGHT() noexcept { }
+	constexpr EERIE_LIGHT() noexcept { }
 	
 };
 

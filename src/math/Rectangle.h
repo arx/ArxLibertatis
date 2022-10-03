@@ -34,10 +34,10 @@ public:
 	typedef std::numeric_limits<T> Limits;
 	typedef typename vec_traits<T, 2>::type Vec2;
 	
-	T left;
-	T top;
-	T right;
-	T bottom;
+	T left = T(0);
+	T top = T(0);
+	T right = T(0);
+	T bottom = T(0);
 	
 	template <class U>
 	explicit constexpr Rectangle_(Rectangle_<U> const & other) noexcept
@@ -71,9 +71,7 @@ public:
 	{ }
 	
 	constexpr Rectangle_(T width, T height) noexcept
-		: left(T(0))
-		, top(T(0))
-		, right(width)
+		: right(width)
 		, bottom(height)
 	{ }
 	
@@ -225,10 +223,6 @@ public:
 		return Vec2(right - left, bottom - top);
 	}
 	
-	static const Rectangle_ ZERO;
-	
 };
-
-template <class T> const Rectangle_<T> Rectangle_<T>::ZERO(T(0), T(0), T(0), T(0));
 
 #endif // ARX_MATH_RECTANGLE_H

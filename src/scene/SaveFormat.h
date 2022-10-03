@@ -1118,7 +1118,7 @@ struct SavedCamera {
 		d_angle = Anglef();
 		norm = Vec3f(0.f);
 		fadecolor = Color3f::black;
-		clip = Rect::ZERO;
+		clip = Rect();
 		clipz0 = 0.0f;
 		clipz1 = 0.0f;
 		centerx = 0;

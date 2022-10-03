@@ -1890,7 +1890,7 @@ void ArxGame::renderLevel() {
 	if(FADEDIR)
 		ManageFade();
 	
-	GRenderer->SetScissor(Rect::ZERO);
+	GRenderer->SetScissor(Rect());
 	
 	ARX_SPEECH_Update();
 	

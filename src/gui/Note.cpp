@@ -58,9 +58,9 @@ void Note::deallocate() {
 	
 	m_currentRatio = Vec2f(0.f);
 	
-	m_area = Rectf::ZERO;
-	m_prevPageButton = Rectf::ZERO;
-	m_nextPageButton = Rectf::ZERO;
+	m_area = Rectf();
+	m_prevPageButton = Rectf();
+	m_nextPageButton = Rectf();
 	
 	m_pages.clear();
 }

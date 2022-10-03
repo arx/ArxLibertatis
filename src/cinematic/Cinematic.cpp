@@ -448,7 +448,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	g_fpsCounter.CalcFPS();
 	
 	if(config.interface.cinematicWidescreenMode == CinematicLetterbox) {
-		GRenderer->SetScissor(Rect::ZERO);
+		GRenderer->SetScissor(Rect());
 	}
 	
 	if(g_debugInfo == InfoPanelGuiDebug) {

@@ -191,7 +191,7 @@ void TextInputWidget::render(bool mouseOver) {
 	// Draw text
 	GRenderer->SetScissor(Rect(m_rect));
 	s32 x = m_font->draw(pos.x, pos.y, displayText, color).next();
-	GRenderer->SetScissor(Rect::ZERO);
+	GRenderer->SetScissor(Rect());
 	
 	// Draw cursor
 	if(m_editing) {

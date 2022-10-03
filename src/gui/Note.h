@@ -71,8 +71,8 @@ struct Note {
 	void setPage(size_t page);
 	
 	const Rectf & area() const { return m_area; }
-	Rectf prevPageButton() const { return m_page > 0 ? m_prevPageButton : Rectf::ZERO; }
-	Rectf nextPageButton() const { return m_page + 2 < m_pages.size() ? m_nextPageButton : Rectf::ZERO; }
+	Rectf prevPageButton() const { return m_page > 0 ? m_prevPageButton : Rectf(); }
+	Rectf nextPageButton() const { return m_page + 2 < m_pages.size() ? m_nextPageButton : Rectf(); }
 	
 private:
 	

@@ -1152,7 +1152,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 	player.m_improve = ti;
 	
 	if(ARXmenu.mode() == Mode_CharacterCreation) {
-		GRenderer->SetScissor(Rect::ZERO);
+		GRenderer->SetScissor(Rect());
 	}
 	
 	GRenderer->SetAntialiasing(false);
