@@ -581,6 +581,11 @@ if(BUILD_CRASHREPORTER OR BUILD_PROFILER)
 		check_link_library(QtWidgets QtWidgets_LIBRARIES)
 	endif()
 	
+	# TODO remove this once Qt is fixed
+	if(MSVC AND NOT CXX_STD_VERSION LESS 2020 AND NOT MSVC_VERSION LESS 1930)
+			set(QtCore_EXECUTABLE_COMPILE_FLAGS "${QtCore_EXECUTABLE_COMPILE_FLAGS} /wd5054")
+	endif()
+	
 	# Needed by the crash reporter
 	
 	if(HAVE_QT AND BUILD_CRASHREPORTER)
