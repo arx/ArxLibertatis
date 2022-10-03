@@ -54,10 +54,8 @@ enum BlendingFactor {
 
 class RenderState {
 	
-	enum Sizes {
-		DepthOffsetSize = 5,
-		BlendSize = 4,
-	};
+	static inline constexpr size_t DepthOffsetSize = 5;
+	static inline constexpr size_t BlendSize = 4;
 	
 	enum Offsets {
 		Cull,
