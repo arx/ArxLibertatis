@@ -21,7 +21,7 @@
 
 #include <algorithm>
 
-bool DisplayMode::operator<(const DisplayMode & o) const {
+bool DisplayMode::operator<(const DisplayMode & o) const noexcept {
 	if(resolution.x != o.resolution.x) {
 		return (resolution.x < o.resolution.x);
 	} else if(resolution.y != o.resolution.y) {
@@ -61,7 +61,7 @@ Window::Window()
 	, m_visible(false)
 	, m_fullscreen(false)
 	, m_focused(false)
-	{ }
+{ }
 
 void Window::addListener(Listener * listener) {
 	m_listeners.push_back(listener);

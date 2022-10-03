@@ -25,16 +25,16 @@
 
 struct DisplayMode {
 	
-	Vec2i resolution;
-	s32 refresh;
+	Vec2i resolution = Vec2i(0);
+	s32 refresh = 0;
 	
-	DisplayMode() : resolution(0), refresh(0) { }
-	/* implicit */ DisplayMode(Vec2i res, s32 rate = 0) : resolution(res), refresh(rate) { }
-	bool operator<(const DisplayMode & o) const;
-	bool operator==(const DisplayMode & o) const {
+	constexpr DisplayMode() noexcept { }
+	/* implicit */ constexpr DisplayMode(Vec2i res, s32 rate = 0) noexcept : resolution(res), refresh(rate) { }
+	[[nodiscard]] bool operator<(const DisplayMode & o) const noexcept;
+	[[nodiscard]] constexpr bool operator==(const DisplayMode & o) const noexcept {
 		return resolution == o.resolution && refresh == o.refresh;
 	}
-	bool operator!=(const DisplayMode & o) const {
+	[[nodiscard]] constexpr bool operator!=(const DisplayMode & o) const noexcept {
 		return !(*this == o);
 	}
 	
