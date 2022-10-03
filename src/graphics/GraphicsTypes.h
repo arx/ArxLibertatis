@@ -78,11 +78,9 @@ typedef HandleType<struct ObjVertHandleTag, s32,  -1> ObjVertHandle;
 
 struct EERIE_TRI {
 	
-	Vec3f v[3];
+	Vec3f v[3] = { Vec3f(0.f), Vec3f(0.f), Vec3f(0.f) };
 	
-	EERIE_TRI() {
-		v[0] = v[1] = v[2] = Vec3f(0.f);
-	}
+	constexpr EERIE_TRI() noexcept { }
 	
 };
 
@@ -122,35 +120,21 @@ DECLARE_FLAGS_OPERATORS(PolyType)
 struct EERIEPOLY {
 	
 	PolyType type;
-	Vec3f min;
-	Vec3f max;
-	Vec3f norm;
-	Vec3f norm2;
+	Vec3f min = Vec3f(0.f);
+	Vec3f max = Vec3f(0.f);
+	Vec3f norm = Vec3f(0.f);
+	Vec3f norm2 = Vec3f(0.f);
 	TexturedVertex v[4];
-	ColorRGBA color[4];
-	Vec3f nrml[4];
-	TextureContainer * tex;
-	Vec3f center;
-	float transval;
-	float area;
-	short room;
-	unsigned short uslInd[4];
+	ColorRGBA color[4] = { };
+	Vec3f nrml[4] = { Vec3f(0.f), Vec3f(0.f), Vec3f(0.f), Vec3f(0.f) };
+	TextureContainer * tex = nullptr;
+	Vec3f center = Vec3f(0.f);
+	float transval = 0.f;
+	float area = 0.f;
+	short room = 0;
+	unsigned short uslInd[4] = { 0, 0, 0, 0 };
 	
-	EERIEPOLY()
-		: type(0)
-		, min(0.f)
-		, max(0.f)
-		, norm(0.f)
-		, norm2(0.f)
-		, tex(nullptr)
-		, center(0.f)
-		, transval(0)
-		, area(0)
-		, room(0)
-	{
-		nrml[0] = nrml[1] = nrml[2] = nrml[3] = Vec3f(0.f);
-		uslInd[0] = uslInd[1] = uslInd[2] = uslInd[3] = 0;
-	}
+	constexpr EERIEPOLY() noexcept { }
 	
 };
 
@@ -158,13 +142,15 @@ struct EERIEPOLY {
 struct EERIE_FACE {
 	
 	PolyType facetype;
-	short texid; //!< index into the objects texture list
-	unsigned short vid[IOPOLYVERT];
-	float u[IOPOLYVERT];
-	float v[IOPOLYVERT];
+	short texid = 0; //!< index into the objects texture list
+	unsigned short vid[IOPOLYVERT] = { 0, 0, 0 };
+	float u[IOPOLYVERT] = { 0.f, 0.f, 0.f };
+	float v[IOPOLYVERT] = { 0.f, 0.f, 0.f };
 	
-	float transval;
-	Vec3f norm;
+	float transval = 0.f;
+	Vec3f norm = Vec3f(0.f);
+	
+	constexpr EERIE_FACE() noexcept { }
 	
 };
 
@@ -173,23 +159,23 @@ struct EERIE_ACTIONLIST {
 	std::string name;
 	ActionPoint idx;
 	
-	EERIE_ACTIONLIST()
-		: idx(0)
-	{ }
-	
 };
 
 struct EERIE_LINKED {
+	
 	ObjVertGroup lgroup;
 	ActionPoint lidx;
 	ActionPoint lidx2;
-	EERIE_3DOBJ * obj;
-	Entity * io;
+	EERIE_3DOBJ * obj = nullptr;
+	Entity * io = nullptr;
+	
 };
 
 struct EERIE_SELECTIONS {
+	
 	std::string name;
 	std::vector<size_t> selected;
+	
 };
 
 struct EERIE_FASTACCESS {
@@ -210,18 +196,12 @@ struct EERIE_FASTACCESS {
 
 struct EERIE_3DOBJ {
 	
-	EERIE_3DOBJ()
-		: origin(0)
-		, pbox(nullptr)
-		, m_skeleton(nullptr)
-	{ }
-	
 	void clear();
 	
 	~EERIE_3DOBJ();
 	
 	res::path file;
-	size_t origin;
+	size_t origin = 0;
 	std::vector<Vec3f> vertexlocal;
 	std::vector<EERIE_VERTEX> vertexlist;
 	std::vector<EERIE_VERTEX> vertexWorldPositions;
@@ -237,28 +217,27 @@ struct EERIE_3DOBJ {
 	std::vector<res::path> originaltextures;
 	std::vector<EERIE_LINKED> linked;
 	
-	PHYSICS_BOX_DATA * pbox;
+	PHYSICS_BOX_DATA * pbox = nullptr;
 	EERIE_FASTACCESS fastaccess;
 	
-	Skeleton * m_skeleton;
+	Skeleton * m_skeleton = nullptr;
 	std::vector<std::vector<u32>> m_boneVertices; // TODO use u16 here ?
 	
 };
 
 struct Plane {
 	
-	Vec3f normal;
-	float offset; // dist to origin
+	Vec3f normal = Vec3f(0.f);
+	float offset = 0.f; // dist to origin
 	
-	Plane()
-		: normal(0.f)
-		, offset(0.f)
-	{ }
+	constexpr Plane() noexcept { }
 	
 };
 
 struct EERIE_FRUSTRUM {
+	
 	Plane plane[4];
+	
 };
 
 #endif // ARX_GRAPHICS_GRAPHICSTYPES_H
