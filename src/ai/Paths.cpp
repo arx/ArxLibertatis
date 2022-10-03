@@ -261,14 +261,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 
 Zone::Zone(std::string && _name, const Vec3f & _pos) noexcept
 	: name(std::move(_name))
-	, flags(0)
 	, pos(_pos)
-	, height(0)
-	, rgb(Color3f::black)
-	, farclip(0.f)
-	, amb_max_vol(0.f)
-	, bbmin(0.f)
-	, bbmax(0.f)
 { }
 
 Path::Path(std::string && _name, const Vec3f & _pos) noexcept
@@ -328,7 +321,7 @@ void ARX_PATH_ReleaseAllPath() {
 	
 }
 
-Vec3f Path::interpolateCurve(size_t i, float step) const {
+Vec3f Path::interpolateCurve(size_t i, float step) const noexcept {
 	Vec3f p0 = pathways[i + 0].rpos, p1 = pathways[i + 1].rpos, p2 = pathways[i + 2].rpos;
 	return pos + p0 * (1 - step) + p1 * (step - square(step)) + p2 * square(step);
 }

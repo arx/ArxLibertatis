@@ -80,20 +80,18 @@ struct Zone {
 	Vec3f pos;
 	std::vector<Vec3f> pathways;
 	
-	long height;
+	long height = 0;
 	
 	//! name of IO to be notified of other IOs interacting with the path
 	std::string controled; // TODO why store the name and not a pointer?
 	
 	res::path ambiance;
 	
-	Color3f rgb;
-	float farclip;
-	float amb_max_vol;
-	Vec3f bbmin;
-	Vec3f bbmax;
-	
-	Vec3f interpolateCurve(size_t i, float step) const;
+	Color3f rgb = Color3f::black;
+	float farclip = 0.f;
+	float amb_max_vol = 0.f;
+	Vec3f bbmin = Vec3f(0.f);
+	Vec3f bbmax = Vec3f(0.f);
 	
 };
 
@@ -105,15 +103,11 @@ enum PathwayType {
 
 struct ARX_PATHWAY {
 	
-	Vec3f rpos; // Relative position
-	PathwayType flag;
+	Vec3f rpos = Vec3f(0.f); // Relative position
+	PathwayType flag = PATHWAY_STANDARD;
 	GameDuration _time;
 	
-	ARX_PATHWAY()
-		: rpos(0.f)
-		, flag(PATHWAY_STANDARD)
-		, _time(0)
-	{ }
+	constexpr ARX_PATHWAY() noexcept { }
 	
 };
 
@@ -125,7 +119,7 @@ struct Path {
 	Vec3f pos;
 	std::vector<ARX_PATHWAY> pathways;
 	
-	Vec3f interpolateCurve(size_t i, float step) const;
+	[[nodiscard]] Vec3f interpolateCurve(size_t i, float step) const noexcept;
 	
 };
 
@@ -143,19 +137,11 @@ DECLARE_FLAGS_OPERATORS(UsePathFlags)
 
 struct ARX_USE_PATH {
 	
-	const Path * path;
+	const Path * path = nullptr;
 	GameInstant _starttime;
 	GameInstant _curtime;
 	UsePathFlags aupflags;
-	long lastWP;
-	
-	ARX_USE_PATH()
-		: path(nullptr)
-		, _starttime(0)
-		, _curtime(0)
-		, aupflags(0)
-		, lastWP(0)
-	{ }
+	long lastWP = 0;
 	
 };
 
