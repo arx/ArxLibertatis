@@ -30,31 +30,22 @@
 
 struct VertexGroup {
 	
-	std::string       name;
-	size_t            origin;
+	std::string name;
+	size_t origin = 0;
 	std::vector<u32> indexes; // TODO use u16 here ?
-	float m_blobShadowSize;
-	
-	VertexGroup()
-		: origin(0)
-		, m_blobShadowSize(0.0f)
-	{ }
+	float m_blobShadowSize = 0.f;
 	
 };
 
 struct BoneTransform {
 	
-	glm::quat quat;
-	Vec3f trans;
-	Vec3f scale;
+	glm::quat quat = quat_identity();
+	Vec3f trans = Vec3f(0.f);
+	Vec3f scale = Vec3f(0.f); // TODO should this be 1.f?
 	
-	BoneTransform()
-		: quat(quat_identity())
-		, trans(0.f)
-		, scale(0.f) // TODO should this be 1.f?
-	{ }
+	constexpr BoneTransform() noexcept { }
 	
-	Vec3f operator()(const Vec3f & vec) const {
+	[[nodiscard]] constexpr Vec3f operator()(const Vec3f & vec) const noexcept {
 		return trans + ( quat * vec ) * scale;
 	}
 	
@@ -62,18 +53,15 @@ struct BoneTransform {
 
 struct Bone {
 	
-	long father;
+	long father = 0;
 	
 	BoneTransform anim;
 	BoneTransform last;
 	BoneTransform init;
 	
-	Vec3f transinit_global;
+	Vec3f transinit_global = Vec3f(0.f);
 	
-	Bone()
-		: father(0)
-		, transinit_global(0.f)
-	{ }
+	constexpr Bone() noexcept { }
 	
 };
 
