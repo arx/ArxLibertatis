@@ -167,7 +167,7 @@ ScriptEventName ScriptEventName::parse(std::string_view name) {
 	return ScriptEventName(name);
 }
 
-std::string_view ScriptEventName::toString() const {
+std::string_view ScriptEventName::toString() const noexcept {
 	
 	if(!getName().empty()) {
 		arx_assert(getId() == SM_NULL);
@@ -178,7 +178,7 @@ std::string_view ScriptEventName::toString() const {
 	return AS_EVENT[getId()].name.substr(3);
 }
 
-DisabledEvents ScriptEventName::toDisabledEventsMask() const {
+DisabledEvents ScriptEventName::toDisabledEventsMask() const noexcept {
 	
 	switch(getId()) {
 		case SM_COLLIDE_NPC: return DISABLE_COLLIDE_NPC;

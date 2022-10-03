@@ -156,11 +156,9 @@ struct SCRIPT_VAR {
 	
 	std::string name;
 	
-	long ival;
-	float fval;
+	long ival = 0;
+	float fval = 0.f;
 	std::string text;
-	
-	SCRIPT_VAR() : ival(), fval() { }
 	
 };
 
@@ -187,13 +185,11 @@ typedef std::vector<SCRIPT_VAR> SCRIPT_VARIABLES;
 
 struct EERIE_SCRIPT {
 	
-	bool valid;
+	bool valid = false;
 	std::string data;
 	size_t shortcut[SM_MAXCMD];
 
-	EERIE_SCRIPT()
-		: valid(false)
-	{
+	EERIE_SCRIPT() noexcept {
 		memset(&shortcut, 0, sizeof(shortcut));
 	}
 	
@@ -404,32 +400,32 @@ enum ScriptResult {
 
 class ScriptEventName {
 	
-	ScriptMessage m_id;
+	ScriptMessage m_id = SM_NULL;
 	std::string m_name;
 	
 public:
 	
-	ScriptEventName() : m_id(SM_NULL) { }
-	/* implicit */ ScriptEventName(ScriptMessage id) : m_id(id) { }
-	explicit ScriptEventName(std::string_view name) : m_id(SM_NULL), m_name(name) { }
-	/* implicit */ ScriptEventName(const char * name) : m_id(SM_NULL), m_name(name) { }
+	ScriptEventName() noexcept : m_id(SM_NULL) { }
+	/* implicit */ ScriptEventName(ScriptMessage id) noexcept : m_id(id) { }
+	explicit ScriptEventName(std::string_view name) : m_name(name) { }
+	/* implicit */ ScriptEventName(const char * name) : m_name(name) { }
 	
-	bool operator==(ScriptMessage id) const {
+	[[nodiscard]] bool operator==(ScriptMessage id) const noexcept {
 		return m_id == id;
 	}
 	
-	bool operator!=(ScriptMessage id) const {
+	[[nodiscard]] bool operator!=(ScriptMessage id) const noexcept {
 		return m_id != id;
 	}
 	
-	static ScriptEventName parse(std::string_view name);
+	[[nodiscard]] static ScriptEventName parse(std::string_view name);
 	
-	ScriptMessage getId() const { return m_id; }
-	const std::string & getName() const { return m_name; }
+	[[nodiscard]] ScriptMessage getId() const noexcept { return m_id; }
+	[[nodiscard]] const std::string & getName() const noexcept { return m_name; }
 	
-	std::string_view toString() const;
+	[[nodiscard]] std::string_view toString() const noexcept;
 	
-	DisabledEvents toDisabledEventsMask() const;
+	[[nodiscard]] DisabledEvents toDisabledEventsMask() const noexcept;
 	
 };
 
@@ -437,19 +433,15 @@ std::ostream & operator<<(std::ostream & os, const ScriptEventName & event);
 
 class ScriptParameters : public std::vector<std::string> {
 	
-	bool m_peekOnly;
+	bool m_peekOnly = false;
 	
 public:
 	
-	ScriptParameters() : m_peekOnly(false) { }
-	/* implicit */ ScriptParameters(std::string_view parameter)
-		: m_peekOnly(false)
-	{
+	ScriptParameters() noexcept { }
+	/* implicit */ ScriptParameters(std::string_view parameter) {
 		emplace_back(parameter);
 	}
-	/* implicit */ ScriptParameters(std::string parameter)
-		: m_peekOnly(false)
-	{
+	/* implicit */ ScriptParameters(std::string parameter) {
 		emplace_back(std::move(parameter));
 	}
 	/* implicit */ ScriptParameters(const char * parameter)
@@ -462,7 +454,7 @@ public:
 		: ScriptParameters(std::to_string(parameter))
 	{ }
 	
-	static ScriptParameters parse(std::string_view str);
+	[[nodiscard]] static ScriptParameters parse(std::string_view str);
 	
 	using std::vector<std::string>::push_back;
 	
@@ -479,8 +471,8 @@ public:
 	 *
 	 * If such a command is reached the script result will be \ref DESTRUCTIVE.
 	 */
-	void setPeekOnly(bool enable = true) { m_peekOnly = enable; }
-	bool isPeekOnly() const { return m_peekOnly; }
+	void setPeekOnly(bool enable = true) noexcept { m_peekOnly = enable; }
+	[[nodiscard]] bool isPeekOnly() const noexcept { return m_peekOnly; }
 	
 };
 
