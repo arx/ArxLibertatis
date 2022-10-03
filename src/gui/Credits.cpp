@@ -135,6 +135,10 @@ private:
 	//! Parse the credits text and compute line positions
 	void layout();
 	
+public:
+	
+	Credits() noexcept(noexcept(Libraries())) { }
+	
 };
 
 Credits g_credits;
