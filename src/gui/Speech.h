@@ -72,29 +72,19 @@ enum CinematicSpeechMode {
 
 struct CinematicSpeech {
 	
-	CinematicSpeechMode type;
+	CinematicSpeechMode type = ARX_CINE_SPEECH_NONE;
 	Anglef startangle;
 	Anglef endangle;
-	float startpos;
-	float endpos;
-	float m_startdist;
-	float m_enddist;
-	float m_heightModifier;
-	EntityHandle ionum;
-	Vec3f pos1;
-	Vec3f pos2;
+	float startpos = 0.f;
+	float endpos = 0.f;
+	float m_startdist = 0.f;
+	float m_enddist = 0.f;
+	float m_heightModifier = 0.f;
+	EntityHandle ionum = EntityHandle_Player; // TODO is this correct?
+	Vec3f pos1 = Vec3f(0.f);
+	Vec3f pos2 = Vec3f(0.f);
 	
-	CinematicSpeech()
-		: type(ARX_CINE_SPEECH_NONE)
-		, startpos(0.f)
-		, endpos(0.f)
-		, m_startdist(0.f)
-		, m_enddist(0.f)
-		, m_heightModifier(0.f)
-		, ionum(EntityHandle_Player) // TODO is this correct?
-		, pos1(0.f)
-		, pos2(0.f)
-	{ }
+	constexpr CinematicSpeech() noexcept { }
 	
 };
 
@@ -110,31 +100,20 @@ DECLARE_FLAGS_OPERATORS(SpeechFlags)
 struct Speech {
 	
 	audio::SourcedSample sample;
-	long mood;
+	long mood = 0;
 	SpeechFlags flags;
 	GameInstant time_creation;
 	GameDuration duration;
-	float fDeltaY;
-	int iTimeScroll;
-	float fPixelScroll;
+	float fDeltaY = 0.f;
+	int iTimeScroll = 0;
+	float fPixelScroll = 0.f;
 	std::string text;
-	Entity * speaker;
+	Entity * speaker = nullptr;
 	CinematicSpeech cine;
 	
-	Entity * scriptEntity;
-	const EERIE_SCRIPT * script;
-	size_t scriptPos;
-	
-	Speech()
-		: mood(0)
-		, fDeltaY(0.f)
-		, iTimeScroll(0)
-		, fPixelScroll(0.f)
-		, speaker(nullptr)
-		, scriptEntity(nullptr)
-		, script(nullptr)
-		, scriptPos(0)
-	{ }
+	Entity * scriptEntity = nullptr;
+	const EERIE_SCRIPT * script = nullptr;
+	size_t scriptPos = 0;
 	
 };
 
