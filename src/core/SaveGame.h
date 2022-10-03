@@ -40,21 +40,15 @@ extern const fs::path SAVEGAME_NAME;
 
 struct SaveGame {
 	
-	bool quicksave;
+	bool quicksave = false;
 	
 	std::string name;
 	
 	fs::path savefile;
 	res::path thumbnail;
 	
-	long level;
-	std::time_t stime;
-	
-	SaveGame()
-		: quicksave(false)
-		, level(0)
-		, stime(0)
-	{ }
+	long level = 0;
+	std::time_t stime = 0;
 	
 };
 
