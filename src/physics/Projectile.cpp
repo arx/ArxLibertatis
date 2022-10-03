@@ -62,33 +62,21 @@ DECLARE_FLAGS_OPERATORS(ProjectileFlags)
 struct Projectile {
 	
 	ProjectileFlags flags;
-	Vec3f vector;
-	glm::quat quat;
-	float gravity;
-	Vec3f initial_position;
-	Vec3f position;
-	float damages;
-	EERIE_3DOBJ * obj;
+	Vec3f vector = Vec3f(0.f);
+	glm::quat quat = quat_identity();
+	float gravity = 0.f;
+	Vec3f initial_position = Vec3f(0.f);
+	Vec3f position = Vec3f(0.f);
+	float damages = 0.f;
+	EERIE_3DOBJ * obj = nullptr;
 	ActionPoint attach;
-	glm::quat rotation;
+	glm::quat rotation = quat_identity();
 	EntityHandle source;
 	GameInstant creation_time;
-	float poisonous;
+	float poisonous = 0.f;
 	std::unique_ptr<Trail> m_trail;
 	
-	Projectile()
-		: flags(0)
-		, vector(0.f)
-		, quat(quat_identity())
-		, gravity(0.f)
-		, initial_position(0.f)
-		, position(0.f)
-		, damages(0)
-		, obj(nullptr)
-		, rotation(quat_identity())
-		, creation_time(0)
-		, poisonous(0.f)
-	{ }
+	Projectile() noexcept { }
 	
 };
 
