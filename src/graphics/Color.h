@@ -28,6 +28,7 @@
 
 #include "platform/Platform.h"
 
+
 template <typename TAG, typename T>
 struct IntegerColorType {
 	
@@ -54,9 +55,6 @@ static_assert(sizeof(ColorBGR) == sizeof(u32));
 static_assert(sizeof(ColorRGB) == sizeof(u32));
 static_assert(sizeof(ColorRGBA) == sizeof(u32));
 static_assert(sizeof(ColorBGRA) == sizeof(u32));
-
-constexpr ColorRGBA ColorRGBA_ZERO = ColorRGBA(0);
-
 
 template <typename T>
 class Color4;
