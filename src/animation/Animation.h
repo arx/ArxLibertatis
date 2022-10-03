@@ -62,39 +62,27 @@ class Entity;
 
 struct EERIE_FRAME {
 	
-	long num_frame;
-	bool stepSound;
-	bool f_translate;
-	bool f_rotate;
+	long num_frame = 0;
+	bool stepSound = false;
+	bool f_translate = false;
+	bool f_rotate = false;
 	AnimationDuration time;
-	Vec3f translate;
-	glm::quat quat;
+	Vec3f translate = Vec3f(0.f);
+	glm::quat quat = quat_identity();
 	audio::SampleHandle sample;
 	
-	EERIE_FRAME()
-		: num_frame(0)
-		, stepSound(false)
-		, f_translate(false)
-		, f_rotate(false)
-		, translate(0.f)
-		, quat(quat_identity())
-	{ }
+	constexpr EERIE_FRAME() noexcept { }
 	
 };
 
 struct EERIE_GROUP {
 	
-	int key;
-	Vec3f translate;
-	glm::quat quat;
-	Vec3f zoom;
+	int key = 0;
+	Vec3f translate = Vec3f(0.f);
+	glm::quat quat = quat_identity();
+	Vec3f zoom = Vec3f(1.f);
 	
-	EERIE_GROUP()
-		: key(0)
-		, translate(0.f)
-		, quat(quat_identity())
-		, zoom(1.f)
-	{ }
+	constexpr EERIE_GROUP() noexcept { }
 	
 };
 
@@ -104,10 +92,6 @@ struct EERIE_ANIM {
 	std::vector<EERIE_FRAME> frames;
 	std::vector<EERIE_GROUP> groups;
 	std::vector<bool> voidgroups;
-	
-	EERIE_ANIM()
-		: anim_time(0)
-	{ }
 	
 	size_t nb_groups() const {
 		return voidgroups.size();
@@ -119,11 +103,7 @@ struct ANIM_HANDLE {
 	
 	res::path path; // empty path means an unallocated slot
 	std::vector<EERIE_ANIM *> anims;
-	long locks;
-	
-	ANIM_HANDLE()
-		: locks(0)
-	{ }
+	long locks = 0;
 	
 };
 
@@ -143,23 +123,13 @@ DECLARE_FLAGS_OPERATORS(AnimUseType)
 
 struct AnimLayer {
 	
-	AnimLayer()
-		: cur_anim(nullptr)
-		, altidx_cur(0)
-		, ctime(0)
-		, flags(0)
-		, lastframe(-1)
-		, currentInterpolation(0.f)
-		, currentFrame(0)
-	{}
-	
-	const ANIM_HANDLE * cur_anim;
-	u16 altidx_cur; // idx to alternate anims...
+	const ANIM_HANDLE * cur_anim = nullptr;
+	u16 altidx_cur = 0; // idx to alternate anims...
 	AnimationDuration ctime;
 	AnimUseType flags;
-	long lastframe;
-	float currentInterpolation;
-	long currentFrame;
+	long lastframe = -1;
+	float currentInterpolation = 0.f;
+	long currentFrame = 0;
 	
 	const EERIE_ANIM * currentAltAnim() const {
 		return cur_anim->anims[altidx_cur];
