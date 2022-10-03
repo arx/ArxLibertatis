@@ -66,11 +66,12 @@ private:
 		
 		struct Chunk {
 			
-			size_t size;
-			size_t offset;
+			size_t size = 0;
+			size_t offset = 0;
 			
-			Chunk() : size(0), offset(0) { }
-			Chunk(size_t _size, size_t _offset) : size(_size), offset(_offset) { }
+			constexpr Chunk() noexcept { }
+			
+			constexpr Chunk(size_t _size, size_t _offset) noexcept : size(_size), offset(_offset) { }
 			
 		};
 		
