@@ -48,39 +48,34 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 
 struct Cylinder {
-	Vec3f origin;
-	float radius;
-	float height;
 	
-	Cylinder()
-		: origin(0.f)
-		, radius(0.f)
-		, height(0.f)
-	{}
+	Vec3f origin = Vec3f(0.f);
+	float radius = 0.f;
+	float height = 0.f;
 	
-	Cylinder(const Vec3f & origin_, float radius_, float height_)
+	constexpr Cylinder() noexcept { }
+	
+	constexpr Cylinder(const Vec3f & origin_, float radius_, float height_) noexcept
 		: origin(origin_)
 		, radius(radius_)
 		, height(height_)
-	{}
+	{ }
+	
 };
 
 struct Sphere {
 	
-	Vec3f origin;
-	float radius;
+	Vec3f origin = Vec3f(0.f);
+	float radius = 0.f;
 	
-	Sphere()
-		: origin(0.f)
-		, radius(0.f)
-	{}
+	constexpr Sphere() noexcept { }
 	
-	Sphere(const Vec3f & origin_, float radius_)
+	constexpr Sphere(const Vec3f & origin_, float radius_) noexcept
 		: origin(origin_)
 		, radius(radius_)
-	{}
+	{ }
 	
-	bool contains(const Vec3f & pos) const {
+	[[nodiscard]] bool contains(const Vec3f & pos) const noexcept {
 		return closerThan(pos, origin, radius);
 	}
 	
@@ -88,26 +83,26 @@ struct Sphere {
 
 struct EERIE_2D_BBOX {
 	
-	Vec2f min;
-	Vec2f max;
+	Vec2f min = Vec2f(0.f);
+	Vec2f max = Vec2f(0.f);
 	
-	EERIE_2D_BBOX() : min(0.f), max(0.f) { }
+	constexpr EERIE_2D_BBOX() noexcept { }
 	
-	void reset() {
+	constexpr void reset() noexcept {
 		min = Vec2f(32000);
 		max = Vec2f(-32000);
 	}
 	
-	void add(const Vec3f & pos) {
+	constexpr void add(const Vec3f & pos) noexcept {
 		min = glm::min(min, Vec2f(pos));
 		max = glm::max(max, Vec2f(pos));
 	}
 	
-	bool valid() const {
+	[[nodiscard]] constexpr bool valid() const noexcept {
 		return (min.x <= max.x && min.y <= max.y);
 	}
 	
-	Rectf toRect() const {
+	[[nodiscard]] constexpr Rectf toRect() const noexcept {
 		return Rectf(min.x, min.y, max.x, max.y);
 	}
 	
@@ -115,24 +110,24 @@ struct EERIE_2D_BBOX {
 
 struct EERIE_3D_BBOX {
 	
-	Vec3f min;
-	Vec3f max;
+	Vec3f min = Vec3f(0.f);
+	Vec3f max = Vec3f(0.f);
 	
-	EERIE_3D_BBOX() : min(0.f), max(0.f) { }
+	constexpr EERIE_3D_BBOX() noexcept { }
 	
-	EERIE_3D_BBOX(const Vec3f & min_, const Vec3f & max_) : min(min_), max(max_) { }
+	constexpr EERIE_3D_BBOX(const Vec3f & min_, const Vec3f & max_) noexcept : min(min_), max(max_) { }
 	
-	void reset() {
+	constexpr void reset() noexcept {
 		min = Vec3f(99999999.f);
 		max = Vec3f(-99999999.f);
 	}
 	
-	void add(const Vec3f & pos) {
+	constexpr void add(const Vec3f & pos) noexcept {
 		min = glm::min(min, pos);
 		max = glm::max(max, pos);
 	}
 	
-	bool valid() const {
+	[[nodiscard]] constexpr bool valid() const noexcept {
 		return (min.x <= max.x && min.y <= max.y && min.z <= max.z);
 	}
 	
