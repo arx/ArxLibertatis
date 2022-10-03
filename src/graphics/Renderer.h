@@ -70,168 +70,170 @@ class RenderState {
 	};
 	
 	// We could use bitfields here instead but they are missing (an efficient) operator==.
-	u32 m_state;
+	u32 m_state = 0;
 	
 	template <size_t Offset, size_t Size>
-	[[nodiscard]] u32 get() const {
+	[[nodiscard]] constexpr u32 get() const noexcept {
 		return (m_state >> Offset) & ((u32(1) << Size) - 1);
 	}
 	
 	template <size_t Offset, size_t Size>
-	void set(u32 value) {
+	constexpr void set(u32 value) noexcept {
 		m_state = (m_state & ~(((u32(1) << Size) - 1) << Offset)) | (value << Offset);
 	}
 	
 public:
 	
-	RenderState()
-		: m_state(0)
-	{
+	constexpr RenderState() noexcept {
 		static_assert(sizeof(m_state) * 8 >= End, "fields do not fit into m_state");
 		disableBlend();
 	}
 	
-	[[nodiscard]] bool operator==(const RenderState & o) const { return m_state == o.m_state; }
-	[[nodiscard]] bool operator!=(const RenderState & o) const { return m_state != o.m_state; }
+	[[nodiscard]] constexpr bool operator==(const RenderState & o) const noexcept {
+		return m_state == o.m_state;
+	}
+	[[nodiscard]] constexpr bool operator!=(const RenderState & o) const noexcept {
+		return m_state != o.m_state;
+	}
 	
-	void setCull(bool cullBackfaces) {
+	constexpr void setCull(bool cullBackfaces) noexcept {
 		set<Cull, 1>(cullBackfaces);
 	}
 	
-	[[nodiscard]] RenderState cull(bool cullBackfaces = true) const {
+	[[nodiscard]] constexpr RenderState cull(bool cullBackfaces = true) const noexcept {
 		RenderState copy = *this;
 		copy.setCull(cullBackfaces);
 		return copy;
 	}
 	
-	[[nodiscard]] bool getCull() const {
+	[[nodiscard]] constexpr bool getCull() const noexcept {
 		return get<Cull, 1>() != 0;
 	}
 	
-	void setFog(bool enable) {
+	constexpr void setFog(bool enable) noexcept {
 		set<Fog, 1>(enable);
 	}
 	
-	[[nodiscard]] RenderState fog(bool enable = true) const {
+	[[nodiscard]] constexpr RenderState fog(bool enable = true) const noexcept {
 		RenderState copy = *this;
 		copy.setFog(enable);
 		return copy;
 	}
 	
-	[[nodiscard]] bool getFog() const {
+	[[nodiscard]] constexpr bool getFog() const noexcept {
 		return get<Fog, 1>() != 0;
 	}
 	
-	void setAlphaCutout(bool enable) {
+	constexpr void setAlphaCutout(bool enable) noexcept {
 		set<AlphaCutout, 1>(enable);
 	}
 	
-	[[nodiscard]] RenderState alphaCutout(bool enable = true) const {
+	[[nodiscard]] constexpr RenderState alphaCutout(bool enable = true) const noexcept {
 		RenderState copy = *this;
 		copy.setAlphaCutout(enable);
 		return copy;
 	}
 	
-	[[nodiscard]] bool getAlphaCutout() const {
+	[[nodiscard]] constexpr bool getAlphaCutout() const noexcept {
 		return get<AlphaCutout, 1>() != 0;
 	}
 	
-	void setDepthTest(bool enable) {
+	constexpr void setDepthTest(bool enable) noexcept {
 		set<DepthTest, 1>(enable);
 	}
 	
-	[[nodiscard]] RenderState depthTest(bool enable = true) const {
+	[[nodiscard]] constexpr RenderState depthTest(bool enable = true) const noexcept {
 		RenderState copy = *this;
 		copy.setDepthTest(enable);
 		return copy;
 	}
 	
-	[[nodiscard]] bool getDepthTest() const {
+	[[nodiscard]] constexpr bool getDepthTest() const noexcept {
 		return get<DepthTest, 1>() != 0;
 	}
 	
-	void setDepthWrite(bool enable) {
+	constexpr void setDepthWrite(bool enable) noexcept {
 		set<DepthWrite, 1>(enable);
 	}
 	
-	[[nodiscard]] RenderState depthWrite(bool enable = true) const {
+	[[nodiscard]] constexpr RenderState depthWrite(bool enable = true) const noexcept {
 		RenderState copy = *this;
 		copy.setDepthWrite(enable);
 		return copy;
 	}
 	
-	[[nodiscard]] bool getDepthWrite() const {
+	[[nodiscard]] constexpr bool getDepthWrite() const noexcept {
 		return get<DepthWrite, 1>() != 0;
 	}
 	
-	void setDepthOffset(unsigned offset) {
+	constexpr void setDepthOffset(unsigned offset) noexcept {
 		arx_assert(offset < (1u << DepthOffsetSize));
 		set<DepthOffset, DepthOffsetSize>(offset);
 	}
 	
-	void disableDepthOffset() {
+	constexpr void disableDepthOffset() noexcept {
 		setDepthOffset(0);
 	}
 	
-	[[nodiscard]] RenderState depthOffset(unsigned offset) const {
+	[[nodiscard]] constexpr RenderState depthOffset(unsigned offset) const noexcept {
 		RenderState copy = *this;
 		copy.setDepthOffset(offset);
 		return copy;
 	}
 	
-	[[nodiscard]] RenderState noDepthOffset() const {
+	[[nodiscard]] constexpr RenderState noDepthOffset() const noexcept {
 		RenderState copy = *this;
 		copy.disableDepthOffset();
 		return copy;
 	}
 	
-	[[nodiscard]] unsigned getDepthOffset() const {
+	[[nodiscard]] constexpr unsigned getDepthOffset() const noexcept {
 		return get<DepthOffset, DepthOffsetSize>();
 	}
 	
-	void setBlend(BlendingFactor src, BlendingFactor dst) {
+	constexpr void setBlend(BlendingFactor src, BlendingFactor dst) noexcept {
 		arx_assert(src >= 0 && unsigned(src) < (1u << BlendSize));
 		arx_assert(dst >= 0 && unsigned(dst) < (1u << BlendSize));
 		set<BlendSrc, BlendSize>(src);
 		set<BlendDst, BlendSize>(dst);
 	}
 	
-	void setBlendAdditive() {
+	constexpr void setBlendAdditive() noexcept {
 		setBlend(BlendSrcAlpha, BlendOne);
 	}
 	
-	void disableBlend() {
+	constexpr void disableBlend() noexcept {
 		setBlend(BlendOne, BlendZero);
 	}
 	
-	[[nodiscard]] RenderState blend(BlendingFactor src = BlendSrcAlpha,
-	                                BlendingFactor dst = BlendInvSrcAlpha) const {
+	[[nodiscard]] constexpr RenderState blend(BlendingFactor src = BlendSrcAlpha,
+	                                          BlendingFactor dst = BlendInvSrcAlpha) const noexcept {
 		RenderState copy = *this;
 		copy.setBlend(src, dst);
 		return copy;
 	}
 	
-	[[nodiscard]] RenderState blendAdditive() const {
+	[[nodiscard]] constexpr RenderState blendAdditive() const noexcept {
 		RenderState copy = *this;
 		copy.setBlendAdditive();
 		return copy;
 	}
 	
-	[[nodiscard]] RenderState noBlend() const {
+	[[nodiscard]] constexpr RenderState noBlend() const noexcept {
 		RenderState copy = *this;
 		copy.disableBlend();
 		return copy;
 	}
 	
-	[[nodiscard]] BlendingFactor getBlendSrc() const {
+	[[nodiscard]] constexpr BlendingFactor getBlendSrc() const noexcept {
 		return BlendingFactor(get<BlendSrc, BlendSize>());
 	}
 	
-	[[nodiscard]] BlendingFactor getBlendDst() const {
+	[[nodiscard]] constexpr BlendingFactor getBlendDst() const noexcept {
 		return BlendingFactor(get<BlendDst, BlendSize>());
 	}
 	
-	[[nodiscard]] bool isBlendEnabled() const {
+	[[nodiscard]] constexpr bool isBlendEnabled() const noexcept {
 		return getBlendSrc() != BlendOne || getBlendDst() != BlendZero;
 	}
 	
@@ -379,8 +381,8 @@ public:
 	virtual bool getSnapshot(Image & image) = 0;
 	virtual bool getSnapshot(Image & image, size_t width, size_t height) = 0;
 	
-	void setRenderState(RenderState state) { m_state = state; }
-	[[nodiscard]] RenderState getRenderState() const { return m_state; }
+	void setRenderState(RenderState state) noexcept { m_state = state; }
+	[[nodiscard]] RenderState getRenderState() const noexcept { return m_state; }
 	
 protected:
 	
@@ -423,7 +425,7 @@ class [[nodiscard]] UseRenderState {
 	
 public:
 	
-	explicit UseRenderState(RenderState state)
+	explicit UseRenderState(RenderState state) noexcept
 		: m_old(GRenderer->getRenderState())
 	{
 		GRenderer->setRenderState(state);
@@ -485,12 +487,12 @@ public:
 };
 
 //! Default render state for 2D compositing
-[[nodiscard]] inline RenderState render2D() {
+[[nodiscard]] inline constexpr RenderState render2D() noexcept {
 	return RenderState().blend();
 }
 
 //! Default render state for 3D rendering
-[[nodiscard]] inline RenderState render3D() {
+[[nodiscard]] inline constexpr RenderState render3D() noexcept {
 	return RenderState().depthTest().depthWrite().fog();
 }
 
