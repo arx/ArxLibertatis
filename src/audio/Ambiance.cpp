@@ -89,21 +89,10 @@ struct KeySetting {
 	DECLARE_FLAGS(KeyFlag, KeyFlags)
 	
 	KeyFlags flags; // A set of KeySettingFlag
-	float min, max; // Min and max setting values
-	float from, to, cur; // Current min and max values
+	float min = 0.f, max = 0.f; // Min and max setting values
+	float from = 0.f, to = 0.f, cur = 0.f; // Current min and max values
 	PlatformDuration interval; // Interval between updates (On Start = 0)
 	PlatformDuration tupdate; // Last update time
-	
-	KeySetting()
-		: flags(0)
-		, min(0)
-		, max(0)
-		, from(0)
-		, to(0)
-		, cur(0)
-		, interval(0)
-		, tupdate(0)
-	{ }
 	
 	bool load(PakFileHandle * file) {
 		
@@ -168,22 +157,13 @@ struct TrackKey {
 	
 	PlatformDuration start; // Start time (after last key)
 	PlatformDuration n_start; // Next time to play sample (when delayed)
-	size_t loop; // Play count
+	size_t loop = 0; // Play count
 	PlatformDuration delay_min, delay_max; // Min and max delay before each sample loop
 	PlatformDuration delay; // Current delay
 	KeySetting volume; // Volume settings
 	KeySetting pitch; // Pitch settings
 	KeySetting pan; // Pan settings
 	KeySetting x, y, z; // Position settings
-	
-	TrackKey()
-		: start(0)
-		, n_start(0)
-		, loop(0)
-		, delay_min(0)
-		, delay_max(0)
-		, delay(0)
-	{ }
 	
 	bool load(PakFileHandle * file) {
 		
