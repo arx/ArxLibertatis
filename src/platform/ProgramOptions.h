@@ -40,7 +40,7 @@ public:
 		
 protected:
 	
-	BaseOption(const char * longName, const char * shortName, const char * description);
+	BaseOption(const char * longName, const char * shortName, const char * description) noexcept;
 	
 private:
 	
@@ -49,7 +49,7 @@ private:
 		boost::intrusive::constant_time_size<false>
 	> List;
 	
-	static List & getOptionsList();
+	[[nodiscard]] static List & getOptionsList() noexcept;
 	
 	virtual void registerOption(util::cmdline::interpreter<std::string> & l) = 0;
 	
@@ -89,7 +89,7 @@ class Option : public BaseOption {
 	
 public:
 	
-	explicit Option(ARX_PROGRAM_OPTION_ARGS)
+	explicit Option(ARX_PROGRAM_OPTION_ARGS) noexcept
 		: BaseOption(longName, shortName, description)
 		, m_handler(handler), m_argNames(args) { }
 	
@@ -122,11 +122,11 @@ private:
  * \brief Register a program option
  */
 template <typename Handler>
-Option<Handler> makeProgramOption(ARX_PROGRAM_OPTION_ARGS) {
+[[nodiscard]] Option<Handler> makeProgramOption(ARX_PROGRAM_OPTION_ARGS) noexcept {
 	return Option<Handler>(longName, shortName, description, handler, args);
 }
 #define ARX_PROGRAM_OPTION_ARG(longName, shortName, description, handler, args) \
-	static auto ARX_UNIQUE_SYMBOL(programOptionRegistrator) = makeProgramOption( \
+	[[maybe_unused]] static auto ARX_UNIQUE_SYMBOL(programOptionRegistrator) = makeProgramOption( \
 		longName, shortName, description, handler, args \
 	);
 #define ARX_PROGRAM_OPTION(longName, shortName, description, handler) \

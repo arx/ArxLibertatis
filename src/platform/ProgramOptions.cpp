@@ -21,7 +21,7 @@
 
 #include <list>
 
-BaseOption::List & BaseOption::getOptionsList() {
+BaseOption::List & BaseOption::getOptionsList() noexcept {
 	// Local static to ensure initialization order is not causing us any issue.
 	static List s_options;
 	return s_options;
@@ -33,8 +33,7 @@ void BaseOption::registerAll(util::cmdline::interpreter<std::string> & l) {
 	}
 }
 
-BaseOption::BaseOption(const char * longName, const char * shortName,
-                       const char * description)
+BaseOption::BaseOption(const char * longName, const char * shortName, const char * description) noexcept
 	: m_longName(longName)
 	, m_shortName(shortName)
 	, m_description(description) {
