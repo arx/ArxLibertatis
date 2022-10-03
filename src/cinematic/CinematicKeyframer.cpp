@@ -58,7 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 CinematicTrack * CKTrack;
 
-CinematicTrack::CinematicTrack(int endframe_, float fps_)
+CinematicTrack::CinematicTrack(int endframe_, float fps_) noexcept
 	: endframe(endframe_)
 	, currframe(0.f)
 	, fps(fps_)

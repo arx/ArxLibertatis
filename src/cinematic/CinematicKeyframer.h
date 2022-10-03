@@ -50,40 +50,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct CinematicKeyframe {
 	
-	int frame;
-	int numbitmap;
-	int fx; // associated fx
-	short typeinterp;
-	short force;
-	Vec3f pos;
-	float angz;
+	int frame = 0;
+	int numbitmap = 0;
+	int fx = 0; // associated fx
+	short typeinterp = 0;
+	short force = 0;
+	Vec3f pos = Vec3f(0.f);
+	float angz = 0.f;
 	Color color;
 	Color colord;
 	Color colorf;
-	float speed;
+	float speed = 0.f;
 	CinematicLight light;
-	Vec3f posgrille;
-	float angzgrille;
-	float speedtrack;
-	int idsound;
+	Vec3f posgrille = Vec3f(0.f);
+	float angzgrille = 0.f;
+	float speedtrack = 0.f;
+	int idsound = 0;
 	
-	CinematicKeyframe()
-		: frame(0)
-		, numbitmap(0)
-		, fx(0)
-		, typeinterp(0)
-		, force(0)
-		, pos(0.f)
-		, angz(0.f)
-		, color(Color::none)
-		, colord(Color::none)
-		, colorf(Color::none)
-		, speed(0.f)
-		, posgrille(0.f)
-		, angzgrille(0.f)
-		, speedtrack(0.f)
-		, idsound(0)
-	{ }
+	CinematicKeyframe() noexcept { }
 	
 };
 
@@ -96,7 +80,7 @@ struct CinematicTrack {
 	
 	std::vector<CinematicKeyframe> key;
 	
-	CinematicTrack(int endframe_, float fps_);
+	CinematicTrack(int endframe_, float fps_) noexcept;
 	
 };
 
