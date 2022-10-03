@@ -31,15 +31,13 @@
 template <typename TAG, typename T>
 struct IntegerColorType {
 	
-	T t;
+	T t = 0;
 	
 	explicit constexpr IntegerColorType(const T t_) noexcept
 		: t(t_)
 	{ }
 	
-	constexpr IntegerColorType() noexcept
-		: t()
-	{ }
+	constexpr IntegerColorType() noexcept { }
 	
 	[[nodiscard]] constexpr bool operator==(const IntegerColorType<TAG, T> & rhs) const noexcept {
 		return t == rhs.t;
