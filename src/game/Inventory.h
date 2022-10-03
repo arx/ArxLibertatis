@@ -97,10 +97,8 @@ class Inventory {
 	
 	struct Slot {
 		
-		Entity * io;
-		bool show;
-		
-		Slot() : io(nullptr), show(false) { }
+		Entity * io = nullptr;
+		bool show = false;
 		
 	};
 	
