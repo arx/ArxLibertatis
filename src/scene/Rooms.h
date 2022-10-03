@@ -55,38 +55,27 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct RoomPortal {
 	
-	Vec3f p[4];
+	Vec3f p[4] = { Vec3f(0.f), Vec3f(0.f), Vec3f(0.f), Vec3f(0.f) };
 	Plane plane;
 	Sphere bounds;
-	float minY;
-	float maxY;
+	float minY = 0.f;
+	float maxY = 0.f;
 	
-	u32 room0; // facing normal
-	u32 room1;
+	u32 room0 = 0; // facing normal
+	u32 room1 = 0;
 	
-	short useportal;
+	short useportal = 0;
 	
-	RoomPortal()
-		: minY(0.f)
-		, maxY(0.f)
-		, room0(0)
-		, room1(0)
-		, useportal(0)
-	{
-		p[0] = p[1] = p[2] = p[3] = Vec3f(0.f);
-	}
+	constexpr RoomPortal() noexcept { }
 	
 };
 
 struct EP_DATA {
 	
-	Vec2s tile;
-	short idx;
+	Vec2s tile = Vec2s(0);
+	short idx = 0;
 	
-	EP_DATA()
-		: tile(0)
-		, idx(0)
-	{ }
+	constexpr EP_DATA() noexcept { }
 	
 };
 
@@ -104,14 +93,14 @@ struct Room {
 
 struct EERIE_FRUSTRUM_DATA {
 	
-	long nb_frustrums;
+	long nb_frustrums = 0;
 	EERIE_FRUSTRUM frustrums[MAX_FRUSTRUMS];
 	
 };
 
 struct PORTAL_ROOM_DRAW {
 	
-	short count;
+	short count = 0;
 	EERIE_FRUSTRUM_DATA frustrum;
 	
 };
