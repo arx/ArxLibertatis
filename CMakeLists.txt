@@ -113,7 +113,7 @@ endif()
 suboption(USE_LTO "Use link-time code generation" BOOL ${default_USE_LTO})
 suboption(WERROR "Turn warnings into errors" BOOL ${CONTINUOUS_INTEGRATION})
 
-suboption(CXX_STD_VERSION "Maximum C++ standard version to enable" STRING 2017)
+suboption(CXX_STD_VERSION "Maximum C++ standard version to enable" STRING 2020)
 option(USE_CXX17_FROM_CHARS_FLOAT "Use std::from_chars(float) instead of fast_float::from_chars" OFF)
 if(DEVELOPER OR CMAKE_BUILD_TYPE STREQUAL "Debug")
 	set(default_DEBUG ON)

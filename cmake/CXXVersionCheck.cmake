@@ -7,12 +7,15 @@ set(CXX_CHECK_DIR "${CMAKE_CURRENT_LIST_DIR}/check")
 
 function(enable_cxx_version version)
 	
-	set(versions 17 14 11)
+	set(versions 20 17 14 11)
 	
 	if(MSVC)
 		if(NOT version LESS 2011 AND NOT MSVC_VERSION LESS 1600)
 			set(CXX_VERSION 2011)
-			if(NOT version LESS 2017 AND NOT MSVC_VERSION LESS 1911)
+			if(NOT version LESS 2020 AND NOT MSVC_VERSION LESS 1930)
+				set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++20")
+				set(CXX_VERSION 2020)
+			elseif(NOT version LESS 2017 AND NOT MSVC_VERSION LESS 1911)
 				set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
 				set(CXX_VERSION 2017)
 			elseif(NOT version LESS 2014 AND NOT MSVC_VERSION LESS 1910)
