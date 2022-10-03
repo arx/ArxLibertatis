@@ -391,7 +391,7 @@ Font::TextSize Font::draw(int x, int y, std::string_view text, Color color) {
 }
 
 Font::TextSize Font::getTextSize(std::string_view text) {
-	return process<false>(0, 0, text, Color::none);
+	return process<false>(0, 0, text, Color());
 }
 
 size_t Font::getPosition(std::string_view text, int x) {

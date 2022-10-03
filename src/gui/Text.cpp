@@ -206,7 +206,7 @@ static void ARX_UNICODE_FormattingInRect(Font * font, std::string_view text, con
 long ARX_UNICODE_ForceFormattingInRect(Font * font, std::string_view text,
                                        const Rect & rect, bool noOneLineParagraphs) {
 	long numChars;
-	ARX_UNICODE_FormattingInRect(font, text, rect, Color::none, 0, &numChars, true, noOneLineParagraphs);
+	ARX_UNICODE_FormattingInRect(font, text, rect, Color(), 0, &numChars, true, noOneLineParagraphs);
 	return numChars;
 }
 

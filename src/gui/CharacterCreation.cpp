@@ -116,8 +116,6 @@ void CharacterCreation::render() {
 		
 	bool DONE = (player.Skill_Redistribute == 0 && player.Attribute_Redistribute == 0);
 	
-	Color color = Color::none;
-	
 	Rectf book = g_playerBook.getArea();
 	
 	Vec2f spacing = Vec2f(20.f, 30.f) * minSizeRatio();
@@ -144,6 +142,7 @@ void CharacterCreation::render() {
 	
 	// Button QUICK GENERATION
 	
+	Color color;
 	if(quickGenerateButton.contains(Vec2f(DANAEMouse))) {
 		
 		cursorSetInteraction();

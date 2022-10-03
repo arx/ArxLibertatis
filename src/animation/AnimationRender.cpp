@@ -201,7 +201,7 @@ void PopAllTriangleListTransparency() {
 	
 	ARX_PROFILE_FUNC();
 	
-	GRenderer->SetFogColor(Color::none);
+	GRenderer->SetFogColor(Color());
 	
 	PopOneTriangleList(render3D().depthWrite(false).blend(BlendDstColor, BlendOne), &TexSpecialColor, true);
 	
@@ -634,7 +634,7 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 			vert[3].p.z += 0.0001f * vert[3].w;
 			
 			vert[1].color = Color::black.toRGB();
-			vert[2].color = ((halo.flags & HALO_NEGATIVE) ? Color::none : Color::black).toRGBA();
+			vert[2].color = ((halo.flags & HALO_NEGATIVE) ? Color() : Color::black).toRGBA();
 			
 			Halo_AddVertices(vert);
 		}
@@ -960,7 +960,7 @@ static void AddAnimatedObjectHalo(const HaloInfo & haloInfo, const unsigned shor
 			
 			vert[0].color = colors[first];
 			vert[1].color = Color::black.toRGB();
-			vert[2].color = ((curhalo->flags & HALO_NEGATIVE) ? Color::none : Color::black).toRGBA();
+			vert[2].color = ((curhalo->flags & HALO_NEGATIVE) ? Color() : Color::black).toRGBA();
 			vert[3].color = colors[second];
 			
 			Halo_AddVertices(vert);

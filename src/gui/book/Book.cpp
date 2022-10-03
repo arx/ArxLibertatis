@@ -1030,7 +1030,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 		
 		rec = Rect(Vec2i(bookPos + Vec2f(23.f, 5.f) * scale),
 		           Vec2i(bookPos + Vec2f(233.f, 236.f) * scale));
-		GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
+		GRenderer->Clear(Renderer::DepthBuffer, Color(), 1.f, 1, &rec);
 		
 		Rect vp = Rect(Vec2i(bookPos + Vec2f(75.f, 5.f) * scale),
 		               Vec2i(bookPos + Vec2f(212.f, 219.f) * scale));
@@ -1040,7 +1040,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 		
 		rec = Rect(Vec2i(bookPos + Vec2f(21.f, 5.f) * scale),
 		           Vec2i(bookPos + Vec2f(253.f, 274.f) * scale));
-		GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
+		GRenderer->Clear(Renderer::DepthBuffer, Color(), 1.f, 1, &rec);
 		rec.right -= s32(50.f * scale);
 		
 	}
@@ -1405,7 +1405,8 @@ void SpellsPage::drawSpells() const {
 			flyingover = 1;
 			
 			cursorSetInteraction();
-			UNICODE_ARXDrawTextCenter(hFontInBook, bookPos + Vec2f(111, 26) * scale, getLocalised(spellInfo.name), Color::none);
+			UNICODE_ARXDrawTextCenter(hFontInBook, bookPos + Vec2f(111, 26) * scale,
+			                          getLocalised(spellInfo.name), Color());
 			
 			pTextManage->Clear();
 			UNICODE_ARXDrawTextCenteredScroll(hFontInGame, float(g_size.center().x), 12,

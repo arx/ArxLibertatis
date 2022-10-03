@@ -61,7 +61,7 @@ GLOBAL_MODS g_desiredFogParameters;
 static const float DEFAULT_ZCLIP = 6400.f;
 static const float DEFAULT_MINZCLIP = 1200.f;
 
-Color g_fogColor = Color::none;
+Color g_fogColor;
 
 void ARX_GLOBALMODS_Reset() {
 	
@@ -71,7 +71,7 @@ void ARX_GLOBALMODS_Reset() {
 	g_desiredFogParameters.zclip = DEFAULT_ZCLIP;
 	g_currentFogParameters.depthcolor = Color3f::black;
 	g_desiredFogParameters.depthcolor = Color3f::black;
-	g_fogColor = Color::none;
+	g_fogColor = Color();
 	
 }
 

@@ -306,15 +306,8 @@ void Note::render() {
 	Font * font = hFontInGameNote;
 	
 	// Draw the left page
-	{
-		ARX_UNICODE_DrawTextInRect(
-			font,
-			Vec2f(m_area.left + m_textArea.left, m_area.top + m_textArea.top),
-			m_area.left + m_textArea.right,
-			m_pages[m_page],
-			Color::none
-		);
-	}
+	ARX_UNICODE_DrawTextInRect(font, Vec2f(m_area.left + m_textArea.left, m_area.top + m_textArea.top),
+	                           m_area.left + m_textArea.right, m_pages[m_page], Color());
 	
 	// Draw the right page
 	if(m_page + 1 < m_pages.size()) {
@@ -323,7 +316,7 @@ void Note::render() {
 			Vec2f(m_area.left + m_textArea.right + m_pageSpacing, m_area.top + m_textArea.top),
 			m_area.left + m_textArea.right + m_pageSpacing + m_textArea.width(),
 			m_pages[m_page + 1],
-			Color::none
+			Color()
 		);
 	}
 	

@@ -69,8 +69,8 @@ void particleParametersInit() {
 	
 	cp.m_startSegment.m_size = 20;
 	cp.m_startSegment.m_sizeRandom = 10;
-	cp.m_startSegment.m_color = Color4f::none;
-	cp.m_startSegment.m_colorRandom = Color4f::none;
+	cp.m_startSegment.m_color = Color4f();
+	cp.m_startSegment.m_colorRandom = Color4f();
 	cp.m_endSegment.m_size = 0;
 	cp.m_endSegment.m_sizeRandom = 2;
 	cp.m_endSegment.m_color = Color4f::rgba(1.f, 0.17f, 0.47f, 0.04f);

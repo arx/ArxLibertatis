@@ -111,7 +111,7 @@ void CinematicBorder::render() const {
 		rectz[0].bottom = lMulResult;
 		rectz[1].top = g_size.height() - lMulResult;
 		rectz[1].bottom = g_size.height();
-		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, Color::none, 0.0f, 2, rectz);
+		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, Color(), 0.0f, 2, rectz);
 		GRenderer->SetScissor(Rect(0, lMulResult, g_size.width(), g_size.height() - lMulResult));
 	}
 }

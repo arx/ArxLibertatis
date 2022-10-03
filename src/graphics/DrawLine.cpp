@@ -104,7 +104,7 @@ void drawLineSphere(const Sphere & sphere, Color color) {
 
 			if(skip) {
 				skip = false;
-				out.color = Color::none.toRGBA();
+				out.color = Color().toRGBA();
 				vertices.push_back(out);
 			}
 
@@ -113,7 +113,7 @@ void drawLineSphere(const Sphere & sphere, Color color) {
 
 			if(j == sections) {
 				skip = true;
-				out.color = Color::none.toRGBA();
+				out.color = Color().toRGBA();
 				vertices.push_back(out);
 			}
 		}

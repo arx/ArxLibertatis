@@ -62,7 +62,7 @@ public:
 	void SetScissor(const Rect & rect) override;
 	
 	// Render Target
-	void Clear(BufferFlags bufferFlags, Color clearColor = Color::none, float clearDepth = 1.f,
+	void Clear(BufferFlags bufferFlags, Color clearColor = Color(), float clearDepth = 1.f,
 	           size_t nrects = 0, Rect * rect = 0) override;
 	
 	// Fog

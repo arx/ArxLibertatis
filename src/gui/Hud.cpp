@@ -1222,7 +1222,6 @@ void DamagedEquipmentGui::draw() {
 StealthGauge::StealthGauge()
 	: m_texture(nullptr)
 	, m_visible(false)
-	, m_color(Color::none)
 	, m_size(32.f, 32.f)
 { }
 

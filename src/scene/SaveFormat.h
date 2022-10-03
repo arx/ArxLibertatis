@@ -1132,7 +1132,7 @@ struct SavedCamera {
 		
 		clip3D = 0;
 		type = CAM_SUBJVIEW;
-		bkgcolor = Color::none.toBGRA().t;
+		bkgcolor = Color().toBGRA().t;
 		nbdrawn = 0;
 		
 		size = Anglef();

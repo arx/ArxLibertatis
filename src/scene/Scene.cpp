@@ -1671,7 +1671,7 @@ void ARX_SCENE_Render() {
 	
 	PopAllTriangleListTransparency();
 	
-	GRenderer->SetFogColor(Color::none);
+	GRenderer->SetFogColor(Color());
 	
 	if(g_rooms) {
 		for(size_t room : g_rooms->visibleRooms) {

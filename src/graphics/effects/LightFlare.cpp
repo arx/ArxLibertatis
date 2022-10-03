@@ -97,7 +97,7 @@ void renderLightFlares() {
 		RaycastDebugDraw();
 	}
 	
-	GRenderer->SetFogColor(Color::none);
+	GRenderer->SetFogColor(Color());
 	UseRenderState state(render3D().blend(BlendOne, BlendOne).depthWrite(false).depthTest(false));
 	
 	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {

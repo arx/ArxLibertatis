@@ -98,8 +98,8 @@ void CheatDrawText() {
 			Vec2f d = p + Vec2f(sizX * float(i), std::sin(16.f * float(i) + elapsed / 100ms) * 30.f * modi);
 			std::string_view text = std::string_view(sp_max_ch).substr(i, 1);
 			Color color = colors[(i >= 24 ? (i - 3) : i) % std::size(colors)];
-			UNICODE_ARXDrawTextCenter(hFontInGame, d + Vec2f(-1, -1), text, Color::none);
-			UNICODE_ARXDrawTextCenter(hFontInGame, d + Vec2f(1, 1), text, Color::none);
+			UNICODE_ARXDrawTextCenter(hFontInGame, d + Vec2f(-1, -1), text, Color());
+			UNICODE_ARXDrawTextCenter(hFontInGame, d + Vec2f(1, 1), text, Color());
 			UNICODE_ARXDrawTextCenter(hFontInGame, d, text, color);
 		}
 		

@@ -1831,7 +1831,7 @@ void ArxGame::renderLevel() {
 	// Update spells
 	ARX_SPELLS_Update();
 
-	GRenderer->SetFogColor(Color::none);
+	GRenderer->SetFogColor(Color());
 	g_renderBatcher.render();
 	GRenderer->SetFogColor(g_fogColor);
 	

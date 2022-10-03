@@ -240,9 +240,6 @@ public:
 	static const Color4 cyan;
 	static const Color4 magenta;
 	
-	//! A fully transparent, black color.
-	static const Color4 none;
-	
 	constexpr Color4() noexcept : C3(), a(T(0)) { }
 	constexpr Color4(T _r, T _g, T _b, T _a = Traits::max()) noexcept : C3(_r, _g, _b), a(_a) { }
 	/* implicit */ constexpr Color4(const C3 & o, T _a = Traits::max()) noexcept : C3(o), a(_a) { }
@@ -336,9 +333,6 @@ template <typename T>
 const Color4<T> Color4<T>::magenta(ColorTraits<T>::max(), T(0), ColorTraits<T>::max());
 template <typename T>
 const Color4<T> Color4<T>::cyan(T(0), ColorTraits<T>::max(), ColorTraits<T>::max());
-
-template <typename T>
-const Color4<T> Color4<T>::none(Color3<T>::black, T(0));
 
 typedef Color3<float> Color3f;
 typedef Color4<float> Color4f;
