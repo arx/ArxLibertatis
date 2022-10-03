@@ -98,29 +98,29 @@ DECLARE_FLAGS_OPERATORS(ExtrasType)
 
 struct EERIE_LIGHT {
 	
-	bool m_exists;
-	bool m_isIgnitionLight; // TODO refactor special case
-	bool m_isVisible;
+	bool m_exists = false;
+	bool m_isIgnitionLight = false; // TODO refactor special case
+	bool m_isVisible = false;
 	ExtrasType extras;
-	bool m_ignitionStatus; // on/off
+	bool m_ignitionStatus = false; // on/off
 	DamageHandle m_damage;
-	Vec3f pos;
-	float fallstart;
-	float fallend;
-	float falldiffmul;
+	Vec3f pos = Vec3f(0.f);
+	float fallstart = 0.f;
+	float fallend = 0.f;
+	float falldiffmul = 0.f;
 	Color3f rgb255;
-	float intensity;
+	float intensity = 0.f;
 	Color3f rgb;
 	
-	Rectf m_screenRect;
+	Rectf m_screenRect = Rectf::ZERO;
 	
-	float m_flareFader;
-	Color3f ex_flicker;
-	float ex_radius;
-	float ex_frequency;
-	float ex_size;
-	float ex_speed;
-	float ex_flaresize;
+	float m_flareFader = 0.f;
+	Color3f ex_flicker = Color3f::black;
+	float ex_radius = 0.f;
+	float ex_frequency = 0.f;
+	float ex_size = 0.f;
+	float ex_speed = 0.f;
+	float ex_flaresize = 0.f;
 	LightHandle m_ignitionLightHandle;
 	GameInstant creationTime;
 	
@@ -130,38 +130,18 @@ struct EERIE_LIGHT {
 	audio::SourcedSample sample;
 	math::Quantizer m_storedFlameTime;
 	
-	EERIE_LIGHT()
-		: m_exists(false)
-		, m_isIgnitionLight(false)
-		, m_isVisible(false)
-		, extras(0)
-		, m_ignitionStatus(false)
-		, pos(0)
-		, fallstart(0.f)
-		, fallend(0.f)
-		, falldiffmul(0.f)
-		, rgb255(Color3f::black)
-		, intensity(0.f)
-		, rgb(Color3f::black)
-		, m_screenRect(Rectf::ZERO)
-		, m_flareFader(0.f)
-		, ex_flicker(Color3f::black)
-		, ex_radius(0.f)
-		, ex_frequency(0.f)
-		, ex_size(0.f)
-		, ex_speed(0.f)
-		, ex_flaresize(0.f)
-	{ }
+	EERIE_LIGHT() noexcept { }
 	
 };
 
 struct ColorMod {
-
+	
 	void updateFromEntity(Entity * io, bool inBook = false);
-
+	
 	Color3f ambientColor;
 	Color3f factor;
 	Color3f term;
+	
 };
 
 void RecalcLight(EERIE_LIGHT * el);
@@ -189,23 +169,15 @@ void PrecalcDynamicLighting(const Vec3f & camPos, float camDepth);
 
 struct ShaderLight {
 	
-	Vec3f pos;
-	float fallstart;
-	float fallend;
-	float falldiffmul;
-	float intensity;
+	Vec3f pos = Vec3f(0.f);
+	float fallstart = 0.f;
+	float fallend = 0.f;
+	float falldiffmul = 0.f;
+	float intensity = 0.f;
 	Color3f rgb;
 	Color3f rgb255;
 	
-	ShaderLight()
-		: pos(0.f)
-		, fallstart(0.f)
-		, fallend(0.f)
-		, falldiffmul(0.f)
-		, intensity(0.f)
-		, rgb(Color3f::black)
-		, rgb255(Color3f::black)
-	{ }
+	constexpr ShaderLight() noexcept { }
 	
 };
 
