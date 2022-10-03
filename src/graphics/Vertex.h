@@ -50,17 +50,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct TexturedVertexUntransformed {
 	
-	Vec3f p;
+	Vec3f p = Vec3f(0.f);
 	ColorRGBA color;
-	Vec2f uv;
+	Vec2f uv = Vec2f(0.f);
 	
-	TexturedVertexUntransformed()
-		: p(0.f)
-		, color(0)
-		, uv(0.f)
-	{ }
+	constexpr TexturedVertexUntransformed() noexcept { }
 	
-	TexturedVertexUntransformed(const Vec3f & _p, ColorRGBA _color, Vec2f _uv)
+	constexpr TexturedVertexUntransformed(const Vec3f & _p, ColorRGBA _color, Vec2f _uv) noexcept
 		: p(_p)
 		, color(_color)
 		, uv(_uv)
@@ -70,28 +66,23 @@ struct TexturedVertexUntransformed {
 
 struct TexturedVertex {
 	
-	Vec3f p;
-	float w;
+	Vec3f p = Vec3f(0.f);
+	float w = 1.f;
 	
 	ColorRGBA color;
 	
-	Vec2f uv;
+	Vec2f uv = Vec2f(0.f);
 	
-	TexturedVertex()
-		: p(0.f)
-		, w(1.f)
-		, color(0)
-		, uv(0.f)
-	{ }
+	constexpr TexturedVertex() noexcept { }
 	
-	TexturedVertex(const Vec3f & _p, float _w, ColorRGBA _color, Vec2f _uv)
+	constexpr TexturedVertex(const Vec3f & _p, float _w, ColorRGBA _color, Vec2f _uv) noexcept
 		: p(_p)
 		, w(_w)
 		, color(_color)
 		, uv(_uv)
 	{ }
 	
-	TexturedVertex(const Vec4f & _p, ColorRGBA _color, Vec2f _uv)
+	constexpr TexturedVertex(const Vec4f & _p, ColorRGBA _color, Vec2f _uv) noexcept
 		: p(_p)
 		, w(_p.w)
 		, color(_color)
@@ -105,42 +96,30 @@ class VertexBuffer;
 
 struct SMY_VERTEX {
 	
-	Vec3f p;
+	Vec3f p = Vec3f(0.f);
 	ColorRGBA color;
-	Vec2f uv;
+	Vec2f uv = Vec2f(0.f);
 	
-	SMY_VERTEX()
-		: p(0.f)
-		, color(0)
-		, uv(0.f)
-	{ }
+	constexpr SMY_VERTEX() noexcept { }
 	
 };
 
 struct SMY_VERTEX3 {
 	
-	Vec3f p;
+	Vec3f p = Vec3f(0.f);
 	ColorRGBA color;
-	Vec2f uv[3];
+	Vec2f uv[3] = { Vec2f(0.f), Vec2f(0.f), Vec2f(0.f) };
 	
-	SMY_VERTEX3()
-		: p(0.f)
-		, color(0)
-	{
-		uv[0] = uv[1] = uv[2] = Vec2f(0.f);
-	}
+	constexpr SMY_VERTEX3() noexcept { }
 	
 };
 
 struct EERIE_VERTEX {
 	
-	Vec3f v;
-	Vec3f norm;
+	Vec3f v = Vec3f(0.f);
+	Vec3f norm = Vec3f(0.f);
 	
-	EERIE_VERTEX()
-		: v(0.f)
-		, norm(0.f)
-	{ }
+	constexpr EERIE_VERTEX() noexcept { }
 	
 };
 
