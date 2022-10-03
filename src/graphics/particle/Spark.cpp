@@ -36,19 +36,14 @@
 
 struct alignas(16) SparkParticle {
 	
-	Vec3f pos;
+	Vec3f pos = Vec3f(0.f);
 	ShortGameDuration elapsed;
-	Vec3f move;
+	Vec3f move = Vec3f(0.f);
 	ShortGameDuration duration;
-	Vec3f tail;
-	ColorRGBA color;
+	Vec3f tail = Vec3f(0.f);
+	ColorRGBA color = Color::black.toRGB();
 	
-	SparkParticle()
-		: pos(0.f)
-		, move(0.f)
-		, tail(0.f)
-		, color(Color::black.toRGB())
-	{ }
+	constexpr SparkParticle() noexcept { }
 	
 };
 
