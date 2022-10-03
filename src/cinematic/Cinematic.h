@@ -54,77 +54,77 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/RandomFlicker.h"
 #include "math/Vector.h"
 
+
 struct CinematicKeyframe;
 struct CinematicGrid;
 class CinematicBitmap;
+
+static inline constexpr int INTERP_NO = -1;
+static inline constexpr int INTERP_BEZIER = 0;
+static inline constexpr int INTERP_LINEAR = 1;
 
 class CinematicLight {
 	
 public:
 	
-	Vec3f pos;
-	float fallin;
-	float fallout;
-	Color3f color;
-	float intensity;
-	float intensiternd;
-	CinematicKeyframe * prev;
-	CinematicKeyframe * next;
+	Vec3f pos = Vec3f(0.f);
+	float fallin = 100.f;
+	float fallout = 200.f;
+	Color3f color = Color3f::white * 255.f;
+	float intensity = 1.f;
+	float intensiternd = 0.2f;
+	CinematicKeyframe * prev = nullptr;
+	CinematicKeyframe * next = nullptr;
 	
-	CinematicLight()
-		: pos(0.f)
-		, fallin(100.f)
-		, fallout(200.f)
-		, color(Color3f::white * 255.f)
-		, intensity(1.f)
-		, intensiternd(0.2f)
-		, prev(nullptr)
-		, next(nullptr)
-	{}
+	CinematicLight() noexcept { }
+	
 };
 
 struct CinematicFadeOut {
+	
 	float top;
 	float bottom;
 	float left;
 	float right;
-	explicit CinematicFadeOut(float v = 0.f) : top(v), bottom(v), left(v), right(v) { }
+	
+	explicit constexpr CinematicFadeOut(float v = 0.f) noexcept : top(v), bottom(v), left(v), right(v) { }
+	
 };
 
 class Cinematic {
 	
 public:
 	
-	Vec3f m_pos;
-	float angz;
-	Vec3f m_nextPos; // in the case of a non-fade interpolation
-	float m_nextAngz;
-	int numbitmap;
-	int m_nextNumbitmap;
-	float a;
-	int fx;
-	int m_nextFx;
-	bool changekey;
-	CinematicKeyframe * m_key;
-	bool projectload;
-	short ti;
-	short force;
+	Vec3f m_pos = Vec3f(0.f);
+	float angz = 0.f;
+	Vec3f m_nextPos = Vec3f(0.f); // in the case of a non-fade interpolation
+	float m_nextAngz = 0.f;
+	int numbitmap = -1;
+	int m_nextNumbitmap = -1;
+	float a = 0.f;
+	int fx = -1;
+	int m_nextFx = 0;
+	bool changekey = true;
+	CinematicKeyframe * m_key = nullptr;
+	bool projectload = false;
+	short ti = INTERP_BEZIER;
+	short force = 0;
 	Color color;
 	Color colord;
 	Color colorflash;
-	float speed;
-	int idsound;
+	float speed = 0.f;
+	int idsound = -1;
 	CinematicLight m_light;
 	math::RandomFlicker flicker;
 	CinematicLight m_lightd;
 	math::RandomFlicker flickerd;
-	Vec3f posgrille;
-	float angzgrille;
+	Vec3f posgrille = Vec3f(0.f);
+	float angzgrille = 0.f;
 	CinematicFadeOut fadegrille;
-	Vec3f m_nextPosgrille;
-	float m_nextAngzgrille;
+	Vec3f m_nextPosgrille = Vec3f(0.f);
+	float m_nextAngzgrille = 0.f;
 	CinematicFadeOut m_nextFadegrille;
-	float speedtrack;
+	float speedtrack = 0.f;
 	PlatformDuration flTime;
 	std::vector<std::unique_ptr<CinematicBitmap>> m_bitmaps;
 	
@@ -133,7 +133,7 @@ public:
 	
 	Vec2i cinRenderSize;
 	
-	explicit Cinematic(Vec2i size);
+	explicit Cinematic(Vec2i size) noexcept;
 	~Cinematic();
 	
 	void OneTimeSceneReInit();

@@ -47,9 +47,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "cinematic/Cinematic.h" // for CinematicLight
 #include "math/Vector.h"
 
-static const int INTERP_NO = -1;
-static const int INTERP_BEZIER = 0;
-static const int INTERP_LINEAR = 1;
 
 struct CinematicKeyframe {
 	

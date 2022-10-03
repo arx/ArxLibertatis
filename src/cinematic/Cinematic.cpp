@@ -80,30 +80,8 @@ static Color OldColorFlashBlanc;
 
 extern float FlashAlpha;
 
-Cinematic::Cinematic(Vec2i size)
-	: m_pos(0.f)
-	, angz(0.f)
-	, m_nextPos(0.f)
-	, m_nextAngz(0.f)
-	, numbitmap(-1)
-	, m_nextNumbitmap(-1)
-	, a(0.f)
-	, fx(-1)
-	, m_nextFx(0)
-	, changekey(true)
-	, m_key(nullptr)
-	, projectload(false)
-	, ti(INTERP_BEZIER)
-	, force(0)
-	, speed(0.f)
-	, idsound(-1)
-	, posgrille(0.f)
-	, angzgrille(0.f)
-	, m_nextPosgrille(0.f)
-	, m_nextAngzgrille(0.f)
-	, speedtrack(0.f)
-	, flTime(0)
-	, cinRenderSize(size)
+Cinematic::Cinematic(Vec2i size) noexcept
+	: cinRenderSize(size)
 { }
 
 Cinematic::~Cinematic() {
