@@ -84,31 +84,18 @@ namespace {
 
 struct CreditsLine {
 	
-	CreditsLine()
-		: fColors(Color::none)
-		, sPos(0)
-		, sourceLineNumber(-1)
-	{ }
-	
 	std::string_view sText;
 	Color fColors;
-	Vec2i sPos;
-	int sourceLineNumber;
+	Vec2i sPos = Vec2i(0);
+	int sourceLineNumber = -1;
+	
+	constexpr CreditsLine() noexcept { }
 	
 };
 
 class Credits {
 	
 public:
-	
-	Credits()
-		: m_background(nullptr)
-		, m_scrollPosition(0.f)
-		, m_lastUpdateTime(0)
-		, m_firstVisibleLine(0)
-		, m_lineHeight(-1)
-		, m_windowSize(0)
-	{ }
 	
 	void setLibraryCredits(std::string_view subsystem, std::string_view credits);
 	
@@ -120,7 +107,7 @@ public:
 	
 private:
 	
-	TextureContainer * m_background;
+	TextureContainer * m_background = nullptr;
 	
 	typedef std::unordered_map<std::string, std::string> Libraries;
 	Libraries m_libraries;
@@ -129,13 +116,13 @@ private:
 	
 	std::string m_text;
 	
-	float m_scrollPosition;
-	PlatformInstant m_lastUpdateTime;
+	float m_scrollPosition = 0.f;
+	PlatformInstant m_lastUpdateTime = 0;
 	
-	size_t m_firstVisibleLine;
-	int m_lineHeight;
+	size_t m_firstVisibleLine = 0;
+	int m_lineHeight = -1;
 	
-	Vec2i m_windowSize; // save the screen size so we know when to re-initialize the credits
+	Vec2i m_windowSize = Vec2i(0); // save the screen size so we know when to re-initialize the credits
 	
 	std::vector<CreditsLine> m_lines;
 	
