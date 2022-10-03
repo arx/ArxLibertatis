@@ -72,10 +72,8 @@ std::ostream & operator<<(std::ostream & s, audio::SourceStatus val) {
 
 } // namespace arx::debug
 
-DebugBox::DebugBox(const Vec2i & pos, std::string && title)
+DebugBox::DebugBox(const Vec2i & pos, std::string && title) noexcept
 	: m_pos(pos)
-	, m_chars(0)
-	, m_size(0)
 	, m_title(std::move(title))
 { }
 
@@ -161,6 +159,6 @@ void DebugBox::printCommon() {
 	hFontDebug->draw(lineOffset, std::string_view("╰─"), Color::white);
 }
 
-Vec2i DebugBox::size() {
+Vec2i DebugBox::size() noexcept {
 	return m_pos + m_size;
 }

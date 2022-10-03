@@ -64,18 +64,15 @@ class DebugBox {
 	};
 	
 	struct ColInfo {
-		int width;
-		bool numeric;
 		
-		ColInfo()
-			: width(0)
-			, numeric(true)
-		{ }
+		int width = 0;
+		bool numeric = true;
+		
 	};
 	
 	Vec2i m_pos;
-	Vec2i m_chars;
-	Vec2i m_size;
+	Vec2i m_chars = Vec2i(0);
+	Vec2i m_size = Vec2i(0);
 	std::string m_title;
 	
 	std::vector<Row> m_elements;
@@ -94,7 +91,7 @@ class DebugBox {
 	
 public:
 	
-	DebugBox(const Vec2i & pos, std::string && title);
+	DebugBox(const Vec2i & pos, std::string && title) noexcept;
 	
 	template <typename F1, typename F2>
 	void add(F1 f1, F2 f2) {
@@ -126,7 +123,8 @@ public:
 	void print();
 	void print(Vec2i parent);
 	
-	Vec2i size();
+	[[nodiscard]] Vec2i size() noexcept;
+	
 };
 
 #endif // ARX_GUI_DEBUG_DEBUGPANEL_H
