@@ -82,18 +82,14 @@ struct Missile {
 	
 	GameInstant timecreation;
 	GameDuration tolive;
-	Vec3f startpos;
+	Vec3f startpos = Vec3f(0.f);
 	LightHandle m_light;
-	Vec3f velocity;
+	Vec3f velocity = Vec3f(0.f);
 	EntityHandle owner;
-	Vec3f lastpos;
+	Vec3f lastpos = Vec3f(0.f);
 	math::Quantizer m_quantizer;
 	
-	Missile()
-		: startpos(0.f)
-		, velocity(0.f)
-		, lastpos(0.f)
-	{ }
+	constexpr Missile() noexcept { }
 	
 };
 
