@@ -125,15 +125,11 @@ inline void normalizePlane(Plane & plane) {
 
 struct ROOM_DIST_DATA {
 	
-	float distance; // -1 means use truedist
-	Vec3f startpos;
-	Vec3f endpos;
+	float distance = 0.f; // -1 means use truedist
+	Vec3f startpos = Vec3f(0.f);
+	Vec3f endpos = Vec3f(0.f);
 	
-	ROOM_DIST_DATA()
-		: distance(0.f)
-		, startpos(0.f)
-		, endpos(0.f)
-	{ }
+	constexpr ROOM_DIST_DATA() noexcept { }
 	
 };
 
