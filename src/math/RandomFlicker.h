@@ -41,8 +41,6 @@ public:
 	
 	constexpr RandomFlicker() arx_noexcept_default
 	
-	constexpr void reset() noexcept { *this = RandomFlicker(); }
-	
 	void update(float time) noexcept {
 		
 		m_time += time;

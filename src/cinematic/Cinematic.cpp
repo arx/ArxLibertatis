@@ -112,8 +112,8 @@ void Cinematic::OneTimeSceneReInit() {
 	
 	FlashBlancEnCours = false;
 	
-	flicker.reset();
-	flickerd.reset();
+	flicker = { };
+	flickerd = { };
 	
 }
 
