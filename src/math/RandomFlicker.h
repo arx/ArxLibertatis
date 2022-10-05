@@ -25,6 +25,8 @@
 #include <glm/glm.hpp>
 
 #include "math/Random.h"
+#include "platform/Platform.h"
+
 
 namespace math {
 
@@ -37,7 +39,7 @@ class RandomFlicker {
 	
 public:
 	
-	constexpr RandomFlicker() noexcept { }
+	constexpr RandomFlicker() arx_noexcept_default
 	
 	constexpr void reset() noexcept { *this = RandomFlicker(); }
 	

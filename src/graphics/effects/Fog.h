@@ -51,11 +51,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/GameTime.h"
 #include "core/TimeTypes.h"
+#include "graphics/Color.h"
 #include "math/Types.h"
 #include "math/Angle.h"
 #include "math/Vector.h"
 #include "math/Quantizer.h"
-#include "graphics/Color.h"
+#include "platform/Platform.h"
 
 
 struct EERIE_3DOBJ;
@@ -81,7 +82,7 @@ struct FOG_DEF {
 	bool visible = false;
 	GameInstant creationTime;
 	
-	constexpr FOG_DEF() noexcept { }
+	constexpr FOG_DEF() arx_noexcept_default
 	
 };
 

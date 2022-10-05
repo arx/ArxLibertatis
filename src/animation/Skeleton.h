@@ -27,6 +27,8 @@
 
 #include "math/Types.h"
 #include "math/Angle.h"
+#include "platform/Platform.h"
+
 
 struct VertexGroup {
 	
@@ -43,7 +45,7 @@ struct BoneTransform {
 	Vec3f trans = Vec3f(0.f);
 	Vec3f scale = Vec3f(0.f); // TODO should this be 1.f?
 	
-	constexpr BoneTransform() noexcept { }
+	constexpr BoneTransform() arx_noexcept_default
 	
 	[[nodiscard]] constexpr Vec3f operator()(const Vec3f & vec) const noexcept {
 		return trans + ( quat * vec ) * scale;
@@ -61,7 +63,7 @@ struct Bone {
 	
 	Vec3f transinit_global = Vec3f(0.f);
 	
-	constexpr Bone() noexcept { }
+	constexpr Bone() arx_noexcept_default
 	
 };
 

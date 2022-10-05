@@ -46,6 +46,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "math/Rectangle.h"
 #include "math/Vector.h"
+#include "platform/Platform.h"
+
 
 struct Cylinder {
 	
@@ -53,7 +55,7 @@ struct Cylinder {
 	float radius = 0.f;
 	float height = 0.f;
 	
-	constexpr Cylinder() noexcept { }
+	constexpr Cylinder() arx_noexcept_default
 	
 	constexpr Cylinder(const Vec3f & origin_, float radius_, float height_) noexcept
 		: origin(origin_)
@@ -68,7 +70,7 @@ struct Sphere {
 	Vec3f origin = Vec3f(0.f);
 	float radius = 0.f;
 	
-	constexpr Sphere() noexcept { }
+	constexpr Sphere() arx_noexcept_default
 	
 	constexpr Sphere(const Vec3f & origin_, float radius_) noexcept
 		: origin(origin_)
@@ -86,7 +88,7 @@ struct EERIE_2D_BBOX {
 	Vec2f min = Vec2f(0.f);
 	Vec2f max = Vec2f(0.f);
 	
-	constexpr EERIE_2D_BBOX() noexcept { }
+	constexpr EERIE_2D_BBOX() arx_noexcept_default
 	
 	constexpr void reset() noexcept {
 		min = Vec2f(32000);
@@ -113,7 +115,7 @@ struct EERIE_3D_BBOX {
 	Vec3f min = Vec3f(0.f);
 	Vec3f max = Vec3f(0.f);
 	
-	constexpr EERIE_3D_BBOX() noexcept { }
+	constexpr EERIE_3D_BBOX() arx_noexcept_default
 	
 	constexpr EERIE_3D_BBOX(const Vec3f & min_, const Vec3f & max_) noexcept : min(min_), max(max_) { }
 	

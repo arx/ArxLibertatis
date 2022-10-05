@@ -57,6 +57,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Types.h"
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/GraphicsTypes.h"
+#include "platform/Platform.h"
+
 
 class Entity;
 
@@ -71,7 +73,7 @@ struct EERIE_FRAME {
 	glm::quat quat = quat_identity();
 	audio::SampleHandle sample;
 	
-	constexpr EERIE_FRAME() noexcept { }
+	constexpr EERIE_FRAME() arx_noexcept_default
 	
 };
 
@@ -82,7 +84,7 @@ struct EERIE_GROUP {
 	glm::quat quat = quat_identity();
 	Vec3f zoom = Vec3f(1.f);
 	
-	constexpr EERIE_GROUP() noexcept { }
+	constexpr EERIE_GROUP() arx_noexcept_default
 	
 };
 

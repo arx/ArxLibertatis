@@ -66,7 +66,7 @@ struct RoomPortal {
 	
 	short useportal = 0;
 	
-	constexpr RoomPortal() noexcept { }
+	constexpr RoomPortal() arx_noexcept_default
 	
 };
 
@@ -75,7 +75,7 @@ struct EP_DATA {
 	Vec2s tile = Vec2s(0);
 	short idx = 0;
 	
-	constexpr EP_DATA() noexcept { }
+	constexpr EP_DATA() arx_noexcept_default
 	
 };
 

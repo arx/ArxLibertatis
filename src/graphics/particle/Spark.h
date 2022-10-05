@@ -25,6 +25,7 @@
 #include "graphics/Color.h"
 #include "math/Types.h"
 
+
 void ParticleSparkClear();
 size_t ParticleSparkCount();
 

@@ -48,6 +48,8 @@
 
 #include "physics/Collisions.h"
 
+#include "platform/Platform.h"
+
 #include "util/Flags.h"
 #include "util/Range.h"
 
@@ -76,7 +78,7 @@ struct Projectile {
 	float poisonous = 0.f;
 	std::unique_ptr<Trail> m_trail;
 	
-	Projectile() noexcept { }
+	Projectile() arx_noexcept_default
 	
 };
 

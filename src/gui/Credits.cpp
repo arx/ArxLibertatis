@@ -73,10 +73,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "math/Vector.h"
 
+#include "platform/Platform.h"
+
 #include "scene/GameSound.h"
 
 #include "util/String.h"
 #include "util/Unicode.h"
+
 
 namespace credits {
 
@@ -89,7 +92,7 @@ struct CreditsLine {
 	Vec2i sPos = Vec2i(0);
 	int sourceLineNumber = -1;
 	
-	constexpr CreditsLine() noexcept { }
+	constexpr CreditsLine() arx_noexcept_default
 	
 };
 

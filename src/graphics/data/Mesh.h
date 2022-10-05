@@ -51,9 +51,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 
 #include "ai/Anchors.h"
+#include "game/Camera.h"
 #include "graphics/GraphicsTypes.h"
 #include "math/Rectangle.h"
-#include "game/Camera.h"
+#include "platform/Platform.h"
+
 
 class Entity;
 struct RoomPortal;
@@ -129,7 +131,7 @@ struct ROOM_DIST_DATA {
 	Vec3f startpos = Vec3f(0.f);
 	Vec3f endpos = Vec3f(0.f);
 	
-	constexpr ROOM_DIST_DATA() noexcept { }
+	constexpr ROOM_DIST_DATA() arx_noexcept_default
 	
 };
 

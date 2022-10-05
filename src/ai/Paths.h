@@ -58,7 +58,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/resource/ResourcePath.h"
 #include "math/Types.h"
 #include "math/Vector.h"
+#include "platform/Platform.h"
 #include "util/Flags.h"
+
 
 class Entity;
 
@@ -107,7 +109,7 @@ struct ARX_PATHWAY {
 	PathwayType flag = PATHWAY_STANDARD;
 	GameDuration _time;
 	
-	constexpr ARX_PATHWAY() noexcept { }
+	constexpr ARX_PATHWAY() arx_noexcept_default
 	
 };
 

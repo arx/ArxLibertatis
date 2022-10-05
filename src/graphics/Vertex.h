@@ -45,8 +45,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_VERTEX_H
 
 #include "graphics/Color.h"
-#include "platform/Platform.h"
 #include "math/Vector.h"
+#include "platform/Platform.h"
+
 
 struct TexturedVertexUntransformed {
 	
@@ -54,7 +55,7 @@ struct TexturedVertexUntransformed {
 	ColorRGBA color;
 	Vec2f uv = Vec2f(0.f);
 	
-	constexpr TexturedVertexUntransformed() noexcept { }
+	constexpr TexturedVertexUntransformed() arx_noexcept_default
 	
 	constexpr TexturedVertexUntransformed(const Vec3f & _p, ColorRGBA _color, Vec2f _uv) noexcept
 		: p(_p)
@@ -73,7 +74,7 @@ struct TexturedVertex {
 	
 	Vec2f uv = Vec2f(0.f);
 	
-	constexpr TexturedVertex() noexcept { }
+	constexpr TexturedVertex() arx_noexcept_default
 	
 	constexpr TexturedVertex(const Vec3f & _p, float _w, ColorRGBA _color, Vec2f _uv) noexcept
 		: p(_p)
@@ -100,7 +101,7 @@ struct SMY_VERTEX {
 	ColorRGBA color;
 	Vec2f uv = Vec2f(0.f);
 	
-	constexpr SMY_VERTEX() noexcept { }
+	constexpr SMY_VERTEX() arx_noexcept_default
 	
 };
 
@@ -110,7 +111,7 @@ struct SMY_VERTEX3 {
 	ColorRGBA color;
 	Vec2f uv[3] = { Vec2f(0.f), Vec2f(0.f), Vec2f(0.f) };
 	
-	constexpr SMY_VERTEX3() noexcept { }
+	constexpr SMY_VERTEX3() arx_noexcept_default
 	
 };
 
@@ -119,7 +120,7 @@ struct EERIE_VERTEX {
 	Vec3f v = Vec3f(0.f);
 	Vec3f norm = Vec3f(0.f);
 	
-	constexpr EERIE_VERTEX() noexcept { }
+	constexpr EERIE_VERTEX() arx_noexcept_default
 	
 };
 

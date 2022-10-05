@@ -38,7 +38,7 @@ struct IntegerColorType {
 		: t(t_)
 	{ }
 	
-	constexpr IntegerColorType() noexcept { }
+	constexpr IntegerColorType() arx_noexcept_default
 	
 	[[nodiscard]] constexpr bool operator==(const IntegerColorType<TAG, T> & rhs) const noexcept {
 		return t == rhs.t;

@@ -54,6 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/GameTypes.h"
 #include "audio/AudioTypes.h"
 #include "math/Angle.h"
+#include "platform/Platform.h"
+
 
 struct EERIE_SCRIPT;
 class Entity;
@@ -84,7 +86,7 @@ struct CinematicSpeech {
 	Vec3f pos1 = Vec3f(0.f);
 	Vec3f pos2 = Vec3f(0.f);
 	
-	constexpr CinematicSpeech() noexcept { }
+	constexpr CinematicSpeech() arx_noexcept_default
 	
 };
 

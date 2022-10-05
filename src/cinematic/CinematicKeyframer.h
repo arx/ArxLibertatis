@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "cinematic/Cinematic.h" // for CinematicLight
 #include "math/Vector.h"
+#include "platform/Platform.h"
 
 
 struct CinematicKeyframe {
@@ -67,7 +68,7 @@ struct CinematicKeyframe {
 	float speedtrack = 0.f;
 	int idsound = 0;
 	
-	CinematicKeyframe() noexcept { }
+	CinematicKeyframe() arx_noexcept_default
 	
 };
 

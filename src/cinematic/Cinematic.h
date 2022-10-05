@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Color.h"
 #include "math/RandomFlicker.h"
 #include "math/Vector.h"
+#include "platform/Platform.h"
 
 
 struct CinematicKeyframe;
@@ -76,7 +77,7 @@ public:
 	CinematicKeyframe * prev = nullptr;
 	CinematicKeyframe * next = nullptr;
 	
-	CinematicLight() noexcept { }
+	CinematicLight() arx_noexcept_default
 	
 };
 

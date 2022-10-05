@@ -67,6 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 #include "math/Quantizer.h"
 
+#include "platform/Platform.h"
 #include "platform/profiler/Profiler.h"
 
 #include "scene/Light.h"
@@ -89,7 +90,7 @@ struct Missile {
 	Vec3f lastpos = Vec3f(0.f);
 	math::Quantizer m_quantizer;
 	
-	constexpr Missile() noexcept { }
+	constexpr Missile() arx_noexcept_default
 	
 };
 

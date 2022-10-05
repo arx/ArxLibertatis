@@ -61,9 +61,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 #include "math/Angle.h"
 
+#include "platform/Platform.h"
+
 #include "util/Flags.h"
 
-#include "Configure.h"
 
 struct EERIE_3DOBJ;
 class TextureContainer;
@@ -80,7 +81,7 @@ struct EERIE_TRI {
 	
 	Vec3f v[3] = { Vec3f(0.f), Vec3f(0.f), Vec3f(0.f) };
 	
-	constexpr EERIE_TRI() noexcept { }
+	constexpr EERIE_TRI() arx_noexcept_default
 	
 };
 
@@ -134,7 +135,7 @@ struct EERIEPOLY {
 	short room = 0;
 	unsigned short uslInd[4] = { 0, 0, 0, 0 };
 	
-	constexpr EERIEPOLY() noexcept { }
+	constexpr EERIEPOLY() arx_noexcept_default
 	
 };
 
@@ -150,7 +151,7 @@ struct EERIE_FACE {
 	float transval = 0.f;
 	Vec3f norm = Vec3f(0.f);
 	
-	constexpr EERIE_FACE() noexcept { }
+	constexpr EERIE_FACE() arx_noexcept_default
 	
 };
 
@@ -230,7 +231,7 @@ struct Plane {
 	Vec3f normal = Vec3f(0.f);
 	float offset = 0.f; // dist to origin
 	
-	constexpr Plane() noexcept { }
+	constexpr Plane() arx_noexcept_default
 	
 };
 

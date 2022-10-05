@@ -59,8 +59,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Angle.h"
 #include "math/Types.h"
 #include "math/Quantizer.h"
+#include "platform/Platform.h"
 #include "util/Flags.h"
 #include "util/HandleType.h"
+
 
 struct EERIE_LIGHT;
 struct EERIEPOLY;
@@ -130,7 +132,7 @@ struct EERIE_LIGHT {
 	audio::SourcedSample sample;
 	math::Quantizer m_storedFlameTime;
 	
-	constexpr EERIE_LIGHT() noexcept { }
+	constexpr EERIE_LIGHT() arx_noexcept_default
 	
 };
 
@@ -177,7 +179,7 @@ struct ShaderLight {
 	Color3f rgb;
 	Color3f rgb255;
 	
-	constexpr ShaderLight() noexcept { }
+	constexpr ShaderLight() arx_noexcept_default
 	
 };
 

@@ -400,4 +400,15 @@ public:
 	}
 };
 
+/*!
+ * \def arx_noexcept_default
+ *
+ * Use the default implementation for a constructor but explicitly mark it as noexcept.
+ */
+#if ARX_HAVE_CXX20_NOEXCEPT_DEFAULT
+	#define arx_noexcept_default noexcept = default;
+#else
+	#define arx_noexcept_default noexcept { }
+#endif
+
 #endif // ARX_PLATFORM_PLATFORM_H

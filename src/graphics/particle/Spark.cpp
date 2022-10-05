@@ -31,8 +31,10 @@
 #include "graphics/Math.h"
 #include "graphics/RenderBatcher.h"
 #include "math/RandomVector.h"
+#include "platform/Platform.h"
 #include "platform/profiler/Profiler.h"
 #include "util/Range.h"
+
 
 struct alignas(16) SparkParticle {
 	
@@ -43,7 +45,7 @@ struct alignas(16) SparkParticle {
 	Vec3f tail = Vec3f(0.f);
 	ColorRGBA color = Color::black.toRGB();
 	
-	constexpr SparkParticle() noexcept { }
+	constexpr SparkParticle() arx_noexcept_default
 	
 };
 

@@ -28,7 +28,7 @@ struct DisplayMode {
 	Vec2i resolution = Vec2i(0);
 	s32 refresh = 0;
 	
-	constexpr DisplayMode() noexcept { }
+	constexpr DisplayMode() arx_noexcept_default
 	/* implicit */ constexpr DisplayMode(Vec2i res, s32 rate = 0) noexcept : resolution(res), refresh(rate) { }
 	[[nodiscard]] bool operator<(const DisplayMode & o) const noexcept;
 	[[nodiscard]] constexpr bool operator==(const DisplayMode & o) const noexcept {

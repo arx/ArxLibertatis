@@ -58,7 +58,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 
 #include "core/TimeTypes.h"
+#include "platform/Platform.h"
 #include "util/Flags.h"
+
 
 class PakFile;
 class Entity;
@@ -437,7 +439,7 @@ class ScriptParameters : public std::vector<std::string> {
 	
 public:
 	
-	ScriptParameters() noexcept { }
+	ScriptParameters() arx_noexcept_default
 	/* implicit */ ScriptParameters(std::string_view parameter) {
 		emplace_back(parameter);
 	}
