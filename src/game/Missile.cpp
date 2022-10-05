@@ -79,7 +79,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class TextureContainer;
 
-struct Missile {
+struct alignas(16) Missile {
 	
 	GameInstant timecreation;
 	GameDuration tolive;
