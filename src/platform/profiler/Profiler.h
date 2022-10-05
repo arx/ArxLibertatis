@@ -46,7 +46,7 @@ class Scope {
 	
 public:
 	
-	explicit Scope(const char * tag);
+	explicit Scope(const char * tag) noexcept;
 	~Scope();
 	
 };

@@ -62,17 +62,21 @@ private:
 	static const u32 NB_SAMPLES = 100 * 1000;
 	
 	struct ProfilerSample {
-		const char * tag;
-		thread_id_type threadId;
+		
+		const char * tag = nullptr;
+		thread_id_type threadId = thread_id_type(-1);
 		PlatformInstant startTime;
 		PlatformInstant endTime;
+		
 	};
 
 	struct ProfilerThread {
-		std::string    threadName;
-		thread_id_type threadId;
+		
+		std::string threadName;
+		thread_id_type threadId = thread_id_type(-1);
 		PlatformInstant startTime;
 		PlatformInstant endTime;
+		
 	};
 
 	typedef std::map<thread_id_type, ProfilerThread> ThreadInfos;
@@ -297,7 +301,7 @@ void profiler::unregisterThread() {
 }
 
 
-profiler::Scope::Scope(const char * tag)
+profiler::Scope::Scope(const char * tag) noexcept
 	: m_tag(tag)
 	, m_startTime(platform::getTime())
 {
