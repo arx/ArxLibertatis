@@ -29,7 +29,7 @@ Reddit: [/r/ArxFatalis/](https://old.reddit.com/r/ArxFatalis/)
 * **[CMake](https://cmake.org/) 2.8.3**+ (compile-time only)
 * **[zlib](https://zlib.net/)**
 * **[Boost](https://www.boost.org/) 1.50**+ (headers only¹)
-* **[GLM](https://glm.g-truc.net/) 0.9.9.4**+
+* **[GLM](https://glm.g-truc.net/) 0.9.9.7**+
 * **[FreeType](https://freetype.org/) 2.3.0**+
 * **OpenAL 1.1**+ ([OpenAL Soft](https://openal-soft.org/) strongly recommended!)
 * **iconutil** (from Xcode) or **[icnsutil](https://github.com/pornel/libicns)** (macOS only)

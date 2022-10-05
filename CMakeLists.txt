@@ -559,7 +559,7 @@ if(MSVC AND Boost_VERSION_MACRO LESS 106900)
 endif()
 
 # glm
-find_package(GLM 0.9.9.4 REQUIRED)
+find_package(GLM 0.9.9.7 REQUIRED)
 include_directories(SYSTEM ${GLM_INCLUDE_DIRS})
 add_definitions(-DGLM_FORCE_RADIANS) # Only needed for older GLM versions
 
