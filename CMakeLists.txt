@@ -668,6 +668,7 @@ if(USE_CXX17_FROM_CHARS_FLOAT)
 else()
 	set(ARX_HAVE_CXX17_FROM_CHARS_FLOAT 0)
 endif()
+check_cxx(20 "noexcept = default" ARX_HAVE_CXX20_NOEXCEPT_DEFAULT 1928)
 
 if(MSVC)
 	

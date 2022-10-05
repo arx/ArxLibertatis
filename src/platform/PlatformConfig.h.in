@@ -17,6 +17,9 @@
 // std::from_chars(int)
 #cmakedefine01 ARX_HAVE_CXX17_FROM_CHARS_INT
 
+// C++20 features
+#cmakedefine01 ARX_HAVE_CXX20_NOEXCEPT_DEFAULT
+
 // GCC extensions
 // __attribute__((always_inline))
 #cmakedefine01 ARX_HAVE_ATTRIBUTE_ALWAYS_INLINE
