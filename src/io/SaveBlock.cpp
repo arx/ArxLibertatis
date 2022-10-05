@@ -241,11 +241,8 @@ std::string SaveBlock::File::loadData(std::istream & handle, std::string_view na
 	}
 }
 
-SaveBlock::SaveBlock(fs::path savefile)
+SaveBlock::SaveBlock(fs::path savefile) noexcept
 	: m_savefile(std::move(savefile))
-	, m_totalSize(0)
-	, m_usedSize(0)
-	, m_chunkCount(0)
 { }
 
 bool SaveBlock::loadFileTable() {

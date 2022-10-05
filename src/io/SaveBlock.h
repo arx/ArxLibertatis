@@ -69,7 +69,7 @@ private:
 			size_t size = 0;
 			size_t offset = 0;
 			
-			constexpr Chunk() noexcept { }
+			constexpr Chunk() = default;
 			
 			constexpr Chunk(size_t _size, size_t _offset) noexcept : size(_size), offset(_offset) { }
 			
@@ -84,10 +84,10 @@ private:
 			Deflate
 		};
 		
-		size_t storedSize;
-		size_t uncompressedSize;
+		size_t storedSize = 0;
+		size_t uncompressedSize = 0;
 		ChunkList chunks;
-		Compression comp;
+		Compression comp = Unknown;
 		
 		const char * compressionName() const;
 		
@@ -103,9 +103,9 @@ private:
 	
 	fs::path m_savefile;
 	fs::fstream m_handle;
-	size_t m_totalSize;
-	size_t m_usedSize;
-	size_t m_chunkCount;
+	size_t m_totalSize = 0;
+	size_t m_usedSize = 0;
+	size_t m_chunkCount = 0;
 	Files m_files;
 	
 	bool defragment();
@@ -114,7 +114,7 @@ private:
 	
 public:
 	
-	explicit SaveBlock(fs::path savefile);
+	explicit SaveBlock(fs::path savefile) noexcept;
 	
 	/*!
 	 * Destructor: this will not finalize the save block.
