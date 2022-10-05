@@ -20,38 +20,39 @@
 #ifndef ARX_TOOLS_PROFILER_UI_ARXPROFILER_H
 #define ARX_TOOLS_PROFILER_UI_ARXPROFILER_H
 
+#include <map>
+
 #include <QMainWindow>
 #include <QGraphicsView>
 
-#include <map>
+#include "platform/Platform.h"
+
 
 struct ProfileSample {
+	
 	QString tag;
-	quint64 threadId;
-	qint64 startTime;
-	qint64 endTime;
+	quint64 threadId = 0;
+	qint64 startTime = 0;
+	qint64 endTime = 0;
+	
+	ProfileSample() arx_noexcept_default
+	
 };
 
 struct ProfileThread {
+	
 	QString threadName;
-	quint64 threadId;
-	qint64 startTime;
-	qint64 endTime;
+	quint64 threadId = 0;
+	qint64 startTime = 0;
+	qint64 endTime = 0;
+	
 };
 
 struct ThreadData {
 	
-	ThreadData()
-		: maxDepth(0)
-	{
-		info.threadId = 0;
-		info.startTime = 0;
-		info.endTime = 0;
-	}
-
 	ProfileThread info;
 	std::vector<ProfileSample> profilePoints;
-	size_t maxDepth;
+	size_t maxDepth = 0;
 	
 };
 
