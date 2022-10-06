@@ -38,12 +38,12 @@
 template <typename TAG, typename T, T INVALID_VALUE>
 class HandleType {
 	
-	T t;
+	T t = INVALID_VALUE;
 	
 public:
 	
 	explicit constexpr HandleType(const T t_) noexcept : t(t_) { }
-	constexpr HandleType() noexcept : t(INVALID_VALUE) { }
+	constexpr HandleType() noexcept = default;
 	
 	[[nodiscard]] constexpr bool operator==(const HandleType & rhs) const noexcept { return t == rhs.t; }
 	[[nodiscard]] constexpr bool operator!=(const HandleType & rhs) const noexcept { return t != rhs.t; }
