@@ -50,8 +50,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <array>
 
 #include "game/GameTypes.h"
-#include "graphics/GraphicsTypes.h"
+#include "math/Types.h"
 
+
+class Entity;
 struct EERIEPOLY;
 struct EERIE_3DOBJ;
 
@@ -95,7 +97,6 @@ struct PHYSICS_BOX_DATA {
 bool EERIE_PHYSICS_BOX_IsValidPosition(const Vec3f & pos);
 
 void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj);
-void EERIE_PHYSICS_BOX_Release(EERIE_3DOBJ * obj);
 void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef & angle, const Vec3f & vect);
 void ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA & pbox, float framediff, float rubber, Entity & source);
 

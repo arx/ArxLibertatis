@@ -49,6 +49,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stddef.h>
 #include <algorithm>
 #include <limits>
+#include <memory>
+#include <utility>
 
 #include "graphics/Raycast.h"
 #include "graphics/GraphicsTypes.h"
@@ -77,13 +79,13 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj) {
 		return;
 	}
 	
-	EERIE_PHYSICS_BOX_Release(obj);
+	obj->pbox.reset();
 	
 	if(obj->vertexlist.empty()) {
 		return;
 	}
 	
-	PHYSICS_BOX_DATA * pbox = new PHYSICS_BOX_DATA();
+	std::unique_ptr<PHYSICS_BOX_DATA> pbox = std::make_unique<PHYSICS_BOX_DATA>();
 	
 	pbox->stopcount = 0;
 	
@@ -250,18 +252,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj) {
 	}
 	pbox->surface = surface;
 	
-	obj->pbox = pbox;
-}
-
-// Releases physic box data from an object
-void EERIE_PHYSICS_BOX_Release(EERIE_3DOBJ * obj) {
-	
-	if(!obj || !obj->pbox) {
-		return;
-	}
-	
-	delete obj->pbox;
-	obj->pbox = nullptr;
+	obj->pbox = std::move(pbox);
 }
 
 // Used to launch an object into the physical world...

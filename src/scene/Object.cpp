@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 
 #include <cstdio>
+#include <memory>
 #include <vector>
 
 #include <boost/algorithm/string/predicate.hpp>
@@ -203,17 +204,12 @@ void EERIE_3DOBJ::clear() {
 	
 	linked.clear();
 	
-	pbox = nullptr;
+	pbox.reset();
 	
 	fastaccess = EERIE_FASTACCESS();
 	
 	m_skeleton.reset();
 	
-}
-
-// TODO move to destructor?
-EERIE_3DOBJ::~EERIE_3DOBJ() {
-	EERIE_PHYSICS_BOX_Release(this);
 }
 
 EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
@@ -224,8 +220,6 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	nouvo->vertexWorldPositions.resize(nouvo->vertexlist.size());
 	nouvo->vertexClipPositions.resize(nouvo->vertexlist.size());
 	nouvo->vertexColors.resize(nouvo->vertexlist.size());
-	
-	nouvo->pbox = nullptr;
 	
 	nouvo->file = obj->file;
 	
@@ -239,12 +233,11 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	nouvo->fastaccess = obj->fastaccess;
 	
 	EERIE_CreateCedricData(nouvo);
-
+	
 	if(obj->pbox) {
-		nouvo->pbox = new PHYSICS_BOX_DATA();
+		nouvo->pbox = std::make_unique<PHYSICS_BOX_DATA>();
 		nouvo->pbox->stopcount = 0;
 		nouvo->pbox->radius = obj->pbox->radius;
-		
 		nouvo->pbox->vert = obj->pbox->vert;
 	}
 	

@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 #include <iomanip>
 #include <algorithm>
+#include <memory>
 #include <string>
 #include <vector>
 #include <sstream>
@@ -1016,9 +1017,8 @@ Entity * CloneIOItem(Entity * src) {
 	dest->locname = src->locname;
 	
 	if(dest->obj->pbox == nullptr && src->obj->pbox != nullptr) {
-		dest->obj->pbox = new PHYSICS_BOX_DATA();
+		dest->obj->pbox = std::make_unique<PHYSICS_BOX_DATA>();
 		*dest->obj->pbox = *src->obj->pbox;
-		
 		dest->obj->pbox->vert = src->obj->pbox->vert;
 	}
 	

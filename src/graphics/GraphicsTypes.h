@@ -61,6 +61,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 #include "math/Angle.h"
 
+#include "physics/Physics.h"
+
 #include "platform/Platform.h"
 
 #include "util/Flags.h"
@@ -70,7 +72,6 @@ struct EERIE_3DOBJ;
 class TextureContainer;
 class Entity;
 struct EERIE_LIGHT;
-struct PHYSICS_BOX_DATA;
 
 typedef HandleType<struct ActionPointTag,  s32,   -1> ActionPoint;
 typedef HandleType<struct ObjSelectionTag, long,  -1> ObjSelection;
@@ -199,8 +200,6 @@ struct EERIE_3DOBJ {
 	
 	void clear();
 	
-	~EERIE_3DOBJ();
-	
 	res::path file;
 	size_t origin = 0;
 	std::vector<Vec3f> vertexlocal;
@@ -218,7 +217,7 @@ struct EERIE_3DOBJ {
 	std::vector<res::path> originaltextures;
 	std::vector<EERIE_LINKED> linked;
 	
-	PHYSICS_BOX_DATA * pbox = nullptr;
+	std::unique_ptr<PHYSICS_BOX_DATA> pbox;
 	EERIE_FASTACCESS fastaccess;
 	
 	std::unique_ptr<Skeleton> m_skeleton;
