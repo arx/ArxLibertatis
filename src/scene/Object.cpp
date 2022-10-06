@@ -79,8 +79,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "util/String.h"
 
 
-void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj);
-
 ObjVertHandle GetGroupOriginByName(const EERIE_3DOBJ * eobj, std::string_view text) {
 	
 	if(!eobj)
@@ -191,31 +189,30 @@ void MakeUserFlag(TextureContainer * tc) {
 // Warning Clear3DObj don't release Any pointer Just Clears Structures
 void EERIE_3DOBJ::clear() {
 	
-		origin = 0;
-
-		vertexlocal.clear();
-		vertexlist.clear();
-		vertexWorldPositions.clear();
-
-		facelist.clear();
-		grouplist.clear();
-		texturecontainer.clear();
-
-		originaltextures.clear();
-		
-		linked.clear();
-
-		pbox = 0;
-		
-		fastaccess = EERIE_FASTACCESS();
-		
-		m_skeleton = 0;
+	origin = 0;
+	
+	vertexlocal.clear();
+	vertexlist.clear();
+	vertexWorldPositions.clear();
+	
+	facelist.clear();
+	grouplist.clear();
+	texturecontainer.clear();
+	
+	originaltextures.clear();
+	
+	linked.clear();
+	
+	pbox = nullptr;
+	
+	fastaccess = EERIE_FASTACCESS();
+	
+	m_skeleton.reset();
 	
 }
 
 // TODO move to destructor?
 EERIE_3DOBJ::~EERIE_3DOBJ() {
-	EERIE_RemoveCedricData(this);
 	EERIE_PHYSICS_BOX_Release(this);
 }
 
@@ -229,7 +226,6 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	nouvo->vertexColors.resize(nouvo->vertexlist.size());
 	
 	nouvo->pbox = nullptr;
-	nouvo->m_skeleton = nullptr;
 	
 	nouvo->file = obj->file;
 	
@@ -299,19 +295,9 @@ static long GetFather(EERIE_3DOBJ * eobj, size_t origin, long startgroup) {
 	return -1;
 }
 
-void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj) {
-	
-	if(!eobj || !eobj->m_skeleton)
-		return;
-	
-	delete eobj->m_skeleton, eobj->m_skeleton = nullptr;
-	eobj->vertexlocal.clear();
-	
-}
-
 void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 	
-	eobj->m_skeleton = new Skeleton();
+	eobj->m_skeleton = std::make_unique<Skeleton>();
 	
 	if(eobj->grouplist.empty()) {
 		// If no groups were specified

@@ -221,7 +221,7 @@ struct EERIE_3DOBJ {
 	PHYSICS_BOX_DATA * pbox = nullptr;
 	EERIE_FASTACCESS fastaccess;
 	
-	Skeleton * m_skeleton = nullptr;
+	std::unique_ptr<Skeleton> m_skeleton;
 	std::vector<std::vector<u32>> m_boneVertices; // TODO use u16 here ?
 	
 };

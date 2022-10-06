@@ -1058,7 +1058,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos,
                                            Entity * io, float invisibility) {
 	
-	Skeleton * obj = eobj->m_skeleton;
+	Skeleton * obj = eobj->m_skeleton.get();
 	if(!obj) {
 		return;
 	}
