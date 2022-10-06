@@ -71,13 +71,13 @@ private:
 	struct ManagedText {
 		
 		std::string text;
-		Font * font;
+		Font * font = nullptr;
 		PlatformDuration scrollDelay;
 		PlatformDuration displayTime;
 		Rectf bounds;
 		Rect clipRect;
-		float scrollPosition;
-		float scrollSpeed;
+		float scrollPosition = 0.f;
+		float scrollSpeed = 0.f;
 		Color color;
 		
 	};
