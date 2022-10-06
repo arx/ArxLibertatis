@@ -186,32 +186,6 @@ void MakeUserFlag(TextureContainer * tc) {
 	
 }
 
-//-----------------------------------------------------------------------------------------------------
-// Warning Clear3DObj don't release Any pointer Just Clears Structures
-void EERIE_3DOBJ::clear() {
-	
-	origin = 0;
-	
-	vertexlocal.clear();
-	vertexlist.clear();
-	vertexWorldPositions.clear();
-	
-	facelist.clear();
-	grouplist.clear();
-	texturecontainer.clear();
-	
-	originaltextures.clear();
-	
-	linked.clear();
-	
-	pbox.reset();
-	
-	fastaccess = EERIE_FASTACCESS();
-	
-	m_skeleton.reset();
-	
-}
-
 EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	
 	EERIE_3DOBJ * nouvo = new EERIE_3DOBJ();

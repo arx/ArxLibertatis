@@ -190,8 +190,6 @@ struct EERIE_FASTACCESS {
 
 struct EERIE_3DOBJ {
 	
-	void clear();
-	
 	res::path file;
 	size_t origin = 0;
 	std::vector<Vec3f> vertexlocal;
