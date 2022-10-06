@@ -193,8 +193,6 @@ Anglef vectorToAngle(const Vec3f & vector);
 
 Plane createNormalizedPlane(const Vec3f & origin, const Vec3f & pt1, const Vec3f & pt2);
 
-bool Triangles_Intersect(const EERIE_TRI & v, const EERIE_TRI & u);
-
 inline float square(float x) {
 	return x * x;
 }

@@ -78,14 +78,6 @@ typedef HandleType<struct ObjSelectionTag, long,  -1> ObjSelection;
 typedef HandleType<struct ObjVertGroupTag, short, -1> ObjVertGroup;
 typedef HandleType<struct ObjVertHandleTag, s32,  -1> ObjVertHandle;
 
-struct EERIE_TRI {
-	
-	Vec3f v[3] = { Vec3f(0.f), Vec3f(0.f), Vec3f(0.f) };
-	
-	constexpr EERIE_TRI() arx_noexcept_default
-	
-};
-
 enum PolyTypeFlag {
 	POLY_NO_SHADOW    = 1 << 0,
 	POLY_DOUBLESIDED  = 1 << 1,
