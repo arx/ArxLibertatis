@@ -85,12 +85,12 @@ enum DecalType : u8 {
 
 struct Decal {
 	
-	std::array<Vec2f, 4> uv;
+	std::array<Vec2f, 4> uv = { Vec3f(0.f), Vec3f(0.f), Vec3f(0.f), Vec3f(0.f) };
 	Color3f rgb;
-	DecalType type;
+	DecalType type = DecalType(0);
 	bool fastdecay = false;
-	TextureContainer * material;
-	EERIEPOLY * polygon;
+	TextureContainer * material = nullptr;
+	EERIEPOLY * polygon = nullptr;
 	ShortGameDuration elapsed;
 	ShortGameDuration duration;
 	
