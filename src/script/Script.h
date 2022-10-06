@@ -407,7 +407,7 @@ class ScriptEventName {
 	
 public:
 	
-	ScriptEventName() noexcept : m_id(SM_NULL) { }
+	ScriptEventName() noexcept = default;
 	/* implicit */ ScriptEventName(ScriptMessage id) noexcept : m_id(id) { }
 	explicit ScriptEventName(std::string_view name) : m_name(name) { }
 	/* implicit */ ScriptEventName(const char * name) : m_name(name) { }
