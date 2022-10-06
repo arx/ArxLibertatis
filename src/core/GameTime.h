@@ -72,11 +72,11 @@ public:
 		m_lastFrameDuration = duration;
 	}
 	
-	PlatformInstant frameStart() {
+	[[nodiscard]] PlatformInstant frameStart() {
 		return m_frameStartTime;
 	}
 	
-	ShortPlatformDuration lastFrameDuration() {
+	[[nodiscard]] ShortPlatformDuration lastFrameDuration() {
 		arx_assume(m_lastFrameDuration >= 0 && m_lastFrameDuration <= MaxFrameDuration);
 		return m_lastFrameDuration;
 	}
@@ -121,7 +121,7 @@ public:
 	
 	void reset(GameInstant time);
 	
-	GameInstant now() const {
+	[[nodiscard]] GameInstant now() const {
 		arx_assume(m_now >= 0);
 		return m_now;
 	}
@@ -132,12 +132,12 @@ public:
 		return m_paused;
 	}
 	
-	ShortGameDuration lastFrameDuration() const {
+	[[nodiscard]] ShortGameDuration lastFrameDuration() const {
 		arx_assume(m_lastFrameDuration >= 0 && m_lastFrameDuration <= MaxFrameDuration);
 		return m_lastFrameDuration;
 	}
 	
-	float speed() const {
+	[[nodiscard]] float speed() const {
 		arx_assume(m_speed >= 0.f && m_speed <= 1.f);
 		return m_speed;
 	}
