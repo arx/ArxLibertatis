@@ -120,7 +120,7 @@ path & path::operator/=(const path & other) {
 	}
 }
 
-std::string_view path::basename() const {
+std::string_view path::basename() const noexcept {
 	if(!has_info()) {
 		return empty() ? std::string_view() : std::string_view("..");
 	}
@@ -140,7 +140,7 @@ std::string_view path::basename() const {
 	}
 }
 
-std::string_view path::ext() const {
+std::string_view path::ext() const noexcept {
 	if(!has_info()) {
 		return std::string_view();
 	}
@@ -267,7 +267,7 @@ path & path::append(std::string_view str) {
 	return *this;
 }
 
-bool path::has_ext(std::string_view str) const {
+bool path::has_ext(std::string_view str) const noexcept {
 	
 	arx_assert_msg(str.empty()
 	               || (str[0] != dir_sep

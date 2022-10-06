@@ -45,18 +45,18 @@ private:
 	
 public:
 	
-	static constexpr const char * dir_or_ext_sep = "\\/.";
-	static constexpr const char * any_dir_sep = "\\/";
+	static inline constexpr const char * dir_or_ext_sep = "\\/.";
+	static inline constexpr const char * any_dir_sep = "\\/";
 	
 	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-	static constexpr const char dir_sep = '\\';
+	static inline constexpr const char dir_sep = '\\';
 	#else
-	static constexpr const char dir_sep = '/';
+	static inline constexpr const char dir_sep = '/';
 	#endif
 	
-	static constexpr const char ext_sep = '.';
+	static inline constexpr const char ext_sep = '.';
 	
-	path() = default;
+	path() noexcept = default;
 	/* implicit */ path(std::string_view str);
 	/* implicit */ path(const std::string & str) : path(std::string_view(str)) { }
 	/* implicit */ path(const char * str) : path(std::string_view(str)) { }
@@ -65,7 +65,7 @@ public:
 	
 	path & operator/=(const path & other);
 	
-	[[nodiscard]] const std::string & string() const {
+	[[nodiscard]] const std::string & string() const noexcept {
 		return pathstr;
 	}
 	
@@ -101,7 +101,7 @@ public:
 	 * If pathstr contains a slash, return everything following it.
 	 * Otherwise, return pathstr.
 	 */
-	[[nodiscard]] std::string_view filename() const {
+	[[nodiscard]] std::string_view filename() const noexcept {
 		size_t dirpos = pathstr.find_last_of(dir_sep);
 		return (dirpos == std::string::npos) ? pathstr : std::string_view(pathstr).substr(dirpos + 1);
 	}
@@ -110,20 +110,20 @@ public:
 	 * If filename() contains a dot, return everything in filename() preceding the dot.
 	 * Otherwise, return filename().
 	 */
-	[[nodiscard]] std::string_view basename() const;
+	[[nodiscard]] std::string_view basename() const noexcept;
 	
 	/*!
 	 * If filename() contains a dot, return dot and everything following it.
 	 * Otherwise, return std::string_view().
 	 */
-	[[nodiscard]] std::string_view ext() const;
+	[[nodiscard]] std::string_view ext() const noexcept;
 	
-	[[nodiscard]] bool empty() const {
+	[[nodiscard]] bool empty() const noexcept {
 		return pathstr.empty();
 	}
 	
 	//! \return pathstr == other.pathstr
-	[[nodiscard]] bool operator==(const path & other) const {
+	[[nodiscard]] bool operator==(const path & other) const noexcept {
 		#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 		return boost::iequals(pathstr, other.pathstr);
 		#else
@@ -132,7 +132,7 @@ public:
 	}
 	
 	//! \return pathstr != other.pathstr
-	[[nodiscard]] bool operator!=(const path & other) const {
+	[[nodiscard]] bool operator!=(const path & other) const noexcept {
 		#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 		return !boost::iequals(pathstr, other.pathstr);
 		#else
@@ -144,7 +144,7 @@ public:
 	 * To allow path being used in std::map, etc
 	 * \return pathstr < other.pathstr
 	 */
-	[[nodiscard]] bool operator<(const path & other) const {
+	[[nodiscard]] bool operator<(const path & other) const noexcept {
 		#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 		return boost::ilexicographical_compare(pathstr, other.pathstr);
 		#else
@@ -172,7 +172,7 @@ public:
 	//! \return set_basename(get_basename() + basename_part)
 	path & append_basename(std::string_view basename_part);
 	
-	void swap(path & other) {
+	void swap(path & other) noexcept {
 		pathstr.swap(other.pathstr);
 	}
 	
@@ -183,16 +183,16 @@ public:
 	 *
 	 * \return str.empty() ? !ext().empty() : ext() == str || ext.substr(1) == str();
 	 */
-	bool has_ext(std::string_view str = std::string_view()) const;
+	bool has_ext(std::string_view str = std::string_view()) const noexcept;
 	
 	//! ".." or starts with "../"
-	bool is_up() const {
+	bool is_up() const noexcept {
 		return (pathstr.length() == 2 && pathstr[0] == '.' && pathstr[1] == '.')
 		       || (pathstr.length() >= 3 && pathstr[0] == '.' && pathstr[1] == '.' && pathstr[2] == dir_sep);
 	}
 	
 	//! \return true if not empty, not "/", not "." not ".." and doesn't end in "/.."
-	bool has_info() const {
+	bool has_info() const noexcept {
 		size_t l = pathstr.length();
 		return (!pathstr.empty() && !(l == 2 && pathstr[0] == '.' && pathstr[1] == '.')
 		        && !(l >= 3 && pathstr[l - 1] == '.' && pathstr[l - 2] == '.'
@@ -201,9 +201,9 @@ public:
 		        && !is_dot());
 	}
 	
-	bool is_dot() const { return pathstr.length() == 1 && pathstr[0] == '.'; }
+	bool is_dot() const noexcept { return pathstr.length() == 1 && pathstr[0] == '.'; }
 	
-	bool is_root() const {
+	bool is_root() const noexcept {
 		return ((pathstr.length() == 1 && pathstr[0] == dir_sep)
 		#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 			|| (pathstr.length() <= 3 && pathstr.length() >= 2 && pathstr[1] == ':')
@@ -212,7 +212,7 @@ public:
 	}
 	
 	//! Is this a relative path. An empty path is neither relative nor absolute.
-	bool is_relative() const {
+	bool is_relative() const noexcept {
 		return !empty() && !(pathstr[0] == dir_sep
 			#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 			|| (pathstr.length() >= 2 && pathstr[1] == ':')
@@ -221,7 +221,7 @@ public:
 	}
 	
 	//! Is this an absolute path. An empty path is neither relative nor absolute.
-	bool is_absolute() const {
+	bool is_absolute() const noexcept {
 		return !empty() && (pathstr[0] == dir_sep
 			#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 			|| (pathstr.length() >= 2 && pathstr[1] == ':')
@@ -231,7 +231,7 @@ public:
 	
 	path & append(std::string_view str);
 	
-	void clear() { pathstr.clear(); }
+	void clear() noexcept { pathstr.clear(); }
 	
 };
 
