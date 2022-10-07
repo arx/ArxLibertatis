@@ -34,6 +34,7 @@
 #define ARX_UTIL_HANDLETYPE_H
 
 #include <ostream>
+#include <type_traits>
 
 template <typename TAG, typename T, T INVALID_VALUE>
 class HandleType {
@@ -48,7 +49,13 @@ public:
 	[[nodiscard]] constexpr bool operator==(const HandleType & rhs) const noexcept { return t == rhs.t; }
 	[[nodiscard]] constexpr bool operator!=(const HandleType & rhs) const noexcept { return t != rhs.t; }
 	
-	[[nodiscard]] constexpr const T & handleData() const noexcept { return t; }
+	[[nodiscard]] constexpr T handleData() const noexcept { return t; }
+	
+	template <typename O, typename = std::enable_if_t<std::is_integral_v<O>>>
+	[[nodiscard]] explicit constexpr operator O() const noexcept { return t; }
+	
+	[[nodiscard]] explicit constexpr operator bool() const noexcept { return t != INVALID_VALUE; }
+	[[nodiscard]] constexpr bool operator!() const noexcept { return t == INVALID_VALUE; }
 	
 };
 
