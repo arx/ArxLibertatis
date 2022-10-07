@@ -308,7 +308,7 @@ bool DanaeLoadLevel(long level, bool loadEntities) {
 		LoadLevelScreen();
 	}
 	
-	for(long i = 0 ; i < dlh.nb_inter ; i++) {
+	for(s32 i = 0 ; i < dlh.nb_inter ; i++) {
 		
 		progressBarAdvance(increment);
 		LoadLevelScreen();
@@ -328,6 +328,7 @@ bool DanaeLoadLevel(long level, bool loadEntities) {
 			res::path classPath = res::path::load(pathstr).remove_ext();
 			LoadInter_Ex(classPath, dli->ident, dli->pos.toVec3() + trans, dli->angle);
 		}
+		
 	}
 	
 	if(dlh.lighting) {
@@ -348,7 +349,7 @@ bool DanaeLoadLevel(long level, bool loadEntities) {
 	LogDebug("Loading FOGS");
 	ARX_FOGS_Clear();
 	
-	for(long i = 0; i < dlh.nb_fogs; i++) {
+	for(s32 i = 0; i < dlh.nb_fogs; i++) {
 		
 		const DANAE_LS_FOG * dlf = reinterpret_cast<const DANAE_LS_FOG *>(dat + pos);
 		pos += sizeof(DANAE_LS_FOG);
@@ -387,7 +388,7 @@ bool DanaeLoadLevel(long level, bool loadEntities) {
 	g_zones.clear();
 	g_paths.clear();
 	
-	for(long i = 0; i < dlh.nb_paths; i++) {
+	for(s32 i = 0; i < dlh.nb_paths; i++) {
 		
 		const DANAE_LS_PATH * dlp = reinterpret_cast<const DANAE_LS_PATH *>(dat + pos);
 		pos += sizeof(DANAE_LS_PATH);
@@ -420,7 +421,7 @@ bool DanaeLoadLevel(long level, bool loadEntities) {
 			}
 			
 			zone.pathways.resize(dlp->nb_pathways);
-			for(long j = 0; j < dlp->nb_pathways; j++) {
+			for(s32 j = 0; j < dlp->nb_pathways; j++) {
 				const DANAE_LS_PATHWAYS * dlpw = reinterpret_cast<const DANAE_LS_PATHWAYS *>(dat + pos);
 				pos += sizeof(DANAE_LS_PATHWAYS);
 				zone.pathways[j] = dlpw->rpos.toVec3();
@@ -431,7 +432,7 @@ bool DanaeLoadLevel(long level, bool loadEntities) {
 			Path & path = g_paths.emplace_back(std::move(name), ppos);
 			
 			path.pathways.resize(dlp->nb_pathways);
-			for(long j = 0; j < dlp->nb_pathways; j++) {
+			for(s32 j = 0; j < dlp->nb_pathways; j++) {
 				const DANAE_LS_PATHWAYS * dlpw = reinterpret_cast<const DANAE_LS_PATHWAYS *>(dat + pos);
 				pos += sizeof(DANAE_LS_PATHWAYS);
 				path.pathways[j].flag = PathwayType(dlpw->flag); // TODO save/load enum
