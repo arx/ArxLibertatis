@@ -47,7 +47,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Rectangle.h"
 #include "math/Vector.h"
 #include "platform/Platform.h"
+#include "util/HandleType.h"
 
+
+typedef HandleType<struct ActionPointTag,  s32,   -1> ActionPoint;
+typedef HandleType<struct ObjSelectionTag, long,  -1> ObjSelection;
+typedef HandleType<struct ObjVertGroupTag, short, -1> ObjVertGroup;
+typedef HandleType<struct ObjVertHandleTag, s32,  -1> ObjVertHandle;
 
 struct Cylinder {
 	

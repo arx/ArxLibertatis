@@ -73,11 +73,6 @@ class TextureContainer;
 class Entity;
 struct EERIE_LIGHT;
 
-typedef HandleType<struct ActionPointTag,  s32,   -1> ActionPoint;
-typedef HandleType<struct ObjSelectionTag, long,  -1> ObjSelection;
-typedef HandleType<struct ObjVertGroupTag, short, -1> ObjVertGroup;
-typedef HandleType<struct ObjVertHandleTag, s32,  -1> ObjVertHandle;
-
 enum PolyTypeFlag {
 	POLY_NO_SHADOW    = 1 << 0,
 	POLY_DOUBLESIDED  = 1 << 1,
