@@ -966,10 +966,10 @@ void RoomDrawRelease() {
 	}
 }
 
-static void RoomFrustrumAdd(size_t num, const EERIE_FRUSTRUM & fr) {
-	if(g_rooms->visibility[num].frustrum.nb_frustrums < MAX_FRUSTRUMS - 1) {
-		g_rooms->visibility[num].frustrum.frustrums[g_rooms->visibility[num].frustrum.nb_frustrums] = fr;
-		g_rooms->visibility[num].frustrum.nb_frustrums++;
+static void RoomFrustrumAdd(RoomHandle num, const EERIE_FRUSTRUM & fr) {
+	if(g_rooms->visibility[size_t(num)].frustrum.nb_frustrums < MAX_FRUSTRUMS - 1) {
+		g_rooms->visibility[size_t(num)].frustrum.frustrums[g_rooms->visibility[size_t(num)].frustrum.nb_frustrums] = fr;
+		g_rooms->visibility[size_t(num)].frustrum.nb_frustrums++;
 	}
 }
 
@@ -1503,23 +1503,23 @@ static void BackgroundRenderTransparent(size_t room_num) {
 	
 }
 
-static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
+static void ARX_PORTALS_Frustrum_ComputeRoom(RoomHandle roomIndex,
                                              const EERIE_FRUSTRUM & frustrum,
-                                             const Vec3f & camPos, float camDepth
-) {
-	arx_assert(roomIndex < g_rooms->rooms.size());
+                                             const Vec3f & camPos, float camDepth) {
 	
-	if(g_rooms->visibility[roomIndex].count == 0) {
-		g_rooms->visibleRooms.push_back(roomIndex);
+	arx_assume(roomIndex && size_t(roomIndex) < g_rooms->rooms.size());
+	
+	if(g_rooms->visibility[size_t(roomIndex)].count == 0) {
+		g_rooms->visibleRooms.push_back(u32(roomIndex));
 	}
 	
 	RoomFrustrumAdd(roomIndex, frustrum);
-	g_rooms->visibility[roomIndex].count++;
+	g_rooms->visibility[size_t(roomIndex)].count++;
 	
 	float fClippZFar = camDepth * fZFogEnd * 1.1f;
 	
 	// Now Checks For room Portals !!!
-	for(long i : g_rooms->rooms[roomIndex].portals) {
+	for(long i : g_rooms->rooms[size_t(roomIndex)].portals) {
 		RoomPortal & portal = g_rooms->portals[i];
 		
 		if(portal.useportal) {
@@ -1559,15 +1559,15 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 		EERIE_FRUSTRUM fd = createFrustum(camPos, portal, Cull);
 		
 		RoomHandle roomToCompute;
-		if(portal.room0 == RoomHandle(roomIndex) && !Cull) {
+		if(portal.room0 == roomIndex && !Cull) {
 			roomToCompute = portal.room1;
-		} else if(portal.room1 == RoomHandle(roomIndex) && Cull) {
+		} else if(portal.room1 == roomIndex && Cull) {
 			roomToCompute = portal.room0;
 		}
 		
 		if(roomToCompute) {
 			portal.useportal = 1;
-			ARX_PORTALS_Frustrum_ComputeRoom(size_t(roomToCompute), fd, camPos, camDepth);
+			ARX_PORTALS_Frustrum_ComputeRoom(roomToCompute, fd, camPos, camDepth);
 		}
 		
 	}
@@ -1602,12 +1602,12 @@ void ARX_SCENE_Update() {
 		for(size_t i = 0; i < g_rooms->rooms.size(); i++) {
 			g_rooms->visibility[i].count = 1;
 			g_rooms->visibleRooms.push_back(i);
-			RoomFrustrumAdd(i, g_screenFrustum);
+			RoomFrustrumAdd(RoomHandle(i), g_screenFrustum);
 		}
 	} else {
 		long room_num = ARX_PORTALS_GetRoomNumForPosition(camPos, 1);
 		if(room_num > -1) {
-			size_t roomIndex = static_cast<size_t>(room_num);
+			RoomHandle roomIndex(room_num);
 			ARX_PORTALS_Frustrum_ComputeRoom(roomIndex, g_screenFrustum, camPos, camDepth);
 		}
 	}
