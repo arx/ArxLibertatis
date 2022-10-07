@@ -94,7 +94,7 @@ void SaveGameList::update(bool verbose) {
 		std::string name;
 		float version;
 		long level;
-		if(ARX_CHANGELEVEL_GetInfo(path, name, version, level) == -1) {
+		if(!ARX_CHANGELEVEL_GetInfo(path, name, version, level)) {
 			LogWarning << "Unable to get save file info for " << path;
 			continue;
 		}

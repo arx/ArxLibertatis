@@ -1170,7 +1170,7 @@ void ArxGame::doFrame() {
 		std::string name;
 		float version;
 		long level;
-		if(ARX_CHANGELEVEL_GetInfo(g_saveToLoad, name, version, level) == -1) {
+		if(!ARX_CHANGELEVEL_GetInfo(g_saveToLoad, name, version, level)) {
 			LogError << "Unable to get save file info for " << g_saveToLoad;
 		} else {
 			SaveGame save;
