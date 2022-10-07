@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/LoadLevel.h"
 
+#include <stddef.h>
 #include <cstdio>
 #include <ctime>
 #include <iomanip>
@@ -564,8 +565,8 @@ void RestoreLastLoadedLightning() {
 	size_t i = 0;
 	for(auto tile : g_tiles->tiles<util::GridYXIterator>()) {
 		for(EERIEPOLY & ep : tile.polygons()) {
-			long nbvert = (ep.type & POLY_QUAD) ? 4 : 3;
-			for(long k = 0; k < nbvert; k++) {
+			size_t nbvert = (ep.type & POLY_QUAD) ? 4 : 3;
+			for(size_t k = 0; k < nbvert; k++) {
 				if(i >= g_levelLighting.size()) {
 					g_levelLighting.clear();
 					return;
