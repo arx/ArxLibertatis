@@ -1394,15 +1394,15 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomHandle roomIndex,
 	room.pVertexBuffer->unlock();
 }
 
-static void BackgroundRenderOpaque(size_t room_num) {
+static void BackgroundRenderOpaque(RoomHandle roomIndex) {
 	
 	ARX_PROFILE_FUNC();
 	
-	Room & room = g_rooms->rooms[room_num];
+	Room & room = g_rooms->rooms[size_t(roomIndex)];
 	
 	for(TextureContainer & material : util::dereference(room.ppTextureContainer)) {
 		
-		const SMY_ARXMAT & roomMat = material.m_roomBatches[room_num];
+		const SMY_ARXMAT & roomMat = material.m_roomBatches[size_t(roomIndex)];
 		if(!roomMat.count[BatchBucket_Opaque]) {
 			continue;
 		}
@@ -1633,7 +1633,7 @@ void ARX_SCENE_Render() {
 	
 	if(g_rooms) {
 		for(RoomHandle room : g_rooms->visibleRooms) {
-			BackgroundRenderOpaque(size_t(room));
+			BackgroundRenderOpaque(room);
 		}
 	}
 	
