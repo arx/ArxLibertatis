@@ -1510,7 +1510,7 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(RoomHandle roomIndex,
 	arx_assume(roomIndex && size_t(roomIndex) < g_rooms->rooms.size());
 	
 	if(g_rooms->visibility[size_t(roomIndex)].count == 0) {
-		g_rooms->visibleRooms.push_back(u32(roomIndex));
+		g_rooms->visibleRooms.push_back(roomIndex);
 	}
 	
 	RoomFrustrumAdd(roomIndex, frustrum);
@@ -1601,7 +1601,7 @@ void ARX_SCENE_Update() {
 	if(!USE_PLAYERCOLLISIONS) {
 		for(size_t i = 0; i < g_rooms->rooms.size(); i++) {
 			g_rooms->visibility[i].count = 1;
-			g_rooms->visibleRooms.push_back(i);
+			g_rooms->visibleRooms.push_back(RoomHandle(i));
 			RoomFrustrumAdd(RoomHandle(i), g_screenFrustum);
 		}
 	} else {
@@ -1612,8 +1612,8 @@ void ARX_SCENE_Update() {
 		}
 	}
 	
-	for(size_t room : g_rooms->visibleRooms) {
-		ARX_PORTALS_Frustrum_RenderRoomTCullSoft(room, g_rooms->visibility[room].frustrum, now, camPos);
+	for(RoomHandle room : g_rooms->visibleRooms) {
+		ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t(room), g_rooms->visibility[size_t(room)].frustrum, now, camPos);
 	}
 	
 	ARX_THROWN_OBJECT_Manage(g_gameTime.lastFrameDuration());
@@ -1632,8 +1632,8 @@ void ARX_SCENE_Render() {
 	}
 	
 	if(g_rooms) {
-		for(size_t room : g_rooms->visibleRooms) {
-			BackgroundRenderOpaque(room);
+		for(RoomHandle room : g_rooms->visibleRooms) {
+			BackgroundRenderOpaque(size_t(room));
 		}
 	}
 	
@@ -1672,8 +1672,8 @@ void ARX_SCENE_Render() {
 	GRenderer->SetFogColor(Color());
 	
 	if(g_rooms) {
-		for(size_t room : g_rooms->visibleRooms) {
-			BackgroundRenderTransparent(room);
+		for(RoomHandle room : g_rooms->visibleRooms) {
+			BackgroundRenderTransparent(size_t(room));
 		}
 	}
 	

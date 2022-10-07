@@ -111,7 +111,7 @@ struct RoomData {
 	std::vector<RoomPortal> portals;
 	
 	std::vector<PORTAL_ROOM_DRAW> visibility;
-	std::vector<u32> visibleRooms;
+	std::vector<RoomHandle> visibleRooms;
 	
 };
 
