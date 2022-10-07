@@ -61,8 +61,8 @@ struct RoomPortal {
 	float minY = 0.f;
 	float maxY = 0.f;
 	
-	u32 room0 = 0; // facing normal
-	u32 room1 = 0;
+	RoomHandle room0 = RoomHandle(0); // facing normal
+	RoomHandle room1 = RoomHandle(0);
 	
 	short useportal = 0;
 	

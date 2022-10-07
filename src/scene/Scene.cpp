@@ -455,13 +455,13 @@ static bool isOccludedByPortals(Entity & entity, float dist2, size_t currentRoom
 			continue;
 		}
 		
-		u32 nextRoom = (portal.room0 == currentRoom) ? portal.room1 : portal.room0;
-		if(nextRoom == cameraRoom) {
+		RoomHandle nextRoom = (portal.room0 == RoomHandle(currentRoom)) ? portal.room1 : portal.room0;
+		if(nextRoom == RoomHandle(cameraRoom)) {
 			return false;
 		}
 		
 		float nextDist2 = arx::distance2(portal.bounds.origin, g_camera->m_pos);
-		if(nextDist2 < dist2 && !isOccludedByPortals(entity, nextDist2, nextRoom, cameraRoom)) {
+		if(nextDist2 < dist2 && !isOccludedByPortals(entity, nextDist2, size_t(nextRoom), cameraRoom)) {
 			return false;
 		}
 		
@@ -799,9 +799,9 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 						if(height > yy) {
 							if(yy >= pos.y && yy - pos.y < nearest_dist) {
 								if(portal.plane.normal.y > 0) {
-									nearest = portal.room1;
+									nearest = s32(portal.room1);
 								} else {
-									nearest = portal.room0;
+									nearest = s32(portal.room0);
 								}
 								nearest_dist = yy - pos.y;
 							}
@@ -1555,21 +1555,17 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 		bool Cull = !(fRes < 0.f);
 		
 		EERIE_FRUSTRUM fd = createFrustum(camPos, portal, Cull);
-
-		size_t roomToCompute = 0;
-		bool computeRoom = false;
-
-		if(portal.room0 == roomIndex && !Cull) {
+		
+		RoomHandle roomToCompute;
+		if(portal.room0 == RoomHandle(roomIndex) && !Cull) {
 			roomToCompute = portal.room1;
-			computeRoom = true;
-		}else if(portal.room1 == roomIndex && Cull) {
+		} else if(portal.room1 == RoomHandle(roomIndex) && Cull) {
 			roomToCompute = portal.room0;
-			computeRoom = true;
 		}
 		
-		if(computeRoom) {
+		if(roomToCompute) {
 			portal.useportal = 1;
-			ARX_PORTALS_Frustrum_ComputeRoom(roomToCompute, fd, camPos, camDepth);
+			ARX_PORTALS_Frustrum_ComputeRoom(size_t(roomToCompute), fd, camPos, camDepth);
 		}
 		
 	}

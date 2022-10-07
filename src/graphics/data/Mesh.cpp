@@ -864,8 +864,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		if(epo->poly.type != 64 && epo->poly.type != 0) {
 			throw std::runtime_error("invalid portal polygon type");
 		}
-		portal.room0 = epo->room_1;
-		portal.room1 = epo->room_2;
+		portal.room0 = RoomHandle(epo->room_1);
+		portal.room1 = RoomHandle(epo->room_2);
 		portal.useportal = epo->useportal;
 		for(size_t j = 0; j < 4; j++) {
 			portal.p[j] = epo->poly.v[j].pos.toVec3();
@@ -890,8 +890,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		}
 		portal.bounds.origin /= 4.f;
 		
-		for(u32 room : { portal.room0, portal.room1 }) {
-			g_rooms->rooms[room].portals.push_back(long(portalidx));
+		for(RoomHandle room : { portal.room0, portal.room1 }) {
+			g_rooms->rooms[size_t(room)].portals.push_back(long(portalidx));
 		}
 		
 	}
