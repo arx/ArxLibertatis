@@ -1218,22 +1218,22 @@ static void RenderLava() {
 	vPolyLava.clear();
 }
 
-static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
+static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomHandle roomIndex,
                                                      const EERIE_FRUSTRUM_DATA & frustrums,
                                                      GameInstant now,
-                                                     const Vec3f & camPos
-) {
+                                                     const Vec3f & camPos) {
+	
 	ARX_PROFILE_FUNC();
 	
-	if(!g_rooms->visibility[room_num].count) {
+	if(!g_rooms->visibility[size_t(roomIndex)].count) {
 		return;
 	}
 	
-	Room & room = g_rooms->rooms[room_num];
+	Room & room = g_rooms->rooms[size_t(roomIndex)];
 	if(!room.pVertexBuffer) {
 		// No need to spam this for every frame as there will already be an
 		// earlier warning
-		LogDebug("no vertex data for room " << room_num);
+		LogDebug("no vertex data for room " << roomIndex);
 		return;
 	}
 	
@@ -1294,12 +1294,12 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 		} else {
 			transparencyType = BatchBucket_Opaque;
 		}
-
-		SMY_ARXMAT & roomMat = ep->tex->m_roomBatches[room_num];
-
+		
+		SMY_ARXMAT & roomMat = ep->tex->m_roomBatches[size_t(roomIndex)];
+		
 		unsigned short * pIndicesCurr = pIndices + roomMat.offset[transparencyType] + roomMat.count[transparencyType];
 		unsigned long * pNumIndices = &roomMat.count[transparencyType];
-
+		
 		*pIndicesCurr++ = ep->uslInd[0];
 		*pIndicesCurr++ = ep->uslInd[1];
 		*pIndicesCurr++ = ep->uslInd[2];
@@ -1613,7 +1613,7 @@ void ARX_SCENE_Update() {
 	}
 	
 	for(RoomHandle room : g_rooms->visibleRooms) {
-		ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t(room), g_rooms->visibility[size_t(room)].frustrum, now, camPos);
+		ARX_PORTALS_Frustrum_RenderRoomTCullSoft(room, g_rooms->visibility[size_t(room)].frustrum, now, camPos);
 	}
 	
 	ARX_THROWN_OBJECT_Manage(g_gameTime.lastFrameDuration());
