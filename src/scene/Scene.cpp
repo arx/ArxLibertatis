@@ -433,18 +433,20 @@ static bool isPointVisible(Vec3f pos, const Entity * owner = nullptr) {
 	return true;
 }
 
-static bool isOccludedByPortals(Entity & entity, float dist2, size_t currentRoom, size_t cameraRoom) {
+static bool isOccludedByPortals(Entity & entity, float dist2, RoomHandle currentRoom, RoomHandle cameraRoom) {
+	
+	arx_assume(currentRoom && size_t(currentRoom) < g_rooms->rooms.size());
 	
 	Sphere sphere;
 	sphere.origin = (entity.bbox3D.min + entity.bbox3D.max) / 2.f;
 	sphere.radius = glm::distance(sphere.origin, entity.bbox3D.min);
 	
-	const EERIE_FRUSTRUM_DATA & frustrums = g_rooms->visibility[currentRoom].frustrum;
+	const EERIE_FRUSTRUM_DATA & frustrums = g_rooms->visibility[size_t(currentRoom)].frustrum;
 	if(FrustrumsClipSphere(frustrums, sphere) || FrustrumsClipBBox3D(frustrums, entity.bbox3D)) {
 		return true;
 	}
 	
-	const Room & room = g_rooms->rooms[currentRoom];
+	const Room & room = g_rooms->rooms[size_t(currentRoom)];
 	for(long i : room.portals) {
 		
 		if(i < 0 || size_t(i) >= g_rooms->portals.size()) {
@@ -455,13 +457,13 @@ static bool isOccludedByPortals(Entity & entity, float dist2, size_t currentRoom
 			continue;
 		}
 		
-		RoomHandle nextRoom = (portal.room0 == RoomHandle(currentRoom)) ? portal.room1 : portal.room0;
-		if(nextRoom == RoomHandle(cameraRoom)) {
+		RoomHandle nextRoom = (portal.room0 == currentRoom) ? portal.room1 : portal.room0;
+		if(nextRoom == cameraRoom) {
 			return false;
 		}
 		
 		float nextDist2 = arx::distance2(portal.bounds.origin, g_camera->m_pos);
-		if(nextDist2 < dist2 && !isOccludedByPortals(entity, nextDist2, size_t(nextRoom), cameraRoom)) {
+		if(nextDist2 < dist2 && !isOccludedByPortals(entity, nextDist2, nextRoom, cameraRoom)) {
 			return false;
 		}
 		
@@ -574,7 +576,7 @@ EntityVisibility getEntityVisibility(Entity & entity, bool cullingOnly) {
 					room2 = ARX_PORTALS_GetRoomNumForPosition(parent->pos - Vec3f(0.f, 120.f, 0.f));
 				}
 				if(room2 >= 0 && size_t(room2) < g_rooms->visibility.size() && room2 != room) {
-					if(isOccludedByPortals(entity, arx::distance2(parent->pos, g_camera->m_pos), room2, room)) {
+					if(isOccludedByPortals(entity, arx::distance2(parent->pos, g_camera->m_pos), RoomHandle(room2), RoomHandle(room))) {
 						return EntityFullyOccluded;
 					}
 				}
