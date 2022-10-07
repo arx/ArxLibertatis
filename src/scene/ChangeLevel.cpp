@@ -1350,7 +1350,7 @@ static void ARX_CHANGELEVEL_Pop_Zones_n_Lights(std::string_view buffer) {
 	
 }
 
-static long ARX_CHANGELEVEL_Pop_Level(long num, bool firstTime) {
+static void ARX_CHANGELEVEL_Pop_Level(long num, bool firstTime) {
 	
 	LOAD_N_ERASE = false;
 	
@@ -1379,7 +1379,6 @@ static long ARX_CHANGELEVEL_Pop_Level(long num, bool firstTime) {
 	ARX_INTERFACE_Reset();
 	EERIE_ANIMMANAGER_PurgeUnused();
 	
-	return 1;
 }
 
 static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
@@ -2366,11 +2365,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, std::string
 	progressBarAdvance(2.f);
 	LoadLevelScreen(instance);
 	
-	if(ARX_CHANGELEVEL_Pop_Level(instance, firstTime) != 1) {
-		LogError << "Error loading level data...";
-		FORBID_SCRIPT_IO_CREATION = 0;
-		return false;
-	}
+	ARX_CHANGELEVEL_Pop_Level(instance, firstTime);
 	if(!firstTime) {
 		g_desiredFogParameters = asi->gmods_desired;
 		g_currentFogParameters = asi->gmods_current;
