@@ -545,7 +545,6 @@ void DanaeClearLevel() {
 	
 	resetDynLights();
 	
-	TREATZONE_Release();
 	TREATZONE_Clear();
 	
 	FAST_RELEASE = 0;

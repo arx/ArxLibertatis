@@ -175,7 +175,6 @@ struct TREATZONE_IO {
 extern std::vector<TREATZONE_IO> treatio;
 
 void TREATZONE_Clear();
-void TREATZONE_Release();
 void TREATZONE_AddIO(Entity * io, bool justCollide = false);
 void TREATZONE_RemoveIO(const Entity * io);
 bool IsSameObject(Entity * io, Entity * ioo);

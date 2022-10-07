@@ -403,10 +403,6 @@ void TREATZONE_Clear() {
 	treatio.clear();
 }
 
-void TREATZONE_Release() {
-	treatio.clear();
-}
-
 void TREATZONE_RemoveIO(const Entity * io) {
 	for(TREATZONE_IO & entry : treatio) {
 		if(entry.io == io) {

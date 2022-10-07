@@ -946,7 +946,7 @@ void ArxGame::shutdownGame() {
 	
 	RoomDrawRelease();
 	EXITING = 1;
-	TREATZONE_Release();
+	TREATZONE_Clear();
 	ClearTileLights();
 	
 	spellDataRelease();
