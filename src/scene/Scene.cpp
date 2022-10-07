@@ -1438,15 +1438,15 @@ static constexpr std::array<BatchBucket, 4> transRenderOrder = {
 	BatchBucket_Subtractive
 };
 
-static void BackgroundRenderTransparent(size_t room_num) {
+static void BackgroundRenderTransparent(RoomHandle roomIndex) {
 	
 	ARX_PROFILE_FUNC();
 	
-	Room & room = g_rooms->rooms[room_num];
+	Room & room = g_rooms->rooms[size_t(roomIndex)];
 	
 	for(TextureContainer & material : util::dereference(room.ppTextureContainer)) {
 		
-		SMY_ARXMAT & roomMat = material.m_roomBatches[room_num];
+		SMY_ARXMAT & roomMat = material.m_roomBatches[size_t(roomIndex)];
 		bool empty = std::all_of(transRenderOrder.begin(), transRenderOrder.end(), [&](BatchBucket transType) {
 			return !roomMat.count[transType];
 		});
@@ -1673,7 +1673,7 @@ void ARX_SCENE_Render() {
 	
 	if(g_rooms) {
 		for(RoomHandle room : g_rooms->visibleRooms) {
-			BackgroundRenderTransparent(size_t(room));
+			BackgroundRenderTransparent(room);
 		}
 	}
 	
