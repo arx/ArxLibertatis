@@ -208,7 +208,7 @@ void ARX_SOUND_Release();
 
 void ARX_SOUND_SetReverb(bool enabled);
 
-long ARX_SOUND_IsEnabled();
+bool ARX_SOUND_IsEnabled();
 
 void ARX_SOUND_SetListener(const Vec3f & position, const Vec3f & front, const Vec3f & up);
 

@@ -246,9 +246,8 @@ void ARX_SOUND_Release() {
 	g_soundInitialized = false;
 }
 
-long ARX_SOUND_IsEnabled()
-{
-	return g_soundInitialized ? 1 : 0;
+bool ARX_SOUND_IsEnabled() {
+	return g_soundInitialized;
 }
 
 void ARX_SOUND_MixerSetVolume(audio::MixerId mixer_id, float volume) {
