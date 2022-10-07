@@ -508,8 +508,6 @@ bool DanaeLoadLevel(long level, bool loadEntities) {
 	
 }
 
-long FAST_RELEASE = 0;
-
 void DanaeClearLevel() {
 	
 	g_playerBook.forcePage(BOOKMODE_STATS);
@@ -517,9 +515,10 @@ void DanaeClearLevel() {
 	
 	fadeReset();
 	LAST_JUMP_ENDTIME = 0;
-	FAST_RELEASE = 1;
 	ARX_GAME_Reset();
 	FlyingOverIO = nullptr;
+	
+	TREATZONE_Clear();
 	
 	EERIE_PATHFINDER_Release();
 	
@@ -546,8 +545,6 @@ void DanaeClearLevel() {
 	resetDynLights();
 	
 	TREATZONE_Clear();
-	
-	FAST_RELEASE = 0;
 	
 	CURRENTLEVEL = -1;
 }

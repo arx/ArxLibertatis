@@ -59,8 +59,6 @@ bool DanaeLoadLevel(long level, bool loadEntities = true);
 void DanaeClearLevel();
 void RestoreLastLoadedLightning();
 
-extern long FAST_RELEASE;
-
 Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
                       const Vec3f & pos, const Anglef & angle);
 

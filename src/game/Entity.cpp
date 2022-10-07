@@ -277,9 +277,7 @@ void Entity::cleanReferences() {
 		player.torch = nullptr;
 	}
 	
-	if(!FAST_RELEASE) {
-		TREATZONE_RemoveIO(this);
-	}
+	TREATZONE_RemoveIO(this);
 	gameFlags &= ~GFLAG_ISINTREATZONE;
 	
 	ARX_SPEECH_ReleaseIOSpeech(*this);
