@@ -1728,7 +1728,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 		arx_assert(entities.getById(idString) == io);
 		
 		io->requestRoomUpdate = true;
-		io->room = -1;
+		io->room = { };
 		io->no_collide = EntityHandle();
 		io->ioflags = EntityFlags::load(ais->ioflags); // TODO save/load flags
 		

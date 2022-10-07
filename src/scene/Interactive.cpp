@@ -475,7 +475,7 @@ void PrepareIOTreatZone(long flag) {
 	
 	for(EntityHandle equipment : player.equiped) {
 		if(Entity * toequip = entities.get(equipment)) {
-			toequip->room = checked_range_cast<short>(PlayerRoom);
+			toequip->room = RoomHandle(PlayerRoom);
 			toequip->requestRoomUpdate = false;
 		}
 	}
@@ -531,7 +531,7 @@ void PrepareIOTreatZone(long flag) {
 					if(entity.requestRoomUpdate) {
 						UpdateIORoom(&entity);
 					}
-					dists = square(SP_GetRoomDist(entity.pos, cameraPos, entity.room, Cam_Room));
+					dists = square(SP_GetRoomDist(entity.pos, cameraPos, s32(entity.room), Cam_Room));
 				}
 			} else {
 				if(entity.show == SHOW_FLAG_TELEPORTING) {
@@ -863,11 +863,12 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->ignition = 0.f;
 		io->ignit_light = LightHandle();
 		io->ignit_sound = audio::SourcedSample();
-
-		if(io->obj && io->obj->pbox)
+		
+		if(io->obj && io->obj->pbox) {
 			io->obj->pbox->active = 0;
-
-		io->room = -1;
+		}
+		
+		io->room = { };
 		io->requestRoomUpdate = true;
 		RestoreIOInitPos(io);
 		ARX_INTERACTIVE_Teleport(io, io->initpos);
@@ -1076,7 +1077,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io) {
 	AddRandomSmoke(*io, 10);
 	ARX_PARTICLES_Add_Smoke(io->pos, 3, 20);
 	io->requestRoomUpdate = true;
-	io->room = -1;
+	io->room = { };
 	ARX_PARTICLES_Add_Smoke(io->pos + Vec3f(0.f, io->physics.cyl.height * 0.5f, 0.f), 3, 20);
 	MakeCoolFx(io->pos);
 	io->gameFlags |= GFLAG_INVISIBILITY;
@@ -1151,7 +1152,7 @@ void ARX_INTERACTIVE_Teleport(Entity * io, const Vec3f & target, bool flag) {
 	
 	io->gameFlags &= ~GFLAG_NOCOMPUTATION;
 	io->requestRoomUpdate = true;
-	io->room = -1;
+	io->room = { };
 	
 	if(io == entities.player()) {
 		g_moveto = player.pos = target + player.baseOffset();

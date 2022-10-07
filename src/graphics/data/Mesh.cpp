@@ -488,17 +488,15 @@ int PointIn2DPolyXZ(const RoomPortal & portal, float x, float z) {
 	return PointIn2DPolyXZ(portal.p, true, x, z);
 }
 
-void UpdateIORoom(Entity * io)
-{
-	Vec3f pos = io->pos;
-	pos.y -= 60.f;
-
-	long roo = ARX_PORTALS_GetRoomNumForPosition(pos, 2);
-
-	if(roo >= 0)
-		io->room = checked_range_cast<short>(roo);
-
+void UpdateIORoom(Entity * io) {
+	
+	long roo = ARX_PORTALS_GetRoomNumForPosition(io->pos - Vec3f(0.f, 60.f, 0.f), 2);
+	if(roo >= 0) {
+		io->room = RoomHandle(roo);
+	}
+	
 	io->requestRoomUpdate = false;
+	
 }
 
 std::vector<ROOM_DIST_DATA> g_roomDistance;

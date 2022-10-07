@@ -271,7 +271,7 @@ public:
 	
 	Anglef angle; // IO angle
 	IO_PHYSICS physics; // Movement Collision Data
-	short room;
+	RoomHandle room;
 	bool requestRoomUpdate;
 	float original_height;
 	float original_radius;

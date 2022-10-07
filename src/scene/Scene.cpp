@@ -354,10 +354,10 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 		long room_num;
 
 		if(io) {
-			if(io->requestRoomUpdate)
+			if(io->requestRoomUpdate) {
 				UpdateIORoom(io);
-
-			room_num = io->room;//
+			}
+			room_num = s32(io->room);
 		} else {
 			room_num = ARX_PORTALS_GetRoomNumForPosition(posi);
 		}
@@ -571,7 +571,7 @@ EntityVisibility getEntityVisibility(Entity & entity, bool cullingOnly) {
 		if(g_rooms && USE_PLAYERCOLLISIONS) {
 			long room = ARX_PORTALS_GetRoomNumForPosition(g_camera->m_pos, 1);
 			if(room >= 0 && size_t(room) < g_rooms->visibility.size()) {
-				long room2 = entity.room;
+				long room2 = s32(entity.room);
 				if(room2 == -1) {
 					room2 = ARX_PORTALS_GetRoomNumForPosition(parent->pos - Vec3f(0.f, 120.f, 0.f));
 				}
