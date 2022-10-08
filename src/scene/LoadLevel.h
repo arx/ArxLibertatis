@@ -48,14 +48,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_SCENE_LOADLEVEL_H
 
 #include "game/EntityId.h"
+#include "graphics/BaseGraphicsTypes.h"
 #include "math/Types.h"
 
-#include "Configure.h"
 
 class Entity;
 namespace res { class path; }
 
-bool DanaeLoadLevel(long level, bool loadEntities = true);
+bool DanaeLoadLevel(AreaId area, bool loadEntities = true);
 void DanaeClearLevel();
 void RestoreLastLoadedLightning();
 

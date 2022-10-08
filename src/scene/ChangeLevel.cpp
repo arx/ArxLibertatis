@@ -1356,7 +1356,7 @@ static void ARX_CHANGELEVEL_Pop_Level(long num, bool firstTime) {
 	
 	ARX_CHANGELEVEL_Pop_Globals();
 	
-	DanaeLoadLevel(num, firstTime);
+	DanaeLoadLevel(AreaId(num), firstTime);
 	CleanScriptLoadedIO();
 	
 	if(firstTime) {

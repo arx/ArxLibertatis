@@ -1157,7 +1157,7 @@ void DANAE_StartNewQuest() {
 	DanaeClearLevel();
 	progressBarAdvance(2.f);
 	LoadLevelScreen();
-	DanaeLoadLevel(1);
+	DanaeLoadLevel(AreaId(1));
 	START_NEW_QUEST = false;
 	BLOCK_PLAYER_CONTROLS = false;
 	fadeReset();

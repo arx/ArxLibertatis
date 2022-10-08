@@ -220,11 +220,13 @@ static void loadLighting(const char * dat, size_t & pos, bool compact, bool skip
 	
 }
 
-bool DanaeLoadLevel(long level, bool loadEntities) {
+bool DanaeLoadLevel(AreaId area, bool loadEntities) {
 	
-	CURRENTLEVEL = level;
+	arx_assume(area);
 	
-	const std::string levelId = std::to_string(level);
+	CURRENTLEVEL = s32(area);
+	
+	const std::string levelId = std::to_string(u32(area));
 	const res::path file = "graph/levels/level" + levelId + "/level" + levelId + ".dlf";
 	
 	LogInfo << "Loading level " << file;
