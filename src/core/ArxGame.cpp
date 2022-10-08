@@ -553,7 +553,7 @@ private:
 
 GameFlow::Transition GameFlow::s_currentTransition = GameFlow::FirstLogo;
 
-static long LEVEL_TO_LOAD = 10;
+static AreaId g_areaToLoad = AreaId(10);
 
 static void skipLogo() {
 	if(GameFlow::getTransition() != GameFlow::LoadingScreen) {
@@ -563,7 +563,7 @@ static void skipLogo() {
 ARX_PROGRAM_OPTION("skiplogo", "", "Skip logos at startup", &skipLogo)
 
 static void loadLevel(u32 level) {
-	LEVEL_TO_LOAD = level;
+	g_areaToLoad = AreaId(level);
 	skipLogo();
 }
 ARX_PROGRAM_OPTION_ARG("loadlevel", "", "Load a specific level", &loadLevel, "LEVELID")
@@ -656,9 +656,9 @@ static bool HandleGameFlowTransitions() {
 		
 		progressBarReset();
 		progressBarSetTotal(108);
-		LoadLevelScreen(AreaId(LEVEL_TO_LOAD));
+		LoadLevelScreen(g_areaToLoad);
 		
-		DanaeLoadLevel(AreaId(LEVEL_TO_LOAD));
+		DanaeLoadLevel(g_areaToLoad);
 		GameFlow::setTransition(GameFlow::InGame);
 		return false;
 	}
