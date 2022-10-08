@@ -120,7 +120,7 @@ extern bool GMOD_RESET;
 extern bool EXTERNALVIEW;
 extern bool LOAD_N_ERASE;
 
-static bool ARX_CHANGELEVEL_Push_Index(long num);
+static bool ARX_CHANGELEVEL_Push_Index(AreaId area);
 static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum);
 static bool ARX_CHANGELEVEL_PopLevel(AreaId area, bool reloadflag = false,
                                      std::string_view target = std::string_view(), float angle = 0.f);
@@ -364,7 +364,7 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	g_secondaryInventoryHud.close();
 	
 	// Now we can save our things
-	if(!ARX_CHANGELEVEL_Push_Index(num)) {
+	if(!ARX_CHANGELEVEL_Push_Index(AreaId(num))) {
 		LogError << "Error saving index...";
 		return false;
 	}
@@ -390,7 +390,7 @@ static bool isInPlayerInventoryOrEquipment(const Entity & entity) {
 	       || isEquippedByPlayer(&entity);
 }
 
-static bool ARX_CHANGELEVEL_Push_Index(long num) {
+static bool ARX_CHANGELEVEL_Push_Index(AreaId area) {
 	
 	size_t pos = 0;
 	
@@ -448,8 +448,8 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 			memset(&aii, 0, sizeof(aii));
 			util::storeString(aii.filename, (entity.classPath() + ".teo").string());
 			aii.ident = entity.instance();
-			aii.level = num;
-			aii.truelevel = num;
+			aii.level = s16(area);
+			aii.truelevel = s16(area);
 			aii.num = entity.index().handleData(); // !!!
 			memcpy(dat + pos, &aii, sizeof(aii));
 			pos += sizeof(aii);
@@ -489,7 +489,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	arx_assert(pos <= allocsize);
 	
 	std::stringstream savefile;
-	savefile << "lvl" << std::setfill('0') << std::setw(3) << num;
+	savefile << "lvl" << std::setfill('0') << std::setw(3) << u32(area);
 	bool ret = g_currentSavedGame->save(savefile.str(), dat, pos);
 	
 	return ret;
