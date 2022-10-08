@@ -834,7 +834,7 @@ static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 	
 	// Define Type & Affiliated Structure Size
 	SavedIOType type;
-	long struct_size = 0;
+	size_t struct_size = 0;
 	if(io->ioflags & IO_NPC) {
 		type = TYPE_NPC;
 		struct_size = sizeof(ARX_CHANGELEVEL_NPC_IO_SAVE);
