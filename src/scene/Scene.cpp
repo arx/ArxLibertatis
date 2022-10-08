@@ -674,11 +674,6 @@ static EERIEPOLY * ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, bool xz
 		return ep;
 	}
 	
-	ep = CheckInPoly(pos);
-	if(ep && ep->room) {
-		return ep;
-	}
-	
 	if(xzOffset) {
 		
 		float off = 20.f;
