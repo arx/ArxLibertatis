@@ -148,13 +148,12 @@ void ArxProfiler::openFile() {
 				SavedProfilerSample saved;
 				readStruct(saved, chunkData, pos);
 				
-				ProfileSample sample;
+				ProfileSample & sample = m_threads[saved.threadId].profilePoints.emplace_back();
 				sample.tag = m_strings.at(saved.stringIndex);
 				sample.threadId = saved.threadId;
 				sample.startTime = saved.startTime;
 				sample.endTime = saved.endTime;
 				
-				m_threads[sample.threadId].profilePoints.push_back(sample);
 			}
 		}
 	}
