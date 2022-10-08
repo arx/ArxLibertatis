@@ -30,8 +30,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef ARX_UTIL_HANDLEVECTOR_H
-#define ARX_UTIL_HANDLEVECTOR_H
+#ifndef ARX_UTIL_HANDLECONTAINER_H
+#define ARX_UTIL_HANDLECONTAINER_H
 
 #include <stddef.h>
 #include <array>
@@ -77,4 +77,4 @@ using HandleArray = HandeContainer<Handle, std::array<T, Size>>;
 
 } // namespace util
 
-#endif // ARX_UTIL_HANDLEVECTOR_H
+#endif // ARX_UTIL_HANDLECONTAINER_H
