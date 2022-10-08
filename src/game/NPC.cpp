@@ -2571,7 +2571,7 @@ void CheckNPCEx(Entity & io) {
 			UpdateIORoom(&io);
 		}
 		
-		RoomHandle playerRoom = ARX_PORTALS_GetRoomNumForPosition(player.pos, 1);
+		RoomHandle playerRoom = ARX_PORTALS_GetRoomNumForPosition(player.pos, RoomPositionForCamera);
 		
 		float fdist = SP_GetRoomDist(io.pos, player.pos, io.room, playerRoom);
 		
@@ -2669,7 +2669,7 @@ void spawnAudibleSound(const Vec3f & pos, Entity & source, const float factor, c
 	max_distance *= presence;
 	max_distance /= factor;
 	
-	RoomHandle sourceRoom = ARX_PORTALS_GetRoomNumForPosition(pos, 1);
+	RoomHandle sourceRoom = ARX_PORTALS_GetRoomNumForPosition(pos, RoomPositionForCamera);
 	
 	for(Entity & npc : entities(IO_NPC)) {
 		

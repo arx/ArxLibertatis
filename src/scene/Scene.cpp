@@ -568,7 +568,7 @@ EntityVisibility getEntityVisibility(Entity & entity, bool cullingOnly) {
 			return EntityNotInView;
 		}
 		if(g_rooms && USE_PLAYERCOLLISIONS) {
-			if(RoomHandle room = ARX_PORTALS_GetRoomNumForPosition(g_camera->m_pos, 1)) {
+			if(RoomHandle room = ARX_PORTALS_GetRoomNumForPosition(g_camera->m_pos, RoomPositionForCamera)) {
 				arx_assume(size_t(room) < g_rooms->visibility.size());
 				RoomHandle room2 = entity.room;
 				if(!room2) {
@@ -661,10 +661,10 @@ EntityVisibility getEntityVisibility(Entity & entity, bool cullingOnly) {
 	return EntityVisibilityUnknown;
 }
 
-static EERIEPOLY * ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long flag) {
+static EERIEPOLY * ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, RoomPositionMode mode) {
 	
 	EERIEPOLY * ep;
-	if(flag & 1) {
+	if(mode == RoomPositionForCamera) {
 		ep = CheckInPoly(pos + Vec3f(0.f, -150.f, 0.f));
 		if(!ep) {
 			ep = CheckInPoly(pos + Vec3f(0.f, -1.f, 0.f));
@@ -680,14 +680,14 @@ static EERIEPOLY * ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long fl
 	ep = GetMinPoly(pos);
 	if(ep && ep->room) {
 		return ep;
-	} else if(!(flag & 1)) {
+	} else if(mode != RoomPositionForCamera) {
 		ep = CheckInPoly(pos);
 		if(ep && ep->room) {
 			return ep;
 		}
 	}
 	
-	if(flag & 2) {
+	if(mode == RoomPositionXZOffset) {
 		
 		float off = 20.f;
 		
@@ -761,14 +761,14 @@ static EERIEPOLY * ARX_PORTALS_GetRoomNumForCamera(const Vec3f & pos, const Vec3
 }
 
 // flag==1 for player
-RoomHandle ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
+RoomHandle ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, RoomPositionMode mode) {
 	
 	ARX_PROFILE_FUNC();
 	
 	RoomHandle result;
 	float height = 0.f;
 	
-	if(flag & 1) {
+	if(mode == RoomPositionForCamera) {
 		Vec3f direction = angleToVectorXZ_180offset(g_camera->angle.getYaw());
 		EERIEPOLY * face = ARX_PORTALS_GetRoomNumForCamera(g_camera->m_pos, direction);
 		if(face) {
@@ -776,7 +776,7 @@ RoomHandle ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 			height = face->center.y;
 		}
 	} else {
-		EERIEPOLY * face = ARX_PORTALS_GetRoomNumForPosition2(pos, flag);
+		EERIEPOLY * face = ARX_PORTALS_GetRoomNumForPosition2(pos, mode);
 		if(face) {
 			result = face->room;
 			height = face->center.y;
@@ -1604,7 +1604,7 @@ void ARX_SCENE_Update() {
 			g_rooms->visibleRooms.push_back(room);
 			RoomFrustrumAdd(room, g_screenFrustum);
 		}
-	} else if(RoomHandle room = ARX_PORTALS_GetRoomNumForPosition(camPos, 1)) {
+	} else if(RoomHandle room = ARX_PORTALS_GetRoomNumForPosition(camPos, RoomPositionForCamera)) {
 		ARX_PORTALS_Frustrum_ComputeRoom(room, g_screenFrustum, camPos, camDepth);
 	}
 	

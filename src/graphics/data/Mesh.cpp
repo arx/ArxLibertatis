@@ -490,7 +490,8 @@ int PointIn2DPolyXZ(const RoomPortal & portal, float x, float z) {
 
 void UpdateIORoom(Entity * io) {
 	
-	if(RoomHandle room = ARX_PORTALS_GetRoomNumForPosition(io->pos - Vec3f(0.f, 60.f, 0.f), 2)) {
+	if(RoomHandle room = ARX_PORTALS_GetRoomNumForPosition(io->pos - Vec3f(0.f, 60.f, 0.f),
+	                                                       RoomPositionXZOffset)) {
 		io->room = room;
 	}
 	

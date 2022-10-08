@@ -472,8 +472,8 @@ void PrepareIOTreatZone(long flag) {
 	TREATZONE_Clear();
 	TREATZONE_AddIO(entities.player());
 	
-	RoomHandle cameraRoom = ARX_PORTALS_GetRoomNumForPosition(cameraPos, 1);
-	RoomHandle playerRoom = ARX_PORTALS_GetRoomNumForPosition(player.pos, 1);
+	RoomHandle cameraRoom = ARX_PORTALS_GetRoomNumForPosition(cameraPos, RoomPositionForCamera);
+	RoomHandle playerRoom = ARX_PORTALS_GetRoomNumForPosition(player.pos, RoomPositionForCamera);
 	
 	for(EntityHandle equipment : player.equiped) {
 		if(Entity * toequip = entities.get(equipment)) {
