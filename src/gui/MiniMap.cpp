@@ -94,7 +94,7 @@ void MiniMap::getData(size_t showLevel) {
 
 void MiniMap::validatePos() {
 	
-	int showLevel = ARX_LEVELS_GetRealNum(m_currentLevel);
+	int showLevel = getMapLevelForArea(AreaId(m_currentLevel));
 	
 	if((showLevel >= 0) && (showLevel < int(MAX_MINIMAP_LEVELS))) {
 		
@@ -107,7 +107,7 @@ void MiniMap::validatePos() {
 		}
 		
 		if(m_levels[showLevel].m_texContainer) {
-			revealPlayerPos(ARX_LEVELS_GetRealNum(m_currentLevel));
+			revealPlayerPos(getMapLevelForArea(AreaId(m_currentLevel)));
 		}
 	}
 }
@@ -260,7 +260,7 @@ void MiniMap::showPlayerMiniMap(size_t showLevel) {
 		
 		Vec2f start(0.f);
 		Vec2f playerPos(0.f);
-		if(showLevel == size_t(ARX_LEVELS_GetRealNum(m_currentLevel))) {
+		if(showLevel == size_t(getMapLevelForArea(AreaId(m_currentLevel)))) {
 			start = Vec2f(miniMapRect.center()) - worldToMapPos(m_player->pos, miniMapZoom);
 			playerPos = Vec2f(miniMapRect.center());
 		}
@@ -269,7 +269,7 @@ void MiniMap::showPlayerMiniMap(size_t showLevel) {
 		drawBackground(showLevel, miniMapRect, start, miniMapZoom, 20.f, true, 0.5f);
 		
 		// Draw the player (red arrow)
-		if(showLevel == size_t(ARX_LEVELS_GetRealNum(m_currentLevel))) {
+		if(showLevel == size_t(getMapLevelForArea(AreaId(m_currentLevel)))) {
 			drawPlayer(playerSize, playerPos, true);
 			drawDetectedEntities(start, miniMapZoom);
 		}
@@ -292,14 +292,14 @@ void MiniMap::showBookMiniMap(size_t showLevel, Rect rect, float scale) {
 		
 		Vec2f start(0.f);
 		Vec2f playerPos(0.f);
-		if(showLevel == size_t(ARX_LEVELS_GetRealNum(m_currentLevel))) {
+		if(showLevel == size_t(getMapLevelForArea(AreaId(m_currentLevel)))) {
 			start = Vec2f(rect.center()) - worldToMapPos(m_player->pos, zoom);
 			playerPos = Vec2f(rect.center());
 		}
 		
 		drawBackground(showLevel, rect, start, zoom, 20.f * scale);
 		
-		if(showLevel == size_t(ARX_LEVELS_GetRealNum(m_currentLevel))) {
+		if(showLevel == size_t(getMapLevelForArea(AreaId(m_currentLevel)))) {
 			drawPlayer(6.f * scale, playerPos, false);
 			drawDetectedEntities(start, zoom);
 		}
@@ -326,14 +326,14 @@ void MiniMap::showBookEntireMap(size_t showLevel, Rect rect, float scale) {
 	
 	Vec2f playerPos(0.f, 0.f);
 	
-	if(showLevel == size_t(ARX_LEVELS_GetRealNum(m_currentLevel))) {
+	if(showLevel == size_t(getMapLevelForArea(AreaId(m_currentLevel)))) {
 		playerPos = worldToMapPos(m_player->pos, zoom);
 		playerPos += start;
 	}
 	
 	drawBackground(showLevel, rect, start, zoom);
 	
-	if(showLevel == size_t(ARX_LEVELS_GetRealNum(m_currentLevel))) {
+	if(showLevel == size_t(getMapLevelForArea(AreaId(m_currentLevel)))) {
 		drawPlayer(3.f * scale, playerPos, false);
 		drawDetectedEntities(start, zoom);
 	}

@@ -50,13 +50,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/algorithm/string/predicate.hpp>
 
-int ARX_LEVELS_GetRealNum(long num) {
+int getMapLevelForArea(AreaId area) {
 	
-	if(num < 0) {
-		return -1;
-	}
-	
-	switch(num) {
+	switch(u32(area)) {
 		case 0:
 		case 8:
 		case 11:
@@ -87,7 +83,7 @@ int ARX_LEVELS_GetRealNum(long num) {
 		case 23:
 			return 7;
 		default:
-			return num;
+			return s32(area);
 	}
 	
 }

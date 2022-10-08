@@ -1877,7 +1877,7 @@ void ArxGame::renderLevel() {
 		&& !BLOCK_PLAYER_CONTROLS
 		&& !(player.Interface & INTER_PLAYERBOOK))
 	{
-		int SHOWLEVEL = ARX_LEVELS_GetRealNum(s32(g_currentArea));
+		int SHOWLEVEL = getMapLevelForArea(g_currentArea);
 
 		if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
 			g_miniMap.showPlayerMiniMap(SHOWLEVEL);
