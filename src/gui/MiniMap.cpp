@@ -101,7 +101,7 @@ void MiniMap::validatePlayerPos(AreaId currentArea, bool blockPlayerControls, AR
 				}
 			}
 			m_worldToMapOffset = Vec2f(-minX, maxZ) * g_worldToMapScale +
-			                     m_miniOffset[size_t(m_currentArea)] * (1.f / 250.f + Vec2f(1.f, -2.f) * g_worldToMapScale);
+			                     m_miniOffset[m_currentArea] * (1.f / 250.f + Vec2f(1.f, -2.f) * g_worldToMapScale);
 		} else {
 			m_worldToMapOffset = Vec2f(0.f);
 		}
@@ -142,18 +142,18 @@ void MiniMap::loadOffsets() {
 	
 	std::string dummy;
 	
-	for(int i = 0; i < 29; i++) { // Why 29?
-		iss >> dummy >> m_miniOffset[i].x >> m_miniOffset[i].y;
+	for(u32 area = 0; area < 29; area++) { // Why 29?
+		iss >> dummy >> m_miniOffset[AreaId(area)].x >> m_miniOffset[AreaId(area)].y;
 		if(iss.fail()) {
-			LogError << "Error parsing line " << i << " of mini_offsets.ini";
+			LogError << "Error parsing line " << area << " of mini_offsets.ini";
 		}
 		iss.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	}
 	
-	m_miniOffset[0] = Vec2f(0, -0.5);
-	m_miniOffset[1] = Vec2f(0, 0);
-	m_miniOffset[14] = Vec2f(130, 0);
-	m_miniOffset[15] = Vec2f(31, -3.5);
+	m_miniOffset[AreaId(0)] = Vec2f(0, -0.5);
+	m_miniOffset[AreaId(1)] = Vec2f(0, 0);
+	m_miniOffset[AreaId(14)] = Vec2f(130, 0);
+	m_miniOffset[AreaId(15)] = Vec2f(31, -3.5);
 	
 }
 

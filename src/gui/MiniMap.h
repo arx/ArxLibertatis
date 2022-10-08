@@ -147,7 +147,7 @@ private:
 	EntityManager * m_entities;
 	TileData * m_activeBkg;
 	
-	std::array<Vec2f, MAX_MINIMAP_LEVELS> m_miniOffset;
+	util::HandleArray<AreaId, Vec2f, MAX_MINIMAP_LEVELS> m_miniOffset;
 	Vec2f m_worldToMapOffset;
 	
 	TextureContainer * m_pTexDetect;
