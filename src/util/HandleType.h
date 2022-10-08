@@ -33,13 +33,15 @@
 #ifndef ARX_UTIL_HANDLETYPE_H
 #define ARX_UTIL_HANDLETYPE_H
 
+#include <limits>
 #include <ostream>
 #include <type_traits>
 
-template <typename TAG, typename T, T INVALID_VALUE>
+
+template <typename TAG, typename T, T Invalid>
 class HandleType {
 	
-	T t = INVALID_VALUE;
+	T t = Invalid;
 	
 public:
 	
@@ -54,14 +56,16 @@ public:
 	template <typename O, typename = std::enable_if_t<std::is_integral_v<O>>>
 	[[nodiscard]] explicit constexpr operator O() const noexcept { return t; }
 	
-	[[nodiscard]] explicit constexpr operator bool() const noexcept { return t != INVALID_VALUE; }
-	[[nodiscard]] constexpr bool operator!() const noexcept { return t == INVALID_VALUE; }
+	[[nodiscard]] explicit constexpr operator bool() const noexcept { return t != Invalid; }
+	[[nodiscard]] constexpr bool operator!() const noexcept { return t == Invalid; }
+	
+	[[nodiscard]] static constexpr T max() { return std::numeric_limits<T>::max(); }
 	
 };
 
-template <typename TAG, typename T, T INVALID_VALUE>
-std::ostream & operator<<(std::ostream & s, HandleType<TAG, T, INVALID_VALUE> v) {
-	if(v.handleData() != INVALID_VALUE) {
+template <typename TAG, typename T, T Invalid>
+std::ostream & operator<<(std::ostream & s, HandleType<TAG, T, Invalid> v) {
+	if(v.handleData() != Invalid) {
 		s << v.handleData();
 	} else {
 		s << "inv";
