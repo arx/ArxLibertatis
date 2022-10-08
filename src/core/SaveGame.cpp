@@ -93,8 +93,8 @@ void SaveGameList::update(bool verbose) {
 		
 		std::string name;
 		float version;
-		long level;
-		if(!ARX_CHANGELEVEL_GetInfo(path, name, version, level)) {
+		AreaId area;
+		if(!ARX_CHANGELEVEL_GetInfo(path, name, version, area)) {
 			LogWarning << "Unable to get save file info for " << path;
 			continue;
 		}
@@ -112,7 +112,7 @@ void SaveGameList::update(bool verbose) {
 		SaveGame * save = &savelist[index];
 		
 		save->name = std::move(name);
-		save->area = AreaId(level);
+		save->area = area;
 		save->stime = stime;
 		save->savefile = path;
 		

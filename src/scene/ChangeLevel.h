@@ -57,7 +57,7 @@ namespace fs { class path; }
 
 void ARX_CHANGELEVEL_Change(AreaId area, std::string_view target, float angle);
 
-bool ARX_CHANGELEVEL_GetInfo(const fs::path & savefile, std::string & name, float & version, long & level);
+bool ARX_CHANGELEVEL_GetInfo(const fs::path & savefile, std::string & name, float & version, AreaId & level);
 
 bool ARX_CHANGELEVEL_StartNew();
 

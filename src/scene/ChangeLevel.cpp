@@ -2564,19 +2564,19 @@ void ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 }
 
 bool ARX_CHANGELEVEL_GetInfo(const fs::path & savefile, std::string & name, float & version,
-                             long & level) {
+                             AreaId & level) {
 	
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;
 	
 	// IMPROVE this will load the whole save file FAT just to get one file!
-	if(ARX_CHANGELEVEL_Get_Player_LevelData(pld, savefile)) {
+	if(ARX_CHANGELEVEL_Get_Player_LevelData(pld, savefile) && pld.level >= 0) {
 		name = util::loadString(pld.name);
 		version = pld.version;
-		level = pld.level;
+		level = AreaId(pld.level);
 		return true;
 	} else {
 		name = "Invalid Save...";
-		level = 0;
+		level = { };
 		version = 0;
 		return false;
 	}

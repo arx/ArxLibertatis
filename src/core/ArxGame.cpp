@@ -1169,13 +1169,13 @@ void ArxGame::doFrame() {
 		}
 		std::string name;
 		float version;
-		long level;
-		if(!ARX_CHANGELEVEL_GetInfo(g_saveToLoad, name, version, level)) {
+		AreaId area;
+		if(!ARX_CHANGELEVEL_GetInfo(g_saveToLoad, name, version, area)) {
 			LogError << "Unable to get save file info for " << g_saveToLoad;
 		} else {
 			SaveGame save;
 			save.name = name;
-			save.area = AreaId(level);
+			save.area = area;
 			save.savefile = g_saveToLoad;
 			ARX_LoadGame(save);
 		}
