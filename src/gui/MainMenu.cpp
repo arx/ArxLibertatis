@@ -983,18 +983,18 @@ public:
 		}
 		
 		{
-			std::string_view label = getLocalised("system_menus_options_video_alpha_cutout_antialising");
+			std::string_view label = getLocalised("system_menus_options_video_alpha_cutout_antialiasing");
 			auto cb = std::make_unique<CycleTextWidget>(sliderSize(), hFontMenu, label);
 			cb->valueChanged = [](int pos, std::string_view /* string */) noexcept {
 				config.video.alphaCutoutAntialiasing = pos;
 			};
-			cb->addEntry(getLocalised("system_menus_options_video_alpha_cutout_antialising_off"));
+			cb->addEntry(getLocalised("system_menus_options_video_alpha_cutout_antialiasing_off"));
 			Renderer::AlphaCutoutAntialising maxAA = GRenderer->getMaxSupportedAlphaCutoutAntialiasing();
 			if(maxAA >= Renderer::FuzzyAlphaCutoutAA) {
-				cb->addEntry(getLocalised("system_menus_options_video_alpha_cutout_antialising_fuzzy"));
+				cb->addEntry(getLocalised("system_menus_options_video_alpha_cutout_antialiasing_fuzzy"));
 			}
 			if(maxAA >= Renderer::CrispAlphaCutoutAA) {
-				cb->addEntry(getLocalised("system_menus_options_video_alpha_cutout_antialising_crisp"));
+				cb->addEntry(getLocalised("system_menus_options_video_alpha_cutout_antialiasing_crisp"));
 			}
 			m_alphaCutoutAntialiasingCycleText = cb.get();
 			setAlphaCutoutAntialisingState();
