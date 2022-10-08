@@ -121,7 +121,7 @@ void MiniMap::validatePlayerPos(AreaId currentArea, bool blockPlayerControls, AR
 		
 		if(fartherThan(m_playerLastPos, getXZ(m_player->pos), req)) {
 			m_playerLastPos = getXZ(m_player->pos);
-			revealPlayerPos(MapLevel(getMapLevelForArea(m_currentArea)));
+			revealPlayerPos(getMapLevelForArea(m_currentArea));
 		}
 		
 	}

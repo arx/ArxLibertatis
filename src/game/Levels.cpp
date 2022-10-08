@@ -50,40 +50,40 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/algorithm/string/predicate.hpp>
 
-int getMapLevelForArea(AreaId area) {
+MapLevel getMapLevelForArea(AreaId area) {
 	
 	switch(u32(area)) {
 		case 0:
 		case 8:
 		case 11:
 		case 12:
-			return 0;
+			return MapLevel(0);
 		case 1:
 		case 13:
 		case 14:
-			return 1;
+			return MapLevel(1);
 		case 2:
 		case 15:
-			return 2;
+			return MapLevel(2);
 		case 3:
 		case 16:
 		case 17:
-			return 3;
+			return MapLevel(3);
 		case 4:
 		case 18:
 		case 19:
-			return 4;
+			return MapLevel(4);
 		case 5:
 		case 21:
-			return 5;
+			return MapLevel(5);
 		case 6:
 		case 22:
-			return 6;
+			return MapLevel(6);
 		case 7:
 		case 23:
-			return 7;
+			return MapLevel(7);
 		default:
-			return s32(area);
+			return MapLevel(s32(area));
 	}
 	
 }

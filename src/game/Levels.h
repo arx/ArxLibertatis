@@ -50,6 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/BaseGraphicsTypes.h"
 
 //! Get the physical level (depth) of a "subdivided" level
-int getMapLevelForArea(AreaId area);
+MapLevel getMapLevelForArea(AreaId area);
 
 #endif // ARX_GAME_LEVELS_H

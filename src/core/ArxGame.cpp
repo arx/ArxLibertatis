@@ -1877,7 +1877,7 @@ void ArxGame::renderLevel() {
 		&& !BLOCK_PLAYER_CONTROLS
 		&& !(player.Interface & INTER_PLAYERBOOK))
 	{
-		g_miniMap.showPlayerMiniMap(getMapLevelForArea(g_currentArea));
+		g_miniMap.showPlayerMiniMap(size_t(getMapLevelForArea(g_currentArea)));
 	}
 	
 	ARX_INTERFACE_RenderCursor(false);
