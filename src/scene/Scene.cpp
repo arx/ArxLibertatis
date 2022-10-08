@@ -384,9 +384,7 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 	if(io) {
 		const EERIE_FRUSTRUM_DATA & frustrums = g_rooms->visibility[room].frustrum;
 		// TODO also use the portals from intermediate rooms for clipping
-		if(FrustrumsClipSphere(frustrums, sphere) ||
-				FrustrumsClipBBox3D(frustrums, io->bbox3D)
-		) {
+		if(FrustrumsClipSphere(frustrums, sphere) || FrustrumsClipBBox3D(frustrums, io->bbox3D)) {
 			io->bbox2D.min = Vec2f(-1.f, -1.f);
 			io->bbox2D.max = Vec2f(-1.f, -1.f);
 			return true;
