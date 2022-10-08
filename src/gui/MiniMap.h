@@ -61,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Text.h"
 #include "gui/book/Book.h"
 #include "math/Types.h"
+#include "platform/Platform.h"
 #include "util/HandleContainer.h"
 
 
@@ -95,7 +96,7 @@ public:
 		std::string m_name;
 		std::string m_text;
 		
-		MapMarkerData() noexcept = default;
+		MapMarkerData() arx_noexcept_default
 		
 	};
 	
