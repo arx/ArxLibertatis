@@ -1656,7 +1656,7 @@ void ArxGame::updateLevel() {
 	ARX_PLAYER_Manage_Visual();
 
 	g_miniMap.setActiveBackground(g_tiles);
-	g_miniMap.validatePlayerPos(s32(g_currentArea), BLOCK_PLAYER_CONTROLS, g_playerBook.currentPage());
+	g_miniMap.validatePlayerPos(g_currentArea, BLOCK_PLAYER_CONTROLS, g_playerBook.currentPage());
 
 
 	if(entities.player()->animlayer[0].cur_anim) {

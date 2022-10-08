@@ -113,11 +113,11 @@ void MiniMap::validatePos() {
 	}
 }
 
-void MiniMap::validatePlayerPos(int currentLevel, bool blockPlayerControls, ARX_INTERFACE_BOOK_MODE bookMode) {
+void MiniMap::validatePlayerPos(AreaId currentArea, bool blockPlayerControls, ARX_INTERFACE_BOOK_MODE bookMode) {
 	
-	if(m_currentArea != AreaId(currentLevel)) {
+	if(m_currentArea != currentArea) {
 		
-		m_currentArea = currentLevel >= 0 ? AreaId(currentLevel) : AreaId();
+		m_currentArea = currentArea;
 		
 		if(m_currentArea && size_t(m_currentArea) < m_miniOffset.size()) {
 			float minX = std::numeric_limits<float>::max();
