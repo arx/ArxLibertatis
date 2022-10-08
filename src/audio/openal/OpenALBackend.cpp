@@ -490,7 +490,7 @@ Backend::source_iterator OpenALBackend::sourcesEnd() {
 
 Backend::source_iterator OpenALBackend::deleteSource(source_iterator it) {
 	arx_assert(it >= sourcesBegin() && it < sourcesEnd());
-	ResourceList<OpenALSource>::iterator i = reinterpret_cast<ResourceList<OpenALSource>::iterator>(it);
+	auto i = reinterpret_cast<ResourceList<OpenALSource, SourceHandle>::iterator>(it);
 	return reinterpret_cast<source_iterator>(sources.remove(i));
 }
 
