@@ -164,7 +164,6 @@ private:
 	TextureContainer * getData(size_t showLevel);
 	void resetLevels();
 	void loadOffsets();
-	void validatePos();
 	
 	/*!
 	* Reveals the direct surroundings of the player

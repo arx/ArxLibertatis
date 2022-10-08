@@ -94,27 +94,6 @@ TextureContainer * MiniMap::getData(size_t showLevel) {
 	return m_levels[showLevel].m_texContainer;
 }
 
-void MiniMap::validatePos() {
-	
-	int showLevel = getMapLevelForArea(m_currentArea);
-	
-	if((showLevel >= 0) && (showLevel < int(MAX_MINIMAP_LEVELS))) {
-		
-		if(m_levels[showLevel].m_texContainer == nullptr) {
-			getData(showLevel);
-		}
-		
-		// TODO is this fallback needed?
-		if(m_levels[s32(m_currentArea)].m_texContainer == nullptr) {
-			getData(s32(m_currentArea));
-		}
-		
-		if(m_levels[showLevel].m_texContainer) {
-			revealPlayerPos(getMapLevelForArea(m_currentArea));
-		}
-	}
-}
-
 void MiniMap::validatePlayerPos(AreaId currentArea, bool blockPlayerControls, ARX_INTERFACE_BOOK_MODE bookMode) {
 	
 	if(m_currentArea != currentArea) {
@@ -141,8 +120,9 @@ void MiniMap::validatePlayerPos(AreaId currentArea, bool blockPlayerControls, AR
 	if(!blockPlayerControls) {
 		
 		float req;
-		
-		if((m_player->Interface & INTER_PLAYERBOOK) && (!(m_player->Interface & INTER_COMBATMODE)) && (bookMode == BOOKMODE_MINIMAP)) {
+		if((m_player->Interface & INTER_PLAYERBOOK) &&
+		   !(m_player->Interface & INTER_COMBATMODE) &&
+		   bookMode == BOOKMODE_MINIMAP) {
 			req = 20.f;
 		} else {
 			req = 80.f;
@@ -150,9 +130,11 @@ void MiniMap::validatePlayerPos(AreaId currentArea, bool blockPlayerControls, AR
 		
 		if(fartherThan(m_playerLastPos, getXZ(m_player->pos), req)) {
 			m_playerLastPos = getXZ(m_player->pos);
-			validatePos();
+			revealPlayerPos(getMapLevelForArea(m_currentArea));
 		}
+		
 	}
+	
 }
 
 void MiniMap::loadOffsets() {
