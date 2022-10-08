@@ -167,7 +167,7 @@ private:
 	/*!
 	* Reveals the direct surroundings of the player
 	*/
-	void revealPlayerPos(size_t showLevel);
+	void revealPlayerPos(MapLevel level);
 	
 	/*!
 	* Gets the id from the MapMarker's name. Returns -1 when not found.

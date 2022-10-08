@@ -121,7 +121,7 @@ void MiniMap::validatePlayerPos(AreaId currentArea, bool blockPlayerControls, AR
 		
 		if(fartherThan(m_playerLastPos, getXZ(m_player->pos), req)) {
 			m_playerLastPos = getXZ(m_player->pos);
-			revealPlayerPos(getMapLevelForArea(m_currentArea));
+			revealPlayerPos(MapLevel(getMapLevelForArea(m_currentArea)));
 		}
 		
 	}
@@ -350,9 +350,9 @@ void MiniMap::showBookEntireMap(size_t showLevel, Rect rect, float scale) {
 	
 }
 
-void MiniMap::revealPlayerPos(size_t showLevel) {
+void MiniMap::revealPlayerPos(MapLevel level) {
 	
-	if(showLevel >= m_levels.size()) {
+	if(size_t(level) >= m_levels.size()) {
 		return;
 	}
 	
@@ -396,8 +396,8 @@ void MiniMap::revealPlayerPos(size_t showLevel) {
 		
 		int r = int(revealPercent * 255.f);
 		
-		int ucLevel = std::max(r, int(m_levels[showLevel].m_revealed[tile.x][tile.y]));
-		m_levels[showLevel].m_revealed[tile.x][tile.y] = checked_range_cast<unsigned char>(ucLevel);
+		int ucLevel = std::max(r, int(m_levels[size_t(level)].m_revealed[tile.x][tile.y]));
+		m_levels[size_t(level)].m_revealed[tile.x][tile.y] = checked_range_cast<unsigned char>(ucLevel);
 		
 	}
 	
