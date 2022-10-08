@@ -746,7 +746,7 @@ bool ArxGame::initGame()
 	GInput->setInvertMouseY(config.input.invertMouse);
 	GInput->setRawMouseInput(config.input.rawMouseInput);
 	
-	g_miniMap.firstInit(&player, g_resources, &entities);
+	g_miniMap.firstInit(&player, &entities);
 	
 	player.m_torchColor = Color3f(1.f, 0.8f, 0.66666f);
 	LogDebug("InitializeDanae");

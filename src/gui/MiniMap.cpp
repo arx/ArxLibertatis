@@ -69,6 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/texture/Texture.h"
 
 #include "io/log/Logger.h"
+#include "io/resource/PakReader.h"
 
 #include "platform/profiler/Profiler.h"
 
@@ -153,11 +154,11 @@ void MiniMap::validatePlayerPos(AreaId currentArea, bool blockPlayerControls, AR
 	}
 }
 
-void MiniMap::loadOffsets(PakReader * pakRes) {
+void MiniMap::loadOffsets() {
 	
 	std::string iniMiniOffsets = "graph/levels/mini_offsets.ini";
 	
-	PakFile * file = pakRes->getFile(iniMiniOffsets.c_str());
+	PakFile * file = g_resources->getFile(iniMiniOffsets.c_str());
 	if(!file) {
 		LogError << "Missing " << iniMiniOffsets;
 		return;
@@ -192,7 +193,7 @@ void MiniMap::reveal() {
 	
 }
 
-void MiniMap::firstInit(ARXCHARACTER * pl, PakReader * pakRes, EntityManager * entityMng) {
+void MiniMap::firstInit(ARXCHARACTER * pl, EntityManager * entityMng) {
 	
 	m_pTexDetect = nullptr;
 	m_mapMarkerTexCont = nullptr;
@@ -209,7 +210,7 @@ void MiniMap::firstInit(ARXCHARACTER * pl, PakReader * pakRes, EntityManager * e
 	
 	m_miniOffset.fill(Vec2f(0.f));
 	
-	loadOffsets(pakRes);
+	loadOffsets();
 }
 
 void MiniMap::resetLevels() {

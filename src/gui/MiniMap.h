@@ -60,7 +60,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Interface.h"
 #include "gui/Text.h"
 #include "gui/book/Book.h"
-#include "io/resource/PakReader.h"
 #include "math/Types.h"
 
 
@@ -118,7 +117,7 @@ public:
 	size_t mapMarkerCount();
 	MapMarkerData mapMarkerGet(size_t id);
 	
-	void firstInit(ARXCHARACTER * pl, PakReader * pakRes, EntityManager * entityMng); // This should be a constructor
+	void firstInit(ARXCHARACTER * pl, EntityManager * entityMng); // This should be a constructor
 	void reset();
 	void purgeTexContainer();
 	
@@ -164,7 +163,7 @@ private:
 	
 	void getData(size_t showLevel);
 	void resetLevels();
-	void loadOffsets(PakReader * pakRes);
+	void loadOffsets();
 	void validatePos();
 	
 	/*!
