@@ -233,7 +233,7 @@ void MiniMap::showPlayerMiniMap(size_t showLevel) {
 	}
 	
 	// Draw the background
-	drawBackground(showLevel, miniMapRect, start, miniMapZoom, 20.f, true, 0.5f);
+	drawBackground(MapLevel(showLevel), miniMapRect, start, miniMapZoom, 20.f, true, 0.5f);
 	
 	// Draw the player (red arrow)
 	if(showLevel == size_t(getMapLevelForArea(m_currentArea))) {
@@ -254,7 +254,7 @@ void MiniMap::showBookMiniMap(size_t showLevel, Rect rect, float scale) {
 		playerPos = Vec2f(rect.center());
 	}
 	
-	drawBackground(showLevel, rect, start, zoom, 20.f * scale);
+	drawBackground(MapLevel(showLevel), rect, start, zoom, 20.f * scale);
 	
 	if(showLevel == size_t(getMapLevelForArea(m_currentArea))) {
 		drawPlayer(6.f * scale, playerPos, false);
@@ -276,7 +276,7 @@ void MiniMap::showBookEntireMap(size_t showLevel, Rect rect, float scale) {
 		playerPos += start;
 	}
 	
-	drawBackground(showLevel, rect, start, zoom);
+	drawBackground(MapLevel(showLevel), rect, start, zoom);
 	
 	if(showLevel == size_t(getMapLevelForArea(m_currentArea))) {
 		drawPlayer(3.f * scale, playerPos, false);
@@ -407,24 +407,25 @@ Vec2f MiniMap::worldToMapPos(Vec3f pos, float zoom) {
 	return (Vec2f(pos.x, -pos.z) * g_worldToMapScale + m_worldToMapOffset) * zoom;
 }
 
-void MiniMap::drawBackground(size_t showLevel, Rect boundaries, Vec2f start, float zoom, float fadeBorder, bool invColor, float alpha) {
+void MiniMap::drawBackground(MapLevel level, Rect boundaries, Vec2f start, float zoom,
+                            float fadeBorder, bool invColor, float alpha) {
 	
-	if(showLevel >= m_levels.size()) {
+	if(size_t(level) >= m_levels.size()) {
 		return;
 	}
 	
 	m_mapVertices.clear();
 	
-	if(!m_levels[showLevel].m_texContainer) {
-		res::path levelMap = "graph/levels/level" + std::to_string(showLevel) + "/map";
-		m_levels[showLevel].m_texContainer = TextureContainer::Load(levelMap, TextureContainer::NoColorKey);
+	if(!m_levels[size_t(level)].m_texContainer) {
+		res::path levelMap = "graph/levels/level" + std::to_string(u32(level)) + "/map";
+		m_levels[size_t(level)].m_texContainer = TextureContainer::Load(levelMap, TextureContainer::NoColorKey);
 	}
 	
-	GRenderer->SetTexture(0, m_levels[showLevel].m_texContainer);
+	GRenderer->SetTexture(0, m_levels[size_t(level)].m_texContainer);
 	
 	Vec2f d(0.f);
-	if(m_levels[showLevel].m_texContainer) {
-		d = 0.04f / Vec2f(m_levels[showLevel].m_texContainer->m_pTexture->getStoredSize());
+	if(m_levels[size_t(level)].m_texContainer) {
+		d = 0.04f / Vec2f(m_levels[size_t(level)].m_texContainer->m_pTexture->getStoredSize());
 	}
 	Vec2f v2 = 100.f * d * g_mapMod;
 	
@@ -497,7 +498,7 @@ void MiniMap::drawBackground(size_t showLevel, Rect boundaries, Vec2f start, flo
 			} else {
 				int minx = std::min(int(tile.x) + iOffset, int(MINIMAP_MAX_X) - iOffset);
 				int minz = std::min(int(tile.y) + jOffset, int(MINIMAP_MAX_Z) - jOffset);
-				v = float(m_levels[showLevel].m_revealed[minx][minz]) * (1.0f / 255);
+				v = float(m_levels[size_t(level)].m_revealed[minx][minz]) * (1.0f / 255);
 			}
 			
 			if(fadeBorder > 0.f) {

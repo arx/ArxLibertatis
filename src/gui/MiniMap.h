@@ -135,7 +135,7 @@ public:
 	
 	//! Reveals entirely all levels
 	void reveal();
-
+	
 	void clearMarkerTexCont();
 	
 	void load(const SavedMiniMap * saved, size_t size);
@@ -177,7 +177,7 @@ private:
 	int mapMarkerGetID(std::string_view name);
 	
 	Vec2f worldToMapPos(Vec3f pos, float zoom);
-	void drawBackground(size_t showLevel, Rect boundaries, Vec2f start, float zoom,
+	void drawBackground(MapLevel level, Rect boundaries, Vec2f start, float zoom,
 	                    float fadeBorder = 0.f, bool invColor = false, float alpha = 1.f);
 	void drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending);
 	void drawDetectedEntities(Vec2f start, float zoom);
