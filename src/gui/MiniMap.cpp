@@ -214,10 +214,6 @@ void MiniMap::purgeTexContainer() {
 
 void MiniMap::showPlayerMiniMap(size_t showLevel) {
 	
-	if(showLevel >= m_levels.size()) {
-		return;
-	}
-	
 	ARX_PROFILE_FUNC();
 	
 	float scale = minSizeRatio();
@@ -249,10 +245,6 @@ void MiniMap::showPlayerMiniMap(size_t showLevel) {
 
 void MiniMap::showBookMiniMap(size_t showLevel, Rect rect, float scale) {
 	
-	if(showLevel >= m_levels.size()) {
-		return;
-	}
-	
 	float zoom = 900.f * scale;
 	
 	Vec2f start(0.f);
@@ -272,10 +264,6 @@ void MiniMap::showBookMiniMap(size_t showLevel, Rect rect, float scale) {
 }
 
 void MiniMap::showBookEntireMap(size_t showLevel, Rect rect, float scale) {
-	
-	if(showLevel >= m_levels.size()) {
-		return;
-	}
 	
 	float zoom = 250.f * scale;
 	
@@ -359,9 +347,14 @@ void MiniMap::showBookEntireMap(size_t showLevel, Rect rect, float scale) {
 		
 		EERIEDRAWPRIM(Renderer::TriangleFan, verts.data(), 4);
 	}
+	
 }
 
 void MiniMap::revealPlayerPos(size_t showLevel) {
+	
+	if(showLevel >= m_levels.size()) {
+		return;
+	}
 	
 	float zoom = 250.f;
 	float maxDistance = 6.0f;
@@ -415,6 +408,10 @@ Vec2f MiniMap::worldToMapPos(Vec3f pos, float zoom) {
 }
 
 void MiniMap::drawBackground(size_t showLevel, Rect boundaries, Vec2f start, float zoom, float fadeBorder, bool invColor, float alpha) {
+	
+	if(showLevel >= m_levels.size()) {
+		return;
+	}
 	
 	m_mapVertices.clear();
 	
