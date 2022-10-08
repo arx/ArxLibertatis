@@ -2204,7 +2204,7 @@ static void ARX_CHANGELEVEL_PopAllIO(std::string_view buffer, AreaId area) {
 		LoadLevelScreen();
 	}
 	
-	for(long i = 0; i < asi->nb_inter; i++) {
+	for(s32 i = 0; i < asi->nb_inter; i++) {
 		
 		progressBarAdvance(increment);
 		LoadLevelScreen();
