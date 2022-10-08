@@ -1645,8 +1645,8 @@ static bool loadScriptVariables(SCRIPT_VARIABLES & var, const char * dat, size_t
 		
 		if(type == TYPE_G_TEXT || type == TYPE_L_TEXT) {
 			if(var[i].ival) {
-				var[i].text = util::toLowercase(util::loadString(dat + pos, long(avs->fval)));
-				pos += long(avs->fval);
+				var[i].text = util::toLowercase(util::loadString(dat + pos, size_t(avs->fval)));
+				pos += size_t(avs->fval);
 			}
 		}
 		
