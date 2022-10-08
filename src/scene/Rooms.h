@@ -82,7 +82,7 @@ struct EP_DATA {
 
 struct Room {
 	
-	std::vector<long> portals;
+	std::vector<PortalHandle> portals;
 	std::vector<EP_DATA> epdata;
 	std::vector<unsigned short> indexBuffer;
 	std::unique_ptr<VertexBuffer<SMY_VERTEX>> pVertexBuffer;

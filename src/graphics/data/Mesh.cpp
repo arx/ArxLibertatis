@@ -887,7 +887,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		portal.bounds.origin /= 4.f;
 		
 		for(RoomHandle room : { portal.room0, portal.room1 }) {
-			g_rooms->rooms[room].portals.push_back(s32(portalIndex));
+			g_rooms->rooms[room].portals.push_back(portalIndex);
 		}
 		
 	}
