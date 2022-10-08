@@ -262,7 +262,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 1);
 	}
 
-	ARX_INTERACTIVE_HideGore(entities.player(), 1);
+	ARX_INTERACTIVE_HideGore(entities.player(), false);
 	EERIE_Object_Precompute_Fast_Access(hero);
 	EERIE_Object_Precompute_Fast_Access(entities.player()->obj);
 	

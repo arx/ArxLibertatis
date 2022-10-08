@@ -275,7 +275,7 @@ void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state) {
 		}
 	}
 	
-	ARX_INTERACTIVE_HideGore(entities.player(), 1);
+	ARX_INTERACTIVE_HideGore(entities.player(), false);
 	
 }
 
@@ -307,13 +307,13 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(Entity * io) {
 
 // flag & 1 == no unhide non-gore
 // TODO very similar to ARX_INTERACTIVE_RemoveGoreOnIO
-void ARX_INTERACTIVE_HideGore(Entity * io, long flag) {
+void ARX_INTERACTIVE_HideGore(Entity * io, bool unhideNonGore) {
 	
 	if(!io || !io->obj || io->obj->texturecontainer.empty()) {
 		return;
 	}
 	
-	if(io == entities.player() && !flag) {
+	if(io == entities.player() && unhideNonGore) {
 		return;
 	}
 	
@@ -331,7 +331,7 @@ void ARX_INTERACTIVE_HideGore(Entity * io, long flag) {
 			// Hide gore faces...
 			if(face.texid == gorenum) {
 				face.facetype |= POLY_HIDE;
-			} else if(!flag) {
+			} else if(unhideNonGore) {
 				face.facetype &= ~POLY_HIDE;
 			}
 		}
@@ -817,7 +817,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 
 		io->shop_multiply = 1.f;
 
-		ARX_INTERACTIVE_HideGore(io, 1);
+		ARX_INTERACTIVE_HideGore(io, false);
 
 		io->halo_native.color = Color3f(0.2f, 0.5f, 1.f);
 		io->halo_native.radius = 45.f;

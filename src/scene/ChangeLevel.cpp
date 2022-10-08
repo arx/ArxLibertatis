@@ -2156,8 +2156,8 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 			}
 		}
 		
-		long hidegore = ((io->ioflags & IO_NPC) && io->_npcdata->lifePool.current > 0.f) ? 1 : 0;
-		ARX_INTERACTIVE_HideGore(io, hidegore);
+		bool unhideNonGore = (!(io->ioflags & IO_NPC) || io->_npcdata->lifePool.current <= 0.f);
+		ARX_INTERACTIVE_HideGore(io, unhideNonGore);
 		
 		if(io->ioflags & IO_NPC) {
 			
@@ -2424,7 +2424,7 @@ static bool ARX_CHANGELEVEL_PopLevel(AreaId area, bool reloadflag, std::string_v
 		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 1);
 	}
 	
-	ARX_INTERACTIVE_HideGore(entities.player(), 1);
+	ARX_INTERACTIVE_HideGore(entities.player(), false);
 
 	// default to mouselook true, inventory/book closed
 	TRUE_PLAYER_MOUSELOOK_ON = true;

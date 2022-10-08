@@ -1102,7 +1102,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 	ARX_PLAYER_Restore_Skin();
 
 	ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 0);
-	ARX_INTERACTIVE_HideGore(entities.player(), 1);
+	ARX_INTERACTIVE_HideGore(entities.player(), false);
 	
 	ANIM_Set(player.bookAnimation[0], herowaitbook);
 	player.bookAnimation[0].flags |= EA_LOOP;
