@@ -109,7 +109,7 @@ struct PORTAL_ROOM_DRAW {
 struct RoomData {
 	
 	util::HandleVector<RoomHandle, Room> rooms;
-	std::vector<RoomPortal> portals;
+	util::HandleVector<PortalHandle, RoomPortal> portals;
 	
 	util::HandleVector<RoomHandle, PORTAL_ROOM_DRAW> visibility;
 	std::vector<RoomHandle> visibleRooms;

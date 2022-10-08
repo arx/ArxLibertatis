@@ -848,8 +848,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	g_rooms->portals.resize(fsh->nb_portals);
 	
 	LogDebug("FTS: loading " << g_rooms->portals.size() << " portals ...");
-	for(size_t portalidx = 0; portalidx < g_rooms->portals.size(); portalidx++) {
-		RoomPortal & portal = g_rooms->portals[portalidx];
+	for(PortalHandle portalIndex : g_rooms->portals.handles()) {
+		RoomPortal & portal = g_rooms->portals[portalIndex];
 		
 		const EERIE_SAVE_PORTALS * epo = fts_read<EERIE_SAVE_PORTALS>(data, end);
 		
@@ -887,7 +887,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		portal.bounds.origin /= 4.f;
 		
 		for(RoomHandle room : { portal.room0, portal.room1 }) {
-			g_rooms->rooms[room].portals.push_back(long(portalidx));
+			g_rooms->rooms[room].portals.push_back(s32(portalIndex));
 		}
 		
 	}

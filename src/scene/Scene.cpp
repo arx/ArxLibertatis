@@ -450,12 +450,12 @@ static bool isOccludedByPortals(Entity & entity, float dist2, RoomHandle current
 	}
 	
 	const Room & room = g_rooms->rooms[currentRoom];
-	for(long i : room.portals) {
+	for(long portalIndex : room.portals) {
 		
-		if(i < 0 || size_t(i) >= g_rooms->portals.size()) {
+		if(portalIndex < 0 || size_t(portalIndex) >= g_rooms->portals.size()) {
 			continue;
 		}
-		const RoomPortal & portal = g_rooms->portals[i];
+		const RoomPortal & portal = g_rooms->portals[PortalHandle(portalIndex)];
 		if(portal.useportal != 1) {
 			continue;
 		}
@@ -793,8 +793,9 @@ RoomHandle ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 		float nearest_dist = 99999.f;
 		
 		for(const Room & room : g_rooms->rooms) {
-			for(long i : room.portals) {
-				const RoomPortal & portal = g_rooms->portals[i];
+			for(long portalIndex : room.portals) {
+				arx_assume(portalIndex >= 0 && size_t(portalIndex) <= g_rooms->portals.size());
+				const RoomPortal & portal = g_rooms->portals[PortalHandle(portalIndex)];
 				if(PointIn2DPolyXZ(portal, pos.x, pos.z)) {
 					float yy;
 					if(GetTruePolyY(portal, pos, &yy)) {
@@ -1521,8 +1522,8 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(RoomHandle roomIndex,
 	float fClippZFar = camDepth * fZFogEnd * 1.1f;
 	
 	// Now Checks For room Portals !!!
-	for(long i : g_rooms->rooms[roomIndex].portals) {
-		RoomPortal & portal = g_rooms->portals[i];
+	for(long portalIndex : g_rooms->rooms[roomIndex].portals) {
+		RoomPortal & portal = g_rooms->portals[PortalHandle(portalIndex)];
 		
 		if(portal.useportal) {
 			continue;
