@@ -2145,13 +2145,13 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 			io->obj->linked.resize(ais->nb_linked);
 			
 			if(!io->obj->linked.empty()) {
-				for(long n = 0; n < ais->nb_linked; n++) {
-					io->obj->linked[n].lgroup = ObjVertGroup(ais->linked_data[n].lgroup);
-					io->obj->linked[n].lidx = ActionPoint(ais->linked_data[n].lidx);
-					io->obj->linked[n].lidx2 = ActionPoint(ais->linked_data[n].lidx2);
-					Entity * iooo = ConvertToValidIO(ais->linked_data[n].linked_id);
-					io->obj->linked[n].io = iooo;
-					io->obj->linked[n].obj = iooo ? iooo->obj : nullptr;
+				for(s32 i = 0; i < ais->nb_linked; i++) {
+					io->obj->linked[i].lgroup = ObjVertGroup(ais->linked_data[i].lgroup);
+					io->obj->linked[i].lidx = ActionPoint(ais->linked_data[i].lidx);
+					io->obj->linked[i].lidx2 = ActionPoint(ais->linked_data[i].lidx2);
+					Entity * iooo = ConvertToValidIO(ais->linked_data[i].linked_id);
+					io->obj->linked[i].io = iooo;
+					io->obj->linked[i].obj = iooo ? iooo->obj : nullptr;
 				}
 			}
 		}
