@@ -1206,7 +1206,6 @@ static void RenderLava() {
 
 static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomHandle roomIndex,
                                                      const EERIE_FRUSTRUM_DATA & frustrums,
-                                                     GameInstant now,
                                                      const Vec3f & camPos) {
 	
 	ARX_PROFILE_FUNC();
@@ -1366,11 +1365,11 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomHandle roomIndex,
 		}
 		
 		if(ep->type & POLY_LAVA) {
-			float uvScroll = timeWaveSaw(now, 12s);
+			float uvScroll = timeWaveSaw(g_gameTime.now(), 12s);
 			ManageLava_VertexBuffer(ep, to, uvScroll, pMyVertexCurr);
 			vPolyLava.push_back(ep);
 		} else if(ep->type & POLY_WATER) {
-			float uvScroll = timeWaveSaw(now, 1s);
+			float uvScroll = timeWaveSaw(g_gameTime.now(), 1s);
 			ManageWater_VertexBuffer(ep, to, uvScroll, pMyVertexCurr);
 			vPolyWater.push_back(ep);
 		}
@@ -1571,8 +1570,6 @@ void ARX_SCENE_Update() {
 	
 	ARX_PROFILE_FUNC();
 	
-	GameInstant now = g_gameTime.now();
-	
 	WATEREFFECT = timeWaveSaw(g_gameTime.now(), 12566370us) * 2.f * glm::pi<float>();
 	
 	const Vec3f camPos = g_camera->m_pos;
@@ -1596,7 +1593,7 @@ void ARX_SCENE_Update() {
 	}
 	
 	for(RoomHandle room : g_rooms->visibleRooms) {
-		ARX_PORTALS_Frustrum_RenderRoomTCullSoft(room, g_rooms->visibility[room].frustrum, now, camPos);
+		ARX_PORTALS_Frustrum_RenderRoomTCullSoft(room, g_rooms->visibility[room].frustrum, camPos);
 	}
 	
 	ARX_THROWN_OBJECT_Manage(g_gameTime.lastFrameDuration());
