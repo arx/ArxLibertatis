@@ -2180,7 +2180,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 	return io;
 }
 
-static void ARX_CHANGELEVEL_PopAllIO(std::string_view buffer, long level) {
+static void ARX_CHANGELEVEL_PopAllIO(std::string_view buffer, AreaId area) {
 	
 	const char * dat = buffer.data();
 	size_t pos = 0;
@@ -2211,7 +2211,7 @@ static void ARX_CHANGELEVEL_PopAllIO(std::string_view buffer, long level) {
 		                                idx_io[i].ident).string();
 		
 		if(!entities.getById(idString)) {
-			ARX_CHANGELEVEL_Pop_IO(idString, idx_io[i].ident, AreaId(level));
+			ARX_CHANGELEVEL_Pop_IO(idString, idx_io[i].ident, area);
 		}
 		
 	}
@@ -2379,7 +2379,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, std::string
 			}
 		}
 	} else {
-		ARX_CHANGELEVEL_PopAllIO(levelSave, instance);
+		ARX_CHANGELEVEL_PopAllIO(levelSave, AreaId(instance));
 	}
 	
 	progressBarAdvance(20.f);
