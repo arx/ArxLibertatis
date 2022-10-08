@@ -61,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Text.h"
 #include "gui/book/Book.h"
 #include "math/Types.h"
+#include "util/HandleContainer.h"
 
 
 class TextureContainer;
@@ -156,7 +157,7 @@ private:
 	Vec2f m_playerLastPos;
 	
 	std::vector<MapMarkerData> m_mapMarkers;
-	std::array<MiniMapData, MAX_MINIMAP_LEVELS> m_levels;
+	util::HandleArray<MapLevel, MiniMapData, MAX_MINIMAP_LEVELS> m_levels;
 	
 	void resetLevels();
 	void loadOffsets();

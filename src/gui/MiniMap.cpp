@@ -397,8 +397,8 @@ void MiniMap::revealPlayerPos(MapLevel level) {
 		
 		int r = int(revealPercent * 255.f);
 		
-		int ucLevel = std::max(r, int(m_levels[size_t(level)].m_revealed[tile.x][tile.y]));
-		m_levels[size_t(level)].m_revealed[tile.x][tile.y] = checked_range_cast<unsigned char>(ucLevel);
+		int ucLevel = std::max(r, int(m_levels[level].m_revealed[tile.x][tile.y]));
+		m_levels[level].m_revealed[tile.x][tile.y] = checked_range_cast<unsigned char>(ucLevel);
 		
 	}
 	
@@ -417,16 +417,16 @@ void MiniMap::drawBackground(MapLevel level, Rect boundaries, Vec2f start, float
 	
 	m_mapVertices.clear();
 	
-	if(!m_levels[size_t(level)].m_texContainer) {
+	if(!m_levels[level].m_texContainer) {
 		res::path levelMap = "graph/levels/level" + std::to_string(u32(level)) + "/map";
-		m_levels[size_t(level)].m_texContainer = TextureContainer::Load(levelMap, TextureContainer::NoColorKey);
+		m_levels[level].m_texContainer = TextureContainer::Load(levelMap, TextureContainer::NoColorKey);
 	}
 	
-	GRenderer->SetTexture(0, m_levels[size_t(level)].m_texContainer);
+	GRenderer->SetTexture(0, m_levels[level].m_texContainer);
 	
 	Vec2f d(0.f);
-	if(m_levels[size_t(level)].m_texContainer) {
-		d = 0.04f / Vec2f(m_levels[size_t(level)].m_texContainer->m_pTexture->getStoredSize());
+	if(m_levels[level].m_texContainer) {
+		d = 0.04f / Vec2f(m_levels[level].m_texContainer->m_pTexture->getStoredSize());
 	}
 	Vec2f v2 = 100.f * d * g_mapMod;
 	
@@ -499,7 +499,7 @@ void MiniMap::drawBackground(MapLevel level, Rect boundaries, Vec2f start, float
 			} else {
 				int minx = std::min(int(tile.x) + iOffset, int(MINIMAP_MAX_X) - iOffset);
 				int minz = std::min(int(tile.y) + jOffset, int(MINIMAP_MAX_Z) - jOffset);
-				v = float(m_levels[size_t(level)].m_revealed[minx][minz]) * (1.0f / 255);
+				v = float(m_levels[level].m_revealed[minx][minz]) * (1.0f / 255);
 			}
 			
 			if(fadeBorder > 0.f) {
