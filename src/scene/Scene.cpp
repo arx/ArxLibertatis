@@ -449,7 +449,7 @@ static bool isOccludedByPortals(Entity & entity, float dist2, RoomHandle current
 		return true;
 	}
 	
-	const Room & room = g_rooms->rooms[size_t(currentRoom)];
+	const Room & room = g_rooms->rooms[currentRoom];
 	for(long i : room.portals) {
 		
 		if(i < 0 || size_t(i) >= g_rooms->portals.size()) {
@@ -822,10 +822,10 @@ RoomHandle ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 	return result;
 }
 
-static void ARX_PORTALS_Frustrum_ClearIndexCount(size_t room_num) {
+static void ARX_PORTALS_Frustrum_ClearIndexCount(RoomHandle room) {
 	
-	for(TextureContainer & material : util::dereference(g_rooms->rooms[room_num].ppTextureContainer)) {
-		SMY_ARXMAT & roomMat = material.m_roomBatches[room_num];
+	for(TextureContainer & material : util::dereference(g_rooms->rooms[room].ppTextureContainer)) {
+		SMY_ARXMAT & roomMat = material.m_roomBatches[size_t(room)];
 		roomMat.count[BatchBucket_Opaque] = 0;
 		roomMat.count[BatchBucket_Blended] = 0;
 		roomMat.count[BatchBucket_Multiplicative] = 0;
@@ -845,8 +845,8 @@ static void ARX_PORTALS_InitDrawnRooms() {
 		portal.useportal = 0;
 	}
 	
-	for(size_t i = 0; i < g_rooms->rooms.size(); i++) {
-		ARX_PORTALS_Frustrum_ClearIndexCount(i);
+	for(RoomHandle room : g_rooms->rooms.handles()) {
+		ARX_PORTALS_Frustrum_ClearIndexCount(room);
 	}
 	
 	g_rooms->visibility.resize(g_rooms->rooms.size());
@@ -1229,7 +1229,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomHandle roomIndex,
 		return;
 	}
 	
-	Room & room = g_rooms->rooms[size_t(roomIndex)];
+	Room & room = g_rooms->rooms[roomIndex];
 	if(!room.pVertexBuffer) {
 		// No need to spam this for every frame as there will already be an
 		// earlier warning
@@ -1398,7 +1398,7 @@ static void BackgroundRenderOpaque(RoomHandle roomIndex) {
 	
 	ARX_PROFILE_FUNC();
 	
-	Room & room = g_rooms->rooms[size_t(roomIndex)];
+	Room & room = g_rooms->rooms[roomIndex];
 	
 	for(TextureContainer & material : util::dereference(room.ppTextureContainer)) {
 		
@@ -1442,7 +1442,7 @@ static void BackgroundRenderTransparent(RoomHandle roomIndex) {
 	
 	ARX_PROFILE_FUNC();
 	
-	Room & room = g_rooms->rooms[size_t(roomIndex)];
+	Room & room = g_rooms->rooms[roomIndex];
 	
 	for(TextureContainer & material : util::dereference(room.ppTextureContainer)) {
 		
@@ -1519,7 +1519,7 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(RoomHandle roomIndex,
 	float fClippZFar = camDepth * fZFogEnd * 1.1f;
 	
 	// Now Checks For room Portals !!!
-	for(long i : g_rooms->rooms[size_t(roomIndex)].portals) {
+	for(long i : g_rooms->rooms[roomIndex].portals) {
 		RoomPortal & portal = g_rooms->portals[i];
 		
 		if(portal.useportal) {
@@ -1599,10 +1599,10 @@ void ARX_SCENE_Update() {
 	ARX_PORTALS_InitDrawnRooms();
 	
 	if(!USE_PLAYERCOLLISIONS) {
-		for(size_t i = 0; i < g_rooms->rooms.size(); i++) {
-			g_rooms->visibility[i].count = 1;
-			g_rooms->visibleRooms.push_back(RoomHandle(i));
-			RoomFrustrumAdd(RoomHandle(i), g_screenFrustum);
+		for(RoomHandle room : g_rooms->rooms.handles()) {
+			g_rooms->visibility[size_t(room)].count = 1;
+			g_rooms->visibleRooms.push_back(room);
+			RoomFrustrumAdd(room, g_screenFrustum);
 		}
 	} else if(RoomHandle room = ARX_PORTALS_GetRoomNumForPosition(camPos, 1)) {
 		ARX_PORTALS_Frustrum_ComputeRoom(room, g_screenFrustum, camPos, camDepth);

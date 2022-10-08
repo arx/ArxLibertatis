@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsTypes.h"
 #include "math/Types.h"
 #include "platform/Platform.h"
+#include "util/HandleVector.h"
 
 
 struct RoomPortal {
@@ -107,7 +108,7 @@ struct PORTAL_ROOM_DRAW {
 
 struct RoomData {
 	
-	std::vector<Room> rooms;
+	util::HandleVector<RoomHandle, Room> rooms;
 	std::vector<RoomPortal> portals;
 	
 	std::vector<PORTAL_ROOM_DRAW> visibility;

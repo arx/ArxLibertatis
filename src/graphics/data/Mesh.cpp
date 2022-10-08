@@ -887,7 +887,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		portal.bounds.origin /= 4.f;
 		
 		for(RoomHandle room : { portal.room0, portal.room1 }) {
-			g_rooms->rooms[size_t(room)].portals.push_back(long(portalidx));
+			g_rooms->rooms[room].portals.push_back(long(portalidx));
 		}
 		
 	}
@@ -1020,8 +1020,9 @@ void ComputePortalVertexBuffer() {
 	typedef std::unordered_map<TextureContainer *,  SINFO_TEXTURE_VERTEX> TextureMap;
 	TextureMap infos;
 	
-	for(size_t i = 0; i < g_rooms->rooms.size(); i++) {
-		Room * room = &g_rooms->rooms[i];
+	for(RoomHandle roomIndex : g_rooms->rooms.handles()) {
+		
+		Room * room = &g_rooms->rooms[roomIndex];
 		
 		// Skip empty rooms
 		if(room->epdata.empty()) {
@@ -1087,7 +1088,7 @@ void ComputePortalVertexBuffer() {
 		
 		
 		if(!vertexCount) {
-			LogWarning << "No visible vertices in room " << i << ": "
+			LogWarning << "No visible vertices in room " << roomIndex << ": "
 			           << ignored << " ignored, " << hidden << " hidden, "
 			           << notex << " untextured";
 			continue;
@@ -1111,7 +1112,7 @@ void ComputePortalVertexBuffer() {
 		
 		size_t ntextures = infos.size();
 		
-		LogDebug(" - room " << i << ": " << ntextures << " textures, "
+		LogDebug(" - room " << roomIndex << ": " << ntextures << " textures, "
 		         << vertexCount << " vertices, " << indexCount << " indices");
 		
 		// Allocate space to list all textures for this room
@@ -1176,7 +1177,7 @@ void ComputePortalVertexBuffer() {
 			
 			// Save the
 			
-			SMY_ARXMAT & m = texture->m_roomBatches[i];
+			SMY_ARXMAT & m = texture->m_roomBatches[size_t(roomIndex)];
 			
 			m.uslStartVertex = startIndex;
 			m.uslNbVertex = index;
@@ -1201,7 +1202,7 @@ void ComputePortalVertexBuffer() {
 			   || info.subtractive > 65535
 			) {
 				LogWarning << "Too many indices for texture " << texture->m_texName
-				           << " in room " << i;
+				           << " in room " << roomIndex;
 			}
 			
 			startIndex += index;
@@ -1212,4 +1213,5 @@ void ComputePortalVertexBuffer() {
 		std::partition(room->ppTextureContainer.begin(), room->ppTextureContainer.end(), HasAlphaChannel());
 		
 	}
+	
 }
