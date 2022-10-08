@@ -128,7 +128,7 @@ static void ARX_CHANGELEVEL_Push_Globals();
 static void ARX_CHANGELEVEL_Pop_Globals();
 static bool ARX_CHANGELEVEL_Push_Player(AreaId area);
 static bool ARX_CHANGELEVEL_Push_AllIO(long level);
-static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level);
+static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area);
 static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance instance, AreaId area = { });
 
 static fs::path CURRENT_GAME_FILE;
@@ -797,17 +797,15 @@ static bool ARX_CHANGELEVEL_Push_Player(AreaId area) {
 	
 	LastValidPlayerPos = asp->LAST_VALID_POS.toVec3();
 	
-	if(!g_currentSavedGame->save("player", dat, pos)) {
-		return false;
-	}
+	bool ok = g_currentSavedGame->save("player", dat, pos);
 	
 	for(Entity & entity : entities) {
 		if(&entity == g_draggedEntity || isInPlayerInventoryOrEquipment(entity)) {
-			ARX_CHANGELEVEL_Push_IO(&entity, s32(area));
+			ok = ARX_CHANGELEVEL_Push_IO(&entity, area) && ok;
 		}
 	}
 	
-	return true;
+	return ok;
 }
 
 static bool ARX_CHANGELEVEL_Push_AllIO(long level) {
@@ -819,19 +817,16 @@ static bool ARX_CHANGELEVEL_Push_AllIO(long level) {
 		   && &entity != g_draggedEntity
 		   && entity != *entities.player()
 		   && !isInPlayerInventoryOrEquipment(entity)) {
-			ok = ARX_CHANGELEVEL_Push_IO(&entity, level) && ok;
+			ok = ARX_CHANGELEVEL_Push_IO(&entity, AreaId(level)) && ok;
 		}
 	}
 	
 	return ok;
 }
 
-static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
+static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 	
-	// Check Valid IO
-	if(!io) {
-		return -1;
-	}
+	arx_assert(io);
 	
 	arx_assert(io->show != SHOW_FLAG_DESTROYED);
 	arx_assert(io->show != SHOW_FLAG_KILLED);
@@ -891,7 +886,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 		ais.gameFlags &= ~GFLAG_INVISIBILITY;
 	
 	ais.material = io->material;
-	ais.level = ais.truelevel = level;
+	ais.level = ais.truelevel = s16(area);
 	ais.scriptload = io->scriptload;
 	ais.show = io->show;
 	ais.collision = io->collision;
@@ -1254,9 +1249,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	
 	arx_assert(pos <= buffer.size());
 	
-	g_currentSavedGame->save(io->idString(), dat, pos);
-	
-	return 1;
+	return g_currentSavedGame->save(io->idString(), dat, pos);
 }
 
 static const ARX_CHANGELEVEL_INDEX * ARX_CHANGELEVEL_Pop_Index(std::string_view buffer) {
