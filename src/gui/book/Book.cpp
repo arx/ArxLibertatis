@@ -1486,7 +1486,7 @@ void MapPage::drawMaps() const {
 	g_miniMap.showBookEntireMap(m_currentLevel, leftSide, scale);
 	
 	Rect rightSide = Rect(Rectf(Vec2f(263.f, 21) * scale, Vec2f(480, 291) * scale) + bookPos);
-	g_miniMap.showBookMiniMap(size_t(getMapLevelForArea(g_currentArea)), rightSide, scale);
+	g_miniMap.showBookMiniMap(getMapLevelForArea(g_currentArea), rightSide, scale);
 	
 }
 

@@ -243,20 +243,20 @@ void MiniMap::showPlayerMiniMap(MapLevel level) {
 	
 }
 
-void MiniMap::showBookMiniMap(size_t showLevel, Rect rect, float scale) {
+void MiniMap::showBookMiniMap(MapLevel level, Rect rect, float scale) {
 	
 	float zoom = 900.f * scale;
 	
 	Vec2f start(0.f);
 	Vec2f playerPos(0.f);
-	if(showLevel == size_t(getMapLevelForArea(m_currentArea))) {
+	if(level == getMapLevelForArea(m_currentArea)) {
 		start = Vec2f(rect.center()) - worldToMapPos(m_player->pos, zoom);
 		playerPos = Vec2f(rect.center());
 	}
 	
-	drawBackground(MapLevel(showLevel), rect, start, zoom, 20.f * scale);
+	drawBackground(level, rect, start, zoom, 20.f * scale);
 	
-	if(showLevel == size_t(getMapLevelForArea(m_currentArea))) {
+	if(level == getMapLevelForArea(m_currentArea)) {
 		drawPlayer(6.f * scale, playerPos, false);
 		drawDetectedEntities(start, zoom);
 	}
