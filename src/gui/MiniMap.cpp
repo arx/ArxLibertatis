@@ -94,7 +94,7 @@ void MiniMap::getData(size_t showLevel) {
 
 void MiniMap::validatePos() {
 	
-	int showLevel = getMapLevelForArea(AreaId(m_currentLevel));
+	int showLevel = getMapLevelForArea(m_currentArea);
 	
 	if((showLevel >= 0) && (showLevel < int(MAX_MINIMAP_LEVELS))) {
 		
@@ -102,23 +102,24 @@ void MiniMap::validatePos() {
 			getData(showLevel);
 		}
 		
-		if(m_levels[m_currentLevel].m_texContainer == nullptr) {
-			getData(m_currentLevel);
+		// TODO is this fallback needed?
+		if(m_levels[s32(m_currentArea)].m_texContainer == nullptr) {
+			getData(s32(m_currentArea));
 		}
 		
 		if(m_levels[showLevel].m_texContainer) {
-			revealPlayerPos(getMapLevelForArea(AreaId(m_currentLevel)));
+			revealPlayerPos(getMapLevelForArea(m_currentArea));
 		}
 	}
 }
 
 void MiniMap::validatePlayerPos(int currentLevel, bool blockPlayerControls, ARX_INTERFACE_BOOK_MODE bookMode) {
 	
-	if(m_currentLevel != currentLevel) {
+	if(m_currentArea != AreaId(currentLevel)) {
 		
-		m_currentLevel = currentLevel;
+		m_currentArea = currentLevel >= 0 ? AreaId(currentLevel) : AreaId();
 		
-		if(m_currentLevel >= 0 && size_t(m_currentLevel) < m_miniOffset.size()) {
+		if(m_currentArea && size_t(m_currentArea) < m_miniOffset.size()) {
 			float minX = std::numeric_limits<float>::max();
 			float maxZ = std::numeric_limits<float>::min();
 			for(auto tile : m_activeBkg->tiles()) {
@@ -128,7 +129,7 @@ void MiniMap::validatePlayerPos(int currentLevel, bool blockPlayerControls, ARX_
 				}
 			}
 			m_worldToMapOffset = Vec2f(-minX, maxZ) * g_worldToMapScale +
-			                     m_miniOffset[m_currentLevel] * (1.f / 250.f + Vec2f(1.f, -2.f) * g_worldToMapScale);
+			                     m_miniOffset[size_t(m_currentArea)] * (1.f / 250.f + Vec2f(1.f, -2.f) * g_worldToMapScale);
 		} else {
 			m_worldToMapOffset = Vec2f(0.f);
 		}
@@ -260,7 +261,7 @@ void MiniMap::showPlayerMiniMap(size_t showLevel) {
 		
 		Vec2f start(0.f);
 		Vec2f playerPos(0.f);
-		if(showLevel == size_t(getMapLevelForArea(AreaId(m_currentLevel)))) {
+		if(showLevel == size_t(getMapLevelForArea(m_currentArea))) {
 			start = Vec2f(miniMapRect.center()) - worldToMapPos(m_player->pos, miniMapZoom);
 			playerPos = Vec2f(miniMapRect.center());
 		}
@@ -269,7 +270,7 @@ void MiniMap::showPlayerMiniMap(size_t showLevel) {
 		drawBackground(showLevel, miniMapRect, start, miniMapZoom, 20.f, true, 0.5f);
 		
 		// Draw the player (red arrow)
-		if(showLevel == size_t(getMapLevelForArea(AreaId(m_currentLevel)))) {
+		if(showLevel == size_t(getMapLevelForArea(m_currentArea))) {
 			drawPlayer(playerSize, playerPos, true);
 			drawDetectedEntities(start, miniMapZoom);
 		}
@@ -292,14 +293,14 @@ void MiniMap::showBookMiniMap(size_t showLevel, Rect rect, float scale) {
 		
 		Vec2f start(0.f);
 		Vec2f playerPos(0.f);
-		if(showLevel == size_t(getMapLevelForArea(AreaId(m_currentLevel)))) {
+		if(showLevel == size_t(getMapLevelForArea(m_currentArea))) {
 			start = Vec2f(rect.center()) - worldToMapPos(m_player->pos, zoom);
 			playerPos = Vec2f(rect.center());
 		}
 		
 		drawBackground(showLevel, rect, start, zoom, 20.f * scale);
 		
-		if(showLevel == size_t(getMapLevelForArea(AreaId(m_currentLevel)))) {
+		if(showLevel == size_t(getMapLevelForArea(m_currentArea))) {
 			drawPlayer(6.f * scale, playerPos, false);
 			drawDetectedEntities(start, zoom);
 		}
@@ -326,14 +327,14 @@ void MiniMap::showBookEntireMap(size_t showLevel, Rect rect, float scale) {
 	
 	Vec2f playerPos(0.f, 0.f);
 	
-	if(showLevel == size_t(getMapLevelForArea(AreaId(m_currentLevel)))) {
+	if(showLevel == size_t(getMapLevelForArea(m_currentArea))) {
 		playerPos = worldToMapPos(m_player->pos, zoom);
 		playerPos += start;
 	}
 	
 	drawBackground(showLevel, rect, start, zoom);
 	
-	if(showLevel == size_t(getMapLevelForArea(AreaId(m_currentLevel)))) {
+	if(showLevel == size_t(getMapLevelForArea(m_currentArea))) {
 		drawPlayer(3.f * scale, playerPos, false);
 		drawDetectedEntities(start, zoom);
 	}

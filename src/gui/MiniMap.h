@@ -52,15 +52,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string_view>
 #include <vector>
 
-#include "math/Types.h"
+#include "game/EntityManager.h"
+#include "game/Player.h"
+#include "graphics/BaseGraphicsTypes.h"
+#include "graphics/VertexBuffer.h"
+#include "graphics/data/Mesh.h"
 #include "gui/Interface.h"
 #include "gui/Text.h"
 #include "gui/book/Book.h"
 #include "io/resource/PakReader.h"
-#include "game/EntityManager.h"
-#include "game/Player.h"
-#include "graphics/data/Mesh.h"
-#include "graphics/VertexBuffer.h"
+#include "math/Types.h"
+
 
 class TextureContainer;
 struct SavedMiniMap;
@@ -101,8 +103,7 @@ public:
 	};
 	
 	MiniMap()
-		: m_currentLevel(-1)
-		, m_entities(nullptr)
+		: m_entities(nullptr)
 		, m_activeBkg(nullptr)
 		, m_worldToMapOffset(0.f)
 		, m_pTexDetect(nullptr)
@@ -121,7 +122,7 @@ public:
 	void reset();
 	void purgeTexContainer();
 	
-	//! Calls revealPlayerPos if the player moved, also sets m_currentLevel and m_playerPos
+	//! Calls revealPlayerPos if the player moved, also sets m_currentArea and m_playerPos
 	void validatePlayerPos(int currentLevel, bool blockPlayerControls, ARX_INTERFACE_BOOK_MODE bookMode);
 	
 	//! Shows the top right minimap
@@ -145,7 +146,7 @@ public:
 	
 private:
 	
-	int m_currentLevel;
+	AreaId m_currentArea;
 	EntityManager * m_entities;
 	TileData * m_activeBkg;
 	
