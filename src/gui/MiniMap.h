@@ -89,15 +89,12 @@ public:
 	
 	struct MapMarkerData {
 		
-		Vec2f m_pos;
-		size_t m_lvl;
+		Vec2f m_pos = Vec3f(0.f);
+		MapLevel m_level;
 		std::string m_name;
 		std::string m_text;
 		
-		MapMarkerData()
-			: m_pos(0.f)
-			, m_lvl(0)
-		{ }
+		MapMarkerData() noexcept = default;
 		
 	};
 	

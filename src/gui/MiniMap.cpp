@@ -296,7 +296,7 @@ void MiniMap::showBookEntireMap(MapLevel level, Rect rect, float scale) {
 	
 	for(MapMarkerData & marker : m_mapMarkers) {
 		
-		if(MapLevel(marker.m_lvl - 1) != level) {
+		if(marker.m_level != level) {
 			continue;
 		}
 		
@@ -346,6 +346,7 @@ void MiniMap::showBookEntireMap(MapLevel level, Rect rect, float scale) {
 		GRenderer->SetTexture(0, m_mapMarkerTexCont);
 		
 		EERIEDRAWPRIM(Renderer::TriangleFan, verts.data(), 4);
+		
 	}
 	
 }
@@ -684,7 +685,7 @@ void MiniMap::mapMarkerAdd(const Vec2f & pos, size_t lvl, std::string && name) {
 	
 	if(num >= 0) {
 		// Already exists, update it
-		m_mapMarkers[num].m_lvl = lvl;
+		m_mapMarkers[num].m_level = MapLevel(lvl - 1);
 		m_mapMarkers[num].m_pos.x = pos.x;
 		m_mapMarkers[num].m_pos.y = pos.y;
 		return;
@@ -692,7 +693,7 @@ void MiniMap::mapMarkerAdd(const Vec2f & pos, size_t lvl, std::string && name) {
 	
 	// Else, create one
 	MapMarkerData newMMD;
-	newMMD.m_lvl = lvl;
+	newMMD.m_level = MapLevel(lvl - 1);
 	newMMD.m_pos.x = pos.x;
 	newMMD.m_pos.y = pos.y;
 	newMMD.m_name = std::move(name);
