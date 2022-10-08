@@ -56,6 +56,7 @@ typedef HandleType<struct ObjVertGroupTag, short, -1> ObjVertGroup;
 typedef HandleType<struct ObjVertHandleTag, s32,  -1> ObjVertHandle;
 typedef HandleType<struct RoomHandleTag, u32,  u32(-1)> RoomHandle;
 typedef HandleType<struct PortalHandleTag, u32,  u32(-1)> PortalHandle;
+typedef HandleType<struct AreaIdTag, u32, u32(-1)> AreaId;
 
 struct Cylinder {
 	
