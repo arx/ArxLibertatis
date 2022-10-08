@@ -79,13 +79,9 @@ public:
 	
 	struct MiniMapData {
 		
-		TextureContainer * m_texContainer;
+		TextureContainer * m_texContainer = nullptr;
 		
 		unsigned char m_revealed[MINIMAP_MAX_X][MINIMAP_MAX_Z];
-		
-		MiniMapData()
-			: m_texContainer(nullptr)
-		{ }
 		
 	};
 	
