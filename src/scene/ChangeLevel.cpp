@@ -122,7 +122,7 @@ extern bool LOAD_N_ERASE;
 
 static bool ARX_CHANGELEVEL_Push_Index(long num);
 static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum);
-static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag = false,
+static bool ARX_CHANGELEVEL_PopLevel(AreaId area, bool reloadflag = false,
                                      std::string_view target = std::string_view(), float angle = 0.f);
 static void ARX_CHANGELEVEL_Push_Globals();
 static void ARX_CHANGELEVEL_Pop_Globals();
@@ -345,7 +345,7 @@ void ARX_CHANGELEVEL_Change(AreaId area, std::string_view target, float angle) {
 	
 	ARX_CHANGELEVEL_PushLevel(s32(g_currentArea), s32(area));
 	
-	ARX_CHANGELEVEL_PopLevel(s32(area), true, target, angle);
+	ARX_CHANGELEVEL_PopLevel(area, true, target, angle);
 	
 	entities.player()->inzone = nullptr;
 	
@@ -2326,7 +2326,7 @@ static void ARX_CHANGELEVEL_Pop_Globals() {
 	
 }
 
-static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, std::string_view target, float angle) {
+static bool ARX_CHANGELEVEL_PopLevel(AreaId area, bool reloadflag, std::string_view target, float angle) {
 	
 	DanaeClearLevel();
 	
@@ -2341,7 +2341,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, std::string
 	
 	// Now we can load our things...
 	std::ostringstream loadfile;
-	loadfile << "lvl" << std::setfill('0') << std::setw(3) << instance;
+	loadfile << "lvl" << std::setfill('0') << std::setw(3) << u32(area);
 	std::string levelSave = g_currentSavedGame->load(loadfile.str());
 	
 	// first time in this level ?
@@ -2362,7 +2362,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, std::string
 	progressBarAdvance(2.f);
 	LoadLevelScreen();
 	
-	ARX_CHANGELEVEL_Pop_Level(AreaId(instance), firstTime);
+	ARX_CHANGELEVEL_Pop_Level(area, firstTime);
 	if(!firstTime) {
 		g_desiredFogParameters = asi->gmods_desired;
 		g_currentFogParameters = asi->gmods_current;
@@ -2379,7 +2379,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, std::string
 			}
 		}
 	} else {
-		ARX_CHANGELEVEL_PopAllIO(levelSave, AreaId(instance));
+		ARX_CHANGELEVEL_PopAllIO(levelSave, area);
 	}
 	
 	progressBarAdvance(20.f);
@@ -2553,7 +2553,7 @@ void ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	
 	progressBarAdvance(2.f);
 	LoadLevelScreen();
-	ARX_CHANGELEVEL_PopLevel(pld.level, false);
+	ARX_CHANGELEVEL_PopLevel(AreaId(pld.level), false);
 	
 	BLOCK_PLAYER_CONTROLS = false;
 	player.Interface &= ~INTER_COMBATMODE;
