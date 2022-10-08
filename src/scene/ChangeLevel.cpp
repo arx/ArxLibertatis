@@ -1641,7 +1641,7 @@ static bool loadScriptVariables(SCRIPT_VARIABLES & var, const char * dat, size_t
 		}
 		
 		var[i].fval = avs->fval;
-		var[i].ival = long(avs->fval);
+		var[i].ival = s32(avs->fval);
 		
 		if(type == TYPE_G_TEXT || type == TYPE_L_TEXT) {
 			if(var[i].ival) {
