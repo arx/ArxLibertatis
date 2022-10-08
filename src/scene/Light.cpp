@@ -207,7 +207,7 @@ void TreatBackgroundDynlights() {
 				dynamicLight->intensity    = light.intensity;
 				dynamicLight->ex_flaresize = light.ex_flaresize;
 				dynamicLight->extras       = light.extras;
-				dynamicLight->duration     = std::chrono::milliseconds(std::numeric_limits<long>::max());
+				dynamicLight->duration     = GameDuration::max();
 				
 				dynamicLight->rgb = light.rgb - light.rgb * light.ex_flicker * randomColor3f() * 0.5f;
 				
