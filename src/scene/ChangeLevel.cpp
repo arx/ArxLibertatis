@@ -1346,7 +1346,7 @@ static void ARX_CHANGELEVEL_Pop_Zones_n_Lights(std::string_view buffer) {
 	
 }
 
-static void ARX_CHANGELEVEL_Pop_Level(long num, bool firstTime) {
+static void ARX_CHANGELEVEL_Pop_Level(AreaId area, bool firstTime) {
 	
 	LOAD_N_ERASE = false;
 	
@@ -1356,7 +1356,7 @@ static void ARX_CHANGELEVEL_Pop_Level(long num, bool firstTime) {
 	
 	ARX_CHANGELEVEL_Pop_Globals();
 	
-	DanaeLoadLevel(AreaId(num), firstTime);
+	DanaeLoadLevel(area, firstTime);
 	CleanScriptLoadedIO();
 	
 	if(firstTime) {
@@ -2362,7 +2362,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, std::string
 	progressBarAdvance(2.f);
 	LoadLevelScreen();
 	
-	ARX_CHANGELEVEL_Pop_Level(instance, firstTime);
+	ARX_CHANGELEVEL_Pop_Level(AreaId(instance), firstTime);
 	if(!firstTime) {
 		g_desiredFogParameters = asi->gmods_desired;
 		g_currentFogParameters = asi->gmods_current;
