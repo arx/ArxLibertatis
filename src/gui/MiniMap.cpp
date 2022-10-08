@@ -79,20 +79,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "util/Range.h"
 
+
 MiniMap g_miniMap; // TODO: remove this
 
 static constexpr Vec2f g_mapMod(float(MAX_BKGX) / MINIMAP_MAX_X, float(MAX_BKGZ) / MINIMAP_MAX_Z);
 static constexpr Vec2f g_worldToMapScale = 0.01f / g_mapMod / Vec2f(MINIMAP_MAX_X, MINIMAP_MAX_Z);
-
-TextureContainer * MiniMap::getData(size_t showLevel) {
-	
-	if(!m_levels[showLevel].m_texContainer) {
-		res::path levelMap = "graph/levels/level" + std::to_string(showLevel) + "/map";
-		m_levels[showLevel].m_texContainer = TextureContainer::Load(levelMap, TextureContainer::NoColorKey);
-	}
-	
-	return m_levels[showLevel].m_texContainer;
-}
 
 void MiniMap::validatePlayerPos(AreaId currentArea, bool blockPlayerControls, ARX_INTERFACE_BOOK_MODE bookMode) {
 	
@@ -227,10 +218,6 @@ void MiniMap::showPlayerMiniMap(size_t showLevel) {
 		return;
 	}
 	
-	if(!getData(showLevel)) {
-		return;
-	}
-	
 	UseRenderState state(render2D());
 	
 	ARX_PROFILE_FUNC();
@@ -268,10 +255,6 @@ void MiniMap::showBookMiniMap(size_t showLevel, Rect rect, float scale) {
 		return;
 	}
 	
-	if(!getData(showLevel)) {
-		return;
-	}
-	
 	UseRenderState state(render2D());
 	
 	float zoom = 900.f * scale;
@@ -298,13 +281,7 @@ void MiniMap::showBookEntireMap(size_t showLevel, Rect rect, float scale) {
 		return;
 	}
 	
-	// First Load Minimap TC & DATA if needed
-	if(!getData(showLevel)) {
-		return;
-	}
-	
 	UseRenderState state(render2D());
-	
 	
 	float zoom = 250.f * scale;
 	
@@ -445,15 +422,20 @@ void MiniMap::drawBackground(size_t showLevel, Rect boundaries, Vec2f start, flo
 	
 	m_mapVertices.clear();
 	
-	Vec2f cas(zoom / MINIMAP_MAX_X, zoom / MINIMAP_MAX_Z);
+	if(!m_levels[showLevel].m_texContainer) {
+		res::path levelMap = "graph/levels/level" + std::to_string(showLevel) + "/map";
+		m_levels[showLevel].m_texContainer = TextureContainer::Load(levelMap, TextureContainer::NoColorKey);
+	}
 	
 	GRenderer->SetTexture(0, m_levels[showLevel].m_texContainer);
 	
-	float div = (1.0f / 25);
-	TextureContainer * tc = m_levels[showLevel].m_texContainer;
-	Vec2f d(1.f / float(tc->m_pTexture->getStoredSize().x), 1.f / float(tc->m_pTexture->getStoredSize().y));
+	Vec2f d(0.f);
+	if(m_levels[showLevel].m_texContainer) {
+		d = 0.04f / Vec2f(m_levels[showLevel].m_texContainer->m_pTexture->getStoredSize());
+	}
+	Vec2f v2 = 100.f * d * g_mapMod;
 	
-	Vec2f v2 = 4.f * d * g_mapMod;
+	Vec2f cas(zoom / MINIMAP_MAX_X, zoom / MINIMAP_MAX_Z);
 	
 	float fadeDiv = 0.f;
 	Rect fadeBounds = boundaries;
@@ -476,9 +458,7 @@ void MiniMap::drawBackground(size_t showLevel, Rect boundaries, Vec2f start, flo
 	
 	for(Vec2i tile : util::grid(Vec2i(-2), Vec2i(MINIMAP_MAX_X, MINIMAP_MAX_X) + Vec2i(2))) {
 		
-		Vec2f v3 = Vec2f(tile) * g_backgroundTileSize * g_mapMod;
-		
-		Vec2f v4 = v3 * div * d;
+		Vec2f v4 = Vec2f(tile) * g_backgroundTileSize * g_mapMod * d;
 		
 		Vec2f pos = start + Vec2f(tile) * cas;
 		
