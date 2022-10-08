@@ -120,7 +120,7 @@ struct EERIEPOLY {
 	Vec3f center = Vec3f(0.f);
 	float transval = 0.f;
 	float area = 0.f;
-	short room = 0;
+	RoomHandle room = RoomHandle(0);
 	unsigned short uslInd[4] = { 0, 0, 0, 0 };
 	
 	constexpr EERIEPOLY() arx_noexcept_default
@@ -192,13 +192,13 @@ struct EERIE_3DOBJ {
 	std::vector<EERIE_VERTEX> vertexWorldPositions;
 	std::vector<Vec4f> vertexClipPositions;
 	std::vector<ColorRGBA> vertexColors;
-
+	
 	std::vector<EERIE_FACE> facelist;
 	std::vector<VertexGroup> grouplist;
 	std::vector<EERIE_ACTIONLIST> actionlist;
 	std::vector<EERIE_SELECTIONS> selections;
 	std::vector<TextureContainer *> texturecontainer;
-
+	
 	std::vector<res::path> originaltextures;
 	std::vector<EERIE_LINKED> linked;
 	

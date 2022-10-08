@@ -753,7 +753,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			
 			const FAST_EERIEPOLY * ep = fts_read<FAST_EERIEPOLY>(data, end);
 			
-			polygon.room = ep->room;
+			polygon.room = ep->room < 0 ? RoomHandle() : RoomHandle(ep->room);
 			polygon.area = ep->area;
 			polygon.norm = ep->norm.toVec3();
 			polygon.norm2 = ep->norm2.toVec3();

@@ -672,17 +672,17 @@ static EERIEPOLY * ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long fl
 	} else {
 		ep = CheckInPoly(pos);
 	}
-	if(ep && ep->room > -1) {
+	if(ep && ep->room) {
 		return ep;
 	}
 	
 	// Security... ?
 	ep = GetMinPoly(pos);
-	if(ep && ep->room > -1) {
+	if(ep && ep->room) {
 		return ep;
 	} else if(!(flag & 1)) {
 		ep = CheckInPoly(pos);
-		if(ep && ep->room > -1) {
+		if(ep && ep->room) {
 			return ep;
 		}
 	}
@@ -692,32 +692,32 @@ static EERIEPOLY * ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long fl
 		float off = 20.f;
 		
 		ep = CheckInPoly(pos + Vec3f(-off, -off, 0.f));
-		if(ep && ep->room > -1) {
+		if(ep && ep->room) {
 			return ep;
 		}
 		
 		ep = CheckInPoly(pos + Vec3f(-off, -20, -off));
-		if(ep && ep->room > -1) {
+		if(ep && ep->room) {
 			return ep;
 		}
 		
 		ep = CheckInPoly(pos + Vec3f(-off, -20, off));
-		if(ep && ep->room > -1) {
+		if(ep && ep->room) {
 			return ep;
 		}
 		
 		ep = CheckInPoly(pos + Vec3f(off, -20, 0.f));
-		if(ep && ep->room > -1) {
+		if(ep && ep->room) {
 			return ep;
 		}
 		
 		ep = CheckInPoly(pos + Vec3f(off, -20, off));
-		if(ep && ep->room > -1) {
+		if(ep && ep->room) {
 			return ep;
 		}
 		
 		ep = CheckInPoly(pos + Vec3f(off, -20, -off));
-		if(ep && ep->room > -1) {
+		if(ep && ep->room) {
 			return ep;
 		}
 		
@@ -730,14 +730,14 @@ static EERIEPOLY * ARX_PORTALS_GetRoomNumForCamera(const Vec3f & pos, const Vec3
 	
 	{
 		EERIEPOLY * ep = CheckInPoly(pos);
-		if(ep && ep->room > -1) {
+		if(ep && ep->room) {
 			return ep;
 		}
 	}
 	
 	{
 		EERIEPOLY * ep = GetMinPoly(pos);
-		if(ep && ep->room > -1) {
+		if(ep && ep->room) {
 			return ep;
 		}
 	}
@@ -750,7 +750,7 @@ static EERIEPOLY * ARX_PORTALS_GetRoomNumForCamera(const Vec3f & pos, const Vec3
 		
 		EERIEPOLY * ep = CheckInPoly(tmpPos);
 		
-		if(ep && ep->room > -1) {
+		if(ep && ep->room) {
 			return ep;
 		}
 		
@@ -772,7 +772,7 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 		Vec3f direction = angleToVectorXZ_180offset(g_camera->angle.getYaw());
 		EERIEPOLY * ep = ARX_PORTALS_GetRoomNumForCamera(g_camera->m_pos, direction);
 		if(ep) {
-			num = ep->room;
+			num = s32(ep->room);
 			height = ep->center.y;
 		} else {
 			num = -1;
@@ -780,7 +780,7 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 	} else {
 		EERIEPOLY * ep = ARX_PORTALS_GetRoomNumForPosition2(pos, flag);
 		if(ep) {
-			num = ep->room;
+			num = s32(ep->room);
 			height = ep->center.y;
 		} else {
 			num = -1;
