@@ -124,7 +124,7 @@ static bool ARX_CHANGELEVEL_Push_Index(AreaId area);
 static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum);
 static bool ARX_CHANGELEVEL_PopLevel(AreaId area, bool reloadflag = false,
                                      std::string_view target = std::string_view(), float angle = 0.f);
-static void ARX_CHANGELEVEL_Push_Globals();
+static bool ARX_CHANGELEVEL_Push_Globals();
 static void ARX_CHANGELEVEL_Pop_Globals();
 static bool ARX_CHANGELEVEL_Push_Player(AreaId area);
 static bool ARX_CHANGELEVEL_Push_AllIO(AreaId area);
@@ -364,24 +364,15 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	g_secondaryInventoryHud.close();
 	
 	// Now we can save our things
-	if(!ARX_CHANGELEVEL_Push_Index(AreaId(num))) {
-		LogError << "Error saving index...";
-		return false;
-	}
+	bool ok  = ARX_CHANGELEVEL_Push_Index(AreaId(num));
 	
-	ARX_CHANGELEVEL_Push_Globals();
+	ok = ARX_CHANGELEVEL_Push_Globals() || ok;
 	
-	if(!ARX_CHANGELEVEL_Push_Player(AreaId(newnum))) {
-		LogError << "Error saving player...";
-		return false;
-	}
+	ok = ARX_CHANGELEVEL_Push_Player(AreaId(newnum)) || ok;
 	
-	if(!ARX_CHANGELEVEL_Push_AllIO(AreaId(num))) {
-		LogError << "Error saving entities...";
-		return false;
-	}
+	ok = ARX_CHANGELEVEL_Push_AllIO(AreaId(num)) || ok;
 	
-	return true;
+	return ok;
 }
 
 static bool isInPlayerInventoryOrEquipment(const Entity & entity) {
@@ -490,9 +481,12 @@ static bool ARX_CHANGELEVEL_Push_Index(AreaId area) {
 	
 	std::stringstream savefile;
 	savefile << "lvl" << std::setfill('0') << std::setw(3) << u32(area);
-	bool ret = g_currentSavedGame->save(savefile.str(), dat, pos);
+	bool ok = g_currentSavedGame->save(savefile.str(), dat, pos);
+	if(!ok) {
+		LogError << "Could not save index " << savefile.str();
+	}
 	
-	return ret;
+	return ok;
 }
 
 static VariableType getVariableType(std::string_view name) {
@@ -571,7 +565,7 @@ static void storeScriptVariables(char * dat, size_t & pos, const SCRIPT_VARIABLE
 	
 }
 
-static void ARX_CHANGELEVEL_Push_Globals() {
+static bool ARX_CHANGELEVEL_Push_Globals() {
 	
 	ARX_CHANGELEVEL_SAVE_GLOBALS acsg;
 	
@@ -592,8 +586,12 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 	
 	arx_assert(pos <= buffer.size());
 	
-	g_currentSavedGame->save("globals", dat, pos);
+	bool ok = g_currentSavedGame->save("globals", dat, pos);
+	if(!ok) {
+		LogError << "Could not save globals";
+	}
 	
+	return ok;
 }
 
 template <size_t N>
@@ -798,6 +796,9 @@ static bool ARX_CHANGELEVEL_Push_Player(AreaId area) {
 	LastValidPlayerPos = asp->LAST_VALID_POS.toVec3();
 	
 	bool ok = g_currentSavedGame->save("player", dat, pos);
+	if(!ok) {
+		LogError << "Could not save player";
+	}
 	
 	for(Entity & entity : entities) {
 		if(&entity == g_draggedEntity || isInPlayerInventoryOrEquipment(entity)) {
@@ -1249,7 +1250,12 @@ static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 	
 	arx_assert(pos <= buffer.size());
 	
-	return g_currentSavedGame->save(io->idString(), dat, pos);
+	bool ok = g_currentSavedGame->save(io->idString(), dat, pos);
+	if(!ok) {
+		LogError << "Could not save entity " << io->idString();
+	}
+	
+	return ok;
 }
 
 static const ARX_CHANGELEVEL_INDEX * ARX_CHANGELEVEL_Pop_Index(std::string_view buffer) {
