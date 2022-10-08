@@ -50,9 +50,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <string_view>
 
+#include "graphics/BaseGraphicsTypes.h"
+
+
 namespace fs { class path; }
 
-void ARX_CHANGELEVEL_Change(long level, std::string_view target, float angle);
+void ARX_CHANGELEVEL_Change(AreaId area, std::string_view target, float angle);
 
 bool ARX_CHANGELEVEL_GetInfo(const fs::path & savefile, std::string & name, float & version, long & level);
 

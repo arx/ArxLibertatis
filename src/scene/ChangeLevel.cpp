@@ -313,23 +313,19 @@ void currentSavedGameRemoveEntity(std::string_view idString) {
 	}
 }
 
-void ARX_CHANGELEVEL_Change(long level, std::string_view target, float angle) {
+void ARX_CHANGELEVEL_Change(AreaId area, std::string_view target, float angle) {
 	
-	LogDebug("ARX_CHANGELEVEL_Change " << level << " " << target << " " << angle);
+	arx_assume(area);
+	
+	LogDebug("ARX_CHANGELEVEL_Change " << area << " " << target << " " << angle);
 	
 	progressBarSetTotal(238);
 	progressBarReset();
 	
-	LoadLevelScreen(level);
-	
-	if(level == -1) {
-		// fatality...
-		LogWarning << "Internal Non-Fatal Error";
-		return;
-	}
+	LoadLevelScreen(s32(area));
 	
 	// not changing level, just teleported
-	if(level == CURRENTLEVEL) {
+	if(s32(area) == CURRENTLEVEL) {
 		if(Entity * targetEntity = entities.getById(target)) {
 			g_moveto = player.pos = GetItemWorldPosition(targetEntity) + player.baseOffset();
 		}
@@ -341,15 +337,15 @@ void ARX_CHANGELEVEL_Change(long level, std::string_view target, float angle) {
 	ARX_PLAYER_Reset_Fall();
 	
 	progressBarAdvance();
-	LoadLevelScreen(level);
+	LoadLevelScreen(s32(area));
 	
 	if(!openCurrentSavedGameFile()) {
 		return;
 	}
 	
-	ARX_CHANGELEVEL_PushLevel(CURRENTLEVEL, level);
+	ARX_CHANGELEVEL_PushLevel(CURRENTLEVEL, s32(area));
 	
-	ARX_CHANGELEVEL_PopLevel(level, true, target, angle);
+	ARX_CHANGELEVEL_PopLevel(s32(area), true, target, angle);
 	
 	entities.player()->inzone = nullptr;
 	

@@ -1153,7 +1153,7 @@ void ArxGame::doFrame() {
 		benchmark::begin(benchmark::LoadLevel);
 		LogDebug("teleport to " << TELEPORT_TO_LEVEL << " " << TELEPORT_TO_POSITION << " " << TELEPORT_TO_ANGLE);
 		CHANGE_LEVEL_ICON = NoChangeLevel;
-		ARX_CHANGELEVEL_Change(TELEPORT_TO_LEVEL, TELEPORT_TO_POSITION, float(TELEPORT_TO_ANGLE));
+		ARX_CHANGELEVEL_Change(AreaId(TELEPORT_TO_LEVEL), TELEPORT_TO_POSITION, float(TELEPORT_TO_ANGLE));
 		TELEPORT_TO_LEVEL = -1;
 		TELEPORT_TO_POSITION.clear();
 	}
