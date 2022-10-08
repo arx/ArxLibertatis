@@ -524,7 +524,7 @@ float GetColorz(const Vec3f & pos) {
 	if(ep != nullptr) {
 		Color3f _ff = Color3f(0.f, 0.f, 0.f);
 		
-		long to = (ep->type & POLY_QUAD) ? 4 : 3;
+		size_t to = (ep->type & POLY_QUAD) ? 4 : 3;
 		float div = (1.0f / to);
 		
 		if(auto tile = g_tiles->getTile(ep->center)) {
@@ -534,13 +534,13 @@ float GetColorz(const Vec3f & pos) {
 			ApplyTileLights(ep, tile);
 		}
 		
-		for(long i = 0; i < to; i++) {
+		for(size_t i = 0; i < to; i++) {
 			Color col = Color::fromRGBA(ep->color[i]);
 			_ff.r += float(col.r);
 			_ff.g += float(col.g);
 			_ff.b += float(col.b);
 		}
-
+		
 		_ff.r *= div;
 		_ff.g *= div;
 		_ff.b *= div;
