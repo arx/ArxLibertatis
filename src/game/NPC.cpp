@@ -2573,7 +2573,7 @@ void CheckNPCEx(Entity & io) {
 		
 		RoomHandle playerRoom = ARX_PORTALS_GetRoomNumForPosition(player.pos, 1);
 		
-		float fdist = SP_GetRoomDist(io.pos, player.pos, s32(io.room), s32(playerRoom));
+		float fdist = SP_GetRoomDist(io.pos, player.pos, io.room, playerRoom);
 		
 		// Use Portal Room Distance for Extra Visibility Clipping.
 		if(playerRoom && io.room && fdist > 2000.f) {
@@ -2686,7 +2686,7 @@ void spawnAudibleSound(const Vec3f & pos, Entity & source, const float factor, c
 				}
 				
 				if(sourceRoom && npc.room) {
-					float fdist = SP_GetRoomDist(pos, npc.pos, s32(sourceRoom), s32(npc.room));
+					float fdist = SP_GetRoomDist(pos, npc.pos, sourceRoom, npc.room);
 					if(fdist < max_distance * 1.5f) {
 						distance = fdist;
 					}

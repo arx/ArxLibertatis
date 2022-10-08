@@ -533,7 +533,7 @@ void PrepareIOTreatZone(long flag) {
 					if(entity.requestRoomUpdate) {
 						UpdateIORoom(&entity);
 					}
-					dists = square(SP_GetRoomDist(entity.pos, cameraPos, s32(entity.room), s32(cameraRoom)));
+					dists = square(SP_GetRoomDist(entity.pos, cameraPos, entity.room, cameraRoom));
 				}
 			} else {
 				if(entity.show == SHOW_FLAG_TELEPORTING) {

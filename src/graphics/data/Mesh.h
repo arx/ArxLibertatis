@@ -52,6 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "ai/Anchors.h"
 #include "game/Camera.h"
+#include "graphics/BaseGraphicsTypes.h"
 #include "graphics/GraphicsTypes.h"
 #include "math/Rectangle.h"
 #include "platform/Platform.h"
@@ -140,7 +141,7 @@ extern std::vector<ROOM_DIST_DATA> g_roomDistance;
 void UpdateIORoom(Entity * io);
 
 void FreeRoomDistance();
-float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, long io_room, long Cam_Room);
+float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, RoomHandle startRoom, RoomHandle endRoom);
 
 void EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 void ComputePortalVertexBuffer();

@@ -516,7 +516,7 @@ static void SetRoomDistance(size_t i, size_t j, float val,
 	
 }
 
-float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, long io_room, long Cam_Room) {
+float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, RoomHandle startRoom, RoomHandle endRoom) {
 	
 	float dst = fdist(pos, c_pos);
 	if(dst < 150.f) {
@@ -527,15 +527,14 @@ float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, long io_room, long 
 		return dst;
 	}
 	
-	if(io_room < 0 || size_t(io_room) >= g_rooms->rooms.size()) {
+	if(!startRoom || !endRoom) {
 		return dst;
 	}
 	
-	if(Cam_Room < 0 || size_t(Cam_Room) >= g_rooms->rooms.size()) {
-		return dst;
-	}
+	arx_assume(size_t(startRoom) < g_rooms->rooms.size());
+	arx_assume(size_t(endRoom) < g_rooms->rooms.size());
 	
-	const ROOM_DIST_DATA & dist = g_roomDistance[size_t(Cam_Room) + size_t(io_room) * g_rooms->rooms.size()];
+	const ROOM_DIST_DATA & dist = g_roomDistance[size_t(endRoom) + size_t(startRoom) * g_rooms->rooms.size()];
 	if(dist.distance <= 0.f) {
 		return dst;
 	}

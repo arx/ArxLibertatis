@@ -723,7 +723,7 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 							UpdateIORoom(context.getEntity());
 						}
 						RoomHandle playerRoom = ARX_PORTALS_GetRoomNumForPosition(player.pos, 1);
-						*fcontent = SP_GetRoomDist(context.getEntity()->pos, player.pos, s32(context.getEntity()->room), s32(playerRoom));
+						*fcontent = SP_GetRoomDist(context.getEntity()->pos, player.pos, context.getEntity()->room, playerRoom);
 					} else if(target
 					          && (context.getEntity()->show == SHOW_FLAG_IN_SCENE
 					              || context.getEntity()->show == SHOW_FLAG_IN_INVENTORY)
@@ -741,7 +741,7 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 							UpdateIORoom(target);
 						}
 						
-						*fcontent = SP_GetRoomDist(pos, pos2, s32(context.getEntity()->room), s32(target->room));
+						*fcontent = SP_GetRoomDist(pos, pos2, context.getEntity()->room, target->room);
 						
 					} else {
 						// Out of this world item
