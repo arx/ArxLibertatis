@@ -614,7 +614,7 @@ static bool ARX_CHANGELEVEL_Push_Player(AreaId area) {
 	
 	ARX_CHANGELEVEL_PLAYER * asp;
 	
-	long allocsize = sizeof(ARX_CHANGELEVEL_PLAYER) + 48000;
+	size_t allocsize = sizeof(ARX_CHANGELEVEL_PLAYER) + 48000;
 	allocsize += g_playerKeyring.size() * SAVED_KEYRING_SLOT_SIZE;
 	allocsize += SAVED_QUEST_SLOT_SIZE * g_playerQuestLogEntries.size();
 	allocsize += sizeof(SavedMapMarkerData) * g_miniMap.mapMarkerCount();
