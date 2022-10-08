@@ -722,8 +722,8 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 						if(context.getEntity()->requestRoomUpdate) {
 							UpdateIORoom(context.getEntity());
 						}
-						long Player_Room = ARX_PORTALS_GetRoomNumForPosition(player.pos, 1);
-						*fcontent = SP_GetRoomDist(context.getEntity()->pos, player.pos, s32(context.getEntity()->room), Player_Room);
+						RoomHandle playerRoom = ARX_PORTALS_GetRoomNumForPosition(player.pos, 1);
+						*fcontent = SP_GetRoomDist(context.getEntity()->pos, player.pos, s32(context.getEntity()->room), s32(playerRoom));
 					} else if(target
 					          && (context.getEntity()->show == SHOW_FLAG_IN_SCENE
 					              || context.getEntity()->show == SHOW_FLAG_IN_INVENTORY)

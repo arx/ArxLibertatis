@@ -49,13 +49,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <vector>
 
+#include "graphics/BaseGraphicsTypes.h"
 #include "graphics/data/Mesh.h"
 #include "math/Types.h"
 
 class Entity;
 struct Sphere;
 
-long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag = 0);
+RoomHandle ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag = 0);
 
 void ARX_SCENE_Update();
 void ARX_SCENE_Render();

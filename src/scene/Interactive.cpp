@@ -459,23 +459,25 @@ void PrepareIOTreatZone(long flag) {
 	} else if(status == 3) {
 		status = 0;
 	}
-
+	
 	if(fartherThan(cameraPos, lastpos, 100.f)) {
 		status = 0;
 		lastpos = cameraPos;
 	}
-
-	if(status++)
+	
+	if(status++) {
 		return;
-
+	}
+	
 	TREATZONE_Clear();
-	long Cam_Room = ARX_PORTALS_GetRoomNumForPosition(cameraPos, 1);
-	long PlayerRoom = ARX_PORTALS_GetRoomNumForPosition(player.pos, 1);
 	TREATZONE_AddIO(entities.player());
+	
+	RoomHandle cameraRoom = ARX_PORTALS_GetRoomNumForPosition(cameraPos, 1);
+	RoomHandle playerRoom = ARX_PORTALS_GetRoomNumForPosition(player.pos, 1);
 	
 	for(EntityHandle equipment : player.equiped) {
 		if(Entity * toequip = entities.get(equipment)) {
-			toequip->room = RoomHandle(PlayerRoom);
+			toequip->room = playerRoom;
 			toequip->requestRoomUpdate = false;
 		}
 	}
@@ -523,7 +525,7 @@ void PrepareIOTreatZone(long flag) {
 			treat = true;
 		} else {
 			float dists;
-			if(Cam_Room >= 0) {
+			if(cameraRoom) {
 				if(entity.show == SHOW_FLAG_TELEPORTING) {
 					Vec3f pos = GetItemWorldPosition(&entity);
 					dists = arx::distance2(cameraPos, pos);
@@ -531,7 +533,7 @@ void PrepareIOTreatZone(long flag) {
 					if(entity.requestRoomUpdate) {
 						UpdateIORoom(&entity);
 					}
-					dists = square(SP_GetRoomDist(entity.pos, cameraPos, s32(entity.room), Cam_Room));
+					dists = square(SP_GetRoomDist(entity.pos, cameraPos, s32(entity.room), s32(cameraRoom)));
 				}
 			} else {
 				if(entity.show == SHOW_FLAG_TELEPORTING) {

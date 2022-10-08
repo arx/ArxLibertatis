@@ -267,10 +267,9 @@ bool VisibleSphere(const Sphere & sphere) {
 		return false;
 	}
 	
-	long room_num = ARX_PORTALS_GetRoomNumForPosition(sphere.origin);
-	if(room_num >= 0) {
+	if(RoomHandle room = ARX_PORTALS_GetRoomNumForPosition(sphere.origin)) {
 		arx_assert(g_rooms);
-		if(FrustrumsClipSphere(g_rooms->visibility[room_num].frustrum, sphere)) {
+		if(FrustrumsClipSphere(g_rooms->visibility[size_t(room)].frustrum, sphere)) {
 			return false;
 		}
 	}
@@ -349,47 +348,51 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 		}
 	}
 	
-	if(g_rooms) {
-		Vec3f posi = position + Vec3f(0, -60, 0); // -20 ?
-		long room_num;
-
+	if(!g_rooms) {
+		return false;
+	}
+	
+	Vec3f posi = position + Vec3f(0, -60, 0); // -20 ?
+	
+	RoomHandle room;
+	if(io) {
+		if(io->requestRoomUpdate) {
+			UpdateIORoom(io);
+		}
+		room = io->room;
+	} else {
+		room = ARX_PORTALS_GetRoomNumForPosition(posi);
+	}
+	if(!room) {
+		posi.y = position.y - 120;
+		room = ARX_PORTALS_GetRoomNumForPosition(posi);
+	}
+	if(!room) {
+		return false;
+	}
+	
+	arx_assume(size_t(room) < g_rooms->visibility.size());
+	
+	if(g_rooms->visibility[size_t(room)].count == 0) {
 		if(io) {
-			if(io->requestRoomUpdate) {
-				UpdateIORoom(io);
-			}
-			room_num = s32(io->room);
-		} else {
-			room_num = ARX_PORTALS_GetRoomNumForPosition(posi);
+			io->bbox2D.min = Vec2f(-1.f, -1.f);
+			io->bbox2D.max = Vec2f(-1.f, -1.f);
 		}
-
-		if(room_num == -1) {
-			posi.y = position.y - 120;
-			room_num = ARX_PORTALS_GetRoomNumForPosition(posi);
-		}
-
-		if(room_num >= 0 && size_t(room_num) < g_rooms->visibility.size()) {
-			if(g_rooms->visibility[room_num].count == 0) {
-				if(io) {
-					io->bbox2D.min = Vec2f(-1.f, -1.f);
-					io->bbox2D.max = Vec2f(-1.f, -1.f);
-				}
-				return true;
-			}
-			
-			if(io) {
-				const EERIE_FRUSTRUM_DATA & frustrums = g_rooms->visibility[room_num].frustrum;
-				// TODO also use the portals from intermediate rooms for clipping
-				if(FrustrumsClipSphere(frustrums, sphere) ||
-				   FrustrumsClipBBox3D(frustrums, io->bbox3D)
-				) {
-					io->bbox2D.min = Vec2f(-1.f, -1.f);
-					io->bbox2D.max = Vec2f(-1.f, -1.f);
-					return true;
-				}
-			}
+		return true;
+	}
+	
+	if(io) {
+		const EERIE_FRUSTRUM_DATA & frustrums = g_rooms->visibility[size_t(room)].frustrum;
+		// TODO also use the portals from intermediate rooms for clipping
+		if(FrustrumsClipSphere(frustrums, sphere) ||
+				FrustrumsClipBBox3D(frustrums, io->bbox3D)
+		) {
+			io->bbox2D.min = Vec2f(-1.f, -1.f);
+			io->bbox2D.max = Vec2f(-1.f, -1.f);
+			return true;
 		}
 	}
-
+	
 	return false;
 }
 
@@ -569,14 +572,15 @@ EntityVisibility getEntityVisibility(Entity & entity, bool cullingOnly) {
 			return EntityNotInView;
 		}
 		if(g_rooms && USE_PLAYERCOLLISIONS) {
-			long room = ARX_PORTALS_GetRoomNumForPosition(g_camera->m_pos, 1);
-			if(room >= 0 && size_t(room) < g_rooms->visibility.size()) {
-				long room2 = s32(entity.room);
-				if(room2 == -1) {
+			if(RoomHandle room = ARX_PORTALS_GetRoomNumForPosition(g_camera->m_pos, 1)) {
+				arx_assume(size_t(room) < g_rooms->visibility.size());
+				RoomHandle room2 = entity.room;
+				if(!room2) {
 					room2 = ARX_PORTALS_GetRoomNumForPosition(parent->pos - Vec3f(0.f, 120.f, 0.f));
 				}
-				if(room2 >= 0 && size_t(room2) < g_rooms->visibility.size() && room2 != room) {
-					if(isOccludedByPortals(entity, arx::distance2(parent->pos, g_camera->m_pos), RoomHandle(room2), RoomHandle(room))) {
+				if(room2 && room2 != room) {
+					arx_assume(size_t(room2) < g_rooms->visibility.size());
+					if(isOccludedByPortals(entity, arx::distance2(parent->pos, g_camera->m_pos), room2, room)) {
 						return EntityFullyOccluded;
 					}
 				}
@@ -761,35 +765,31 @@ static EERIEPOLY * ARX_PORTALS_GetRoomNumForCamera(const Vec3f & pos, const Vec3
 }
 
 // flag==1 for player
-long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
+RoomHandle ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 	
 	ARX_PROFILE_FUNC();
 	
-	long num = -1;
+	RoomHandle result;
 	float height = 0.f;
 	
 	if(flag & 1) {
 		Vec3f direction = angleToVectorXZ_180offset(g_camera->angle.getYaw());
-		EERIEPOLY * ep = ARX_PORTALS_GetRoomNumForCamera(g_camera->m_pos, direction);
-		if(ep) {
-			num = s32(ep->room);
-			height = ep->center.y;
-		} else {
-			num = -1;
+		EERIEPOLY * face = ARX_PORTALS_GetRoomNumForCamera(g_camera->m_pos, direction);
+		if(face) {
+			result = face->room;
+			height = face->center.y;
 		}
 	} else {
-		EERIEPOLY * ep = ARX_PORTALS_GetRoomNumForPosition2(pos, flag);
-		if(ep) {
-			num = s32(ep->room);
-			height = ep->center.y;
-		} else {
-			num = -1;
+		EERIEPOLY * face = ARX_PORTALS_GetRoomNumForPosition2(pos, flag);
+		if(face) {
+			result = face->room;
+			height = face->center.y;
 		}
 	}
 	
-	if(num > -1) {
+	if(result) {
 		
-		long nearest = -1;
+		RoomHandle nearest;
 		float nearest_dist = 99999.f;
 		
 		for(const Room & room : g_rooms->rooms) {
@@ -801,9 +801,9 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 						if(height > yy) {
 							if(yy >= pos.y && yy - pos.y < nearest_dist) {
 								if(portal.plane.normal.y > 0) {
-									nearest = s32(portal.room1);
+									nearest = portal.room1;
 								} else {
-									nearest = s32(portal.room0);
+									nearest = portal.room0;
 								}
 								nearest_dist = yy - pos.y;
 							}
@@ -813,13 +813,13 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 			}
 		}
 		
-		if(nearest > -1) {
-			num = nearest;
+		if(nearest) {
+			result = nearest;
 		}
 		
 	}
 	
-	return num;
+	return result;
 }
 
 static void ARX_PORTALS_Frustrum_ClearIndexCount(size_t room_num) {
@@ -1604,12 +1604,8 @@ void ARX_SCENE_Update() {
 			g_rooms->visibleRooms.push_back(RoomHandle(i));
 			RoomFrustrumAdd(RoomHandle(i), g_screenFrustum);
 		}
-	} else {
-		long room_num = ARX_PORTALS_GetRoomNumForPosition(camPos, 1);
-		if(room_num > -1) {
-			RoomHandle roomIndex(room_num);
-			ARX_PORTALS_Frustrum_ComputeRoom(roomIndex, g_screenFrustum, camPos, camDepth);
-		}
+	} else if(RoomHandle room = ARX_PORTALS_GetRoomNumForPosition(camPos, 1)) {
+		ARX_PORTALS_Frustrum_ComputeRoom(room, g_screenFrustum, camPos, camDepth);
 	}
 	
 	for(RoomHandle room : g_rooms->visibleRooms) {
