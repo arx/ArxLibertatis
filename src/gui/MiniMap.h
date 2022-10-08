@@ -109,7 +109,7 @@ public:
 	{ }
 	
 	void mapMarkerRemove(std::string_view name);
-	void mapMarkerAdd(const Vec2f & pos, size_t lvl, std::string && name);
+	void mapMarkerAdd(const Vec2f & pos, MapLevel level, std::string && name);
 	void mapMarkerInit(size_t reserveSize = 0);
 	size_t mapMarkerCount();
 	MapMarkerData mapMarkerGet(size_t id);

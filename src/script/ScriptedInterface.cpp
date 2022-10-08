@@ -351,13 +351,18 @@ public:
 			
 			float x = context.getFloat();
 			float y = context.getFloat();
-			int level = int(context.getFloat());
+			float level = context.getFloat();
 			
 			std::string marker = context.getWord();
 			
 			DebugScript(' ' << options << ' ' << x << ' ' << y << ' ' << level << ' ' << marker);
 			
-			g_miniMap.mapMarkerAdd(Vec2f(x, y), level, std::string(toLocalizationKey(marker)));
+			if(level < 1.f || !is_in_range<s16>(level)) {
+				ScriptError << "Invalid map level: " << level;
+				return Failed;
+			}
+			
+			g_miniMap.mapMarkerAdd(Vec2f(x, y), MapLevel(u32(level - 1)), std::string(toLocalizationKey(marker)));
 			
 		}
 		

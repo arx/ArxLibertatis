@@ -679,13 +679,13 @@ int MiniMap::mapMarkerGetID(std::string_view name) {
 	return -1;
 }
 
-void MiniMap::mapMarkerAdd(const Vec2f & pos, size_t lvl, std::string && name) {
+void MiniMap::mapMarkerAdd(const Vec2f & pos, MapLevel level, std::string && name) {
 	
 	int num = mapMarkerGetID(name);
 	
 	if(num >= 0) {
 		// Already exists, update it
-		m_mapMarkers[num].m_level = MapLevel(lvl - 1);
+		m_mapMarkers[num].m_level = level;
 		m_mapMarkers[num].m_pos.x = pos.x;
 		m_mapMarkers[num].m_pos.y = pos.y;
 		return;
@@ -693,7 +693,7 @@ void MiniMap::mapMarkerAdd(const Vec2f & pos, size_t lvl, std::string && name) {
 	
 	// Else, create one
 	MapMarkerData newMMD;
-	newMMD.m_level = MapLevel(lvl - 1);
+	newMMD.m_level = level;
 	newMMD.m_pos.x = pos.x;
 	newMMD.m_pos.y = pos.y;
 	newMMD.m_name = std::move(name);

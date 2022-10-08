@@ -1591,7 +1591,8 @@ static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	for(int i = 0; i < asp->Nb_Mapmarkers; i++) {
 		const SavedMapMarkerData * acmd = reinterpret_cast<const SavedMapMarkerData *>(dat + pos);
 		pos += sizeof(SavedMapMarkerData);
-		g_miniMap.mapMarkerAdd(Vec2f(acmd->x, acmd->y), acmd->lvl, util::toLowercase(script::toLocalizationKey(util::loadString(acmd->name))));
+		g_miniMap.mapMarkerAdd(Vec2f(acmd->x, acmd->y), acmd->lvl > 0 ? MapLevel(acmd->lvl - 1) : MapLevel(),
+		                       util::toLowercase(script::toLocalizationKey(util::loadString(acmd->name))));
 	}
 	
 	ARX_PLAYER_Restore_Skin();
