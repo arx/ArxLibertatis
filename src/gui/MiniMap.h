@@ -161,7 +161,7 @@ private:
 	std::vector<MapMarkerData> m_mapMarkers;
 	std::array<MiniMapData, MAX_MINIMAP_LEVELS> m_levels;
 	
-	void getData(size_t showLevel);
+	TextureContainer * getData(size_t showLevel);
 	void resetLevels();
 	void loadOffsets();
 	void validatePos();

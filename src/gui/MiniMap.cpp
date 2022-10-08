@@ -84,13 +84,14 @@ MiniMap g_miniMap; // TODO: remove this
 static constexpr Vec2f g_mapMod(float(MAX_BKGX) / MINIMAP_MAX_X, float(MAX_BKGZ) / MINIMAP_MAX_Z);
 static constexpr Vec2f g_worldToMapScale = 0.01f / g_mapMod / Vec2f(MINIMAP_MAX_X, MINIMAP_MAX_Z);
 
-void MiniMap::getData(size_t showLevel) {
+TextureContainer * MiniMap::getData(size_t showLevel) {
 	
-	if(m_levels[showLevel].m_texContainer == nullptr) {
+	if(!m_levels[showLevel].m_texContainer) {
 		res::path levelMap = "graph/levels/level" + std::to_string(showLevel) + "/map";
 		m_levels[showLevel].m_texContainer = TextureContainer::Load(levelMap, TextureContainer::NoColorKey);
 	}
 	
+	return m_levels[showLevel].m_texContainer;
 }
 
 void MiniMap::validatePos() {
@@ -240,6 +241,14 @@ void MiniMap::purgeTexContainer() {
 
 void MiniMap::showPlayerMiniMap(size_t showLevel) {
 	
+	if(showLevel >= m_levels.size()) {
+		return;
+	}
+	
+	if(!getData(showLevel)) {
+		return;
+	}
+	
 	UseRenderState state(render2D());
 	
 	ARX_PROFILE_FUNC();
@@ -253,74 +262,67 @@ void MiniMap::showPlayerMiniMap(size_t showLevel) {
 	                       s32(minimapSizeScaled.y));
 	const float playerSize = 4.f * scale; // red arrow size
 	
-	// First Load Minimap TC & DATA if needed
-	if(m_levels[showLevel].m_texContainer == nullptr) {
-		getData(showLevel);
+	Vec2f start(0.f);
+	Vec2f playerPos(0.f);
+	if(showLevel == size_t(getMapLevelForArea(m_currentArea))) {
+		start = Vec2f(miniMapRect.center()) - worldToMapPos(m_player->pos, miniMapZoom);
+		playerPos = Vec2f(miniMapRect.center());
 	}
 	
-	if(m_levels[showLevel].m_texContainer) {
-		
-		Vec2f start(0.f);
-		Vec2f playerPos(0.f);
-		if(showLevel == size_t(getMapLevelForArea(m_currentArea))) {
-			start = Vec2f(miniMapRect.center()) - worldToMapPos(m_player->pos, miniMapZoom);
-			playerPos = Vec2f(miniMapRect.center());
-		}
-		
-		// Draw the background
-		drawBackground(showLevel, miniMapRect, start, miniMapZoom, 20.f, true, 0.5f);
-		
-		// Draw the player (red arrow)
-		if(showLevel == size_t(getMapLevelForArea(m_currentArea))) {
-			drawPlayer(playerSize, playerPos, true);
-			drawDetectedEntities(start, miniMapZoom);
-		}
-		
+	// Draw the background
+	drawBackground(showLevel, miniMapRect, start, miniMapZoom, 20.f, true, 0.5f);
+	
+	// Draw the player (red arrow)
+	if(showLevel == size_t(getMapLevelForArea(m_currentArea))) {
+		drawPlayer(playerSize, playerPos, true);
+		drawDetectedEntities(start, miniMapZoom);
 	}
+	
 }
 
 void MiniMap::showBookMiniMap(size_t showLevel, Rect rect, float scale) {
 	
+	if(showLevel >= m_levels.size()) {
+		return;
+	}
+	
+	if(!getData(showLevel)) {
+		return;
+	}
+	
 	UseRenderState state(render2D());
 	
-	// First Load Minimap TC & DATA if needed
-	if(m_levels[showLevel].m_texContainer == nullptr) {
-		getData(showLevel);
+	float zoom = 900.f * scale;
+	
+	Vec2f start(0.f);
+	Vec2f playerPos(0.f);
+	if(showLevel == size_t(getMapLevelForArea(m_currentArea))) {
+		start = Vec2f(rect.center()) - worldToMapPos(m_player->pos, zoom);
+		playerPos = Vec2f(rect.center());
 	}
 	
-	if(m_levels[showLevel].m_texContainer) {
-		
-		float zoom = 900.f * scale;
-		
-		Vec2f start(0.f);
-		Vec2f playerPos(0.f);
-		if(showLevel == size_t(getMapLevelForArea(m_currentArea))) {
-			start = Vec2f(rect.center()) - worldToMapPos(m_player->pos, zoom);
-			playerPos = Vec2f(rect.center());
-		}
-		
-		drawBackground(showLevel, rect, start, zoom, 20.f * scale);
-		
-		if(showLevel == size_t(getMapLevelForArea(m_currentArea))) {
-			drawPlayer(6.f * scale, playerPos, false);
-			drawDetectedEntities(start, zoom);
-		}
-		
+	drawBackground(showLevel, rect, start, zoom, 20.f * scale);
+	
+	if(showLevel == size_t(getMapLevelForArea(m_currentArea))) {
+		drawPlayer(6.f * scale, playerPos, false);
+		drawDetectedEntities(start, zoom);
 	}
+	
 }
 
 void MiniMap::showBookEntireMap(size_t showLevel, Rect rect, float scale) {
 	
-	UseRenderState state(render2D());
-	
-	// First Load Minimap TC & DATA if needed
-	if(m_levels[showLevel].m_texContainer == nullptr) {
-		getData(showLevel);
-	}
-	
-	if(!m_levels[showLevel].m_texContainer) {
+	if(showLevel >= m_levels.size()) {
 		return;
 	}
+	
+	// First Load Minimap TC & DATA if needed
+	if(!getData(showLevel)) {
+		return;
+	}
+	
+	UseRenderState state(render2D());
+	
 	
 	float zoom = 250.f * scale;
 	

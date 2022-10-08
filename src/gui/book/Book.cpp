@@ -1479,21 +1479,14 @@ void MapPage::setMapLevel(long level) {
 
 void MapPage::drawMaps() const {
 	
-	long SHOWLEVEL = m_currentLevel;
 	Vec2f bookPos = g_bookRect.topLeft();
 	float scale = g_bookScale;
 	
-	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32) {
-		g_miniMap.showBookEntireMap(SHOWLEVEL, Rect(Vec2i(bookPos + Vec2f(43, 56) * scale),
-		                                            Vec2i(bookPos + Vec2f(248, 226) * scale)), scale);
-	}
+	Rect leftSide = Rect(Rectf(Vec2f(43.f, 56.f) * scale, Vec2f(248.f, 226.f) * scale) + bookPos);
+	g_miniMap.showBookEntireMap(m_currentLevel, leftSide, scale);
 	
-	SHOWLEVEL = getMapLevelForArea(g_currentArea);
-	
-	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32) {
-		g_miniMap.showBookMiniMap(SHOWLEVEL, Rect(Vec2i(bookPos + Vec2f(263, 21) * scale),
-		                                          Vec2i(bookPos + Vec2f(480, 291) * scale)), scale);
-	}
+	Rect rightSide = Rect(Rectf(Vec2f(263.f, 21) * scale, Vec2f(480, 291) * scale) + bookPos);
+	g_miniMap.showBookMiniMap(getMapLevelForArea(g_currentArea), rightSide, scale);
 	
 }
 
