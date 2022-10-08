@@ -212,7 +212,7 @@ void MiniMap::purgeTexContainer() {
 	
 }
 
-void MiniMap::showPlayerMiniMap(size_t showLevel) {
+void MiniMap::showPlayerMiniMap(MapLevel level) {
 	
 	ARX_PROFILE_FUNC();
 	
@@ -227,16 +227,16 @@ void MiniMap::showPlayerMiniMap(size_t showLevel) {
 	
 	Vec2f start(0.f);
 	Vec2f playerPos(0.f);
-	if(showLevel == size_t(getMapLevelForArea(m_currentArea))) {
+	if(level == getMapLevelForArea(m_currentArea)) {
 		start = Vec2f(miniMapRect.center()) - worldToMapPos(m_player->pos, miniMapZoom);
 		playerPos = Vec2f(miniMapRect.center());
 	}
 	
 	// Draw the background
-	drawBackground(MapLevel(showLevel), miniMapRect, start, miniMapZoom, 20.f, true, 0.5f);
+	drawBackground(level, miniMapRect, start, miniMapZoom, 20.f, true, 0.5f);
 	
 	// Draw the player (red arrow)
-	if(showLevel == size_t(getMapLevelForArea(m_currentArea))) {
+	if(level == getMapLevelForArea(m_currentArea)) {
 		drawPlayer(playerSize, playerPos, true);
 		drawDetectedEntities(start, miniMapZoom);
 	}

@@ -1870,14 +1870,13 @@ void ArxGame::renderLevel() {
 		pTextManage->Update(g_platformTime.lastFrameDuration());
 		pTextManage->Render();
 	}
-
-	if(SHOW_INGAME_MINIMAP
-		&& cinematicIsStopped()
-		&& !cinematicBorder.isActive()
-		&& !BLOCK_PLAYER_CONTROLS
-		&& !(player.Interface & INTER_PLAYERBOOK))
-	{
-		g_miniMap.showPlayerMiniMap(size_t(getMapLevelForArea(g_currentArea)));
+	
+	if(SHOW_INGAME_MINIMAP &&
+	   cinematicIsStopped() &&
+	   !cinematicBorder.isActive() &&
+	   !BLOCK_PLAYER_CONTROLS &&
+	   !(player.Interface & INTER_PLAYERBOOK)) {
+		g_miniMap.showPlayerMiniMap(getMapLevelForArea(g_currentArea));
 	}
 	
 	ARX_INTERFACE_RenderCursor(false);

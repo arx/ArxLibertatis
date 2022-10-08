@@ -125,7 +125,7 @@ public:
 	void validatePlayerPos(AreaId currentArea, bool blockPlayerControls, ARX_INTERFACE_BOOK_MODE bookMode);
 	
 	//! Shows the top right minimap
-	void showPlayerMiniMap(size_t showLevel);
+	void showPlayerMiniMap(MapLevel level);
 	
 	//! Shows the zoomed-in minimap in the book
 	void showBookMiniMap(size_t showLevel, Rect rect, float scale);
