@@ -121,7 +121,7 @@ extern bool EXTERNALVIEW;
 extern bool LOAD_N_ERASE;
 
 static bool ARX_CHANGELEVEL_Push_Index(AreaId area);
-static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum);
+static bool ARX_CHANGELEVEL_PushLevel(AreaId oldArea, AreaId newArea);
 static bool ARX_CHANGELEVEL_PopLevel(AreaId area, bool reloadflag = false,
                                      std::string_view target = std::string_view(), float angle = 0.f);
 static bool ARX_CHANGELEVEL_Push_Globals();
@@ -343,7 +343,7 @@ void ARX_CHANGELEVEL_Change(AreaId area, std::string_view target, float angle) {
 		return;
 	}
 	
-	ARX_CHANGELEVEL_PushLevel(s32(g_currentArea), s32(area));
+	ARX_CHANGELEVEL_PushLevel(g_currentArea, area);
 	
 	ARX_CHANGELEVEL_PopLevel(area, true, target, angle);
 	
@@ -354,9 +354,9 @@ void ARX_CHANGELEVEL_Change(AreaId area, std::string_view target, float angle) {
 	
 }
 
-static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
+static bool ARX_CHANGELEVEL_PushLevel(AreaId oldArea, AreaId newArea) {
 	
-	LogDebug("ARX_CHANGELEVEL_PushLevel " << num << " " << newnum);
+	LogDebug("ARX_CHANGELEVEL_PushLevel " << oldArea << " " << newArea);
 	
 	ARX_SCRIPT_EventStackExecuteAll();
 	
@@ -364,13 +364,13 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	g_secondaryInventoryHud.close();
 	
 	// Now we can save our things
-	bool ok  = ARX_CHANGELEVEL_Push_Index(AreaId(num));
+	bool ok  = ARX_CHANGELEVEL_Push_Index(oldArea);
 	
 	ok = ARX_CHANGELEVEL_Push_Globals() || ok;
 	
-	ok = ARX_CHANGELEVEL_Push_Player(AreaId(newnum)) || ok;
+	ok = ARX_CHANGELEVEL_Push_Player(newArea) || ok;
 	
-	ok = ARX_CHANGELEVEL_Push_AllIO(AreaId(num)) || ok;
+	ok = ARX_CHANGELEVEL_Push_AllIO(oldArea) || ok;
 	
 	return ok;
 }
@@ -2453,7 +2453,7 @@ bool ARX_CHANGELEVEL_Save(std::string_view name, const fs::path & savefile) {
 	
 	// Save the current level
 	
-	if(!ARX_CHANGELEVEL_PushLevel(s32(g_currentArea), s32(g_currentArea))) {
+	if(!ARX_CHANGELEVEL_PushLevel(g_currentArea, g_currentArea)) {
 		LogWarning << "Could not save the level";
 		return false;
 	}
