@@ -126,7 +126,7 @@ static bool ARX_CHANGELEVEL_PopLevel(AreaId area, bool reloadflag = false,
                                      std::string_view target = std::string_view(), float angle = 0.f);
 static void ARX_CHANGELEVEL_Push_Globals();
 static void ARX_CHANGELEVEL_Pop_Globals();
-static long ARX_CHANGELEVEL_Push_Player(long level);
+static bool ARX_CHANGELEVEL_Push_Player(AreaId area);
 static bool ARX_CHANGELEVEL_Push_AllIO(long level);
 static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level);
 static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance instance, AreaId area = { });
@@ -371,7 +371,7 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	
 	ARX_CHANGELEVEL_Push_Globals();
 	
-	if(ARX_CHANGELEVEL_Push_Player(newnum) != 1) {
+	if(!ARX_CHANGELEVEL_Push_Player(AreaId(newnum))) {
 		LogError << "Error saving player...";
 		return false;
 	}
@@ -612,7 +612,7 @@ void storeTargetString(char (&info)[N], EntityHandle numtarget) {
 	}
 }
 
-static long ARX_CHANGELEVEL_Push_Player(long level) {
+static bool ARX_CHANGELEVEL_Push_Player(AreaId area) {
 	
 	ARX_CHANGELEVEL_PLAYER * asp;
 	
@@ -797,15 +797,17 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	
 	LastValidPlayerPos = asp->LAST_VALID_POS.toVec3();
 	
-	g_currentSavedGame->save("player", dat, pos);
+	if(!g_currentSavedGame->save("player", dat, pos)) {
+		return false;
+	}
 	
 	for(Entity & entity : entities) {
 		if(&entity == g_draggedEntity || isInPlayerInventoryOrEquipment(entity)) {
-			ARX_CHANGELEVEL_Push_IO(&entity, level);
+			ARX_CHANGELEVEL_Push_IO(&entity, s32(area));
 		}
 	}
 	
-	return 1;
+	return true;
 }
 
 static bool ARX_CHANGELEVEL_Push_AllIO(long level) {
