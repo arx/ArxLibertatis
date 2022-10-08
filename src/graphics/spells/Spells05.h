@@ -44,6 +44,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_SPELLS_SPELLS05_H
 #define ARX_GRAPHICS_SPELLS_SPELLS05_H
 
+#include "graphics/BaseGraphicsTypes.h"
 #include "graphics/effects/FloatingStones.h"
 #include "graphics/effects/RotatingCone.h"
 #include "graphics/effects/SpellEffects.h"
@@ -67,7 +68,7 @@ public:
 	float lightIntensityFactor;
 	
 	LightHandle lLightId;
-	long fogId;
+	FogHandle fogId;
 	
 private:
 	

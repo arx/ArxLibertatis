@@ -357,8 +357,8 @@ bool DanaeLoadLevel(AreaId area, bool loadEntities) {
 		const DANAE_LS_FOG * dlf = reinterpret_cast<const DANAE_LS_FOG *>(dat + pos);
 		pos += sizeof(DANAE_LS_FOG);
 		
-		long n = ARX_FOGS_GetFree();
-		FOG_DEF * fd = &g_fogs[n];
+		FogHandle fogIndex = ARX_FOGS_GetFree();
+		FOG_DEF * fd = &g_fogs[fogIndex];
 		fd->rgb = dlf->rgb;
 		fd->angle = dlf->angle;
 		fd->pos = dlf->pos.toVec3() + trans;

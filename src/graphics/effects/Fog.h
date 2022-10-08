@@ -51,12 +51,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/GameTime.h"
 #include "core/TimeTypes.h"
+#include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
 #include "math/Types.h"
 #include "math/Angle.h"
 #include "math/Vector.h"
 #include "math/Quantizer.h"
 #include "platform/Platform.h"
+#include "util/HandleContainer.h"
 
 
 struct EERIE_3DOBJ;
@@ -86,10 +88,10 @@ struct FOG_DEF {
 	
 };
 
-extern std::vector<FOG_DEF> g_fogs;
+extern util::HandleVector<FogHandle, FOG_DEF> g_fogs;
 
 void ARX_FOGS_Render();
-long ARX_FOGS_GetFree();
+FogHandle ARX_FOGS_GetFree();
 void ARX_FOGS_Clear();
 
 #endif // ARX_GRAPHICS_EFFECTS_FOG_H

@@ -65,24 +65,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Tiles.h"
 
 
-std::vector<FOG_DEF> g_fogs;
+util::HandleVector<FogHandle, FOG_DEF> g_fogs;
 
 void ARX_FOGS_Clear() {
 	g_fogs.clear();
 }
 
-long ARX_FOGS_GetFree() {
+FogHandle ARX_FOGS_GetFree() {
 	
 	for(size_t i = 0; i < g_fogs.size(); i++) {
-		if(!g_fogs[i].exist) {
-			g_fogs[i] = FOG_DEF();
-			return i;
+		if(!g_fogs[FogHandle(i)].exist) {
+			g_fogs[FogHandle(i)] = FOG_DEF();
+			return FogHandle(i);
 		}
 	}
 	
 	g_fogs.emplace_back();
 	
-	return long(g_fogs.size() - 1);
+	return FogHandle(g_fogs.size() - 1);
 }
 
 void ARX_FOGS_Render() {
