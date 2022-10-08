@@ -35,10 +35,10 @@ static float PROGRESS_BAR_TOTAL = 0;
 static float PROGRESS_BAR_COUNT = 0;
 static float OLD_PROGRESS_BAR_COUNT = 0;
 
-static long lastloadednum = -1;
+static AreaId g_lastLoadedArea;
 static TextureContainer * g_loadingScreenImage = nullptr;
 static TextureContainer * pbar = nullptr;
-static long lastnum = -1;
+static AreaId g_lastArea;
 
 void progressBarReset() {
 	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
@@ -52,23 +52,13 @@ void progressBarAdvance(float delta) {
 	PROGRESS_BAR_COUNT += delta;
 }
 
-void LoadLevelScreen(long num) {
+void LoadLevelScreen(AreaId area ) {
 	
-	// resets status
-	if(num < -1) {
-		delete g_loadingScreenImage, g_loadingScreenImage = nullptr;
-		lastloadednum = -1;
-		lastnum = -1;
-		PROGRESS_BAR_TOTAL = 0;
-		return;
-	}
-	
-	if(num == -1) {
-		num = lastnum;
-	}
-	lastnum = num;
-	
-	if(num < 0) {
+	if(area) {
+		g_lastArea = area;
+	} else if(g_lastArea) {
+		area = g_lastArea;
+	} else {
 		return;
 	}
 	
@@ -89,16 +79,16 @@ void LoadLevelScreen(long num) {
 		
 		UseRenderState state(render2D().noBlend());
 		
-		if (num == 10) {
+		if(area == AreaId(10)) {
 			pbar = TextureContainer::LoadUI("graph/interface/menus/load_full");
 		} else {
 			pbar = TextureContainer::LoadUI("graph/interface/menus/load_full_level");
 		}
 		
-		if(num != lastloadednum) {
+		if(area != g_lastLoadedArea) {
 			delete g_loadingScreenImage, g_loadingScreenImage = nullptr;
-			lastloadednum = num;
-			res::path image = "graph/levels/level" + std::to_string(num) + "/loading";
+			g_lastLoadedArea = area;
+			res::path image = "graph/levels/level" + std::to_string(u32(area)) + "/loading";
 			g_loadingScreenImage = TextureContainer::LoadUI(image, TextureContainer::NoColorKey);
 		}
 		
@@ -106,7 +96,7 @@ void LoadLevelScreen(long num) {
 		
 		if(g_loadingScreenImage) {
 			
-			Vec2f size = (num == 10) ? Vec2f(640, 480) : Vec2f(320, 390);
+			Vec2f size = (area == AreaId(10)) ? Vec2f(640, 480) : Vec2f(320, 390);
 			size *= scale;
 			
 			Vec2f pos = Vec2f(g_size.center());
@@ -118,7 +108,7 @@ void LoadLevelScreen(long num) {
 		
 		if(pbar) {
 			Vec2f pos = Vec2f(g_size.center());
-			pos += Vec2f(-100 * scale, ((num == 10) ? 221 : 35) * scale);
+			pos += Vec2f(-100 * scale, ((area == AreaId(10)) ? 221 : 35) * scale);
 
 			Vec2f size = Vec2f(ratio * 200 * scale, 8 * scale);
 			EERIEDrawBitmap_uv(Rectf(pos, size.x, size.y), 0.f, pbar, Color::white, 0.f, 0.f, ratio, 1.f);
@@ -131,7 +121,11 @@ void LoadLevelScreen(long num) {
 	}
 }
 
-void LoadLevelScreen() {
-	LoadLevelScreen(-1);
+void LoadLevelScreenDestroy() {
+	
+	delete g_loadingScreenImage, g_loadingScreenImage = nullptr;
+	g_lastLoadedArea = { };
+	g_lastArea = { };
+	PROGRESS_BAR_TOTAL = 0;
+	
 }
-

@@ -20,11 +20,14 @@
 #ifndef ARX_GUI_LOADLEVELSCREEN_H
 #define ARX_GUI_LOADLEVELSCREEN_H
 
+#include "graphics/BaseGraphicsTypes.h"
+
+
 void progressBarReset();
 void progressBarSetTotal(float total);
 void progressBarAdvance(float delta = 1.f);
 
-void LoadLevelScreen();
-void LoadLevelScreen(long num);
+void LoadLevelScreen(AreaId area = { });
+void LoadLevelScreenDestroy();
 
 #endif // ARX_GUI_LOADLEVELSCREEN_H

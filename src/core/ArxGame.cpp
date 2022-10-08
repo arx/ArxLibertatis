@@ -656,7 +656,7 @@ static bool HandleGameFlowTransitions() {
 		
 		progressBarReset();
 		progressBarSetTotal(108);
-		LoadLevelScreen(LEVEL_TO_LOAD);
+		LoadLevelScreen(AreaId(LEVEL_TO_LOAD));
 		
 		DanaeLoadLevel(LEVEL_TO_LOAD);
 		GameFlow::setTransition(GameFlow::InGame);

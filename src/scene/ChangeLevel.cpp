@@ -322,7 +322,7 @@ void ARX_CHANGELEVEL_Change(AreaId area, std::string_view target, float angle) {
 	progressBarSetTotal(238);
 	progressBarReset();
 	
-	LoadLevelScreen(s32(area));
+	LoadLevelScreen(area);
 	
 	// not changing level, just teleported
 	if(s32(area) == CURRENTLEVEL) {
@@ -337,7 +337,7 @@ void ARX_CHANGELEVEL_Change(AreaId area, std::string_view target, float angle) {
 	ARX_PLAYER_Reset_Fall();
 	
 	progressBarAdvance();
-	LoadLevelScreen(s32(area));
+	LoadLevelScreen();
 	
 	if(!openCurrentSavedGameFile()) {
 		return;
@@ -1350,7 +1350,7 @@ static void ARX_CHANGELEVEL_Pop_Level(long num, bool firstTime) {
 	
 	LOAD_N_ERASE = false;
 	
-	LoadLevelScreen(num);
+	LoadLevelScreen();
 	SetEditMode();
 	ARX_PATH_ComputeAllBoundingBoxes();
 	
@@ -2336,7 +2336,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, std::string
 	}
 	
 	progressBarAdvance(2.f);
-	LoadLevelScreen(instance);
+	LoadLevelScreen();
 	
 	// Now we can load our things...
 	std::ostringstream loadfile;
@@ -2359,7 +2359,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, std::string
 	}
 	
 	progressBarAdvance(2.f);
-	LoadLevelScreen(instance);
+	LoadLevelScreen();
 	
 	ARX_CHANGELEVEL_Pop_Level(instance, firstTime);
 	if(!firstTime) {
@@ -2369,7 +2369,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, std::string
 	}
 	
 	progressBarAdvance(20.f);
-	LoadLevelScreen(instance);
+	LoadLevelScreen();
 	
 	if(firstTime) {
 		for(SCR_TIMER & timer : g_scriptTimers) {
@@ -2382,7 +2382,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag, std::string
 	}
 	
 	progressBarAdvance(20.f);
-	LoadLevelScreen(instance);
+	LoadLevelScreen();
 	
 	if(ARX_CHANGELEVEL_Pop_Player(target, angle) != 1) {
 		LogError << "Error loading player data...";
@@ -2535,25 +2535,24 @@ void ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	
 	// Retrieves Player LevelData
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;
-	if(ARX_CHANGELEVEL_Get_Player_LevelData(pld, CURRENT_GAME_FILE)) {
-		progressBarAdvance(2.f);
-		LoadLevelScreen(pld.level);
-		
-		g_currentPlathrough.startTime = std::time_t(pld.playthroughStart);
-		g_currentPlathrough.uniqueId = pld.playthroughId;
-		g_currentPlathrough.oldestALVersion = pld.oldestALVersion;
-		g_currentPlathrough.newestALVersion = pld.newestALVersion;
-		
-		g_gameTime.reset(GameInstant(0) + std::chrono::milliseconds(pld.time));
-		
-		progressBarAdvance(2.f);
-		LoadLevelScreen(pld.level);
-		ARX_CHANGELEVEL_PopLevel(pld.level, false);
-		
-	} else {
+	if(!ARX_CHANGELEVEL_Get_Player_LevelData(pld, CURRENT_GAME_FILE) || pld.level < 0) {
 		LogError << "Error Loading Level...";
 		return;
 	}
+	
+	progressBarAdvance(2.f);
+	LoadLevelScreen(AreaId(pld.level));
+	
+	g_currentPlathrough.startTime = std::time_t(pld.playthroughStart);
+	g_currentPlathrough.uniqueId = pld.playthroughId;
+	g_currentPlathrough.oldestALVersion = pld.oldestALVersion;
+	g_currentPlathrough.newestALVersion = pld.newestALVersion;
+	
+	g_gameTime.reset(GameInstant(0) + std::chrono::milliseconds(pld.time));
+	
+	progressBarAdvance(2.f);
+	LoadLevelScreen();
+	ARX_CHANGELEVEL_PopLevel(pld.level, false);
 	
 	BLOCK_PLAYER_CONTROLS = false;
 	player.Interface &= ~INTER_COMBATMODE;

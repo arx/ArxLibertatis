@@ -427,7 +427,7 @@ void levelInit() {
 	
 	progressBarAdvance();
 	LoadLevelScreen();
-	LoadLevelScreen(-2);
+	LoadLevelScreenDestroy();
 	
 	if(!CheckInPoly(player.pos) && LastValidPlayerPos.x != 0.f
 	   && LastValidPlayerPos.y != 0.f && LastValidPlayerPos.z != 0.f) {
@@ -1146,13 +1146,13 @@ void DrawImproveVisionInterface() {
 	
 }
 
-void DANAE_StartNewQuest()
-{
+void DANAE_StartNewQuest() {
+	
 	benchmark::begin(benchmark::LoadLevel);
 	player.Interface = INTER_LIFE_MANA | INTER_MINIBACK | INTER_MINIBOOK;
 	progressBarSetTotal(108);
 	progressBarReset();
-	LoadLevelScreen(1);
+	LoadLevelScreen(AreaId(1));
 	DONT_ERASE_PLAYER = true;
 	DanaeClearLevel();
 	progressBarAdvance(2.f);
@@ -1162,4 +1162,5 @@ void DANAE_StartNewQuest()
 	BLOCK_PLAYER_CONTROLS = false;
 	fadeReset();
 	player.Interface = INTER_LIFE_MANA | INTER_MINIBACK | INTER_MINIBOOK;
+	
 }
