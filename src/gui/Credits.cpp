@@ -140,7 +140,11 @@ private:
 	
 public:
 	
+	#if ARX_HAVE_CXX20_NOEXCEPT_DEFAULT
+	Credits() noexcept(noexcept(Libraries())) = default;
+	#else
 	Credits() noexcept(noexcept(Libraries())) { }
+	#endif
 	
 };
 
