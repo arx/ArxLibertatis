@@ -129,7 +129,7 @@ static void ARX_CHANGELEVEL_Pop_Globals();
 static long ARX_CHANGELEVEL_Push_Player(long level);
 static bool ARX_CHANGELEVEL_Push_AllIO(long level);
 static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level);
-static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance instance, long level = -1);
+static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance instance, AreaId area = { });
 
 static fs::path CURRENT_GAME_FILE;
 
@@ -1659,7 +1659,7 @@ static bool loadScriptVariables(SCRIPT_VARIABLES & var, const char * dat, size_t
 	return true;
 }
 
-static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance instance, long level) {
+static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance instance, AreaId area) {
 	
 	LogDebug("--> loading interactive object " << idString);
 	
@@ -1693,7 +1693,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 		return nullptr;
 	}
 	
-	if(level >= 0 && ais->level != level) {
+	if(area && AreaId(ais->level) != area) {
 		// Entity has been moved to a different level
 		return nullptr;
 	}
@@ -2211,7 +2211,7 @@ static void ARX_CHANGELEVEL_PopAllIO(std::string_view buffer, long level) {
 		                                idx_io[i].ident).string();
 		
 		if(!entities.getById(idString)) {
-			ARX_CHANGELEVEL_Pop_IO(idString, idx_io[i].ident, level);
+			ARX_CHANGELEVEL_Pop_IO(idString, idx_io[i].ident, AreaId(level));
 		}
 		
 	}
