@@ -51,7 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsTypes.h"
 #include "math/Types.h"
 #include "platform/Platform.h"
-#include "util/HandleVector.h"
+#include "util/HandleContainer.h"
 
 
 struct RoomPortal {

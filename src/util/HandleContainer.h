@@ -33,6 +33,8 @@
 #ifndef ARX_UTIL_HANDLEVECTOR_H
 #define ARX_UTIL_HANDLEVECTOR_H
 
+#include <stddef.h>
+#include <array>
 #include <vector>
 #include <type_traits>
 
@@ -42,30 +44,36 @@
 
 namespace util {
 
-template <typename Handle, typename T>
-class HandleVector : public std::vector<T> {
+template <typename Handle, typename Base>
+class HandeContainer : public Base {
 	
 public:
 	
-	using std::vector<T>::vector;
-	using std::vector<T>::size;
+	using Base::Base;
+	using Base::size;
 	
 	[[nodiscard]] auto handles() const noexcept {
 		arx_assume(size() <= size_t(Handle::max()));
 		return util::transform(util::indices(*this), [](size_t i) noexcept { return Handle(i); });
 	}
 	
-	[[nodiscard]] T & operator[](Handle handle) noexcept {
+	[[nodiscard]] auto & operator[](Handle handle) noexcept {
 		arx_assume(handle && size_t(handle) < size());
-		return std::vector<T>::operator[](size_t(handle));
+		return Base::operator[](size_t(handle));
 	}
 	
-	[[nodiscard]] const T & operator[](Handle handle) const noexcept {
+	[[nodiscard]] const auto & operator[](Handle handle) const noexcept {
 		arx_assume(handle && size_t(handle) < size());
-		return std::vector<T>::operator[](size_t(handle));
+		return Base::operator[](size_t(handle));
 	}
 	
 };
+
+template <typename Handle, typename T>
+using HandleVector = HandeContainer<Handle, std::vector<T>>;
+
+template <typename Handle, typename T, size_t Size>
+using HandleArray = HandeContainer<Handle, std::array<T, Size>>;
 
 } // namespace util
 
