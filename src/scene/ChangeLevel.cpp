@@ -624,7 +624,7 @@ static bool ARX_CHANGELEVEL_Push_Player(AreaId area) {
 	
 	asp = reinterpret_cast<ARX_CHANGELEVEL_PLAYER *>(dat);
 	
-	long pos = 0;
+	size_t pos = 0;
 	pos += (sizeof(ARX_CHANGELEVEL_PLAYER));
 
 	memset(asp, 0, sizeof(ARX_CHANGELEVEL_PLAYER));
