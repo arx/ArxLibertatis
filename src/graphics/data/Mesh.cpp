@@ -1177,7 +1177,7 @@ void ComputePortalVertexBuffer() {
 			
 			// Save the
 			
-			SMY_ARXMAT & m = texture->m_roomBatches[size_t(roomIndex)];
+			SMY_ARXMAT & m = texture->m_roomBatches[roomIndex];
 			
 			m.uslStartVertex = startIndex;
 			m.uslNbVertex = index;

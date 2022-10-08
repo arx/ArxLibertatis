@@ -825,7 +825,7 @@ RoomHandle ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag) {
 static void ARX_PORTALS_Frustrum_ClearIndexCount(RoomHandle room) {
 	
 	for(TextureContainer & material : util::dereference(g_rooms->rooms[room].ppTextureContainer)) {
-		SMY_ARXMAT & roomMat = material.m_roomBatches[size_t(room)];
+		SMY_ARXMAT & roomMat = material.m_roomBatches[room];
 		roomMat.count[BatchBucket_Opaque] = 0;
 		roomMat.count[BatchBucket_Blended] = 0;
 		roomMat.count[BatchBucket_Multiplicative] = 0;
@@ -1297,7 +1297,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomHandle roomIndex,
 			transparencyType = BatchBucket_Opaque;
 		}
 		
-		SMY_ARXMAT & roomMat = ep->tex->m_roomBatches[size_t(roomIndex)];
+		SMY_ARXMAT & roomMat = ep->tex->m_roomBatches[roomIndex];
 		
 		unsigned short * pIndicesCurr = pIndices + roomMat.offset[transparencyType] + roomMat.count[transparencyType];
 		unsigned long * pNumIndices = &roomMat.count[transparencyType];
@@ -1404,7 +1404,7 @@ static void BackgroundRenderOpaque(RoomHandle roomIndex) {
 	
 	for(TextureContainer & material : util::dereference(room.ppTextureContainer)) {
 		
-		const SMY_ARXMAT & roomMat = material.m_roomBatches[size_t(roomIndex)];
+		const SMY_ARXMAT & roomMat = material.m_roomBatches[roomIndex];
 		if(!roomMat.count[BatchBucket_Opaque]) {
 			continue;
 		}
@@ -1448,7 +1448,7 @@ static void BackgroundRenderTransparent(RoomHandle roomIndex) {
 	
 	for(TextureContainer & material : util::dereference(room.ppTextureContainer)) {
 		
-		SMY_ARXMAT & roomMat = material.m_roomBatches[size_t(roomIndex)];
+		SMY_ARXMAT & roomMat = material.m_roomBatches[roomIndex];
 		bool empty = std::all_of(transRenderOrder.begin(), transRenderOrder.end(), [&](BatchBucket transType) {
 			return !roomMat.count[transType];
 		});

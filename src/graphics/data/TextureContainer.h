@@ -61,10 +61,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 #include <map>
 
+#include "graphics/BaseGraphicsTypes.h"
 #include "graphics/GraphicsTypes.h"
 #include "io/resource/ResourcePath.h"
 #include "math/Vector.h"
 #include "util/Flags.h"
+#include "util/HandleVector.h"
+
 
 class Texture;
 
@@ -175,7 +178,7 @@ public:
 	TextureContainer * m_pNext; // Linked list ptr
 	TCFlags systemflags;
 	
-	std::vector<SMY_ARXMAT> m_roomBatches;
+	util::HandleVector<RoomHandle, SMY_ARXMAT> m_roomBatches;
 	std::vector<TexturedVertex> m_modelBatch[5];
 	
 };
