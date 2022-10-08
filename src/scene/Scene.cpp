@@ -1573,7 +1573,7 @@ void ARX_SCENE_Update() {
 	
 	GameInstant now = g_gameTime.now();
 	
-	WATEREFFECT = (toMsi(now) % long(2 * glm::pi<float>() / 0.0005f)) * 0.0005f;
+	WATEREFFECT = timeWaveSaw(g_gameTime.now(), 12566370us) * 2.f * glm::pi<float>();
 	
 	const Vec3f camPos = g_camera->m_pos;
 	const float camDepth = g_camera->cdepth;
