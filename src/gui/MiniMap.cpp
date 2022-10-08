@@ -263,7 +263,7 @@ void MiniMap::showBookMiniMap(MapLevel level, Rect rect, float scale) {
 	
 }
 
-void MiniMap::showBookEntireMap(size_t showLevel, Rect rect, float scale) {
+void MiniMap::showBookEntireMap(MapLevel level, Rect rect, float scale) {
 	
 	float zoom = 250.f * scale;
 	
@@ -271,14 +271,14 @@ void MiniMap::showBookEntireMap(size_t showLevel, Rect rect, float scale) {
 	
 	Vec2f playerPos(0.f, 0.f);
 	
-	if(showLevel == size_t(getMapLevelForArea(m_currentArea))) {
+	if(level == getMapLevelForArea(m_currentArea)) {
 		playerPos = worldToMapPos(m_player->pos, zoom);
 		playerPos += start;
 	}
 	
-	drawBackground(MapLevel(showLevel), rect, start, zoom);
+	drawBackground(level, rect, start, zoom);
 	
-	if(showLevel == size_t(getMapLevelForArea(m_currentArea))) {
+	if(level == getMapLevelForArea(m_currentArea)) {
 		drawPlayer(3.f * scale, playerPos, false);
 		drawDetectedEntities(start, zoom);
 	}
@@ -296,7 +296,7 @@ void MiniMap::showBookEntireMap(size_t showLevel, Rect rect, float scale) {
 	
 	for(MapMarkerData & marker : m_mapMarkers) {
 		
-		if(marker.m_lvl != showLevel + 1) {
+		if(MapLevel(marker.m_lvl - 1) != level) {
 			continue;
 		}
 		

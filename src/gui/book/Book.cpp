@@ -1483,7 +1483,7 @@ void MapPage::drawMaps() const {
 	float scale = g_bookScale;
 	
 	Rect leftSide = Rect(Rectf(Vec2f(43.f, 56.f) * scale, Vec2f(248.f, 226.f) * scale) + bookPos);
-	g_miniMap.showBookEntireMap(m_currentLevel, leftSide, scale);
+	g_miniMap.showBookEntireMap(MapLevel(m_currentLevel), leftSide, scale);
 	
 	Rect rightSide = Rect(Rectf(Vec2f(263.f, 21) * scale, Vec2f(480, 291) * scale) + bookPos);
 	g_miniMap.showBookMiniMap(getMapLevelForArea(g_currentArea), rightSide, scale);
