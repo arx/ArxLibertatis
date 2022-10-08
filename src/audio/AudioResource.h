@@ -85,18 +85,8 @@ private:
 	
 };
 
-template <typename T, typename Handle = size_t>
+template <typename T, typename Handle>
 class ResourceList {
-	
-	template <typename Tag, typename IndexType, IndexType InvalidValue>
-	static size_t get(HandleType<Tag, IndexType, InvalidValue> handle) {
-		return size_t(handle.handleData());
-	}
-	
-	template <typename IndexType>
-	static size_t get(IndexType index) {
-		return size_t(index);
-	}
 	
 public:
 	
@@ -110,11 +100,11 @@ public:
 	~ResourceList() { clear(); }
 	
 	bool isValid(Handle handle) const {
-		return (get(handle) < m_list.size() && m_list[get(handle)]);
+		return (size_t(handle) < m_list.size() && m_list[size_t(handle)]);
 	}
 	
-	T * operator[](Handle handle) { return m_list[get(handle)]; }
-	const T * operator[](Handle handle) const { return m_list[get(handle)]; }
+	T * operator[](Handle handle) { return m_list[size_t(handle)]; }
+	const T * operator[](Handle handle) const { return m_list[size_t(handle)]; }
 	size_t size() const { return m_list.size(); }
 
 	Handle add(T * element);
@@ -156,7 +146,7 @@ void ResourceList<T, Handle>::remove(Handle handle) {
 		return;
 	}
 	
-	size_t i = get(handle);
+	size_t i = size_t(handle);
 	T * entry = m_list[i];
 	m_list[i] = nullptr;
 	delete entry;
