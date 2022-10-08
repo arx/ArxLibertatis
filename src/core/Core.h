@@ -75,7 +75,7 @@ extern EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];
 extern Entity * COMBINE;
 extern res::path LastLoadedScene;
 
-extern long TELEPORT_TO_LEVEL;
+extern AreaId g_teleportToArea;
 extern std::string TELEPORT_TO_POSITION;
 
 extern float PULSATE;

@@ -642,8 +642,8 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	asp->Interface = player.Interface;
 	asp->playerflags = player.playerflags;
 	
-	if(TELEPORT_TO_LEVEL >= 0) {
-		util::storeString(asp->TELEPORT_TO_LEVEL, std::to_string(TELEPORT_TO_LEVEL));
+	if(g_teleportToArea) {
+		util::storeString(asp->TELEPORT_TO_LEVEL, std::to_string(u32(g_teleportToArea)));
 	}
 	util::storeString(asp->TELEPORT_TO_POSITION, TELEPORT_TO_POSITION);
 	
@@ -1425,9 +1425,10 @@ static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	player.playerflags = PlayerFlags::load(asp->playerflags); // TODO save/load flags
 	
 	if(asp->TELEPORT_TO_LEVEL[0]) {
-		TELEPORT_TO_LEVEL = util::toInt(util::loadString(asp->TELEPORT_TO_LEVEL)).value_or(-1);
+		s32 teleportToArea = util::toInt(util::loadString(asp->TELEPORT_TO_LEVEL)).value_or(-1);
+		g_teleportToArea = teleportToArea >= 0 ? AreaId(teleportToArea) : AreaId();
 	} else {
-		TELEPORT_TO_LEVEL = -1;
+		g_teleportToArea = { };
 	}
 	
 	if(asp->TELEPORT_TO_POSITION[0]) {

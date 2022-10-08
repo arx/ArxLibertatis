@@ -698,7 +698,7 @@ bool ArxGame::initGame()
 	}
 	
 	LogDebug("LSV Init");
-	TELEPORT_TO_LEVEL = -1;
+	g_teleportToArea = { };
 	TELEPORT_TO_POSITION.clear();
 	LogDebug("Mset");
 	
@@ -1144,17 +1144,17 @@ void ArxGame::doFrame() {
 	}
 
 	// Are we being teleported ?
-	if(TELEPORT_TO_LEVEL >= 0 && CHANGE_LEVEL_ICON != NoChangeLevel
+	if(g_teleportToArea && CHANGE_LEVEL_ICON != NoChangeLevel
 	   && (CHANGE_LEVEL_ICON == ChangeLevelNow
 	       || config.input.quickLevelTransition == ChangeLevelImmediately
 	       || (config.input.quickLevelTransition == JumpToChangeLevel
 	           && GInput->actionPressed(CONTROLS_CUST_JUMP)))) {
 		// TODO allow binding the same key to multiple actions so that we can have a separate binding for this
 		benchmark::begin(benchmark::LoadLevel);
-		LogDebug("teleport to " << TELEPORT_TO_LEVEL << " " << TELEPORT_TO_POSITION << " " << TELEPORT_TO_ANGLE);
+		LogDebug("teleport to " << g_teleportToArea << " " << TELEPORT_TO_POSITION << " " << TELEPORT_TO_ANGLE);
 		CHANGE_LEVEL_ICON = NoChangeLevel;
-		ARX_CHANGELEVEL_Change(AreaId(TELEPORT_TO_LEVEL), TELEPORT_TO_POSITION, float(TELEPORT_TO_ANGLE));
-		TELEPORT_TO_LEVEL = -1;
+		ARX_CHANGELEVEL_Change(g_teleportToArea, TELEPORT_TO_POSITION, float(TELEPORT_TO_ANGLE));
+		g_teleportToArea = { };
 		TELEPORT_TO_POSITION.clear();
 	}
 

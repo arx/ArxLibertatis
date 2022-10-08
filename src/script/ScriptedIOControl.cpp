@@ -513,7 +513,12 @@ public:
 				float level = context.getFloat();
 				std::string target = context.getWord();
 				
-				TELEPORT_TO_LEVEL = static_cast<long>(level);
+				if(level < 0.f || !is_in_range<s16>(level)) {
+					ScriptWarning << "invalid area number: " << level;
+					return Failed;
+				}
+				
+				g_teleportToArea = AreaId(u32(level));
 				TELEPORT_TO_POSITION = target;
 				
 				if(angle == -1) {
