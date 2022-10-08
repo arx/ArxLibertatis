@@ -80,7 +80,6 @@ CPoisonProjectile::CPoisonProjectile()
 	: eSrc(0.f)
 	, eCurPos(0.f)
 	, lightIntensityFactor(1.f)
-	, fogId(-1)
 	, fTrail(-1.f)
 	, eMove(0.f)
 {
