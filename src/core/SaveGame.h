@@ -36,7 +36,7 @@
 #include "util/HandleType.h"
 
 
-typedef HandleType<struct SavegameHandleTag, long, -1> SavegameHandle;
+typedef util::HandleType<struct SavegameHandleTag, long> SavegameHandle;
 
 extern const fs::path SAVEGAME_NAME;
 

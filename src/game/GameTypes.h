@@ -24,10 +24,10 @@
 #include "util/HandleType.h"
 
 
-typedef HandleType<struct EntityHandleTag,  s32, -1> EntityHandle;
-typedef HandleType<struct SpellHandleTag,   s32, -1> SpellHandle;
-typedef HandleType<struct PrecastHandleTag, s32, -1> PrecastHandle;
-typedef HandleType<struct DamageHandleTag,  s32, -1> DamageHandle;
+typedef util::HandleType<struct EntityHandleTag, s32> EntityHandle;
+typedef util::HandleType<struct SpellHandleTag, s32> SpellHandle;
+typedef util::HandleType<struct PrecastHandleTag, s32> PrecastHandle;
+typedef util::HandleType<struct DamageHandleTag, s32> DamageHandle;
 
 static inline constexpr EntityHandle EntityHandle_Player = EntityHandle(0);
 static inline constexpr EntityHandle EntityHandle_Self   = EntityHandle(-2);

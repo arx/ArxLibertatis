@@ -50,14 +50,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "util/HandleType.h"
 
 
-typedef HandleType<struct ActionPointTag,  s32,   -1> ActionPoint;
-typedef HandleType<struct ObjSelectionTag, long,  -1> ObjSelection;
-typedef HandleType<struct ObjVertGroupTag, short, -1> ObjVertGroup;
-typedef HandleType<struct ObjVertHandleTag, s32,  -1> ObjVertHandle;
-typedef HandleType<struct RoomHandleTag, u32,  u32(-1)> RoomHandle;
-typedef HandleType<struct PortalHandleTag, u32,  u32(-1)> PortalHandle;
-typedef HandleType<struct AreaIdTag, u32, u32(-1)> AreaId;
-typedef HandleType<struct MapLevelTag, u32, u32(-1)> MapLevel;
+typedef util::HandleType<struct ActionPointTag, s32> ActionPoint;
+typedef util::HandleType<struct ObjSelectionTag, long> ObjSelection;
+typedef util::HandleType<struct ObjVertGroupTag, short> ObjVertGroup;
+typedef util::HandleType<struct ObjVertHandleTag, s32> ObjVertHandle;
+typedef util::HandleType<struct RoomHandleTag, u32> RoomHandle;
+typedef util::HandleType<struct PortalHandleTag, u32> PortalHandle;
+typedef util::HandleType<struct AreaIdTag, u32> AreaId;
+typedef util::HandleType<struct MapLevelTag, u32> MapLevel;
 
 struct Cylinder {
 	

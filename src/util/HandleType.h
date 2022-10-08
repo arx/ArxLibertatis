@@ -38,7 +38,9 @@
 #include <type_traits>
 
 
-template <typename TAG, typename T, T Invalid>
+namespace util {
+
+template <typename TAG, typename T, T Invalid = T(-1)>
 class HandleType {
 	
 	T t = Invalid;
@@ -72,5 +74,7 @@ std::ostream & operator<<(std::ostream & s, HandleType<TAG, T, Invalid> v) {
 	}
 	return s;
 }
+
+} // namespace util
 
 #endif // ARX_UTIL_HANDLETYPE_H

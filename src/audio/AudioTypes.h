@@ -117,9 +117,8 @@ struct SourceFalloff {
 	
 };
 
-
-typedef HandleType<struct SampleHandleTag,    s32, -1> SampleHandle;
-typedef HandleType<struct SourceHandleTag,    s32, -1> SourceHandle;
+typedef util::HandleType<struct SampleHandleTag, s32> SampleHandle;
+typedef util::HandleType<struct SourceHandleTag, s32> SourceHandle;
 
 struct SourcedSample {
 	
@@ -156,10 +155,9 @@ private:
 	
 };
 
-
-typedef HandleType<struct MixerIdTag,    s32, -1> MixerId;
-typedef HandleType<struct EnvIdTag,      s32, -1> EnvId;
-typedef HandleType<struct AmbianceIdTag, s32, -1> AmbianceId;
+typedef util::HandleType<struct MixerIdTag, s32> MixerId;
+typedef util::HandleType<struct EnvIdTag, s32> EnvId;
+typedef util::HandleType<struct AmbianceIdTag, s32> AmbianceId;
 
 // Play channel initialization parameters
 struct Channel {
