@@ -661,17 +661,9 @@ EntityVisibility getEntityVisibility(Entity & entity, bool cullingOnly) {
 	return EntityVisibilityUnknown;
 }
 
-static EERIEPOLY * ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, RoomPositionMode mode) {
+static EERIEPOLY * ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, bool xzOffset) {
 	
-	EERIEPOLY * ep;
-	if(mode == RoomPositionForCamera) {
-		ep = CheckInPoly(pos + Vec3f(0.f, -150.f, 0.f));
-		if(!ep) {
-			ep = CheckInPoly(pos + Vec3f(0.f, -1.f, 0.f));
-		}
-	} else {
-		ep = CheckInPoly(pos);
-	}
+	EERIEPOLY * ep = CheckInPoly(pos);
 	if(ep && ep->room) {
 		return ep;
 	}
@@ -680,14 +672,14 @@ static EERIEPOLY * ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, RoomPos
 	ep = GetMinPoly(pos);
 	if(ep && ep->room) {
 		return ep;
-	} else if(mode != RoomPositionForCamera) {
-		ep = CheckInPoly(pos);
-		if(ep && ep->room) {
-			return ep;
-		}
 	}
 	
-	if(mode == RoomPositionXZOffset) {
+	ep = CheckInPoly(pos);
+	if(ep && ep->room) {
+		return ep;
+	}
+	
+	if(xzOffset) {
 		
 		float off = 20.f;
 		
@@ -776,7 +768,7 @@ RoomHandle ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, RoomPositionMode
 			height = face->center.y;
 		}
 	} else {
-		EERIEPOLY * face = ARX_PORTALS_GetRoomNumForPosition2(pos, mode);
+		EERIEPOLY * face = ARX_PORTALS_GetRoomNumForPosition2(pos, mode == RoomPositionXZOffset);
 		if(face) {
 			result = face->room;
 			height = face->center.y;
