@@ -1378,17 +1378,17 @@ static void ARX_CHANGELEVEL_Pop_Level(AreaId area, bool firstTime) {
 	
 }
 
-static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
+static bool ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	
 	std::string buffer = g_currentSavedGame->load("player");
 	if(buffer.empty()) {
 		LogError << "Unable to read player";
-		return -1;
+		return false;
 	}
 	
 	if(buffer.size() < sizeof(ARX_CHANGELEVEL_PLAYER)) {
 		LogError << "Truncated data";
-		return -1;
+		return false;
 	}
 	
 	const char * dat = buffer.data();
@@ -1397,7 +1397,7 @@ static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	
 	if(buffer.size() < pos + sizeof(ARX_CHANGELEVEL_PLAYER)) {
 		LogError << "Truncated data";
-		return -1;
+		return false;
 	}
 	const ARX_CHANGELEVEL_PLAYER * asp = reinterpret_cast<const ARX_CHANGELEVEL_PLAYER *>(dat + pos);
 	pos += sizeof(ARX_CHANGELEVEL_PLAYER);
@@ -1565,7 +1565,7 @@ static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	
 	if(buffer.size() < pos + (asp->nb_PlayerQuest * SAVED_QUEST_SLOT_SIZE)) {
 		LogError << "Truncated data";
-		return -1;
+		return false;
 	}
 	ARX_PLAYER_Quest_Init();
 	for(int i = 0; i < asp->nb_PlayerQuest; i++) {
@@ -1575,7 +1575,7 @@ static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	
 	if(buffer.size() < pos + (asp->keyring_nb * SAVED_KEYRING_SLOT_SIZE)) {
 		LogError << "Truncated data";
-		return -1;
+		return false;
 	}
 	ARX_KEYRING_Init();
 	for(int i = 0; i < asp->keyring_nb; i++) {
@@ -1585,7 +1585,7 @@ static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	
 	if(buffer.size() < pos + (asp->Nb_Mapmarkers * sizeof(SavedMapMarkerData))) {
 		LogError << "Truncated data";
-		return -1;
+		return false;
 	}
 	g_miniMap.mapMarkerInit(asp->Nb_Mapmarkers);
 	for(int i = 0; i < asp->Nb_Mapmarkers; i++) {
@@ -1616,7 +1616,7 @@ static long ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	progressBarAdvance(2.f);
 	LoadLevelScreen();
 	
-	return 1;
+	return true;
 }
 
 static bool loadScriptVariables(SCRIPT_VARIABLES & var, const char * dat, size_t & pos) {
@@ -2387,7 +2387,7 @@ static bool ARX_CHANGELEVEL_PopLevel(AreaId area, bool reloadflag, std::string_v
 	progressBarAdvance(20.f);
 	LoadLevelScreen();
 	
-	if(ARX_CHANGELEVEL_Pop_Player(target, angle) != 1) {
+	if(!ARX_CHANGELEVEL_Pop_Player(target, angle)) {
 		LogError << "Error loading player data...";
 		FORBID_SCRIPT_IO_CREATION = 0;
 		return false;
