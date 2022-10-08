@@ -127,7 +127,7 @@ static bool ARX_CHANGELEVEL_PopLevel(AreaId area, bool reloadflag = false,
 static void ARX_CHANGELEVEL_Push_Globals();
 static void ARX_CHANGELEVEL_Pop_Globals();
 static bool ARX_CHANGELEVEL_Push_Player(AreaId area);
-static bool ARX_CHANGELEVEL_Push_AllIO(long level);
+static bool ARX_CHANGELEVEL_Push_AllIO(AreaId area);
 static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area);
 static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance instance, AreaId area = { });
 
@@ -376,7 +376,7 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 		return false;
 	}
 	
-	if(!ARX_CHANGELEVEL_Push_AllIO(num)) {
+	if(!ARX_CHANGELEVEL_Push_AllIO(AreaId(num))) {
 		LogError << "Error saving entities...";
 		return false;
 	}
@@ -808,7 +808,7 @@ static bool ARX_CHANGELEVEL_Push_Player(AreaId area) {
 	return ok;
 }
 
-static bool ARX_CHANGELEVEL_Push_AllIO(long level) {
+static bool ARX_CHANGELEVEL_Push_AllIO(AreaId area) {
 	
 	bool ok = true;
 	
@@ -817,7 +817,7 @@ static bool ARX_CHANGELEVEL_Push_AllIO(long level) {
 		   && &entity != g_draggedEntity
 		   && entity != *entities.player()
 		   && !isInPlayerInventoryOrEquipment(entity)) {
-			ok = ARX_CHANGELEVEL_Push_IO(&entity, AreaId(level)) && ok;
+			ok = ARX_CHANGELEVEL_Push_IO(&entity, area) && ok;
 		}
 	}
 	
