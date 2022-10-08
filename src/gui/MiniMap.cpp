@@ -218,8 +218,6 @@ void MiniMap::showPlayerMiniMap(size_t showLevel) {
 		return;
 	}
 	
-	UseRenderState state(render2D());
-	
 	ARX_PROFILE_FUNC();
 	
 	float scale = minSizeRatio();
@@ -255,8 +253,6 @@ void MiniMap::showBookMiniMap(size_t showLevel, Rect rect, float scale) {
 		return;
 	}
 	
-	UseRenderState state(render2D());
-	
 	float zoom = 900.f * scale;
 	
 	Vec2f start(0.f);
@@ -281,8 +277,6 @@ void MiniMap::showBookEntireMap(size_t showLevel, Rect rect, float scale) {
 		return;
 	}
 	
-	UseRenderState state(render2D());
-	
 	float zoom = 250.f * scale;
 	
 	Vec2f start(rect.topLeft());
@@ -300,6 +294,8 @@ void MiniMap::showBookEntireMap(size_t showLevel, Rect rect, float scale) {
 		drawPlayer(3.f * scale, playerPos, false);
 		drawDetectedEntities(start, zoom);
 	}
+	
+	UseRenderState state(render2D());
 	
 	std::array<TexturedVertex, 4> verts;
 	for(TexturedVertex & vertex : verts) {
