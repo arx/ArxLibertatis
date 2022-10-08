@@ -112,7 +112,7 @@ void SaveGameList::update(bool verbose) {
 		SaveGame * save = &savelist[index];
 		
 		save->name = std::move(name);
-		save->level = level;
+		save->area = AreaId(level);
 		save->stime = stime;
 		save->savefile = path;
 		

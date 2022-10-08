@@ -127,7 +127,7 @@ void ARX_LoadGame(const SaveGame & save) {
 	progressBarSetTotal(238);
 	progressBarReset();
 	progressBarAdvance();
-	LoadLevelScreen(AreaId(save.level));
+	LoadLevelScreen(save.area);
 	
 	ARX_CHANGELEVEL_Load(save.savefile);
 	

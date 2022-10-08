@@ -29,10 +29,12 @@
 #include <boost/iterator/counting_iterator.hpp>
 #include <boost/iterator/transform_iterator.hpp>
 
+#include "graphics/BaseGraphicsTypes.h"
 #include "graphics/image/Image.h"
 #include "io/fs/FilePath.h"
 #include "io/resource/ResourcePath.h"
 #include "util/HandleType.h"
+
 
 typedef HandleType<struct SavegameHandleTag, long, -1> SavegameHandle;
 
@@ -47,7 +49,7 @@ struct SaveGame {
 	fs::path savefile;
 	res::path thumbnail;
 	
-	long level = 0;
+	AreaId area;
 	std::time_t stime = 0;
 	
 };

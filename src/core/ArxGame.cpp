@@ -1175,7 +1175,7 @@ void ArxGame::doFrame() {
 		} else {
 			SaveGame save;
 			save.name = name;
-			save.level = level;
+			save.area = AreaId(level);
 			save.savefile = g_saveToLoad;
 			ARX_LoadGame(save);
 		}
