@@ -1656,7 +1656,7 @@ void ArxGame::updateLevel() {
 	ARX_PLAYER_Manage_Visual();
 
 	g_miniMap.setActiveBackground(g_tiles);
-	g_miniMap.validatePlayerPos(CURRENTLEVEL, BLOCK_PLAYER_CONTROLS, g_playerBook.currentPage());
+	g_miniMap.validatePlayerPos(s32(g_currentArea), BLOCK_PLAYER_CONTROLS, g_playerBook.currentPage());
 
 
 	if(entities.player()->animlayer[0].cur_anim) {
@@ -1877,7 +1877,7 @@ void ArxGame::renderLevel() {
 		&& !BLOCK_PLAYER_CONTROLS
 		&& !(player.Interface & INTER_PLAYERBOOK))
 	{
-		int SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
+		int SHOWLEVEL = ARX_LEVELS_GetRealNum(s32(g_currentArea));
 
 		if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
 			g_miniMap.showPlayerMiniMap(SHOWLEVEL);

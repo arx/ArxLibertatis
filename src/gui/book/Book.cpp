@@ -197,7 +197,7 @@ void PlayerBook::toggle() {
 		SendIOScriptEvent(nullptr, entities.player(), SM_BOOK_OPEN);
 		ARX_INTERFACE_NoteClose();
 		player.Interface |= INTER_PLAYERBOOK;
-		map.setMapLevel(glm::clamp(ARX_LEVELS_GetRealNum(CURRENTLEVEL), 0, 7));
+		map.setMapLevel(glm::clamp(ARX_LEVELS_GetRealNum(s32(g_currentArea)), 0, 7));
 	}
 	
 	if(player.Interface & INTER_COMBATMODE) {
@@ -1488,7 +1488,7 @@ void MapPage::drawMaps() const {
 		                                            Vec2i(bookPos + Vec2f(248, 226) * scale)), scale);
 	}
 	
-	SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
+	SHOWLEVEL = ARX_LEVELS_GetRealNum(s32(g_currentArea));
 	
 	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32) {
 		g_miniMap.showBookMiniMap(SHOWLEVEL, Rect(Vec2i(bookPos + Vec2f(263, 21) * scale),

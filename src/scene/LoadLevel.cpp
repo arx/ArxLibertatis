@@ -224,7 +224,7 @@ bool DanaeLoadLevel(AreaId area, bool loadEntities) {
 	
 	arx_assume(area);
 	
-	CURRENTLEVEL = s32(area);
+	g_currentArea = area;
 	
 	const std::string levelId = std::to_string(u32(area));
 	const res::path file = "graph/levels/level" + levelId + "/level" + levelId + ".dlf";
@@ -550,7 +550,8 @@ void DanaeClearLevel() {
 	
 	TREATZONE_Clear();
 	
-	CURRENTLEVEL = -1;
+	g_currentArea = { };
+	
 }
 
 void RestoreLastLoadedLightning() {

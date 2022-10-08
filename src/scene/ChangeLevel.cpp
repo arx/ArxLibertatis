@@ -319,13 +319,8 @@ void ARX_CHANGELEVEL_Change(AreaId area, std::string_view target, float angle) {
 	
 	LogDebug("ARX_CHANGELEVEL_Change " << area << " " << target << " " << angle);
 	
-	progressBarSetTotal(238);
-	progressBarReset();
-	
-	LoadLevelScreen(area);
-	
 	// not changing level, just teleported
-	if(s32(area) == CURRENTLEVEL) {
+	if(area == g_currentArea) {
 		if(Entity * targetEntity = entities.getById(target)) {
 			g_moveto = player.pos = GetItemWorldPosition(targetEntity) + player.baseOffset();
 		}
@@ -333,6 +328,11 @@ void ARX_CHANGELEVEL_Change(AreaId area, std::string_view target, float angle) {
 		player.angle.setYaw(angle);
 		return; // nothing more to do :)
 	}
+	
+	progressBarSetTotal(238);
+	progressBarReset();
+	
+	LoadLevelScreen(area);
 	
 	ARX_PLAYER_Reset_Fall();
 	
@@ -343,7 +343,7 @@ void ARX_CHANGELEVEL_Change(AreaId area, std::string_view target, float angle) {
 		return;
 	}
 	
-	ARX_CHANGELEVEL_PushLevel(CURRENTLEVEL, s32(area));
+	ARX_CHANGELEVEL_PushLevel(s32(g_currentArea), s32(area));
 	
 	ARX_CHANGELEVEL_PopLevel(s32(area), true, target, angle);
 	
@@ -2441,7 +2441,7 @@ bool ARX_CHANGELEVEL_Save(std::string_view name, const fs::path & savefile) {
 	
 	LogDebug("ARX_CHANGELEVEL_Save " << savefile << " " << name);
 	
-	if(CURRENTLEVEL == -1) {
+	if(!g_currentArea) {
 		return false;
 	}
 	
@@ -2451,7 +2451,7 @@ bool ARX_CHANGELEVEL_Save(std::string_view name, const fs::path & savefile) {
 	
 	// Save the current level
 	
-	if(!ARX_CHANGELEVEL_PushLevel(CURRENTLEVEL, CURRENTLEVEL)) {
+	if(!ARX_CHANGELEVEL_PushLevel(s32(g_currentArea), s32(g_currentArea))) {
 		LogWarning << "Could not save the level";
 		return false;
 	}
@@ -2460,7 +2460,7 @@ bool ARX_CHANGELEVEL_Save(std::string_view name, const fs::path & savefile) {
 	
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;
 	memset(&pld, 0, sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA));
-	pld.level = CURRENTLEVEL;
+	pld.level = s32(g_currentArea);
 	util::storeString(pld.name, name);
 	pld.version = ARX_GAMESAVE_VERSION;
 	pld.time = toMsi(g_gameTime.now()); // TODO save/load time

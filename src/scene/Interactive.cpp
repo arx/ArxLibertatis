@@ -489,7 +489,7 @@ void PrepareIOTreatZone(long flag) {
 	float TREATZONE_LIMIT = 3200;
 	if(!g_roomDistance.empty()) {
 		TREATZONE_LIMIT += 600;
-		if(CURRENTLEVEL == 4) {
+		if(g_currentArea == AreaId(4)) {
 			TREATZONE_LIMIT += 1200;
 		}
 		if(g_camera->cdepth > 3000) {

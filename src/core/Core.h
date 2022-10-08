@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "core/TimeTypes.h"
+#include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
 #include "graphics/data/Mesh.h"
 #include "gui/debug/DebugKeys.h"
@@ -83,7 +84,7 @@ extern float g_framedelay;
 
 extern bool g_requestLevelInit;
 
-extern long CURRENTLEVEL;
+extern AreaId g_currentArea;
 extern long TELEPORT_TO_ANGLE;
 
 inline float bowZoomFromDuration(float duration) {

@@ -202,7 +202,7 @@ Rect g_size(640, 480);
 Vec2f g_sizeRatio(1.f, 1.f);
 
 bool REQUEST_SPEECH_SKIP = false;
-long CURRENTLEVEL = -1;
+AreaId g_currentArea;
 bool DONT_ERASE_PLAYER = false;
 
 ChangeLevelIcon CHANGE_LEVEL_ICON = NoChangeLevel;
