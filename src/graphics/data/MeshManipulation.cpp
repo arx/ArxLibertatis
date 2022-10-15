@@ -158,20 +158,6 @@ static VertexId addVertex(EERIE_3DOBJ * obj, const EERIE_VERTEX * vert) {
 	return VertexId(obj->vertexlist.size() - 1);
 }
 
-static ActionPoint GetActionPoint(const EERIE_3DOBJ * obj, const char * name) {
-	
-	if(!obj)
-		return ActionPoint();
-	
-	for(const EERIE_ACTIONLIST & act : obj->actionlist) {
-		if(act.name == name) {
-			return act.idx;
-		}
-	}
-
-	return ActionPoint();
-}
-
 static long ObjectAddFace(EERIE_3DOBJ * obj, const EERIE_FACE * face, const EERIE_3DOBJ * srcobj) {
 	
 	// Check Already existing faces
@@ -329,10 +315,10 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 		return { };
 	}
 	
-	if(!GetActionPoint(obj1, "head2chest") ||
-	   !GetActionPoint(obj2, "head2chest") ||
-	   !GetActionPoint(obj1, "chest2leggings") ||
-	   !GetActionPoint(obj2, "chest2leggings")) {
+	if(!GetActionPointIdx(obj1, "head2chest") ||
+	   !GetActionPointIdx(obj2, "head2chest") ||
+	   !GetActionPointIdx(obj1, "chest2leggings") ||
+	   !GetActionPointIdx(obj2, "chest2leggings")) {
 		return { };
 	}
 	
