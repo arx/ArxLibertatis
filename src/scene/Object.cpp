@@ -96,7 +96,7 @@ VertexId getNamedVertex(const EERIE_3DOBJ * eobj, std::string_view text) {
 	return { };
 }
 
-ObjVertGroup getGroupForVertex(const EERIE_3DOBJ * eobj, VertexId vertex) {
+VertexGroupId getGroupForVertex(const EERIE_3DOBJ * eobj, VertexId vertex) {
 	
 	if(!eobj) {
 		return { };
@@ -105,7 +105,7 @@ ObjVertGroup getGroupForVertex(const EERIE_3DOBJ * eobj, VertexId vertex) {
 	for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
 		for(VertexId index : eobj->grouplist[i].indexes) {
 			if(index == vertex) {
-				return ObjVertGroup(i);
+				return VertexGroupId(i);
 			}
 		}
 	}
@@ -220,7 +220,7 @@ ObjSelection EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, std::string_view
 	return ObjSelection();
 }
 
-ObjVertGroup EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, std::string_view groupname) {
+VertexGroupId EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, std::string_view groupname) {
 	
 	if(!obj) {
 		return { };
@@ -228,7 +228,7 @@ ObjVertGroup EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, std::string_view gro
 	
 	for(size_t i = 0; i < obj->grouplist.size(); i++) {
 		if(obj->grouplist[i].name == groupname) {
-			return ObjVertGroup(i);
+			return VertexGroupId(i);
 		}
 	}
 	

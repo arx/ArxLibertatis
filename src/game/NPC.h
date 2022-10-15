@@ -133,10 +133,11 @@ struct IO_PATHFIND {
 };
 
 struct EERIE_EXTRA_ROTATE {
-	std::array<ObjVertGroup, MAX_EXTRA_ROTATE> group_number;
-	std::array<Anglef, MAX_EXTRA_ROTATE> group_rotate;
-};
 	
+	std::array<VertexGroupId, MAX_EXTRA_ROTATE> group_number;
+	std::array<Anglef, MAX_EXTRA_ROTATE> group_rotate;
+	
+};
 
 enum NPCFlag {
 	NPCFLAG_BACKSTAB = 1 << 0

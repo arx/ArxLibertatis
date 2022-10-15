@@ -744,11 +744,11 @@ struct SavedPathfindTarget {
 
 const size_t SAVED_MAX_EXTRA_ROTATE = 4;
 
-inline ObjVertGroup saved_toObjGroup(short value) {
-	return ObjVertGroup(value);
+inline VertexGroupId saved_toObjGroup(short value) {
+	return VertexGroupId(value);
 }
 
-inline short saved_fromObjGroup(ObjVertGroup value) {
+inline short saved_fromObjGroup(VertexGroupId value) {
 	return value.handleData();
 }
 
@@ -773,7 +773,7 @@ struct SavedExtraRotate {
 		std::copy(b.group_rotate.begin(), b.group_rotate.end(), group_rotate);
 		#ifdef ARX_DEBUG
 		for(size_t i = SAVED_MAX_EXTRA_ROTATE; i < MAX_EXTRA_ROTATE; i++) {
-			arx_assert(b.group_number[i] == ObjVertGroup());
+			arx_assert(b.group_number[i] == VertexGroupId());
 			arx_assert(b.group_rotate[i] == Anglef());
 		}
 		#endif

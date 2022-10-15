@@ -810,7 +810,7 @@ void ManageCombatModeAnimations() {
 					// Use position and direction of the arrow object attached to the player while drawing the bow
 					// We need to manually transform the vertices here or we will be one frame behind
 					
-					ObjVertGroup leftAttach = getGroupForVertex(io->obj, io->obj->fastaccess.left_attach);
+					VertexGroupId leftAttach = getGroupForVertex(io->obj, io->obj->fastaccess.left_attach);
 					arx_assert(leftAttach);
 					
 					const Bone & bone2 = io->obj->m_skeleton->bones[leftAttach.handleData()];
@@ -886,7 +886,7 @@ void ManageCombatModeAnimations() {
 				
 				glm::quat quat; // Arrow object orientation relative to the arrow projectile direction
 				
-				ObjVertGroup group = getGroupForVertex(io->obj, io->obj->fastaccess.left_attach);
+				VertexGroupId group = getGroupForVertex(io->obj, io->obj->fastaccess.left_attach);
 				if(config.input.improvedBowAim && group) {
 					// Maintain arrow object orientation
 					// In practice this is the same as the alternative below except for additional roll around dir

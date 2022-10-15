@@ -1376,7 +1376,7 @@ static void animateSkeleton(EERIE_3DOBJ * eobj, AnimLayer * animlayer,
 	// Apply Extra Rotations in Local Space
 	if(extraRotation) {
 		for(size_t k = 0; k < MAX_EXTRA_ROTATE; k++) {
-			if(ObjVertGroup group = extraRotation->group_number[k]) {
+			if(VertexGroupId group = extraRotation->group_number[k]) {
 				skeleton.bones[size_t(group)].init.quat = angleToQuatForExtraRotation(extraRotation->group_rotate[k]);
 			}
 		}

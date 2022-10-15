@@ -557,7 +557,7 @@ static Vec3f GetChestPos(EntityHandle num) {
 		return Vec3f(0.f);
 	}
 	
-	if(ObjVertGroup chest = EERIE_OBJECT_GetGroup(io->obj, "chest")) {
+	if(VertexGroupId chest = EERIE_OBJECT_GetGroup(io->obj, "chest")) {
 		return io->obj->vertexWorldPositions[io->obj->grouplist[size_t(chest)].origin].v;
 	}
 	
@@ -571,7 +571,7 @@ void LightningStrikeSpell::Update() {
 	
 	Entity * caster = entities.get(m_caster);
 	if(caster) {
-		if(ObjVertGroup chest = EERIE_OBJECT_GetGroup(caster->obj, "chest")) {
+		if(VertexGroupId chest = EERIE_OBJECT_GetGroup(caster->obj, "chest")) {
 			m_caster_pos = caster->obj->vertexWorldPositions[caster->obj->grouplist[size_t(chest)].origin].v;
 		} else {
 			m_caster_pos = caster->pos;

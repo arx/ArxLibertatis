@@ -1260,7 +1260,7 @@ void ArxGame::updateFirstPersonCamera() {
 			
 			g_playerCameraStablePos = g_playerCamera.m_pos = io->obj->vertexWorldPositions[viewVertex].v;
 			
-			if(ObjVertGroup viewGroup = getGroupForVertex(io->obj, viewVertex)) {
+			if(VertexGroupId viewGroup = getGroupForVertex(io->obj, viewVertex)) {
 				AnimLayer animlayer[MAX_ANIM_LAYERS];
 				for(size_t i = 0; i < MAX_ANIM_LAYERS; i++) {
 					animlayer[i] = io->animlayer[i];

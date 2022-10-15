@@ -153,7 +153,7 @@ struct EERIE_ACTIONLIST {
 
 struct EERIE_LINKED {
 	
-	ObjVertGroup lgroup;
+	VertexGroupId lgroup;
 	VertexId lidx;
 	VertexId lidx2;
 	EERIE_3DOBJ * obj = nullptr;
@@ -176,7 +176,7 @@ struct EERIE_FASTACCESS {
 	VertexId weapon_attach;
 	VertexId fire;
 	VertexId head_group_origin;
-	ObjVertGroup head_group;
+	VertexGroupId head_group;
 	ObjSelection sel_head;
 	ObjSelection sel_chest;
 	ObjSelection sel_leggings;

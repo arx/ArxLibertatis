@@ -89,7 +89,7 @@ void EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink,
 		return;
 	}
 	
-	ObjVertGroup group = getGroupForVertex(obj, ni);
+	VertexGroupId group = getGroupForVertex(obj, ni);
 	if(!group) {
 		return;
 	}
