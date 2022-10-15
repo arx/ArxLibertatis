@@ -184,17 +184,17 @@ static long ObjectAddFace(EERIE_3DOBJ * obj, const EERIE_FACE * face, const EERI
 	return obj->facelist.size() - 1;
 }
 
-static void ObjectAddAction(EERIE_3DOBJ * obj, std::string_view name, const EERIE_VERTEX * vert) {
+static void addNamedVertex(EERIE_3DOBJ & obj, std::string_view name, const EERIE_VERTEX & vertex) {
 	
-	VertexId newvert = addVertex(*obj, *vert);
+	VertexId newvert = addVertex(obj, vertex);
 	
-	for(const EERIE_ACTIONLIST & action : obj->actionlist) {
+	for(const EERIE_ACTIONLIST & action : obj.actionlist) {
 		if(action.name == name) {
 			return;
 		}
 	}
 	
-	EERIE_ACTIONLIST & action = obj->actionlist.emplace_back();
+	EERIE_ACTIONLIST & action = obj.actionlist.emplace_back();
 	action.name = name;
 	action.idx = newvert;
 	
@@ -343,7 +343,7 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 		   IsInSelection(obj1, VertexId(action.idx.handleData()), jw1) ||
 		   action.name == "head2chest" ||
 		   action.name == "chest2leggings") {
-			ObjectAddAction(work.get(), action.name, &obj1->vertexlist[action.idx]);
+			addNamedVertex(*work, action.name, obj1->vertexlist[action.idx]);
 		}
 	}
 	
@@ -353,7 +353,7 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 		if(IsInSelection(obj2, VertexId(action.idx.handleData()), tw2) ||
 		   action.name == "head2chest" ||
 		   action.name == "chest2leggings") {
-			ObjectAddAction(work.get(), action.name, &obj2->vertexlist[action.idx]);
+			addNamedVertex(*work, action.name, obj2->vertexlist[action.idx]);
 		}
 	}
 	
