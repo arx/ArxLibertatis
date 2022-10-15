@@ -1297,12 +1297,11 @@ void doSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, Spell *
 		long count = 0;
 		long count2 = 0;
 		float mindist = std::numeric_limits<float>::max();
-		for(size_t k = 0; k < entity.obj->vertexWorldPositions.size(); k += 1) {
+		for(const EERIE_VERTEX & vertex : entity.obj->vertexWorldPositions) {
 			if(entity.obj->vertexlist.size() < 120) {
-				for(size_t kk = 0; kk < entity.obj->vertexWorldPositions.size(); kk += 1) {
-					if(kk != k) {
-						Vec3f pos = (entity.obj->vertexWorldPositions[k].v + entity.obj->vertexWorldPositions[kk].v) * 0.5f;
-						float dist = fdist(sphere.origin, pos);
+				for(const EERIE_VERTEX & other : entity.obj->vertexWorldPositions) {
+					if(&vertex != &other) {
+						float dist = fdist(sphere.origin, (vertex.v + other.v) * 0.5f);
 						if(dist <= sphere.radius) {
 							count2++;
 							if(dist < mindist) {
@@ -1312,7 +1311,7 @@ void doSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, Spell *
 					}
 				}
 			}
-			float dist = fdist(sphere.origin, entity.obj->vertexWorldPositions[k].v);
+			float dist = fdist(sphere.origin, vertex.v);
 			if(dist <= sphere.radius) {
 				count++;
 				if(dist < mindist) {
