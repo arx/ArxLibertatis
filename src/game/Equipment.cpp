@@ -717,17 +717,10 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						if(!(flags & 1)) {
 							ARX_PARTICLES_Spawn_Splat(pos, dmgs, color);
 							
-							Vec3f vertPos = target->obj->vertexWorldPositions[hitpoint].v;
-							
 							float power = (dmgs * 0.025f) + 0.7f;
 							
-							Vec3f vect(vertPos.x - io_source->pos.x, 0.f, vertPos.z - io_source->pos.z);
-							vect = glm::normalize(vect);
-							
 							Sphere sp;
-							sp.origin.x = vertPos.x + vect.x * 30.f;
-							sp.origin.y = vertPos.y;
-							sp.origin.z = vertPos.z + vect.z * 30.f;
+							sp.origin = pos + glm::normalize(toXZ(pos - io_source->pos)) * 30.f;
 							sp.radius = 3.5f * power * 20;
 							
 							if(CheckAnythingInSphere(sp, entities.player(), CAS_NO_NPC_COL)) {
