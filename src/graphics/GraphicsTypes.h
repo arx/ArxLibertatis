@@ -188,7 +188,7 @@ struct EERIE_3DOBJ {
 	res::path file;
 	VertexId origin = VertexId(0);
 	util::HandleVector<VertexId, Vec3f> vertexlocal;
-	std::vector<EERIE_VERTEX> vertexlist;
+	util::HandleVector<VertexId, EERIE_VERTEX> vertexlist;
 	std::vector<EERIE_VERTEX> vertexWorldPositions;
 	std::vector<Vec4f> vertexClipPositions;
 	std::vector<ColorRGBA> vertexColors;

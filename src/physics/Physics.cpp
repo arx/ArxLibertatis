@@ -92,7 +92,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj) {
 	Vec3f cubmin = Vec3f(std::numeric_limits<float>::max());
 	Vec3f cubmax = Vec3f(-std::numeric_limits<float>::max());
 	
-	const EERIE_VERTEX & origin = obj->vertexlist[size_t(obj->origin)];
+	const EERIE_VERTEX & origin = obj->vertexlist[obj->origin];
 	for(const EERIE_VERTEX & vertex : obj->vertexlist) {
 		if(&vertex != &origin) {
 			cubmin = glm::min(cubmin, vertex.v);
@@ -244,9 +244,9 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj) {
 	
 	float surface = 0.f;
 	for(const EERIE_FACE & face : obj->facelist) {
-		const Vec3f & p0 = obj->vertexlist[size_t(face.vid[0])].v;
-		const Vec3f & p1 = obj->vertexlist[size_t(face.vid[1])].v;
-		const Vec3f & p2 = obj->vertexlist[size_t(face.vid[2])].v;
+		const Vec3f & p0 = obj->vertexlist[face.vid[0]].v;
+		const Vec3f & p1 = obj->vertexlist[face.vid[1]].v;
+		const Vec3f & p2 = obj->vertexlist[face.vid[2]].v;
 		surface += glm::distance((p0 + p1) * .5f, p2) * glm::distance(p0, p1) * .5f;
 	}
 	pbox->surface = surface;

@@ -45,7 +45,7 @@ static bool IsNearSelection(EERIE_3DOBJ * obj, VertexId vert, ObjSelection tw) {
 	}
 	
 	for(VertexId vertex : obj->selections[tw.handleData()].selected) {
-		float d = glm::distance(obj->vertexlist[size_t(vertex)].v, obj->vertexlist[size_t(vert)].v);
+		float d = glm::distance(obj->vertexlist[vertex].v, obj->vertexlist[vert].v);
 		if(d < 8.f) {
 			return true;
 		}
@@ -82,6 +82,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	}
 	
 	size_t nvertex = from->selections[num.handleData()].selected.size();
+	arx_assume(nvertex > 0);
 	for(EERIE_FACE & face : from->facelist) {
 		if(face.texid == gore
 		   && (IsNearSelection(from, face.vid[0], num)
@@ -106,11 +107,12 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	
 	for(size_t k = 0; k < cutSelection.selected.size(); k++) {
 		inpos = cutSelection.selected[k];
-		equival[inpos] = VertexId(k);
-		nouvo->vertexlist[k] = from->vertexlist[size_t(inpos)];
-		nouvo->vertexlist[k].v = from->vertexWorldPositions[size_t(inpos)].v;
-		nouvo->vertexlist[k].v -= ioo->pos;
-		nouvo->vertexWorldPositions[k] = nouvo->vertexlist[k];
+		VertexId outpos = VertexId(k);
+		equival[inpos] = outpos;
+		nouvo->vertexlist[outpos] = from->vertexlist[inpos];
+		nouvo->vertexlist[outpos].v = from->vertexWorldPositions[size_t(inpos)].v;
+		nouvo->vertexlist[outpos].v -= ioo->pos;
+		nouvo->vertexWorldPositions[size_t(outpos)] = nouvo->vertexlist[outpos];
 	}
 	
 	size_t count = cutSelection.selected.size();
@@ -122,10 +124,11 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 				
 				for(VertexId vertex : face.vid) {
 					if(count < nouvo->vertexlist.size()) {
-						nouvo->vertexlist[count] = from->vertexlist[size_t(vertex)];
-						nouvo->vertexlist[count].v = from->vertexWorldPositions[size_t(vertex)].v - ioo->pos;
-						nouvo->vertexWorldPositions[count] = nouvo->vertexlist[count];
-						equival[vertex] = VertexId(count);
+						VertexId outpos = VertexId(count);
+						nouvo->vertexlist[outpos] = from->vertexlist[vertex];
+						nouvo->vertexlist[outpos].v = from->vertexWorldPositions[size_t(vertex)].v - ioo->pos;
+						nouvo->vertexWorldPositions[size_t(outpos)] = nouvo->vertexlist[outpos];
+						equival[vertex] = outpos;
 					} else {
 						equival[vertex] = { };
 					}
@@ -136,18 +139,18 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 		}
 	}
 	
-	float min = nouvo->vertexlist[0].v.y;
-	VertexId nummm(0);
-	for(size_t k = 1; k < nouvo->vertexlist.size(); k++) {
-		if(nouvo->vertexlist[k].v.y > min) {
-			min = nouvo->vertexlist[k].v.y;
-			nummm = VertexId(k);
+	arx_assume(nouvo->vertexlist.size() > 0);
+	nouvo->origin = { };
+	float min = 0.f;
+	for(VertexId vertex : nouvo->vertexlist.handles()) {
+		if(!nouvo->origin || nouvo->vertexlist[vertex].v.y > min) {
+			min = nouvo->vertexlist[vertex].v.y;
+			nouvo->origin = vertex;
+			arx_assume(nouvo->origin);
 		}
 	}
 	
-	nouvo->origin = nummm;
-	
-	Vec3f point0 = nouvo->vertexlist[size_t(nouvo->origin)].v;
+	Vec3f point0 = nouvo->vertexlist[nouvo->origin].v;
 	for(EERIE_VERTEX & vertex : nouvo->vertexlist) {
 		vertex.v -= point0;
 	}

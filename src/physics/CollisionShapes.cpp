@@ -66,15 +66,17 @@ void EERIE_COLLISION_Cylinder_Create(Entity * io)
 		return;
 	}
 	
-	io->physics.cyl.origin = obj->vertexlist[size_t(obj->origin)].v;
+	const EERIE_VERTEX & origin = obj->vertexlist[obj->origin];
+	
+	io->physics.cyl.origin = origin.v;
 	
 	float d = 0.f;
 	float height = 0.f;
-	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
-		if(VertexId(i) != obj->origin && glm::abs(io->physics.cyl.origin.y - obj->vertexlist[i].v.y) < 20.f) {
-			d = std::max(d, glm::distance(io->physics.cyl.origin, obj->vertexlist[i].v));
+	for(const EERIE_VERTEX & vertex : obj->vertexlist) {
+		if(&vertex != &origin && glm::abs(io->physics.cyl.origin.y - vertex.v.y) < 20.f) {
+			d = std::max(d, glm::distance(io->physics.cyl.origin, vertex.v));
 		}
-		height = std::max(height, io->physics.cyl.origin.y - obj->vertexlist[i].v.y);
+		height = std::max(height, io->physics.cyl.origin.y - vertex.v.y);
 	}
 
 	if(d == 0.f || height == 0.f) {

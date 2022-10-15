@@ -244,8 +244,8 @@ void ARX_THROWN_OBJECT_Render() {
 		arx_assert(projectile.obj);
 		
 		TransformInfo t(projectile.position, projectile.quat);
-		t.pos = t(projectile.obj->vertexlist[size_t(projectile.obj->origin)].v
-		          - projectile.obj->vertexlist[projectile.attach.handleData()].v);
+		t.pos = t(projectile.obj->vertexlist[projectile.obj->origin].v
+		          - projectile.obj->vertexlist[projectile.attach].v);
 		// Object has to be retransformed because arrows share the same object
 		DrawEERIEInter_ModelTransform(projectile.obj, t);
 		DrawEERIEInter_ViewProjectTransform(projectile.obj);
@@ -286,8 +286,8 @@ static void ARX_THROWN_OBJECT_ManageProjectile(Projectile & projectile, ShortGam
 	}
 	
 	TransformInfo t(projectile.position, projectile.quat);
-	t.pos = t(projectile.obj->vertexlist[size_t(projectile.obj->origin)].v
-	          - projectile.obj->vertexlist[size_t(projectile.attach)].v);
+	t.pos = t(projectile.obj->vertexlist[projectile.obj->origin].v
+	          - projectile.obj->vertexlist[projectile.attach].v);
 	DrawEERIEInter_ModelTransform(projectile.obj, t);
 	
 	if((projectile.flags & ATO_FIERY) && !(projectile.flags & ATO_UNDERWATER)) {

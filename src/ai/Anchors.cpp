@@ -86,7 +86,7 @@ void ANCHOR_BLOCK_By_IO(Entity * io, bool blocked) {
 			
 			Vec3f center(0.f);
 			for(size_t kk = 0; kk < 3; kk++) {
-				ep.v[kk].p = io->obj->vertexlist[size_t(face.vid[kk])].v + io->pos;
+				ep.v[kk].p = io->obj->vertexlist[face.vid[kk]].v + io->pos;
 				center += ep.v[kk].p;
 			}
 			center /= 3.f;

@@ -136,9 +136,9 @@ bool IsInSelection(const EERIE_3DOBJ * obj, VertexId vert, ObjSelection tw) {
 
 static VertexId getEquivalentVertex(const EERIE_3DOBJ & obj, Vec3f vertex) {
 	
-	for(size_t i = 0; i < obj.vertexlist.size(); i++) {
-		if(obj.vertexlist[i].v == vertex) {
-			return VertexId(i);
+	for(VertexId index : obj.vertexlist.handles()) {
+		if(obj.vertexlist[index].v == vertex) {
+			return index;
 		}
 	}
 	
@@ -153,24 +153,24 @@ static VertexId addVertex(EERIE_3DOBJ * obj, const EERIE_VERTEX * vert) {
 	
 	obj->vertexlist.push_back(*vert);
 	
-	return VertexId(obj->vertexlist.size() - 1);
+	return obj->vertexlist.last();
 }
 
 static long ObjectAddFace(EERIE_3DOBJ * obj, const EERIE_FACE * face, const EERIE_3DOBJ * srcobj) {
 	
 	// Check Already existing faces
 	for(const EERIE_FACE & existing : obj->facelist) {
-		if(obj->vertexlist[size_t(existing.vid[0])].v == srcobj->vertexlist[size_t(face->vid[0])].v &&
-		   obj->vertexlist[size_t(existing.vid[1])].v == srcobj->vertexlist[size_t(face->vid[1])].v &&
-		   obj->vertexlist[size_t(existing.vid[2])].v == srcobj->vertexlist[size_t(face->vid[2])].v) {
+		if(obj->vertexlist[existing.vid[0]].v == srcobj->vertexlist[face->vid[0]].v &&
+		   obj->vertexlist[existing.vid[1]].v == srcobj->vertexlist[face->vid[1]].v &&
+		   obj->vertexlist[existing.vid[2]].v == srcobj->vertexlist[face->vid[2]].v) {
 			return -1;
 		}
 	}
 	
 	EERIE_FACE & newface = obj->facelist.emplace_back(*face);
-	newface.vid[0] = addVertex(obj, &srcobj->vertexlist[size_t(face->vid[0])]);
-	newface.vid[1] = addVertex(obj, &srcobj->vertexlist[size_t(face->vid[1])]);
-	newface.vid[2] = addVertex(obj, &srcobj->vertexlist[size_t(face->vid[2])]);
+	newface.vid[0] = addVertex(obj, &srcobj->vertexlist[face->vid[0]]);
+	newface.vid[1] = addVertex(obj, &srcobj->vertexlist[face->vid[1]]);
+	newface.vid[2] = addVertex(obj, &srcobj->vertexlist[face->vid[2]]);
 	newface.texid = 0;
 	
 	for(size_t i = 0; i < obj->texturecontainer.size(); i++) {
@@ -217,11 +217,11 @@ long ObjectAddMap(EERIE_3DOBJ * obj, TextureContainer * tc) {
 
 static void AddVertexToGroup(EERIE_3DOBJ * obj, size_t group, const EERIE_VERTEX * vert) {
 	
-	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
-		if(obj->vertexlist[i].v == vert->v) {
+	for(VertexId vertex : obj->vertexlist.handles()) {
+		if(obj->vertexlist[vertex].v == vert->v) {
 			auto & indices = obj->grouplist[group].indexes;
-			if(std::find(indices.begin(), indices.end(), VertexId(i)) == indices.end()) {
-				indices.push_back(VertexId(i));
+			if(std::find(indices.begin(), indices.end(), vertex) == indices.end()) {
+				indices.push_back(vertex);
 			}
 		}
 	}
@@ -232,7 +232,7 @@ static void copySelection(const EERIE_3DOBJ & source, ObjSelection sourceSelecti
                           EERIE_3DOBJ & dest, ObjSelection destSelection) {
 	
 	for(VertexId sourceVertex : source.selections[sourceSelection.handleData()].selected) {
-		if(VertexId destVertex = getEquivalentVertex(dest, source.vertexlist[size_t(sourceVertex)].v)) {
+		if(VertexId destVertex = getEquivalentVertex(dest, source.vertexlist[sourceVertex].v)) {
 			auto & selection = dest.selections[destSelection.handleData()].selected;
 			if(std::find(selection.begin(), selection.end(), destVertex) == selection.end()) {
 				selection.push_back(destVertex);
@@ -332,9 +332,9 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 	
 	// Is the origin of object in obj1 or obj2 ? Retreives it for work object
 	if(IsInSelection(obj1, obj1->origin, tw1)) {
-		work->origin = addVertex(work.get(), &obj2->vertexlist[size_t(obj2->origin)]);
+		work->origin = addVertex(work.get(), &obj2->vertexlist[obj2->origin]);
 	} else {
-		work->origin = addVertex(work.get(), &obj1->vertexlist[size_t(obj1->origin)]);
+		work->origin = addVertex(work.get(), &obj1->vertexlist[obj1->origin]);
 	}
 	
 	// Recreate Action Points included in work object.for Obj1
@@ -344,7 +344,7 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 		   IsInSelection(obj1, VertexId(action.idx.handleData()), jw1) ||
 		   action.name == "head2chest" ||
 		   action.name == "chest2leggings") {
-			ObjectAddAction(work.get(), action.name, &obj1->vertexlist[action.idx.handleData()]);
+			ObjectAddAction(work.get(), action.name, &obj1->vertexlist[action.idx]);
 		}
 	}
 	
@@ -354,21 +354,21 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 		if(IsInSelection(obj2, VertexId(action.idx.handleData()), tw2) ||
 		   action.name == "head2chest" ||
 		   action.name == "chest2leggings") {
-			ObjectAddAction(work.get(), action.name, &obj2->vertexlist[action.idx.handleData()]);
+			ObjectAddAction(work.get(), action.name, &obj2->vertexlist[action.idx]);
 		}
 	}
 	
 	// Recreate Vertex using Obj1 Vertexes
-	for(size_t i = 0; i < obj1->vertexlist.size(); i++) {
-		if(IsInSelection(obj1, VertexId(i), iw1) || IsInSelection(obj1, VertexId(i), jw1)) {
-			addVertex(work.get(), &obj1->vertexlist[i]);
+	for(VertexId vertex : obj1->vertexlist.handles()) {
+		if(IsInSelection(obj1, vertex, iw1) || IsInSelection(obj1, vertex, jw1)) {
+			addVertex(work.get(), &obj1->vertexlist[vertex]);
 		}
 	}
 	
 	// The same for Obj2
-	for(size_t i = 0; i < obj2->vertexlist.size(); i++) {
-		if(IsInSelection(obj2, VertexId(i), tw2)) {
-			addVertex(work.get(), &obj2->vertexlist[i]);
+	for(VertexId vertex : obj2->vertexlist.handles()) {
+		if(IsInSelection(obj2, vertex, tw2)) {
+			addVertex(work.get(), &obj2->vertexlist[vertex]);
 		}
 	}
 	
@@ -408,7 +408,7 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 	for(size_t k = 0; k < obj1->grouplist.size(); k++) {
 		const VertexGroup & group = obj1->grouplist[k];
 		work->grouplist[k].name = group.name;
-		if(VertexId vertex = getEquivalentVertex(*work, obj1->vertexlist[size_t(group.origin)].v)) {
+		if(VertexId vertex = getEquivalentVertex(*work, obj1->vertexlist[group.origin].v)) {
 			work->grouplist[k].m_blobShadowSize = group.m_blobShadowSize;
 			if(IsInSelection(obj1, group.origin, iw1) || IsInSelection(obj1, group.origin, jw1)) {
 				work->grouplist[k].origin = vertex;
@@ -421,7 +421,7 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 		if(k >= obj1->grouplist.size()) {
 			work->grouplist[k].name = group.name;
 		}
-		if(VertexId vertex = getEquivalentVertex(*work, obj2->vertexlist[size_t(group.origin)].v)) {
+		if(VertexId vertex = getEquivalentVertex(*work, obj2->vertexlist[group.origin].v)) {
 			work->grouplist[k].m_blobShadowSize = group.m_blobShadowSize;
 			if(IsInSelection(obj2, group.origin, tw2)) {
 				work->grouplist[k].origin = vertex;
@@ -481,14 +481,14 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 	
 	// Recreate Animation-groups vertex
 	for(size_t i = 0; i < obj1->grouplist.size(); i++) {
-		for(size_t j = 0; j < obj1->grouplist[i].indexes.size(); j++) {
-			AddVertexToGroup(work.get(), i, &obj1->vertexlist[size_t(obj1->grouplist[i].indexes[j])]);
+		for(VertexId vertex : obj1->grouplist[i].indexes) {
+			AddVertexToGroup(work.get(), i, &obj1->vertexlist[vertex]);
 		}
 	}
-
+	
 	for(size_t i = 0; i < obj2->grouplist.size(); i++) {
-		for(size_t j = 0; j < obj2->grouplist[i].indexes.size(); j++) {
-			AddVertexToGroup(work.get(), i, &obj2->vertexlist[size_t(obj2->grouplist[i].indexes[j])]);
+		for(VertexId vertex : obj2->grouplist[i].indexes) {
+			AddVertexToGroup(work.get(), i, &obj2->vertexlist[vertex]);
 		}
 	}
 	

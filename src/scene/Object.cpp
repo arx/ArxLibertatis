@@ -289,7 +289,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 				}
 			}
 			
-			bone.anim.trans = eobj->vertexlist[size_t(group.origin)].v;
+			bone.anim.trans = eobj->vertexlist[group.origin].v;
 			bone.father = GetFather(eobj, group.origin, i - 1);
 			bone.anim.scale = Vec3f(1.f);
 			
@@ -331,7 +331,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 	for(size_t i = 0; i < eobj->m_skeleton->bones.size(); i++) {
 		const Bone & bone = eobj->m_skeleton->bones[i];
 		for(VertexId vertex : eobj->m_boneVertices[i]) {
-			eobj->vertexlocal[vertex] = eobj->vertexlist[size_t(vertex)].v - bone.anim.trans;
+			eobj->vertexlocal[vertex] = eobj->vertexlist[vertex].v - bone.anim.trans;
 		}
 	}
 	
@@ -353,7 +353,7 @@ void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret) {
 		return;
 	}
 	
-	Vec3f offset = ret->vertexlist[size_t(ret->origin)].v;
+	Vec3f offset = ret->vertexlist[ret->origin].v;
 	if(offset == Vec3f(0.f)) {
 		return;
 	}

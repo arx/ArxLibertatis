@@ -556,11 +556,14 @@ void Draw3DObject(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos,
 	
 	glm::mat4 rotation = toRotationMatrix(angle);
 	
-	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
-		Vec3f scaled = eobj->vertexlist[i].v * scale;
-		Vec3f rotated = Vec3f(rotation * Vec4f(scaled, 1.f));
-		eobj->vertexWorldPositions[i].v = (rotated += pos);
-		eobj->vertexClipPositions[i] = worldToClipSpace(rotated);
+	arx_assume(eobj->vertexWorldPositions.size() == eobj->vertexlist.size());
+	arx_assume(eobj->vertexClipPositions.size() == eobj->vertexlist.size());
+	
+	for(VertexId vertex : eobj->vertexlist.handles()) {
+		Vec3f scaled = eobj->vertexlist[vertex].v * scale;
+		Vec3f rotated = Vec3f(rotation * Vec4f(scaled, 1.f)) + pos;
+		eobj->vertexWorldPositions[size_t(vertex)].v = rotated;
+		eobj->vertexClipPositions[size_t(vertex)] = worldToClipSpace(rotated);
 	}
 	
 	for(const EERIE_FACE & face : eobj->facelist) {

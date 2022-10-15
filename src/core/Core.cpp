@@ -782,8 +782,7 @@ void ManageCombatModeAnimations() {
 						if(!boost::starts_with(action.name, "hit_")) {
 							continue;
 						}
-						float dist = arx::distance2(arrowobj->vertexlist[size_t(attach)].v,
-						                            arrowobj->vertexlist[size_t(action.idx)].v);
+						float dist = arx::distance2(arrowobj->vertexlist[attach].v, arrowobj->vertexlist[action.idx].v);
 						if(dist > maxdist) {
 							hit = action.idx;
 							maxdist = dist;
@@ -793,11 +792,10 @@ void ManageCombatModeAnimations() {
 				if(!hit) {
 					hit = attach;
 					float maxdist = 0.f;
-					for(size_t i = 1; i < arrowobj->vertexlist.size(); i++) {
-						float dist = arx::distance2(arrowobj->vertexlist[size_t(attach)].v,
-						                            arrowobj->vertexlist[i].v);
-						if(dist > maxdist) {
-							hit = VertexId(i);
+					for(VertexId vertex : arrowobj->vertexlist.handles()) {
+						float dist = arx::distance2(arrowobj->vertexlist[attach].v, arrowobj->vertexlist[vertex].v);
+						if(vertex != VertexId(0) && dist > maxdist) {
+							hit = vertex;
 							maxdist = dist;
 						}
 					}
@@ -817,10 +815,10 @@ void ManageCombatModeAnimations() {
 					
 					const Bone & bone2 = io->obj->m_skeleton->bones[leftAttach.handleData()];
 					TransformInfo t2(io->obj->vertexWorldPositions[size_t(io->obj->fastaccess.left_attach)].v, bone2.anim.quat);
-					t2.pos = t2(arrowobj->vertexlist[size_t(arrowobj->origin)].v - arrowobj->vertexlist[size_t(attach)].v);
+					t2.pos = t2(arrowobj->vertexlist[arrowobj->origin].v - arrowobj->vertexlist[attach].v);
 					
-					pos = t2(arrowobj->vertexlist[size_t(attach)].v);
-					dir = glm::normalize(t2(arrowobj->vertexlist[size_t(hit)].v) - pos);
+					pos = t2(arrowobj->vertexlist[attach].v);
+					dir = glm::normalize(t2(arrowobj->vertexlist[hit].v) - pos);
 					
 					// Rotate the bow towards whatever the player is aiming at
 					
@@ -896,8 +894,8 @@ void ManageCombatModeAnimations() {
 					quat = glm::inverse(getProjectileQuatFromVector(dir)) * quat;
 				} else {
 					// Orient arrow so that the hit_15 action point points forward
-					Vec3f pos0 = arrowobj->vertexlist[attach.handleData()].v;
-					Vec3f orientation = arrowobj->vertexlist[hit.handleData()].v - pos0;
+					Vec3f pos0 = arrowobj->vertexlist[attach].v;
+					Vec3f orientation = arrowobj->vertexlist[hit].v - pos0;
 					quat = glm::inverse(getProjectileQuatFromVector(orientation));
 				}
 				
