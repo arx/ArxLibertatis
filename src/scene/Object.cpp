@@ -296,21 +296,9 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		}
 		
 		// Assign vertices that are not in any group to the root bone
-		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
-			bool found = false;
-			for(const VertexGroup & group : eobj->grouplist) {
-				for(VertexId index : group.indexes) {
-					if(index == VertexId(i)) {
-						found = true;
-						break;
-					}
-				}
-				if(found) {
-					break;
-				}
-			}
-			if(!found) {
-				eobj->m_boneVertices[0].push_back(VertexId(i));
+		for(VertexId vertex : eobj->vertexlist.handles()) {
+			if(!getGroupForVertex(eobj, vertex)) {
+				eobj->m_boneVertices[0].push_back(vertex);
 			}
 		}
 		
