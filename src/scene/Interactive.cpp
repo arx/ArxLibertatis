@@ -1239,7 +1239,7 @@ void SetWeapon_Back(Entity * io) {
 		if(io->gameFlags & GFLAG_HIDEWEAPON)
 			return;
 
-		ActionPoint ni = io->obj->fastaccess.weapon_attach;
+		ActionPoint ni = ActionPoint(size_t(io->obj->fastaccess.weapon_attach));
 
 		if(ni != ActionPoint()) {
 			EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, weapon->obj, "weapon_attach", "primary_attach", weapon);
