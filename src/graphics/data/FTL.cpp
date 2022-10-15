@@ -141,6 +141,10 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 	object->vertexlist.resize(af3Ddh->nb_vertex);
 	object->facelist.resize(af3Ddh->nb_faces);
 	object->texturecontainer.resize(af3Ddh->nb_maps);
+	if(arx_unlikely(af3Ddh->nb_groups < 0 || size_t(af3Ddh->nb_groups) > VertexGroupId::max())) {
+		LogError << filename << ": Invalid vertex group count";
+		return { };
+	}
 	object->grouplist.resize(af3Ddh->nb_groups);
 	object->actionlist.resize(af3Ddh->nb_action);
 	object->selections.resize(af3Ddh->nb_selections);
