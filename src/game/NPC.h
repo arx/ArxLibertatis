@@ -136,17 +136,7 @@ struct EERIE_EXTRA_ROTATE {
 	std::array<ObjVertGroup, MAX_EXTRA_ROTATE> group_number;
 	std::array<Anglef, MAX_EXTRA_ROTATE> group_rotate;
 };
-
-struct EERIE_EXTRA_SCALE {
 	
-	ObjVertGroup groupIndex;
-	Vec3f scale;
-
-	EERIE_EXTRA_SCALE()
-		: scale(0.f)
-	{ }
-	
-};
 
 enum NPCFlag {
 	NPCFLAG_BACKSTAB = 1 << 0

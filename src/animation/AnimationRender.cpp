@@ -1367,13 +1367,6 @@ static void animateSkeleton(EERIE_3DOBJ * eobj, AnimLayer * animlayer,
 		extraRotation = io->_npcdata->ex_rotate;
 	}
 	
-	EERIE_EXTRA_SCALE extraScale;
-	
-	if(BH_MODE && eobj->fastaccess.head_group != ObjVertGroup()) {
-		extraScale.groupIndex = eobj->fastaccess.head_group;
-		extraScale.scale = Vec3f(1.f);
-	}
-	
 	// Initialize the rig
 	for(Bone & bone : skeleton.bones) {
 		bone.init.quat = quat_identity();
@@ -1394,10 +1387,9 @@ static void animateSkeleton(EERIE_3DOBJ * eobj, AnimLayer * animlayer,
 	// Perform animation in Local space
 	Cedric_AnimateObject(&skeleton, animlayer);
 	
-	if(extraScale.groupIndex != ObjVertGroup()) {
-		size_t boneIndex = size_t(extraScale.groupIndex.handleData());
-		Bone & bone = skeleton.bones[boneIndex];
-		bone.init.scale += extraScale.scale;
+	if(BH_MODE && eobj->fastaccess.head_group) {
+		Bone & bone = skeleton.bones[size_t(eobj->fastaccess.head_group)];
+		bone.init.scale += Vec3f(1.f);
 	}
 	
 	// Check for Animation Blending in Local space
