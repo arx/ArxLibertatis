@@ -404,26 +404,25 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 	// Recreate Groups
 	work->grouplist.resize(std::max(obj1->grouplist.size(), obj2->grouplist.size()));
 	
-	for(size_t k = 0; k < obj1->grouplist.size(); k++) {
-		const VertexGroup & group = obj1->grouplist[k];
-		work->grouplist[k].name = group.name;
-		if(VertexId vertex = getEquivalentVertex(*work, obj1->vertexlist[group.origin].v)) {
-			work->grouplist[k].m_blobShadowSize = group.m_blobShadowSize;
-			if(IsInSelection(obj1, group.origin, iw1) || IsInSelection(obj1, group.origin, jw1)) {
-				work->grouplist[k].origin = vertex;
+	for(VertexGroupId group : obj1->grouplist.handles()) {
+		work->grouplist[group].name = obj1->grouplist[group].name;
+		if(VertexId vertex = getEquivalentVertex(*work, obj1->vertexlist[obj1->grouplist[group].origin].v)) {
+			work->grouplist[group].m_blobShadowSize = obj1->grouplist[group].m_blobShadowSize;
+			if(IsInSelection(obj1, obj1->grouplist[group].origin, iw1) ||
+			   IsInSelection(obj1, obj1->grouplist[group].origin, jw1)) {
+				work->grouplist[group].origin = vertex;
 			}
 		}
 	}
 	
-	for(size_t k = 0; k < obj2->grouplist.size(); k++) {
-		const VertexGroup & group = obj2->grouplist[k];
-		if(k >= obj1->grouplist.size()) {
-			work->grouplist[k].name = group.name;
+	for(VertexGroupId group : obj2->grouplist.handles()) {
+		if(size_t(group) >= obj1->grouplist.size()) {
+			work->grouplist[group].name = obj2->grouplist[group].name;
 		}
-		if(VertexId vertex = getEquivalentVertex(*work, obj2->vertexlist[group.origin].v)) {
-			work->grouplist[k].m_blobShadowSize = group.m_blobShadowSize;
-			if(IsInSelection(obj2, group.origin, tw2)) {
-				work->grouplist[k].origin = vertex;
+		if(VertexId vertex = getEquivalentVertex(*work, obj2->vertexlist[obj2->grouplist[group].origin].v)) {
+			work->grouplist[group].m_blobShadowSize = obj2->grouplist[group].m_blobShadowSize;
+			if(IsInSelection(obj2, obj2->grouplist[group].origin, tw2)) {
+				work->grouplist[group].origin = vertex;
 			}
 		}
 	}
@@ -479,15 +478,15 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 	}
 	
 	// Recreate Animation-groups vertex
-	for(size_t i = 0; i < obj1->grouplist.size(); i++) {
-		for(VertexId vertex : obj1->grouplist[i].indexes) {
-			addVertexToGroup(*work, work->grouplist[i], obj1->vertexlist[vertex]);
+	for(VertexGroupId group : obj1->grouplist.handles()) {
+		for(VertexId vertex : obj1->grouplist[group].indexes) {
+			addVertexToGroup(*work, work->grouplist[group], obj1->vertexlist[vertex]);
 		}
 	}
 	
-	for(size_t i = 0; i < obj2->grouplist.size(); i++) {
-		for(VertexId vertex : obj2->grouplist[i].indexes) {
-			addVertexToGroup(*work, work->grouplist[i], obj2->vertexlist[vertex]);
+	for(VertexGroupId group : obj2->grouplist.handles()) {
+		for(VertexId vertex : obj2->grouplist[group].indexes) {
+			addVertexToGroup(*work, work->grouplist[group], obj2->vertexlist[vertex]);
 		}
 	}
 	

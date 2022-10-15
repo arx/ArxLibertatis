@@ -228,7 +228,7 @@ void FireballSpell::Update() {
 			afBeta = player.angle.getYaw();
 			afAlpha = player.angle.getPitch();
 			if(VertexGroupId chest = EERIE_OBJECT_GetGroup(caster->obj, "chest")) {
-				eCurPos = caster->obj->vertexWorldPositions[caster->obj->grouplist[size_t(chest)].origin].v;
+				eCurPos = caster->obj->vertexWorldPositions[caster->obj->grouplist[chest].origin].v;
 			} else {
 				eCurPos = player.pos;
 			}

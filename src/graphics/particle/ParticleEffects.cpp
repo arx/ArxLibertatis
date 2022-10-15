@@ -297,7 +297,7 @@ void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle sourc
 	float nearest_dist = std::numeric_limits<float>::max();
 	VertexId nearest;
 	for(size_t i = 0; i < sourceIo->obj->grouplist.size(); i += 2) {
-		VertexId vertex = sourceIo->obj->grouplist[i].origin;
+		VertexId vertex = sourceIo->obj->grouplist[VertexGroupId(i)].origin;
 		float dist = arx::distance2(pos, sourceIo->obj->vertexWorldPositions[vertex].v);
 		if(dist < nearest_dist) {
 			nearest_dist = dist;

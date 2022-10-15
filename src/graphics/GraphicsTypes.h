@@ -194,7 +194,7 @@ struct EERIE_3DOBJ {
 	util::HandleVector<VertexId, ColorRGBA> vertexColors;
 	
 	std::vector<EERIE_FACE> facelist;
-	std::vector<VertexGroup> grouplist;
+	util::HandleVector<VertexGroupId, VertexGroup> grouplist;
 	std::vector<EERIE_ACTIONLIST> actionlist;
 	std::vector<EERIE_SELECTIONS> selections;
 	std::vector<TextureContainer *> texturecontainer;

@@ -103,7 +103,7 @@ VertexGroupId getGroupForVertex(const EERIE_3DOBJ * eobj, VertexId vertex) {
 	}
 	
 	for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
-		for(VertexId index : eobj->grouplist[i].indexes) {
+		for(VertexId index : eobj->grouplist[VertexGroupId(i)].indexes) {
 			if(index == vertex) {
 				return VertexGroupId(i);
 			}
@@ -127,7 +127,7 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * object) {
 	
 	object->fastaccess.head_group = EERIE_OBJECT_GetGroup(object, "head");
 	if(object->fastaccess.head_group) {
-		object->fastaccess.head_group_origin = object->grouplist[size_t(object->fastaccess.head_group)].origin;
+		object->fastaccess.head_group_origin = object->grouplist[object->fastaccess.head_group].origin;
 	}
 	
 	object->fastaccess.sel_head     = EERIE_OBJECT_GetSelection(object, "head");
@@ -226,9 +226,9 @@ VertexGroupId EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, std::string_view gr
 		return { };
 	}
 	
-	for(size_t i = 0; i < obj->grouplist.size(); i++) {
-		if(obj->grouplist[i].name == groupname) {
-			return VertexGroupId(i);
+	for(VertexGroupId group : obj->grouplist.handles()) {
+		if(obj->grouplist[group].name == groupname) {
+			return group;
 		}
 	}
 	
@@ -238,8 +238,8 @@ VertexGroupId EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, std::string_view gr
 static long GetFather(EERIE_3DOBJ * eobj, VertexId origin, long startgroup) {
 	
 	for(long i = startgroup; i >= 0; i--) {
-		for(size_t j = 0; j < eobj->grouplist[i].indexes.size(); j++) {
-			if(eobj->grouplist[i].indexes[j] == origin) {
+		for(VertexId index : eobj->grouplist[VertexGroupId(i)].indexes) {
+			if(index == origin) {
 				return i;
 			}
 		}
@@ -279,7 +279,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		util::HandleVector<VertexId, bool> vertexAssigned(eobj->vertexlist.size(), false);
 		for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
 			
-			const VertexGroup & group = eobj->grouplist[i];
+			const VertexGroup & group = eobj->grouplist[VertexGroupId(i)];
 			Bone & bone = eobj->m_skeleton->bones[i];
 			auto & vertices = eobj->m_boneVertices[i];
 			
