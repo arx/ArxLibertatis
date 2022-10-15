@@ -986,9 +986,7 @@ static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 	}
 	
 	if(io->tweakerinfo) {
-		ais.system_flags = SYSTEM_FLAG_TWEAKER_INFO;
-	} else {
-		ais.system_flags = 0;
+		ais.system_flags |= SYSTEM_FLAG_TWEAKER_INFO;
 	}
 
 	if(io->inventory) {
