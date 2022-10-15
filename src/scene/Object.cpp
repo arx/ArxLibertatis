@@ -88,7 +88,7 @@ ObjVertHandle GetGroupOriginByName(const EERIE_3DOBJ * eobj, std::string_view te
 	
 	for(const VertexGroup & group : eobj->grouplist) {
 		if(group.name == text) {
-			return ObjVertHandle(group.origin);
+			return ObjVertHandle(size_t(group.origin));
 		}
 	}
 	
@@ -142,8 +142,8 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * object) {
 	object->fastaccess.head_group = EERIE_OBJECT_GetGroup(object, "head");
 	
 	if(object->fastaccess.head_group != ObjVertGroup()) {
-		ObjVertHandle lHeadOrigin = ObjVertHandle(object->grouplist[object->fastaccess.head_group.handleData()].origin);
-		object->fastaccess.head_group_origin = lHeadOrigin;
+		VertexId lHeadOrigin = object->grouplist[object->fastaccess.head_group.handleData()].origin;
+		object->fastaccess.head_group_origin = ObjVertHandle(size_t(lHeadOrigin));
 	}
 	
 	object->fastaccess.sel_head     = EERIE_OBJECT_GetSelection(object, "head");
@@ -305,8 +305,8 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 				}
 			}
 			
-			bone.anim.trans = eobj->vertexlist[group.origin].v;
-			bone.father = GetFather(eobj, VertexId(group.origin), i - 1);
+			bone.anim.trans = eobj->vertexlist[size_t(group.origin)].v;
+			bone.father = GetFather(eobj, group.origin, i - 1);
 			bone.anim.scale = Vec3f(1.f);
 			
 		}

@@ -564,7 +564,7 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cylinder, Entity * so
 		}
 		
 		for(const VertexGroup & group : target->obj->grouplist) {
-			Vec3f pos = target->obj->vertexWorldPositions[group.origin].v;
+			Vec3f pos = target->obj->vertexWorldPositions[size_t(group.origin)].v;
 			if(SphereInCylinder(cylinder, Sphere(pos, radius))) {
 				if(!(flags & CFLAG_JUST_TEST) && source) {
 					handlePropCollision(*source, *target, dealt);
@@ -721,7 +721,7 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity & entity
 	const std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
 	if(entity.obj->grouplist.size() > 4) {
 		for(const VertexGroup & group : entity.obj->grouplist) {
-			if(closerThan(vlist[group.origin].v, sphere.origin, sphere.radius + 30.f)) {
+			if(closerThan(vlist[size_t(group.origin)].v, sphere.origin, sphere.radius + 30.f)) {
 				return true;
 			}
 		}
@@ -895,7 +895,7 @@ bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flag
 		const std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
 		if(entity.obj->grouplist.size() > 4) {
 			for(const VertexGroup & group : entity.obj->grouplist) {
-				if(closerThan(vlist[group.origin].v, sphere.origin, sphere.radius + 30.f)) {
+				if(closerThan(vlist[size_t(group.origin)].v, sphere.origin, sphere.radius + 30.f)) {
 					if(result) {
 						*result = &entity;
 					}
@@ -945,7 +945,7 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 	if(entity.obj->grouplist.size() > 10) {
 		long count = 0;
 		for(const VertexGroup & group : entity.obj->grouplist) {
-			if(closerThan(vlist[group.origin].v, sphere.origin, sphere.radius + 27.f)) {
+			if(closerThan(vlist[size_t(group.origin)].v, sphere.origin, sphere.radius + 27.f)) {
 				count++;
 				if(count > 3) {
 					return true;

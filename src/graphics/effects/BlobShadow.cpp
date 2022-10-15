@@ -33,9 +33,9 @@
 
 static std::vector<TexturedVertex> g_shadowBatch;
 
-static void addShadowBlob(const Entity & entity, size_t vertex, float scale, bool isGroup) {
+static void addShadowBlob(const Entity & entity, VertexId vertex, float scale, bool isGroup) {
 	
-	Vec3f pos = entity.obj->vertexWorldPositions[vertex].v;
+	Vec3f pos = entity.obj->vertexWorldPositions[size_t(vertex)].v;
 	
 	EERIEPOLY * ep = CheckInPoly(pos);
 	if(!ep) {
@@ -101,7 +101,7 @@ void ARXDRAW_DrawInterShadows() {
 		
 		if(entity.obj->grouplist.size() <= 1) {
 			for(size_t k = 0; k < entity.obj->vertexlist.size(); k += 9) {
-				addShadowBlob(entity, k, entity.scale, false);
+				addShadowBlob(entity, VertexId(k), entity.scale, false);
 			}
 		} else {
 			for(const VertexGroup & group : entity.obj->grouplist) {

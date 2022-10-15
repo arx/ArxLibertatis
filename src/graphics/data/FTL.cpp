@@ -216,8 +216,13 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 			return { };
 		}
 		
+		if(rawGroup->origin < 0 || size_t(rawGroup->origin) >= object->vertexlist.size()) {
+			LogError << filename << ": Invalid group vertex";
+			return { };
+		}
+		
 		group.name = util::toLowercase(util::loadString(rawGroup->name));
-		group.origin = rawGroup->origin;
+		group.origin = VertexId(rawGroup->origin);
 		group.indexes.resize(rawGroup->nb_index);
 		group.m_blobShadowSize = rawGroup->siz;
 		

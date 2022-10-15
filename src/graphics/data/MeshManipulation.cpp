@@ -422,24 +422,25 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 	work->grouplist.resize(std::max(obj1->grouplist.size(), obj2->grouplist.size()));
 	
 	for(size_t k = 0; k < obj1->grouplist.size(); k++) {
-		const VertexGroup & grp = obj1->grouplist[k];
-		work->grouplist[k].name = grp.name;
-		if(VertexId vertex = getEquivalentVertex(*work, obj1->vertexlist[grp.origin].v)) {
-			work->grouplist[k].m_blobShadowSize = grp.m_blobShadowSize;
-			if(IsInSelection(obj1, VertexId(grp.origin), iw1) || IsInSelection(obj1, VertexId(grp.origin), jw1)) {
-				work->grouplist[k].origin = size_t(vertex);
+		const VertexGroup & group = obj1->grouplist[k];
+		work->grouplist[k].name = group.name;
+		if(VertexId vertex = getEquivalentVertex(*work, obj1->vertexlist[size_t(group.origin)].v)) {
+			work->grouplist[k].m_blobShadowSize = group.m_blobShadowSize;
+			if(IsInSelection(obj1, group.origin, iw1) || IsInSelection(obj1, group.origin, jw1)) {
+				work->grouplist[k].origin = vertex;
 			}
 		}
 	}
 	
 	for(size_t k = 0; k < obj2->grouplist.size(); k++) {
+		const VertexGroup & group = obj2->grouplist[k];
 		if(k >= obj1->grouplist.size()) {
-			work->grouplist[k].name = obj2->grouplist[k].name;
+			work->grouplist[k].name = group.name;
 		}
-		if(VertexId vertex = getEquivalentVertex(*work, obj2->vertexlist[obj2->grouplist[k].origin].v)) {
-			work->grouplist[k].m_blobShadowSize = obj2->grouplist[k].m_blobShadowSize;
-			if(IsInSelection(obj2, VertexId(obj2->grouplist[k].origin), tw2)) {
-				work->grouplist[k].origin = size_t(vertex);
+		if(VertexId vertex = getEquivalentVertex(*work, obj2->vertexlist[size_t(group.origin)].v)) {
+			work->grouplist[k].m_blobShadowSize = group.m_blobShadowSize;
+			if(IsInSelection(obj2, group.origin, tw2)) {
+				work->grouplist[k].origin = vertex;
 			}
 		}
 	}

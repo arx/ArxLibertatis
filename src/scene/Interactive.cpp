@@ -1868,7 +1868,7 @@ static bool IsCollidingInter(Entity * io, const Vec3f & pos) {
 	const std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
 	if(io->obj->grouplist.size() > 4) {
 		for(const VertexGroup & group : io->obj->grouplist) {
-			if(!fartherThan(pos, vlist[group.origin].v, 50.f)) {
+			if(!fartherThan(pos, vlist[size_t(group.origin)].v, 50.f)) {
 				return true;
 			}
 		}

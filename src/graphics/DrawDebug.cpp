@@ -552,7 +552,7 @@ static void drawDebugEntities(bool drawSkeletons) {
 			}
 			
 			for(const VertexGroup & group : entity.obj->grouplist) {
-				drawTextAt(hFontDebug, entity.obj->vertexWorldPositions[group.origin].v, group.name);
+				drawTextAt(hFontDebug, entity.obj->vertexWorldPositions[size_t(group.origin)].v, group.name);
 			}
 			
 			for(const EERIE_ACTIONLIST & ap : entity.obj->actionlist) {
