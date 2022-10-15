@@ -164,7 +164,7 @@ struct EERIE_LINKED {
 struct EERIE_SELECTIONS {
 	
 	std::string name;
-	std::vector<size_t> selected;
+	std::vector<VertexId> selected;
 	
 };
 

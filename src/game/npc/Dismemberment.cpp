@@ -44,8 +44,8 @@ static bool IsNearSelection(EERIE_3DOBJ * obj, VertexId vert, ObjSelection tw) {
 		return false;
 	}
 	
-	for(size_t vertex : obj->selections[tw.handleData()].selected) {
-		float d = glm::distance(obj->vertexlist[vertex].v, obj->vertexlist[size_t(vert)].v);
+	for(VertexId vertex : obj->selections[tw.handleData()].selected) {
+		float d = glm::distance(obj->vertexlist[size_t(vertex)].v, obj->vertexlist[size_t(vert)].v);
 		if(d < 8.f) {
 			return true;
 		}
@@ -96,7 +96,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	nouvo->vertexClipPositions.resize(nvertex);
 	nouvo->vertexColors.resize(nvertex);
 	
-	size_t inpos = 0;
+	VertexId inpos = VertexId(0);
 	
 	util::HandleVector<VertexId, VertexId> equival(from->vertexlist.size());
 	
@@ -106,9 +106,9 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	
 	for(size_t k = 0; k < cutSelection.selected.size(); k++) {
 		inpos = cutSelection.selected[k];
-		equival[VertexId(cutSelection.selected[k])] = VertexId(k);
-		nouvo->vertexlist[k] = from->vertexlist[cutSelection.selected[k]];
-		nouvo->vertexlist[k].v = from->vertexWorldPositions[cutSelection.selected[k]].v;
+		equival[inpos] = VertexId(k);
+		nouvo->vertexlist[k] = from->vertexlist[size_t(inpos)];
+		nouvo->vertexlist[k].v = from->vertexWorldPositions[size_t(inpos)].v;
 		nouvo->vertexlist[k].v -= ioo->pos;
 		nouvo->vertexWorldPositions[k] = nouvo->vertexlist[k];
 	}
@@ -219,7 +219,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	io->m_icon = nullptr;
 	io->scriptload = 1;
 	io->obj = nouvo;
-	io->lastpos = io->initpos = io->pos = ioo->obj->vertexWorldPositions[inpos].v;
+	io->lastpos = io->initpos = io->pos = from->vertexWorldPositions[size_t(inpos)].v;
 	io->angle = ioo->angle;
 	
 	io->gameFlags = ioo->gameFlags;
@@ -434,15 +434,16 @@ void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos) {
 					}
 				}
 			}
-
+			
 			if(out < 3) {
-				float dist = arx::distance2(*pos, target->obj->vertexWorldPositions[target->obj->selections[i].selected[0]].v);
-
+				VertexId vertex = target->obj->selections[i].selected[0];
+				float dist = arx::distance2(*pos, target->obj->vertexWorldPositions[size_t(vertex)].v);
 				if(dist < mindistSqr) {
 					mindistSqr = dist;
 					numsel = sel;
 				}
 			}
+			
 		}
 	}
 

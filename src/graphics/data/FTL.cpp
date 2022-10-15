@@ -240,6 +240,11 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 		const EERIE_SELECTIONS_FTL * rawSelection = reinterpret_cast<const EERIE_SELECTIONS_FTL *>(dat + pos);
 		pos += sizeof(EERIE_SELECTIONS_FTL);
 		
+		if(rawSelection->nb_selected <= 0 || size_t(rawSelection->nb_selected) > object->vertexlist.size()) {
+			LogError << filename << ": Invalid selection size";
+			return { };
+		}
+		
 		selection.name = util::toLowercase(util::loadString(rawSelection->name));
 		selection.selected.resize(rawSelection->nb_selected);
 		
@@ -247,10 +252,15 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 	
 	// Copy in the selections selected data
 	for(EERIE_SELECTIONS & selection : object->selections) {
-		const s32 * begin = reinterpret_cast<const s32 *>(dat + pos);
-		pos += sizeof(s32) * selection.selected.size();
-		const s32 * end = reinterpret_cast<const s32 *>(dat + pos);
-		std::copy(begin, end, selection.selected.begin());
+		for(VertexId & selected : selection.selected) {
+			const s32 vertex = *reinterpret_cast<const s32 *>(dat + pos);
+			pos += sizeof(s32);
+			if(vertex < 0 || size_t(vertex) >= object->vertexlist.size()) {
+				LogError << filename << ": Invalid selection vertex";
+				return { };
+			}
+			selected = VertexId(vertex);
+		}
 	}
 	
 	ARX_UNUSED(pos);
