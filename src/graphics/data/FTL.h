@@ -45,15 +45,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_DATA_FTL_H
 #define ARX_GRAPHICS_DATA_FTL_H
 
-#include "Configure.h"
+#include <memory>
 
-struct EERIE_3DOBJ;
+#include "graphics/GraphicsTypes.h"
 
 namespace res { class path; }
 
 /*!
  * Load a FTL file
  */
-EERIE_3DOBJ * ARX_FTL_Load(const res::path & file);
+std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file);
 
 #endif // ARX_GRAPHICS_DATA_FTL_H

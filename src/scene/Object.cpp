@@ -355,7 +355,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 
 EERIE_3DOBJ * loadObject(const res::path & file, bool pbox) {
 	
-	EERIE_3DOBJ * ret = ARX_FTL_Load(file);
+	EERIE_3DOBJ * ret = ARX_FTL_Load(file).release();
 	if(ret && pbox) {
 		EERIE_PHYSICS_BOX_Create(ret);
 	}
