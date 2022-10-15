@@ -347,7 +347,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		const Bone & bone = eobj->m_skeleton->bones[i];
 		const std::vector<u32> & vertices = eobj->m_boneVertices[i];
 		for(u32 index : vertices) {
-			eobj->vertexlocal[index] = eobj->vertexlist[index].v - bone.anim.trans;
+			eobj->vertexlocal[VertexId(index)] = eobj->vertexlist[index].v - bone.anim.trans;
 		}
 	}
 	

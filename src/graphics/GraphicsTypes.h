@@ -66,6 +66,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Platform.h"
 
 #include "util/Flags.h"
+#include "util/HandleContainer.h"
 
 
 struct EERIE_3DOBJ;
@@ -187,7 +188,7 @@ struct EERIE_3DOBJ {
 	
 	res::path file;
 	size_t origin = 0;
-	std::vector<Vec3f> vertexlocal;
+	util::HandleVector<VertexId, Vec3f> vertexlocal;
 	std::vector<EERIE_VERTEX> vertexlist;
 	std::vector<EERIE_VERTEX> vertexWorldPositions;
 	std::vector<Vec4f> vertexClipPositions;

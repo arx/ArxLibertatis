@@ -1278,7 +1278,7 @@ void ArxGame::updateFirstPersonCamera() {
 				Skeleton skeleton = *io->obj->m_skeleton;
 				animateSkeleton(io, animlayer, skeleton);
 				const Bone & viewBone = skeleton.bones[viewGroup.handleData()];
-				g_playerCameraStablePos = viewBone.anim(io->obj->vertexlocal[id.handleData()]);
+				g_playerCameraStablePos = viewBone.anim(io->obj->vertexlocal[VertexId(id.handleData())]);
 			}
 			
 			if(!config.video.viewBobbing) {

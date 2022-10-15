@@ -1339,7 +1339,7 @@ static void Cedric_TransformVerts(EERIE_3DOBJ * eobj) {
 		Vec3f vector = bone.anim.trans;
 		
 		for(size_t index : eobj->m_boneVertices[i]) {
-			eobj->vertexWorldPositions[index].v = Vec3f(matrix * Vec4f(eobj->vertexlocal[index], 1.f)) + vector;
+			eobj->vertexWorldPositions[index].v = Vec3f(matrix * Vec4f(eobj->vertexlocal[VertexId(index)], 1.f)) + vector;
 		}
 		
 	}
