@@ -1281,9 +1281,9 @@ static void Cedric_BlendAnimation(Skeleton & rig, AnimationBlendStatus * animBle
 static void Cedric_ConcatenateTM(Skeleton & rig, const TransformInfo & t) {
 	
 	for(Bone & bone : rig.bones) {
-		if(bone.father >= 0) { // Child bones
+		if(bone.father) { // Child bones
 			
-			const Bone & parent = rig.bones[VertexGroupId(bone.father)];
+			const Bone & parent = rig.bones[bone.father];
 			// Rotation
 			bone.anim.quat = parent.anim.quat * bone.init.quat;
 			

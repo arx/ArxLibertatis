@@ -541,11 +541,11 @@ static void drawDebugEntities(bool drawSkeletons) {
 			
 			for(const Bone & bone : skeleton.bones) {
 				
-				if(bone.father < 0) {
+				if(!bone.father) {
 					continue;
 				}
 				
-				const Bone & parent = skeleton.bones[VertexGroupId(bone.father)];
+				const Bone & parent = skeleton.bones[bone.father];
 				
 				drawLine(parent.anim.trans, bone.anim.trans, Color::red);
 				

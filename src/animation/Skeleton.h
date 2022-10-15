@@ -57,7 +57,7 @@ struct BoneTransform {
 
 struct Bone {
 	
-	long father = 0;
+	VertexGroupId father = VertexGroupId(0);
 	
 	BoneTransform anim;
 	BoneTransform last;

@@ -235,17 +235,17 @@ VertexGroupId EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, std::string_view gr
 	return { };
 }
 
-static long GetFather(EERIE_3DOBJ * eobj, VertexId origin, long startgroup) {
+static VertexGroupId GetFather(EERIE_3DOBJ * eobj, VertexId origin, long startgroup) {
 	
 	for(long i = startgroup; i >= 0; i--) {
 		for(VertexId index : eobj->grouplist[VertexGroupId(i)].indexes) {
 			if(index == origin) {
-				return i;
+				return VertexGroupId(i);
 			}
 		}
 	}
 	
-	return -1;
+	return { };
 }
 
 void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
@@ -266,7 +266,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			vertices.push_back(vertex);
 		}
 		
-		bone.father = -1;
+		bone.father = { };
 		bone.anim.scale = Vec3f(1.f);
 		
 	} else {
@@ -305,8 +305,8 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		
 		// Calculate relative bone positions
 		for(Bone & bone : eobj->m_skeleton->bones) {
-			if(bone.father >= 0) {
-				const Bone & parent = eobj->m_skeleton->bones[VertexGroupId(bone.father)];
+			if(bone.father) {
+				const Bone & parent = eobj->m_skeleton->bones[bone.father];
 				bone.transinit_global = bone.init.trans = bone.anim.trans - parent.anim.trans;
 			} else {
 				bone.transinit_global = bone.init.trans = bone.anim.trans;
