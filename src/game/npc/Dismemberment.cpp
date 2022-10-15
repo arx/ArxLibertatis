@@ -36,6 +36,7 @@
 #include "scene/GameSound.h"
 
 #include "util/HandleContainer.h"
+#include "util/Range.h"
 
 
 static bool IsNearSelection(EERIE_3DOBJ * obj, VertexId vert, ObjSelection tw) {
@@ -105,7 +106,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	
 	arx_assert(0 < cutSelection.selected.size());
 	
-	for(size_t k = 0; k < cutSelection.selected.size(); k++) {
+	for(size_t k : util::indices(cutSelection.selected)) {
 		inpos = cutSelection.selected[k];
 		VertexId outpos = VertexId(k);
 		equival[inpos] = outpos;
