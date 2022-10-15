@@ -557,10 +557,8 @@ static Vec3f GetChestPos(EntityHandle num) {
 		return Vec3f(0.f);
 	}
 	
-	ObjVertHandle idx = GetGroupOriginByName(io->obj, "chest");
-	
-	if(idx != ObjVertHandle()) {
-		return io->obj->vertexWorldPositions[idx.handleData()].v;
+	if(ObjVertGroup chest = EERIE_OBJECT_GetGroup(io->obj, "chest")) {
+		return io->obj->vertexWorldPositions[size_t(io->obj->grouplist[size_t(chest)].origin)].v;
 	}
 	
 	return io->pos + Vec3f(0.f, -120.f, 0.f);
@@ -573,9 +571,8 @@ void LightningStrikeSpell::Update() {
 	
 	Entity * caster = entities.get(m_caster);
 	if(caster) {
-		ObjVertHandle idx = GetGroupOriginByName(caster->obj, "chest");
-		if(idx != ObjVertHandle()) {
-			m_caster_pos = caster->obj->vertexWorldPositions[idx.handleData()].v;
+		if(ObjVertGroup chest = EERIE_OBJECT_GetGroup(caster->obj, "chest")) {
+			m_caster_pos = caster->obj->vertexWorldPositions[size_t(caster->obj->grouplist[size_t(chest)].origin)].v;
 		} else {
 			m_caster_pos = caster->pos;
 		}
