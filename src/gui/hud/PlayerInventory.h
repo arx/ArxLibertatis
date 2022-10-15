@@ -91,7 +91,7 @@ public:
 private:
 	
 	void CalculateInventoryCoordinates();
-	void drawBag(size_t bag, Vec2i i);
+	void drawBag(size_t bag, Vec2f i);
 	bool InPlayerInventoryBag(const Vec2s & pos);
 	
 };

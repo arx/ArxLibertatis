@@ -204,13 +204,11 @@ void PlayerInventoryHud::CalculateInventoryCoordinates() {
 }
 
 //-----------------------------------------------------------------------------
-void PlayerInventoryHud::drawBag(size_t bag, Vec2i i) {
+void PlayerInventoryHud::drawBag(size_t bag, Vec2f i) {
 	
 	fDecPulse += toMsf(g_platformTime.lastFrameDuration()) * 0.5f;
 	
-	Vec2f anchorPos = anchorPosition();
-	
-	const Vec2f pos = anchorPos + Vec2f(i.x, i.y);
+	const Vec2f pos = anchorPosition() + i;
 	
 	{
 		Rectf rect = Rectf(pos + Vec2f(0.f, -(5 * m_scale)), m_bagSize.x * m_scale, m_bagSize.y * m_scale);
@@ -274,7 +272,7 @@ void PlayerInventoryHud::draw() {
 		
 		arx_assert(entities.player()->inventory->bags() > 0);
 		
-		drawBag(m_currentBag, Vec2i(0));
+		drawBag(m_currentBag, Vec2f(0.f));
 		
 		CalculateInventoryCoordinates();
 		
@@ -323,16 +321,16 @@ void PlayerInventoryHud::draw() {
 		Vec2f anchorPos = anchorPosition();
 		
 		// TODO see about these coords, might be calculated once only
-		const float fBag = float(entities.player()->inventory->bags() - 1) * (-121.f * m_scale);
-		const float fOffsetY = (121 * m_scale);
+		const float bagStart = std::floor(float(entities.player()->inventory->bags() - 1) * (-121.f * m_scale));
+		const float bagOffsetY = std::floor(121 * m_scale);
 		
-		int iOffsetY = checked_range_cast<int>(fBag + fOffsetY);
-		int posx = checked_range_cast<int>(anchorPos.x);
-		int posy = checked_range_cast<int>(anchorPos.y + ((-3.f + 25 - 32) * m_scale));
+		float offsetY = bagStart + bagOffsetY;
+		float posx = std::floor(anchorPos.x);
+		float posy = std::floor(anchorPos.y + ((-3.f + 25 - 32) * m_scale));
 		
 		for(size_t i = 0; i < entities.player()->inventory->bags(); i++) {
 			
-			float linkPosY = float(posy + iOffsetY);
+			float linkPosY = posy + offsetY;
 			Vec2f pos1 = Vec2f(posx + (45 * m_scale), linkPosY);
 			Vec2f pos2 = Vec2f(posx + (m_bagSize.x * m_scale) * 0.5f + (-16.f * m_scale), linkPosY);
 			Vec2f pos3 = Vec2f(posx + (m_bagSize.x * m_scale) + (-77.f * m_scale), linkPosY);
@@ -344,14 +342,14 @@ void PlayerInventoryHud::draw() {
 			EERIEDrawBitmap(Rectf(pos2, texSize.x, texSize.y), 0.001f, tex, Color::white);
 			EERIEDrawBitmap(Rectf(pos3, texSize.x, texSize.y), 0.001f, tex, Color::white);
 			
-			iOffsetY += checked_range_cast<int>(fOffsetY);
+			offsetY += bagOffsetY;
 		}
 		
-		iOffsetY = checked_range_cast<int>(fBag);
+		offsetY = bagStart;
 		
 		for(size_t i = 0; i < entities.player()->inventory->bags(); i++) {
-			drawBag(i, Vec2i(0, iOffsetY));
-			iOffsetY += checked_range_cast<int>(fOffsetY);
+			drawBag(i, Vec2f(0, offsetY));
+			offsetY += bagOffsetY;
 		}
 		
 	}
