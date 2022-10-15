@@ -382,12 +382,12 @@ static void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, Skeleton * obj) {
 	arx_assume(eobj->m_boneVertices.size() == obj->bones.size());
 	
 	// Apply light on all vertices
-	for(size_t i = 0; i != obj->bones.size(); i++) {
+	for(VertexGroupId group : obj->bones.handles()) {
 		
-		Vec3f t_vector = glm::inverse(obj->bones[i].anim.quat) * cam_vector;
+		Vec3f t_vector = glm::inverse(obj->bones[group].anim.quat) * cam_vector;
 		
 		// Get light value for each vertex
-		for(VertexId vertex : eobj->m_boneVertices[VertexGroupId(i)]) {
+		for(VertexId vertex : eobj->m_boneVertices[group]) {
 			// Get cos angle between light and vertex norm
 			eobj->vertexWorldPositions[vertex].norm.z = glm::dot(eobj->vertexlist[vertex].norm, t_vector);
 		}
@@ -471,10 +471,10 @@ static void Cedric_ApplyLighting(ShaderLight lights[], size_t lightsCount, EERIE
 	arx_assert(eobj->m_boneVertices.size() == obj->bones.size());
 	
 	/* Apply light on all vertices */
-	for(size_t i = 0; i != obj->bones.size(); i++) {
-		const glm::quat & quat = obj->bones[i].anim.quat;
+	for(VertexGroupId group : obj->bones.handles()) {
+		const glm::quat & quat = obj->bones[group].anim.quat;
 		/* Get light value for each vertex */
-		for(VertexId vertex : eobj->m_boneVertices[VertexGroupId(i)]) {
+		for(VertexId vertex : eobj->m_boneVertices[group]) {
 			const Vec3f & position = eobj->vertexWorldPositions[vertex].v;
 			Vec3f normal = quat * eobj->vertexlist[vertex].norm;
 			eobj->vertexColors[vertex] = ApplyLight(lights, lightsCount, position, normal, colorMod);
@@ -1103,7 +1103,7 @@ static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos
 		}
 		
 		TransformInfo t(eobj->vertexWorldPositions[link.lidx].v,
-		                eobj->m_skeleton->bones[link.lgroup.handleData()].anim.quat,
+		                eobj->m_skeleton->bones[link.lgroup].anim.quat,
 		                link.io ? link.io->scale : 1.f);
 		t.pos = t(link.obj->vertexlist[link.obj->origin].v - link.obj->vertexlist[link.lidx2].v);
 		
@@ -1238,7 +1238,7 @@ static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer) {
 				temp.quat = Quat_Slerp(sGroup.quat, eGroup.quat, layer.currentInterpolation);
 				temp.trans = glm::mix(sGroup.translate, eGroup.translate, layer.currentInterpolation);
 				temp.scale = glm::mix(sGroup.zoom, eGroup.zoom, layer.currentInterpolation);
-				Bone & bone = obj->bones[j];
+				Bone & bone = obj->bones[VertexGroupId(j)];
 				bone.init.quat = bone.init.quat * temp.quat;
 				bone.init.trans = temp.trans + bone.transinit_global;
 				bone.init.scale = temp.scale;
@@ -1280,13 +1280,10 @@ static void Cedric_BlendAnimation(Skeleton & rig, AnimationBlendStatus * animBle
  */
 static void Cedric_ConcatenateTM(Skeleton & rig, const TransformInfo & t) {
 	
-	for(size_t i = 0; i != rig.bones.size(); i++) {
-		Bone & bone = rig.bones[i];
-		
+	for(Bone & bone : rig.bones) {
 		if(bone.father >= 0) { // Child bones
 			
-			size_t parentIndex = size_t(bone.father);
-			const Bone & parent = rig.bones[parentIndex];
+			const Bone & parent = rig.bones[VertexGroupId(bone.father)];
 			// Rotation
 			bone.anim.quat = parent.anim.quat * bone.init.quat;
 			
@@ -1325,8 +1322,8 @@ static void Cedric_TransformVerts(EERIE_3DOBJ * eobj) {
 	arx_assume(eobj->m_boneVertices.size() == rig.bones.size());
 	
 	// Transform & project all vertices
-	for(size_t i = 0; i != rig.bones.size(); i++) {
-		const Bone & bone = rig.bones[i];
+	for(VertexGroupId group : rig.bones.handles()) {
+		const Bone & bone = rig.bones[group];
 		
 		glm::mat4x4 matrix = glm::mat4_cast(bone.anim.quat);
 		
@@ -1345,7 +1342,7 @@ static void Cedric_TransformVerts(EERIE_3DOBJ * eobj) {
 		
 		Vec3f vector = bone.anim.trans;
 		
-		for(VertexId vertex : eobj->m_boneVertices[VertexGroupId(i)]) {
+		for(VertexId vertex : eobj->m_boneVertices[group]) {
 			eobj->vertexWorldPositions[vertex].v = Vec3f(matrix * Vec4f(eobj->vertexlocal[vertex], 1.f)) + vector;
 		}
 		
@@ -1382,7 +1379,7 @@ static void animateSkeleton(EERIE_3DOBJ * eobj, AnimLayer * animlayer,
 	if(extraRotation) {
 		for(size_t k = 0; k < MAX_EXTRA_ROTATE; k++) {
 			if(VertexGroupId group = extraRotation->group_number[k]) {
-				skeleton.bones[size_t(group)].init.quat = angleToQuatForExtraRotation(extraRotation->group_rotate[k]);
+				skeleton.bones[group].init.quat = angleToQuatForExtraRotation(extraRotation->group_rotate[k]);
 			}
 		}
 	}
@@ -1391,7 +1388,7 @@ static void animateSkeleton(EERIE_3DOBJ * eobj, AnimLayer * animlayer,
 	Cedric_AnimateObject(&skeleton, animlayer);
 	
 	if(BH_MODE && eobj->fastaccess.head_group) {
-		Bone & bone = skeleton.bones[size_t(eobj->fastaccess.head_group)];
+		Bone & bone = skeleton.bones[eobj->fastaccess.head_group];
 		bone.init.scale += Vec3f(1.f);
 	}
 	

@@ -29,6 +29,7 @@
 #include "math/Types.h"
 #include "math/Angle.h"
 #include "platform/Platform.h"
+#include "util/HandleContainer.h"
 
 
 struct VertexGroup {
@@ -70,7 +71,7 @@ struct Bone {
 
 struct Skeleton {
 	
-	std::vector<Bone> bones;
+	util::HandleVector<VertexGroupId, Bone> bones;
 	
 };
 

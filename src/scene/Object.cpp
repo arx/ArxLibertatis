@@ -258,7 +258,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		eobj->m_skeleton->bones.resize(1);
 		eobj->m_boneVertices.resize(1);
 		
-		Bone & bone = eobj->m_skeleton->bones[0];
+		Bone & bone = eobj->m_skeleton->bones[VertexGroupId(0)];
 		auto & vertices = eobj->m_boneVertices[VertexGroupId(0)];
 		
 		// Add all vertices to the bone
@@ -280,7 +280,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
 			
 			const VertexGroup & group = eobj->grouplist[VertexGroupId(i)];
-			Bone & bone = eobj->m_skeleton->bones[i];
+			Bone & bone = eobj->m_skeleton->bones[VertexGroupId(i)];
 			auto & vertices = eobj->m_boneVertices[VertexGroupId(i)];
 			
 			for(VertexId vertex : group.indexes) {
@@ -306,7 +306,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		// Calculate relative bone positions
 		for(Bone & bone : eobj->m_skeleton->bones) {
 			if(bone.father >= 0) {
-				const Bone & parent = eobj->m_skeleton->bones[size_t(bone.father)];
+				const Bone & parent = eobj->m_skeleton->bones[VertexGroupId(bone.father)];
 				bone.transinit_global = bone.init.trans = bone.anim.trans - parent.anim.trans;
 			} else {
 				bone.transinit_global = bone.init.trans = bone.anim.trans;
@@ -317,9 +317,9 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 	
 	// Calculate relative vertex positions
 	eobj->vertexlocal.resize(eobj->vertexlist.size());
-	for(size_t i = 0; i < eobj->m_skeleton->bones.size(); i++) {
-		for(VertexId vertex : eobj->m_boneVertices[VertexGroupId(i)]) {
-			eobj->vertexlocal[vertex] = eobj->vertexlist[vertex].v - eobj->m_skeleton->bones[i].anim.trans;
+	for(VertexGroupId group : eobj->m_skeleton->bones.handles()) {
+		for(VertexId vertex : eobj->m_boneVertices[group]) {
+			eobj->vertexlocal[vertex] = eobj->vertexlist[vertex].v - eobj->m_skeleton->bones[group].anim.trans;
 		}
 	}
 	

@@ -545,7 +545,7 @@ static void drawDebugEntities(bool drawSkeletons) {
 					continue;
 				}
 				
-				const Bone & parent = skeleton.bones[bone.father];
+				const Bone & parent = skeleton.bones[VertexGroupId(bone.father)];
 				
 				drawLine(parent.anim.trans, bone.anim.trans, Color::red);
 				

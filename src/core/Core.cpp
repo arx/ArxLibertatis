@@ -813,7 +813,7 @@ void ManageCombatModeAnimations() {
 					VertexGroupId leftAttach = getGroupForVertex(io->obj, io->obj->fastaccess.left_attach);
 					arx_assert(leftAttach);
 					
-					const Bone & bone2 = io->obj->m_skeleton->bones[leftAttach.handleData()];
+					const Bone & bone2 = io->obj->m_skeleton->bones[leftAttach];
 					TransformInfo t2(io->obj->vertexWorldPositions[io->obj->fastaccess.left_attach].v, bone2.anim.quat);
 					t2.pos = t2(arrowobj->vertexlist[arrowobj->origin].v - arrowobj->vertexlist[attach].v);
 					
@@ -890,7 +890,7 @@ void ManageCombatModeAnimations() {
 				if(config.input.improvedBowAim && group) {
 					// Maintain arrow object orientation
 					// In practice this is the same as the alternative below except for additional roll around dir
-					quat = io->obj->m_skeleton->bones[group.handleData()].anim.quat;
+					quat = io->obj->m_skeleton->bones[group].anim.quat;
 					quat = glm::inverse(getProjectileQuatFromVector(dir)) * quat;
 				} else {
 					// Orient arrow so that the hit_15 action point points forward
