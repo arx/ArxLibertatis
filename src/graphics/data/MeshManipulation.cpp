@@ -125,7 +125,7 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & s1, const res::p
 
 bool IsInSelection(const EERIE_3DOBJ * obj, VertexId vert, ObjSelection tw) {
 	
-	if(!obj || tw == ObjSelection()) {
+	if(!obj || !tw) {
 		return false;
 	}
 	
@@ -278,12 +278,7 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 		}
 	}
 	
-	if(sel_head1 == ObjSelection() ||
-	   sel_head2 == ObjSelection() ||
-	   sel_torso1 == ObjSelection() ||
-	   sel_torso2 == ObjSelection() ||
-	   sel_legs1 == ObjSelection() ||
-	   sel_legs2 == ObjSelection()) {
+	if(!sel_head1 || !sel_head2 || !sel_torso1 || !sel_torso2 || !sel_legs1 || !sel_legs2) {
 		return nullptr;
 	}
 	
@@ -308,7 +303,7 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 		jw1 = sel_head1;
 	}
 	
-	if(tw1 == ObjSelection() || tw2 == ObjSelection()) {
+	if(!tw1 || !tw2) {
 		return { };
 	}
 	
@@ -451,30 +446,32 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 	// Now recreates other selections...
 	for(size_t i = 0; i < obj1->selections.size(); i++) {
 		
-		if(EERIE_OBJECT_GetSelection(work.get(), obj1->selections[i].name) != ObjSelection()) {
+		if(EERIE_OBJECT_GetSelection(work.get(), obj1->selections[i].name)) {
 			continue;
 		}
 		
 		size_t num = work->selections.size();
 		work->selections.resize(num + 1);
 		work->selections[num].name = obj1->selections[i].name;
-		
 		copySelection(*obj1, ObjSelection(i), *work, ObjSelection(num));
 		
-		ObjSelection ii = EERIE_OBJECT_GetSelection(obj2, obj1->selections[i].name);
-		if(ii != ObjSelection()) {
+		if(ObjSelection ii = EERIE_OBJECT_GetSelection(obj2, obj1->selections[i].name)) {
 			copySelection(*obj2, ii, *work, ObjSelection(num));
 		}
 		
 	}
 	
 	for(size_t i = 0; i < obj2->selections.size(); i++) {
-		if(EERIE_OBJECT_GetSelection(work.get(), obj2->selections[i].name) == ObjSelection()) {
-			size_t num = work->selections.size();
-			work->selections.resize(num + 1);
-			work->selections[num].name = obj2->selections[i].name;
-			copySelection(*obj2, ObjSelection(i), *work, ObjSelection(num));
+		
+		if(EERIE_OBJECT_GetSelection(work.get(), obj2->selections[i].name)) {
+			continue;
 		}
+		
+		size_t num = work->selections.size();
+		work->selections.resize(num + 1);
+		work->selections[num].name = obj2->selections[i].name;
+		copySelection(*obj2, ObjSelection(i), *work, ObjSelection(num));
+		
 	}
 	
 	// Recreate Animation-groups vertex
