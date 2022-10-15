@@ -475,10 +475,6 @@ inline std::string_view idString(const Entity * entity) {
 	return entity ? entity->idString() : std::string_view("none");
 }
 
-inline Vec3f actionPointPosition(const EERIE_3DOBJ * obj, ActionPoint ap) {
-	return obj->vertexWorldPositions[ap.handleData()].v;
-}
-
 // TODO move this somewhere else
 struct IO_FIXDATA {
 	s8 trapvalue;
