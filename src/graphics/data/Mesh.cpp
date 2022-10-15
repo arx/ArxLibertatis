@@ -558,16 +558,12 @@ void Draw3DObject(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos,
 	
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		Vec3f scaled = eobj->vertexlist[i].v * scale;
-		
 		Vec3f rotated = Vec3f(rotation * Vec4f(scaled, 1.f));
-		
 		eobj->vertexWorldPositions[i].v = (rotated += pos);
-
 		eobj->vertexClipPositions[i] = worldToClipSpace(rotated);
 	}
-
-	for(size_t i = 0; i < eobj->facelist.size(); i++) {
-		EERIE_FACE & face = eobj->facelist[i];
+	
+	for(const EERIE_FACE & face : eobj->facelist) {
 		
 		for(size_t j = 0; j < 3; j++) {
 			vert_list[j].p = Vec3f(eobj->vertexClipPositions[face.vid[j]]);
@@ -581,16 +577,19 @@ void Draw3DObject(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos,
 		vert_list[2].uv.x = face.u[2];
 		vert_list[2].uv.y = face.v[2];
 		vert_list[0].color = vert_list[1].color = vert_list[2].color = coll.toRGBA();
-
-		if(face.facetype == 0 || eobj->texturecontainer[face.texid] == nullptr)
+		
+		if(face.facetype == 0 || eobj->texturecontainer[face.texid] == nullptr) {
 			mat.resetTexture();
-		else
+		} else {
 			mat.setTexture(eobj->texturecontainer[face.texid]);
+		}
 		
 		mat.setCulling(!(face.facetype & POLY_DOUBLESIDED));
 		
 		g_renderBatcher.add(mat, vert_list);
+		
 	}
+	
 }
 
 struct file_truncated_exception : public std::exception { };
