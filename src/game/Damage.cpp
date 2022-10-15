@@ -1255,8 +1255,8 @@ void igniteEntities(const Sphere & sphere, bool ignite) {
 		
 		if(!entity.obj
 		   || (entity.ioflags & IO_UNDERWATER)
-		   || entity.obj->fastaccess.fire == ActionPoint()
-		   || !closerThan(sphere.origin, actionPointPosition(entity.obj, entity.obj->fastaccess.fire),
+		   || !entity.obj->fastaccess.fire
+		   || !closerThan(sphere.origin, entity.obj->vertexWorldPositions[size_t(entity.obj->fastaccess.fire)].v,
 		                  sphere.radius)) {
 			continue;
 		}

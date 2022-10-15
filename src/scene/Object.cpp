@@ -137,7 +137,7 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * object) {
 	object->fastaccess.primary_attach    = getNamedVertex(object, "primary_attach");
 	object->fastaccess.left_attach       = getNamedVertex(object, "left_attach");
 	object->fastaccess.weapon_attach     = getNamedVertex(object, "weapon_attach");
-	object->fastaccess.fire              = ActionPoint(size_t(getNamedVertex(object, "fire")));
+	object->fastaccess.fire              = getNamedVertex(object, "fire");
 	
 	object->fastaccess.head_group = EERIE_OBJECT_GetGroup(object, "head");
 	

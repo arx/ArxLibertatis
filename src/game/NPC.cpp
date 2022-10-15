@@ -2728,7 +2728,8 @@ void ManageIgnition(Entity & io) {
 		if(addParticles && io.obj && !io.obj->facelist.empty()) {
 			createObjFireParticles(io.obj, 4, 1, 1ms);
 		}
-	} else if(io.obj && io.obj->fastaccess.fire != ActionPoint() && io.ignition > 0.f) {
+		
+	} else if(io.obj && io.obj->fastaccess.fire && io.ignition > 0.f) {
 		
 		io.ignition = 25.f;
 		io.durability -= g_framedelay * 0.0001f;
@@ -2740,18 +2741,19 @@ void ManageIgnition(Entity & io) {
 		}
 		
 		if(addParticles) {
-			Vec3f pos = actionPointPosition(io.obj, io.obj->fastaccess.fire);
-			createFireParticles(pos, 2, 2ms);
+			createFireParticles(io.obj->vertexWorldPositions[size_t(io.obj->fastaccess.fire)].v, 2, 2ms);
 		}
+		
 	} else {
+		
 		io.ignition -= g_framedelay * 0.01f;
 		
 		if(addParticles && io.obj && !io.obj->facelist.empty()) {
 			float p = io.ignition * g_framedelay * 0.001f * float(io.obj->facelist.size()) * 0.001f * 2.f;
 			int positions = std::min(int(std::ceil(p)), 10);
-			
 			createObjFireParticles(io.obj, positions, 6, 180ms);
 		}
+		
 	}
 	
 	ManageIgnition_2(io);
@@ -2767,11 +2769,11 @@ void ManageIgnition_2(Entity & io) {
 		}
 		
 		Vec3f position = io.pos;
-		if(io.obj && io.obj->fastaccess.fire != ActionPoint()) {
+		if(io.obj) {
 			if(&io == g_draggedEntity && io.show == SHOW_FLAG_ON_PLAYER) {
 				position = player.pos;
 			} else {
-				position = actionPointPosition(io.obj, io.obj->fastaccess.fire);
+				position = io.obj->vertexWorldPositions[size_t(io.obj->fastaccess.fire)].v;
 			}
 		}
 		
