@@ -654,10 +654,6 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 					
 					long hitpoint = -1;
 					float curdist = 999999.f;
-					
-					Vec3f vector = (sphere.origin - target->pos) * Vec3f(1.f, 0.5f, 1.f);
-					vector = glm::normalize(vector);
-					
 					for(const EERIE_FACE & face : target->obj->facelist) {
 						if(face.facetype & POLY_HIDE) {
 							continue;
