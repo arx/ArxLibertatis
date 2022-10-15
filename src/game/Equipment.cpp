@@ -657,15 +657,14 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 					
 					Vec3f vector = (sphere.origin - target->pos) * Vec3f(1.f, 0.5f, 1.f);
 					vector = glm::normalize(vector);
-
-					for(size_t ii = 0; ii < target->obj->facelist.size(); ii++) {
-						if(target->obj->facelist[ii].facetype & POLY_HIDE)
+					
+					for(const EERIE_FACE & face : target->obj->facelist) {
+						if(face.facetype & POLY_HIDE) {
 							continue;
-
-						float d = glm::distance(sphere.origin, target->obj->vertexWorldPositions[target->obj->facelist[ii].vid[0]].v);
-
+						}
+						float d = glm::distance(sphere.origin, target->obj->vertexWorldPositions[face.vid[0]].v);
 						if(d < curdist) {
-							hitpoint = target->obj->facelist[ii].vid[0];
+							hitpoint = face.vid[0];
 							curdist = d;
 						}
 					}
