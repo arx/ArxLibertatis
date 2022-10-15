@@ -56,7 +56,6 @@ void MakeUserFlag(TextureContainer * tc);
 ObjVertGroup EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, std::string_view groupname);
 ObjSelection EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, std::string_view selname);
 
-ObjVertHandle GetGroupOriginByName(const EERIE_3DOBJ * eobj, std::string_view text);
 VertexId getNamedVertex(const EERIE_3DOBJ * eobj, std::string_view text);
 ObjVertGroup GetActionPointGroup(const EERIE_3DOBJ * eobj, ActionPoint idx);
 

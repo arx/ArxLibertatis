@@ -81,20 +81,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "util/String.h"
 
 
-ObjVertHandle GetGroupOriginByName(const EERIE_3DOBJ * eobj, std::string_view text) {
-	
-	if(!eobj)
-		return ObjVertHandle();
-	
-	for(const VertexGroup & group : eobj->grouplist) {
-		if(group.name == text) {
-			return ObjVertHandle(size_t(group.origin));
-		}
-	}
-	
-	return ObjVertHandle();
-}
-
 VertexId getNamedVertex(const EERIE_3DOBJ * eobj, std::string_view text) {
 	
 	if(!eobj) {
