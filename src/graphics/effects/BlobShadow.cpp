@@ -35,7 +35,7 @@ static std::vector<TexturedVertex> g_shadowBatch;
 
 static void addShadowBlob(const Entity & entity, VertexId vertex, float scale, bool isGroup) {
 	
-	Vec3f pos = entity.obj->vertexWorldPositions[size_t(vertex)].v;
+	Vec3f pos = entity.obj->vertexWorldPositions[vertex].v;
 	
 	EERIEPOLY * ep = CheckInPoly(pos);
 	if(!ep) {

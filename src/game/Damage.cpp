@@ -685,7 +685,7 @@ void ARX_DAMAGES_ForceDeath(Entity & io_dead, Entity * io_killer) {
 				removeFromInventories(ioo);
 				ioo->show = SHOW_FLAG_IN_SCENE;
 				ioo->ioflags |= IO_NO_NPC_COLLIDE;
-				ioo->pos = ioo->obj->vertexWorldPositions[size_t(ioo->obj->origin)].v;
+				ioo->pos = ioo->obj->vertexWorldPositions[ioo->obj->origin].v;
 				// TODO old broken code suggested that physics sim might be enabled here
 			}
 		}
@@ -923,9 +923,8 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 	
 	for(int i = 0; i < count; i++) {
 		
-		long num = Random::get(0, io->obj->vertexlist.size() / 4 - 1) * 4 + 1;
-		arx_assert(num >= 0);
-		Vec3f vertPos = io->obj->vertexWorldPositions[num].v;
+		VertexId vertex(Random::get(0, io->obj->vertexlist.size() / 4 - 1) * 4 + 1);
+		Vec3f vertPos = io->obj->vertexWorldPositions[vertex].v;
 		
 		for(long k = 0 ; k < 14 ; k++) {
 			
@@ -1164,25 +1163,27 @@ void ARX_DAMAGES_UpdateAll() {
 
 static bool SphereInIO(Entity * io, const Sphere & sphere) {
 	
-	if(!io || !io->obj)
+	if(!io || !io->obj) {
 		return false;
-
+	}
+	
 	long step;
 	long nbv = io->obj->vertexlist.size();
 	
-	if(nbv < 150)
+	if(nbv < 150) {
 		step = 1;
-	else if(nbv < 300)
+	} else if(nbv < 300) {
 		step = 2;
-	else if(nbv < 600)
+	} else if(nbv < 600) {
 		step = 4;
-	else if(nbv < 1200)
+	} else if(nbv < 1200) {
 		step = 6;
-	else
+	} else {
 		step = 7;
-
+	}
+	
 	for(size_t i = 0; i < io->obj->vertexlist.size(); i += step) {
-		if(!fartherThan(sphere.origin, io->obj->vertexWorldPositions[i].v, sphere.radius)) {
+		if(!fartherThan(sphere.origin, io->obj->vertexWorldPositions[VertexId(i)].v, sphere.radius)) {
 			return true;
 		}
 	}
@@ -1256,7 +1257,7 @@ void igniteEntities(const Sphere & sphere, bool ignite) {
 		if(!entity.obj
 		   || (entity.ioflags & IO_UNDERWATER)
 		   || !entity.obj->fastaccess.fire
-		   || !closerThan(sphere.origin, entity.obj->vertexWorldPositions[size_t(entity.obj->fastaccess.fire)].v,
+		   || !closerThan(sphere.origin, entity.obj->vertexWorldPositions[entity.obj->fastaccess.fire].v,
 		                  sphere.radius)) {
 			continue;
 		}

@@ -128,7 +128,7 @@ void MagicMissileSpell::Launch() {
 	m_hand_group = entities[m_caster]->obj->fastaccess.primary_attach;
 	
 	if(m_hand_group) {
-		m_hand_pos = entities[m_caster]->obj->vertexWorldPositions[size_t(m_hand_group)].v;
+		m_hand_pos = entities[m_caster]->obj->vertexWorldPositions[m_hand_group].v;
 	}
 	
 	Vec3f startPos = m_hand_pos;

@@ -473,10 +473,9 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 			step = 4;
 		}
 		
-		const std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
 		for(size_t i = 1; i < nbv; i += step) {
 			if(VertexId(i) != entity.obj->origin) {
-				sp.origin = vlist[i].v;
+				sp.origin = entity.obj->vertexWorldPositions[VertexId(i)].v;
 				for(const PhysicsParticle & vertex : pbox.vert) {
 					if(sp.contains(vertex.pos)) {
 						if((entity.gameFlags & GFLAG_DOOR)) {

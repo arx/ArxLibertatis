@@ -76,7 +76,7 @@ void Spell::updateCasterHand() {
 	}
 	
 	if(caster && m_hand_group) {
-		m_hand_pos = caster->obj->vertexWorldPositions[size_t(m_hand_group)].v;
+		m_hand_pos = caster->obj->vertexWorldPositions[m_hand_group].v;
 	}
 	
 }

@@ -110,9 +110,9 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 		VertexId outpos = VertexId(k);
 		equival[inpos] = outpos;
 		nouvo->vertexlist[outpos] = from->vertexlist[inpos];
-		nouvo->vertexlist[outpos].v = from->vertexWorldPositions[size_t(inpos)].v;
+		nouvo->vertexlist[outpos].v = from->vertexWorldPositions[inpos].v;
 		nouvo->vertexlist[outpos].v -= ioo->pos;
-		nouvo->vertexWorldPositions[size_t(outpos)] = nouvo->vertexlist[outpos];
+		nouvo->vertexWorldPositions[outpos] = nouvo->vertexlist[outpos];
 	}
 	
 	size_t count = cutSelection.selected.size();
@@ -126,8 +126,8 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 					if(count < nouvo->vertexlist.size()) {
 						VertexId outpos = VertexId(count);
 						nouvo->vertexlist[outpos] = from->vertexlist[vertex];
-						nouvo->vertexlist[outpos].v = from->vertexWorldPositions[size_t(vertex)].v - ioo->pos;
-						nouvo->vertexWorldPositions[size_t(outpos)] = nouvo->vertexlist[outpos];
+						nouvo->vertexlist[outpos].v = from->vertexWorldPositions[vertex].v - ioo->pos;
+						nouvo->vertexWorldPositions[outpos] = nouvo->vertexlist[outpos];
 						equival[vertex] = outpos;
 					} else {
 						equival[vertex] = { };
@@ -222,7 +222,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	io->m_icon = nullptr;
 	io->scriptload = 1;
 	io->obj = nouvo;
-	io->lastpos = io->initpos = io->pos = from->vertexWorldPositions[size_t(inpos)].v;
+	io->lastpos = io->initpos = io->pos = from->vertexWorldPositions[inpos].v;
 	io->angle = ioo->angle;
 	
 	io->gameFlags = ioo->gameFlags;
@@ -440,7 +440,7 @@ void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos) {
 			
 			if(out < 3) {
 				VertexId vertex = target->obj->selections[i].selected[0];
-				float dist = arx::distance2(*pos, target->obj->vertexWorldPositions[size_t(vertex)].v);
+				float dist = arx::distance2(*pos, target->obj->vertexWorldPositions[vertex].v);
 				if(dist < mindistSqr) {
 					mindistSqr = dist;
 					numsel = sel;

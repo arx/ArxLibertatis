@@ -1609,10 +1609,10 @@ void ForcePlayerLookAtIO(Entity * io) {
 	arx_assert(io);
 	
 	VertexId id = entities.player()->obj->fastaccess.view_attach;
-	Vec3f pos = id ? entities.player()->obj->vertexWorldPositions[size_t(id)].v : player.pos;
+	Vec3f pos = id ? entities.player()->obj->vertexWorldPositions[id].v : player.pos;
 	
 	VertexId targetId = io->obj->fastaccess.view_attach;
-	Vec3f target = targetId ? io->obj->vertexWorldPositions[size_t(targetId)].v : io->pos;
+	Vec3f target = targetId ? io->obj->vertexWorldPositions[targetId].v : io->pos;
 	
 	// For the case of not already computed Vlist3... !
 	if(fartherThan(target, io->pos, 400.f)) {

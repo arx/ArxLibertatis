@@ -528,7 +528,7 @@ static void drawDebugEntities(bool drawSkeletons) {
 			
 			if(entity.obj) {
 				for(const EERIE_LINKED & link : entity.obj->linked) {
-					Vec3f pos = entity.obj->vertexWorldPositions[size_t(link.lidx)].v;
+					Vec3f pos = entity.obj->vertexWorldPositions[link.lidx].v;
 					drawTextAt(hFontDebug, pos, link.io ? std::string_view(link.io->idString()) : "(obj)", Color::cyan);
 				}
 			}
@@ -552,11 +552,11 @@ static void drawDebugEntities(bool drawSkeletons) {
 			}
 			
 			for(const VertexGroup & group : entity.obj->grouplist) {
-				drawTextAt(hFontDebug, entity.obj->vertexWorldPositions[size_t(group.origin)].v, group.name);
+				drawTextAt(hFontDebug, entity.obj->vertexWorldPositions[group.origin].v, group.name);
 			}
 			
 			for(const EERIE_ACTIONLIST & ap : entity.obj->actionlist) {
-				drawTextAt(hFontDebug, entity.obj->vertexWorldPositions[ap.idx.handleData()].v, ap.name, Color::green);
+				drawTextAt(hFontDebug, entity.obj->vertexWorldPositions[ap.idx].v, ap.name, Color::green);
 			}
 			
 		}
@@ -645,7 +645,7 @@ static void drawDebugMaterials() {
 		const EERIE_FACE & face = *entityHit.face;
 		count = 3;
 		for(size_t i = 0; i < count; i++) {
-			v[i] = obj.vertexWorldPositions[size_t(face.vid[i])].v;
+			v[i] = obj.vertexWorldPositions[face.vid[i]].v;
 			puv[i] = Vec2f(face.u[i], face.v[i]);
 		}
 		if(face.texid >= 0 && size_t(face.texid) < obj.texturecontainer.size()) {

@@ -554,14 +554,14 @@ void ManageCombatModeAnimations() {
 						
 						if(id) {
 							Sphere sphere;
-							sphere.origin = io->obj->vertexWorldPositions[size_t(id)].v;
+							sphere.origin = io->obj->vertexWorldPositions[id].v;
 							sphere.radius = 25.f;
 							
 							Entity * hit = nullptr;
 							if(CheckAnythingInSphere(sphere, entities.player(), 0, &hit)) {
 								float dmgs = (player.m_miscFull.damages + 1) * player.m_strikeAimRatio;
 								
-								if(tryToDoDamage(io->obj->vertexWorldPositions[size_t(id)].v, dmgs, 40, *entities.player())) {
+								if(tryToDoDamage(io->obj->vertexWorldPositions[id].v, dmgs, 40, *entities.player())) {
 									player.m_weaponBlocked = layer1.ctime;
 								}
 								
@@ -814,7 +814,7 @@ void ManageCombatModeAnimations() {
 					arx_assert(leftAttach);
 					
 					const Bone & bone2 = io->obj->m_skeleton->bones[leftAttach.handleData()];
-					TransformInfo t2(io->obj->vertexWorldPositions[size_t(io->obj->fastaccess.left_attach)].v, bone2.anim.quat);
+					TransformInfo t2(io->obj->vertexWorldPositions[io->obj->fastaccess.left_attach].v, bone2.anim.quat);
 					t2.pos = t2(arrowobj->vertexlist[arrowobj->origin].v - arrowobj->vertexlist[attach].v);
 					
 					pos = t2(arrowobj->vertexlist[attach].v);

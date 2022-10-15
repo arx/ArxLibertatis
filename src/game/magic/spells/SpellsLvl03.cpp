@@ -110,7 +110,7 @@ void SpeedSpell::Update() {
 		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 	
 	for(SpeedTrail & trail : m_trails) {
-		Vec3f pos = entities[m_target]->obj->vertexWorldPositions[size_t(trail.vertexIndex)].v;
+		Vec3f pos = entities[m_target]->obj->vertexWorldPositions[trail.vertexIndex].v;
 		trail.SetNextPosition(pos);
 		trail.Update(g_gameTime.lastFrameDuration());
 	}
@@ -228,7 +228,7 @@ void FireballSpell::Update() {
 			afBeta = player.angle.getYaw();
 			afAlpha = player.angle.getPitch();
 			if(ObjVertGroup chest = EERIE_OBJECT_GetGroup(caster->obj, "chest")) {
-				eCurPos = caster->obj->vertexWorldPositions[size_t(caster->obj->grouplist[size_t(chest)].origin)].v;
+				eCurPos = caster->obj->vertexWorldPositions[caster->obj->grouplist[size_t(chest)].origin].v;
 			} else {
 				eCurPos = player.pos;
 			}

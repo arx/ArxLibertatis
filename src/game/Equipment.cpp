@@ -632,7 +632,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 		}
 		
 		Sphere sphere;
-		sphere.origin = io_weapon->obj->vertexWorldPositions[size_t(action.idx)].v;
+		sphere.origin = io_weapon->obj->vertexWorldPositions[action.idx].v;
 		sphere.radius = rad;
 		
 		if(io_source != entities.player()) {
@@ -658,7 +658,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						if(face.facetype & POLY_HIDE) {
 							continue;
 						}
-						float d = glm::distance(sphere.origin, target->obj->vertexWorldPositions[size_t(face.vid[0])].v);
+						float d = glm::distance(sphere.origin, target->obj->vertexWorldPositions[face.vid[0]].v);
 						if(d < curdist) {
 							arx_assume(face.vid[0]);
 							hitpoint = face.vid[0];
@@ -670,7 +670,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 					}
 					
 					Color color = (target->ioflags & IO_NPC) ? target->_npcdata->blood_color : Color::white;
-					Vec3f pos = target->obj->vertexWorldPositions[size_t(hitpoint)].v;
+					Vec3f pos = target->obj->vertexWorldPositions[hitpoint].v;
 					
 					float dmgs = 0.f;
 					if(!(flags & 1)) {

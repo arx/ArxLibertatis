@@ -287,7 +287,7 @@ void PushIO_ON_Top(const Entity & platform, float ydec) {
 			float cx = 0;
 			float cz = 0;
 			for(long kk = 0; kk < 3; kk++) {
-				ep.v[kk].p = platform.obj->vertexWorldPositions[size_t(face.vid[kk])].v;
+				ep.v[kk].p = platform.obj->vertexWorldPositions[face.vid[kk]].v;
 				cx += ep.v[kk].p.x;
 				cz += ep.v[kk].p.z;
 			}
@@ -395,8 +395,8 @@ static void CheckAnythingInCylinder_Platform(const Cylinder & cylinder, const En
 		Vec3f center(0.f);
 		float height = std::numeric_limits<float>::max();
 		for(VertexId vertex : face.vid) {
-			center += target.obj->vertexWorldPositions[size_t(vertex)].v;
-			height = std::min(height, target.obj->vertexWorldPositions[size_t(vertex)].v.y);
+			center += target.obj->vertexWorldPositions[vertex].v;
+			height = std::min(height, target.obj->vertexWorldPositions[vertex].v.y);
 		}
 		center /= std::size(face.vid);
 		center.y = target.bbox3D.min.y;
@@ -564,7 +564,7 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cylinder, Entity * so
 		}
 		
 		for(const VertexGroup & group : target->obj->grouplist) {
-			Vec3f pos = target->obj->vertexWorldPositions[size_t(group.origin)].v;
+			Vec3f pos = target->obj->vertexWorldPositions[group.origin].v;
 			if(SphereInCylinder(cylinder, Sphere(pos, radius))) {
 				if(!(flags & CFLAG_JUST_TEST) && source) {
 					handlePropCollision(*source, *target, dealt);
@@ -593,7 +593,7 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cylinder, Entity * so
 		
 		for(size_t i = 1; i < target->obj->vertexlist.size(); i += step) {
 			if(VertexId(i) != target->obj->origin) {
-				Vec3f pos = target->obj->vertexWorldPositions[i].v;
+				Vec3f pos = target->obj->vertexWorldPositions[VertexId(i)].v;
 				if(SphereInCylinder(cylinder, Sphere(pos, radius))) {
 					if(!(flags & CFLAG_JUST_TEST) && source) {
 						handlePropCollision(*source, *target, dealt);
@@ -718,10 +718,10 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity & entity
 	}
 	
 	size_t amount = 1;
-	const std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
+	const auto & vlist = entity.obj->vertexWorldPositions;
 	if(entity.obj->grouplist.size() > 4) {
 		for(const VertexGroup & group : entity.obj->grouplist) {
-			if(closerThan(vlist[size_t(group.origin)].v, sphere.origin, sphere.radius + 30.f)) {
+			if(closerThan(vlist[group.origin].v, sphere.origin, sphere.radius + 30.f)) {
 				return true;
 			}
 		}
@@ -733,11 +733,11 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity & entity
 		if(face.facetype & POLY_HIDE) {
 			continue;
 		}
-		Vec3f center = (vlist[size_t(face.vid[0])].v + vlist[size_t(face.vid[1])].v + vlist[size_t(face.vid[2])].v) * (1.0f / 3);
+		Vec3f center = (vlist[face.vid[0]].v + vlist[face.vid[1]].v + vlist[face.vid[2]].v) / 3.f;
 		if(closerThan(center, sphere.origin, sphere.radius + 20.f) ||
-		   closerThan(vlist[size_t(face.vid[0])].v, sphere.origin, sphere.radius + 20.f) ||
-		   closerThan(vlist[size_t(face.vid[1])].v, sphere.origin, sphere.radius + 20.f) ||
-		   closerThan(vlist[size_t(face.vid[2])].v, sphere.origin, sphere.radius + 20.f)) {
+		   closerThan(vlist[face.vid[0]].v, sphere.origin, sphere.radius + 20.f) ||
+		   closerThan(vlist[face.vid[1]].v, sphere.origin, sphere.radius + 20.f) ||
+		   closerThan(vlist[face.vid[2]].v, sphere.origin, sphere.radius + 20.f)) {
 			return true;
 		}
 	}
@@ -808,7 +808,7 @@ bool platformCollides(const Entity & platform, const Sphere & sphere) {
 		ep.type = 0;
 		Vec2f center(0.f);
 		for(size_t i = 0; i < std::size(face.vid); i++) {
-			ep.v[i].p = platform.obj->vertexWorldPositions[size_t(face.vid[i])].v;
+			ep.v[i].p = platform.obj->vertexWorldPositions[face.vid[i]].v;
 			center += getXZ(ep.v[i].p);
 		}
 		center /= float(std::size(face.vid));
@@ -892,10 +892,10 @@ bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flag
 		}
 		
 		long amount = 1;
-		const std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
+		const auto & vlist = entity.obj->vertexWorldPositions;
 		if(entity.obj->grouplist.size() > 4) {
 			for(const VertexGroup & group : entity.obj->grouplist) {
-				if(closerThan(vlist[size_t(group.origin)].v, sphere.origin, sphere.radius + 30.f)) {
+				if(closerThan(vlist[group.origin].v, sphere.origin, sphere.radius + 30.f)) {
 					if(result) {
 						*result = &entity;
 					}
@@ -910,8 +910,8 @@ bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flag
 			if(face.facetype & POLY_HIDE) {
 				continue;
 			}
-			if(closerThan(vlist[size_t(face.vid[0])].v, sphere.origin, sphere.radius + 20.f) ||
-			   closerThan(vlist[size_t(face.vid[1])].v, sphere.origin, sphere.radius + 20.f)) {
+			if(closerThan(vlist[face.vid[0]].v, sphere.origin, sphere.radius + 20.f) ||
+			   closerThan(vlist[face.vid[1]].v, sphere.origin, sphere.radius + 20.f)) {
 				if(result) {
 					*result = &entity;
 				}
@@ -940,12 +940,12 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 		return false;
 	}
 	
-	const std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
+	const auto & vlist = entity.obj->vertexWorldPositions;
 	
 	if(entity.obj->grouplist.size() > 10) {
 		long count = 0;
 		for(const VertexGroup & group : entity.obj->grouplist) {
-			if(closerThan(vlist[size_t(group.origin)].v, sphere.origin, sphere.radius + 27.f)) {
+			if(closerThan(vlist[group.origin].v, sphere.origin, sphere.radius + 27.f)) {
 				count++;
 				if(count > 3) {
 					return true;
@@ -968,9 +968,9 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 	}
 	
 	long count = 0;
-	for(size_t ii = 0; ii < vlist.size(); ii += step) {
+	for(size_t i = 0; i < vlist.size(); i += step) {
 		
-		if(closerThan(vlist[ii].v, sphere.origin, sr30)) {
+		if(closerThan(vlist[VertexId(i)].v, sphere.origin, sr30)) {
 			count++;
 			if(count > 6) {
 				return true;
@@ -982,11 +982,11 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 		}
 		
 		for(const EERIE_VERTEX & other : vlist) {
-			if(&other == &vlist[ii]) {
+			if(&other == &vlist[VertexId(i)]) {
 				continue;
 			}
 			for(size_t n = 1; n < 5; n++) {
-				if(!fartherThan(sphere.origin, glm::mix(other.v, vlist[ii].v, float(n) * 0.2f), sr30 + 20)) {
+				if(!fartherThan(sphere.origin, glm::mix(other.v, vlist[VertexId(i)].v, float(n) * 0.2f), sr30 + 20)) {
 					count++;
 					if(count > ((entity.ioflags & IO_FIX) ? 3 : 6)) {
 						return true;

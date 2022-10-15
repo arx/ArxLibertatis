@@ -245,16 +245,16 @@ class SpeakCommand : public Command {
 	static void computeACSPos(CinematicSpeech & acs, Entity * speaker, Entity * target) {
 		
 		if(speaker) {
-			if(VertexId id = speaker->obj->fastaccess.view_attach) {
-				acs.pos1 = speaker->obj->vertexWorldPositions[size_t(id)].v;
+			if(speaker->obj->fastaccess.view_attach) {
+				acs.pos1 = speaker->obj->vertexWorldPositions[speaker->obj->fastaccess.view_attach].v;
 			} else {
 				acs.pos1 = speaker->pos + Vec3f(0.f, speaker->physics.cyl.height, 0.f);
 			}
 		}
 		
 		if(target) {
-			if(VertexId id = target->obj->fastaccess.view_attach) {
-				acs.pos2 = target->obj->vertexWorldPositions[size_t(id)].v;
+			if(target->obj->fastaccess.view_attach) {
+				acs.pos2 = target->obj->vertexWorldPositions[target->obj->fastaccess.view_attach].v;
 			} else {
 				acs.pos2 = target->pos + Vec3f(0.f, target->physics.cyl.height, 0.f);
 			}

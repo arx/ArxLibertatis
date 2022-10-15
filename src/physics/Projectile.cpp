@@ -340,7 +340,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(Projectile & projectile, ShortGam
 		}
 		rad *= .5f;
 		
-		const Vec3f v0 = projectile.obj->vertexWorldPositions[size_t(action.idx)].v;
+		const Vec3f v0 = projectile.obj->vertexWorldPositions[action.idx].v;
 		
 		RaycastResult result = raycastScene(original_pos, v0, POLY_WATER | POLY_TRANS | POLY_NOCOL);
 		if(result || IsPointInField(v0)) {
@@ -399,7 +399,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(Projectile & projectile, ShortGam
 						}
 						
 						VertexId vid = target.obj->facelist[ii].vid[0];
-						float d = glm::distance(sphere.origin, target.obj->vertexWorldPositions[size_t(vid)].v);
+						float d = glm::distance(sphere.origin, target.obj->vertexWorldPositions[vid].v);
 						if(d < curdist) {
 							hitpoint = target.obj->facelist[ii].vid[0];
 							curdist = d;
@@ -413,7 +413,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(Projectile & projectile, ShortGam
 						if(damages > 0.f) {
 							
 							Color color = target._npcdata->blood_color;
-							Vec3f pos = target.obj->vertexWorldPositions[size_t(hitpoint)].v;
+							Vec3f pos = target.obj->vertexWorldPositions[hitpoint].v;
 							
 							target._npcdata->SPLAT_TOT_NB = 0;
 							ARX_PARTICLES_Spawn_Blood2(original_pos, damages, color, &target);

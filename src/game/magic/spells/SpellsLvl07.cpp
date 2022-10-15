@@ -194,12 +194,12 @@ void FlyingEyeSpell::Update() {
 	size_t particles = m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 0.06f);
 	
 	if(io->obj->fastaccess.primary_attach) {
-		Vec3f pos = io->obj->vertexWorldPositions[size_t(io->obj->fastaccess.primary_attach)].v;
+		Vec3f pos = io->obj->vertexWorldPositions[io->obj->fastaccess.primary_attach].v;
 		FlyingEyeSpellUpdateHand(pos, m_light1, particles);
 	}
 	
 	if(io->obj->fastaccess.left_attach) {
-		Vec3f pos = io->obj->vertexWorldPositions[size_t(io->obj->fastaccess.left_attach)].v;
+		Vec3f pos = io->obj->vertexWorldPositions[io->obj->fastaccess.left_attach].v;
 		FlyingEyeSpellUpdateHand(pos, m_light2, particles);
 	}
 	
@@ -558,7 +558,7 @@ static Vec3f GetChestPos(EntityHandle num) {
 	}
 	
 	if(ObjVertGroup chest = EERIE_OBJECT_GetGroup(io->obj, "chest")) {
-		return io->obj->vertexWorldPositions[size_t(io->obj->grouplist[size_t(chest)].origin)].v;
+		return io->obj->vertexWorldPositions[io->obj->grouplist[size_t(chest)].origin].v;
 	}
 	
 	return io->pos + Vec3f(0.f, -120.f, 0.f);
@@ -572,7 +572,7 @@ void LightningStrikeSpell::Update() {
 	Entity * caster = entities.get(m_caster);
 	if(caster) {
 		if(ObjVertGroup chest = EERIE_OBJECT_GetGroup(caster->obj, "chest")) {
-			m_caster_pos = caster->obj->vertexWorldPositions[size_t(caster->obj->grouplist[size_t(chest)].origin)].v;
+			m_caster_pos = caster->obj->vertexWorldPositions[caster->obj->grouplist[size_t(chest)].origin].v;
 		} else {
 			m_caster_pos = caster->pos;
 		}
@@ -667,7 +667,7 @@ void ConfuseSpell::Update() {
 	}
 	
 	if(VertexId targetHead = target->obj->fastaccess.head_group_origin) {
-		pos = target->obj->vertexWorldPositions[size_t(targetHead)].v - Vec3f(0.f, 50.f, 0.f);
+		pos = target->obj->vertexWorldPositions[targetHead].v - Vec3f(0.f, 50.f, 0.f);
 	}
 	
 	eCurPos = pos;

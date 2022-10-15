@@ -1123,7 +1123,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 		invisibility = 0.5f;
 	
 	IN_BOOK_DRAW = 1;
-	std::vector<EERIE_VERTEX> vertexlist = entities.player()->obj->vertexWorldPositions;
+	auto vertexlist = entities.player()->obj->vertexWorldPositions;
 	
 	arx_assert(player.bookAnimation[0].cur_anim);
 	

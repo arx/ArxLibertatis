@@ -189,9 +189,9 @@ static void CheckHit(Entity * source, float ratioaim) {
 	long count = 0;
 	float mindist = std::numeric_limits<float>::max();
 
-	for(size_t k = 0; k < target->obj->vertexlist.size(); k += 2) {
-		float dist = fdist(pos, target->obj->vertexWorldPositions[k].v);
-		if(dist <= dist_limit && glm::abs(pos.y - target->obj->vertexWorldPositions[k].v.y) < 60.f) {
+	for(size_t k = 0; k < target->obj->vertexWorldPositions.size(); k += 2) {
+		float dist = fdist(pos, target->obj->vertexWorldPositions[VertexId(k)].v);
+		if(dist <= dist_limit && glm::abs(pos.y - target->obj->vertexWorldPositions[VertexId(k)].v.y) < 60.f) {
 			count++;
 			if(dist < mindist) {
 				mindist = dist;
@@ -2490,14 +2490,14 @@ Entity * getFirstNpcInSight(const Entity & source) {
 		
 		Vec3f orgn = source.pos + Vec3f(0.f, -90.f, 0.f);
 		if(VertexId sourceHead = source.obj->fastaccess.head_group_origin) {
-			orgn = source.obj->vertexWorldPositions[size_t(sourceHead)].v;
+			orgn = source.obj->vertexWorldPositions[sourceHead].v;
 		} else if(source == *entities.player()) {
 			orgn.y = player.pos.y + 90.f;
 		}
 		
 		Vec3f dest = npc.pos + Vec3f(0.f, -90.f, 0.f);
 		if(VertexId npcHead = npc.obj->fastaccess.head_group_origin) {
-			dest = npc.obj->vertexWorldPositions[size_t(npcHead)].v;
+			dest = npc.obj->vertexWorldPositions[npcHead].v;
 		} else if(npc == *entities.player()) {
 			dest.y = player.pos.y + 90.f;
 		}
@@ -2734,7 +2734,7 @@ void ManageIgnition(Entity & io) {
 		}
 		
 		if(addParticles) {
-			createFireParticles(io.obj->vertexWorldPositions[size_t(io.obj->fastaccess.fire)].v, 2, 2ms);
+			createFireParticles(io.obj->vertexWorldPositions[io.obj->fastaccess.fire].v, 2, 2ms);
 		}
 		
 	} else {
@@ -2766,7 +2766,7 @@ void ManageIgnition_2(Entity & io) {
 			if(&io == g_draggedEntity && io.show == SHOW_FLAG_ON_PLAYER) {
 				position = player.pos;
 			} else {
-				position = io.obj->vertexWorldPositions[size_t(io.obj->fastaccess.fire)].v;
+				position = io.obj->vertexWorldPositions[io.obj->fastaccess.fire].v;
 			}
 		}
 		

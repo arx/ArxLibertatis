@@ -486,7 +486,7 @@ void PoisonProjectileSpell::Launch() {
 	
 	m_hand_group = caster->obj->fastaccess.primary_attach;
 	if(m_hand_group) {
-		m_hand_pos = caster->obj->vertexWorldPositions[size_t(m_hand_group)].v;
+		m_hand_pos = caster->obj->vertexWorldPositions[m_hand_group].v;
 	}
 	
 	if(m_caster == EntityHandle_Player) {

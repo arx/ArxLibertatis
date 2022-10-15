@@ -157,9 +157,8 @@ long MakeTopObjString(Entity * entity, std::string & dest) {
 	
 	EERIE_3D_BBOX box;
 	box.reset();
-	
-	for(size_t i = 0; i < entity->obj->vertexlist.size(); i++) {
-		box.add(entity->obj->vertexWorldPositions[i].v);
+	for(const EERIE_VERTEX & vertex : entity->obj->vertexWorldPositions) {
+		box.add(vertex.v);
 	}
 	box.min.y -= 5.f;
 	box.max.y -= 5.f;
@@ -562,7 +561,7 @@ void Draw3DObject(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos,
 	for(VertexId vertex : eobj->vertexlist.handles()) {
 		Vec3f scaled = eobj->vertexlist[vertex].v * scale;
 		Vec3f rotated = Vec3f(rotation * Vec4f(scaled, 1.f)) + pos;
-		eobj->vertexWorldPositions[size_t(vertex)].v = rotated;
+		eobj->vertexWorldPositions[vertex].v = rotated;
 		eobj->vertexClipPositions[size_t(vertex)] = worldToClipSpace(rotated);
 	}
 	

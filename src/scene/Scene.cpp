@@ -591,7 +591,7 @@ EntityVisibility getEntityVisibility(Entity & entity, bool cullingOnly) {
 	// For full visibility use the head (or center if there is no head)
 	Vec3f target = center;
 	if(entity.obj->fastaccess.head_group_origin) {
-		target = entity.obj->vertexWorldPositions[size_t(entity.obj->fastaccess.head_group_origin)].v;
+		target = entity.obj->vertexWorldPositions[entity.obj->fastaccess.head_group_origin].v;
 	}
 	if(isPointVisible(target, &entity)) {
 		return isPointInViewCenter(target) ? EntityInFocus : EntityVisible;
@@ -600,9 +600,9 @@ EntityVisibility getEntityVisibility(Entity & entity, bool cullingOnly) {
 	// If the head/center is not visible test all other groups
 	for(const VertexGroup & group : entity.obj->grouplist) {
 		if(group.origin != entity.obj->fastaccess.head_group_origin &&
-		   isPointVisible(entity.obj->vertexWorldPositions[size_t(group.origin)].v, &entity)) {
+		   isPointVisible(entity.obj->vertexWorldPositions[group.origin].v, &entity)) {
 			if(!entity.obj->fastaccess.head_group_origin &&
-			   isPointInViewCenter(entity.obj->vertexWorldPositions[size_t(group.origin)].v)) {
+			   isPointInViewCenter(entity.obj->vertexWorldPositions[group.origin].v)) {
 				return EntityInFocus;
 			}
 			return EntityVisible;

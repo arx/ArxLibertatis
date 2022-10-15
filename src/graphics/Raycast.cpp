@@ -292,9 +292,9 @@ EntityRaycastResult raycastEntities(const Vec3f & start, const Vec3f & end,
 				continue;
 			}
 			
-			Vec3f v0 = entity.obj->vertexWorldPositions[size_t(face.vid[0])].v;
-			Vec3f v1 = entity.obj->vertexWorldPositions[size_t(face.vid[1])].v;
-			Vec3f v2 = entity.obj->vertexWorldPositions[size_t(face.vid[2])].v;
+			Vec3f v0 = entity.obj->vertexWorldPositions[face.vid[0]].v;
+			Vec3f v1 = entity.obj->vertexWorldPositions[face.vid[1]].v;
+			Vec3f v2 = entity.obj->vertexWorldPositions[face.vid[2]].v;
 			
 			Vec3f hit;
 			if(arx::intersectLineTriangle(start, dir, v0, v1, v2, hit)) {

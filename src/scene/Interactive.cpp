@@ -383,7 +383,7 @@ void IO_UnlinkAllLinkedObjects(Entity * io) {
 		linked->show = SHOW_FLAG_IN_SCENE;
 		linked->no_collide = io->index();
 		
-		Vec3f pos = io->obj->vertexWorldPositions[size_t(io->obj->linked[k].lidx)].v;
+		Vec3f pos = io->obj->vertexWorldPositions[io->obj->linked[k].lidx].v;
 		
 		Vec3f vector = angleToVectorXZ(linked->angle.getYaw()) * 0.5f;
 		
@@ -1862,16 +1862,16 @@ static bool IsCollidingInter(Entity * io, const Vec3f & pos) {
 		return false;
 	}
 	
-	const std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
 	if(io->obj->grouplist.size() > 4) {
 		for(const VertexGroup & group : io->obj->grouplist) {
-			if(!fartherThan(pos, vlist[size_t(group.origin)].v, 50.f)) {
+			if(!fartherThan(pos, io->obj->vertexWorldPositions[group.origin].v, 50.f)) {
 				return true;
 			}
 		}
 	} else {
-		for(size_t i : util::indices(vlist)) {
-			if(VertexId(i) != io->obj->origin && !fartherThan(pos, vlist[i].v, 30.f)) {
+		const EERIE_VERTEX & origin = io->obj->vertexWorldPositions[io->obj->origin];
+		for(const EERIE_VERTEX & vertex : io->obj->vertexWorldPositions) {
+			if(&vertex != &origin && !fartherThan(pos, vertex.v, 30.f)) {
 				return true;
 			}
 		}
@@ -1946,11 +1946,12 @@ void UpdateCameras() {
 					}
 					
 					bool touched = false;
-					for(size_t ri = 0; ri < entity.obj->vertexlist.size(); ri += 3) {
-						for(size_t rii = 0; rii < other.obj->vertexlist.size(); rii += 3) {
-							if(closerThan(entity.obj->vertexWorldPositions[ri].v, other.obj->vertexWorldPositions[rii].v, 20.f)) {
+					for(size_t i = 0; i < entity.obj->vertexlist.size(); i += 3) {
+						for(size_t j = 0; j < other.obj->vertexlist.size(); j += 3) {
+							if(closerThan(entity.obj->vertexWorldPositions[VertexId(i)].v,
+							              other.obj->vertexWorldPositions[VertexId(j)].v, 20.f)) {
 								touched = true;
-								ri = entity.obj->vertexlist.size();
+								i = entity.obj->vertexlist.size();
 								break;
 							}
 						}
