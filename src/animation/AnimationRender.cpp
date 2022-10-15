@@ -1069,8 +1069,8 @@ static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos
 	/* Get nearest lights */
 	Vec3f tv = pos;
 	
-	if(io && io->obj->fastaccess.head_group_origin != ObjVertHandle()) {
-		tv.y = io->obj->vertexWorldPositions[io->obj->fastaccess.head_group_origin.handleData()].v.y + 10;
+	if(io && io->obj->fastaccess.head_group_origin) {
+		tv.y = io->obj->vertexWorldPositions[size_t(io->obj->fastaccess.head_group_origin)].v.y + 10;
 	} else {
 		tv.y -= 90.f;
 	}

@@ -140,10 +140,8 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * object) {
 	object->fastaccess.fire              = getNamedVertex(object, "fire");
 	
 	object->fastaccess.head_group = EERIE_OBJECT_GetGroup(object, "head");
-	
-	if(object->fastaccess.head_group != ObjVertGroup()) {
-		VertexId lHeadOrigin = object->grouplist[object->fastaccess.head_group.handleData()].origin;
-		object->fastaccess.head_group_origin = ObjVertHandle(size_t(lHeadOrigin));
+	if(object->fastaccess.head_group) {
+		object->fastaccess.head_group_origin = object->grouplist[size_t(object->fastaccess.head_group)].origin;
 	}
 	
 	object->fastaccess.sel_head     = EERIE_OBJECT_GetSelection(object, "head");

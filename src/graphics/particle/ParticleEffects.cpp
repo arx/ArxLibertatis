@@ -402,6 +402,7 @@ void ARX_PARTICLES_Add_Smoke(const Vec3f & pos, long flags, long amount, const C
 }
 
 void ManageTorch() {
+	
 	arx_assert(entities.player());
 	
 	EERIE_LIGHT * el = lightHandleGet(torchLightHandle);
@@ -446,12 +447,11 @@ void ManageTorch() {
 		}
 	}
 	
-	if(   entities.player()->obj
-	   && entities.player()->obj->fastaccess.head_group_origin != ObjVertHandle()
-	) {
-		s32 vertex = entities.player()->obj->fastaccess.head_group_origin.handleData();
-		el->pos.y = entities.player()->obj->vertexWorldPositions[vertex].v.y;
+	if(entities.player()->obj && entities.player()->obj->fastaccess.head_group_origin) {
+		VertexId vertex = entities.player()->obj->fastaccess.head_group_origin;
+		el->pos.y = entities.player()->obj->vertexWorldPositions[size_t(vertex)].v.y;
 	}
+	
 }
 
 void Add3DBoom(const Vec3f & position) {

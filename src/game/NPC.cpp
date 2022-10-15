@@ -2489,23 +2489,17 @@ Entity * getFirstNpcInSight(const Entity & source) {
 		float ab = MAKEANGLE(source.angle.getYaw());
 		
 		Vec3f orgn = source.pos + Vec3f(0.f, -90.f, 0.f);
-		{
-			ObjVertHandle grp = source.obj->fastaccess.head_group_origin;
-			if(grp != ObjVertHandle()) {
-				orgn = source.obj->vertexWorldPositions[grp.handleData()].v;
-			} else if(source == *entities.player()) {
-				orgn.y = player.pos.y + 90.f;
-			}
+		if(VertexId sourceHead = source.obj->fastaccess.head_group_origin) {
+			orgn = source.obj->vertexWorldPositions[size_t(sourceHead)].v;
+		} else if(source == *entities.player()) {
+			orgn.y = player.pos.y + 90.f;
 		}
 		
 		Vec3f dest = npc.pos + Vec3f(0.f, -90.f, 0.f);
-		{
-			ObjVertHandle grp = npc.obj->fastaccess.head_group_origin;
-			if(grp != ObjVertHandle()) {
-				dest = npc.obj->vertexWorldPositions[grp.handleData()].v;
-			} else if(npc == *entities.player()) {
-				dest.y = player.pos.y + 90.f;
-			}
+		if(VertexId npcHead = npc.obj->fastaccess.head_group_origin) {
+			dest = npc.obj->vertexWorldPositions[size_t(npcHead)].v;
+		} else if(npc == *entities.player()) {
+			dest.y = player.pos.y + 90.f;
 		}
 		
 		float aa = getAngle(orgn.x, orgn.z, dest.x, dest.z);
@@ -2586,8 +2580,7 @@ void CheckNPCEx(Entity & io) {
 		} else { // Make full visibility test
 			
 			// Retreives Head group position for "eye" pos.
-			ObjVertHandle grp = io.obj->fastaccess.head_group_origin;
-			Vec3f orgn = io.pos - Vec3f(0.f, (grp == ObjVertHandle()) ? 90.f : 120.f, 0.f);
+			Vec3f orgn = io.pos - Vec3f(0.f, io.obj->fastaccess.head_group_origin ? 120.f : 90.f, 0.f);
 			Vec3f dest = player.pos + Vec3f(0.f, 90.f, 0.f);
 
 			// Check for Field of vision angle

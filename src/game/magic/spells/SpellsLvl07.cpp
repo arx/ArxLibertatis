@@ -669,10 +669,8 @@ void ConfuseSpell::Update() {
 		pos.y += target->physics.cyl.height - 30.f;
 	}
 	
-	ObjVertHandle idx = target->obj->fastaccess.head_group_origin;
-	if(idx != ObjVertHandle()) {
-		pos = target->obj->vertexWorldPositions[idx.handleData()].v;
-		pos.y -= 50.f;
+	if(VertexId targetHead = target->obj->fastaccess.head_group_origin) {
+		pos = target->obj->vertexWorldPositions[size_t(targetHead)].v - Vec3f(0.f, 50.f, 0.f);
 	}
 	
 	eCurPos = pos;
