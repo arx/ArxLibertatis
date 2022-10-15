@@ -211,6 +211,11 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 		const EERIE_GROUPLIST_FTL * rawGroup = reinterpret_cast<const EERIE_GROUPLIST_FTL *>(dat + pos);
 		pos += sizeof(EERIE_GROUPLIST_FTL);
 		
+		if(rawGroup->nb_index < 0 || size_t(rawGroup->nb_index) > object->vertexlist.size()) {
+			LogError << filename << ": Invalid group size";
+			return { };
+		}
+		
 		group.name = util::toLowercase(util::loadString(rawGroup->name));
 		group.origin = rawGroup->origin;
 		group.indexes.resize(rawGroup->nb_index);
@@ -220,11 +225,14 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 	
 	// Copy in the group index data
 	for(VertexGroup & group : object->grouplist) {
-		if(!group.indexes.empty()) {
-			const s32 * begin = reinterpret_cast<const s32 *>(dat + pos);
-			pos += sizeof(s32) * group.indexes.size();
-			const s32 * end = reinterpret_cast<const s32 *>(dat + pos);
-			std::copy(begin, end, group.indexes.begin());
+		for(VertexId & index : group.indexes) {
+			const s32 vertex = *reinterpret_cast<const s32 *>(dat + pos);
+			pos += sizeof(s32);
+			if(vertex < 0 || size_t(vertex) >= object->vertexlist.size()) {
+				LogError << filename << ": Invalid group vertex";
+				return { };
+			}
+			index = VertexId(vertex);
 		}
 	}
 	

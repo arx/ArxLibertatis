@@ -232,22 +232,14 @@ long ObjectAddMap(EERIE_3DOBJ * obj, TextureContainer * tc) {
 }
 
 static void AddVertexToGroup(EERIE_3DOBJ * obj, size_t group, const EERIE_VERTEX * vert) {
-
-	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
-		if(obj->vertexlist[i].v.x == vert->v.x
-		   && obj->vertexlist[i].v.y == vert->v.y
-		   && obj->vertexlist[i].v.z == vert->v.z
-		) {
-			AddVertexIdxToGroup(obj, group, i);
-		}
-	}
-}
-
-void AddVertexIdxToGroup(EERIE_3DOBJ * obj, size_t group, size_t val) {
 	
-	auto & indices = obj->grouplist[group].indexes;
-	if(std::find(indices.begin(), indices.end(), val) == indices.end()) {
-		indices.push_back(val);
+	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
+		if(obj->vertexlist[i].v == vert->v) {
+			auto & indices = obj->grouplist[group].indexes;
+			if(std::find(indices.begin(), indices.end(), VertexId(i)) == indices.end()) {
+				indices.push_back(VertexId(i));
+			}
+		}
 	}
 	
 }
@@ -505,13 +497,13 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 	// Recreate Animation-groups vertex
 	for(size_t i = 0; i < obj1->grouplist.size(); i++) {
 		for(size_t j = 0; j < obj1->grouplist[i].indexes.size(); j++) {
-			AddVertexToGroup(work.get(), i, &obj1->vertexlist[obj1->grouplist[i].indexes[j]]);
+			AddVertexToGroup(work.get(), i, &obj1->vertexlist[size_t(obj1->grouplist[i].indexes[j])]);
 		}
 	}
 
 	for(size_t i = 0; i < obj2->grouplist.size(); i++) {
 		for(size_t j = 0; j < obj2->grouplist[i].indexes.size(); j++) {
-			AddVertexToGroup(work.get(), i, &obj2->vertexlist[obj2->grouplist[i].indexes[j]]);
+			AddVertexToGroup(work.get(), i, &obj2->vertexlist[size_t(obj2->grouplist[i].indexes[j])]);
 		}
 	}
 	

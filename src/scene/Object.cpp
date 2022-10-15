@@ -77,6 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "scene/Light.h"
 
+#include "util/HandleContainer.h"
 #include "util/String.h"
 
 
@@ -115,7 +116,7 @@ ObjVertGroup GetActionPointGroup(const EERIE_3DOBJ * eobj, ActionPoint idx) {
 	}
 	
 	for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
-		for(u32 index : eobj->grouplist[i].indexes){
+		for(VertexId index : eobj->grouplist[i].indexes) {
 			if(long(index) == idx.handleData()) {
 				return ObjVertGroup(i);
 			}
@@ -249,7 +250,7 @@ ObjVertGroup EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, std::string_view gro
 	return ObjVertGroup();
 }
 
-static long GetFather(EERIE_3DOBJ * eobj, size_t origin, long startgroup) {
+static long GetFather(EERIE_3DOBJ * eobj, VertexId origin, long startgroup) {
 	
 	for(long i = startgroup; i >= 0; i--) {
 		for(size_t j = 0; j < eobj->grouplist[i].indexes.size(); j++) {
@@ -258,7 +259,7 @@ static long GetFather(EERIE_3DOBJ * eobj, size_t origin, long startgroup) {
 			}
 		}
 	}
-
+	
 	return -1;
 }
 
@@ -290,22 +291,22 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		eobj->m_boneVertices.resize(eobj->m_skeleton->bones.size());
 		
 		// Create one bone for each vertex group and assign vertices to the inner-most group
-		std::vector<bool> vertexAssigned(eobj->vertexlist.size(), false);
+		util::HandleVector<VertexId, bool> vertexAssigned(eobj->vertexlist.size(), false);
 		for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
 			
 			const VertexGroup & group = eobj->grouplist[i];
 			Bone & bone = eobj->m_skeleton->bones[i];
 			std::vector<u32> & vertices = eobj->m_boneVertices[i];
 			
-			for(u32 index : group.indexes) {
+			for(VertexId index : group.indexes) {
 				if(!vertexAssigned[index]) {
 					vertexAssigned[index] = true;
-					vertices.push_back(index);
+					vertices.push_back(u32(index));
 				}
 			}
 			
 			bone.anim.trans = eobj->vertexlist[group.origin].v;
-			bone.father = GetFather(eobj, group.origin, i - 1);
+			bone.father = GetFather(eobj, VertexId(group.origin), i - 1);
 			bone.anim.scale = Vec3f(1.f);
 			
 		}
@@ -314,8 +315,8 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 			bool found = false;
 			for(const VertexGroup & group : eobj->grouplist) {
-				for(u32 index : group.indexes) {
-					if(index == i) {
+				for(VertexId index : group.indexes) {
+					if(index == VertexId(i)) {
 						found = true;
 						break;
 					}

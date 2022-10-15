@@ -25,6 +25,7 @@
 
 #include <glm/gtc/quaternion.hpp>
 
+#include "graphics/BaseGraphicsTypes.h"
 #include "math/Types.h"
 #include "math/Angle.h"
 #include "platform/Platform.h"
@@ -34,7 +35,7 @@ struct VertexGroup {
 	
 	std::string name;
 	size_t origin = 0;
-	std::vector<u32> indexes; // TODO use u16 here ?
+	std::vector<VertexId> indexes;
 	float m_blobShadowSize = 0.f;
 	
 };
