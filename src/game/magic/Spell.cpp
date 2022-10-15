@@ -72,7 +72,7 @@ void Spell::updateCasterHand() {
 	if(caster == entities.player()) {
 		m_hand_group = ActionPoint(size_t(caster->obj->fastaccess.primary_attach));
 	} else if(caster) {
-		m_hand_group = caster->obj->fastaccess.left_attach;
+		m_hand_group = ActionPoint(size_t(caster->obj->fastaccess.left_attach));
 	}
 	
 	if(m_hand_group != ActionPoint() && caster) {

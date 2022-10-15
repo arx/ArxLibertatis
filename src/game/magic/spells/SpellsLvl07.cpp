@@ -198,8 +198,8 @@ void FlyingEyeSpell::Update() {
 		FlyingEyeSpellUpdateHand(pos, m_light1, particles);
 	}
 	
-	if(io->obj->fastaccess.left_attach != ActionPoint()) {
-		Vec3f pos = actionPointPosition(io->obj, io->obj->fastaccess.left_attach);
+	if(io->obj->fastaccess.left_attach) {
+		Vec3f pos = io->obj->vertexWorldPositions[size_t(io->obj->fastaccess.left_attach)].v;
 		FlyingEyeSpellUpdateHand(pos, m_light2, particles);
 	}
 	

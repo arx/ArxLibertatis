@@ -547,23 +547,21 @@ void ManageCombatModeAnimations() {
 					        && layer1.ctime < layer1.currentAltAnim()->anim_time * 0.8f
 					        && player.m_weaponBlocked == AnimationDuration::ofRaw(-1)) {
 						
-						ActionPoint id = ActionPoint();
+						VertexId id = io->obj->fastaccess.primary_attach;
 						if(layer1.cur_anim == alist[ANIM_BARE_STRIKE_LEFT]) {
 							id = io->obj->fastaccess.left_attach;
-						} else { // Strike Right
-							id = ActionPoint(size_t(io->obj->fastaccess.primary_attach));
 						}
 						
-						if(id != ActionPoint()) {
+						if(id) {
 							Sphere sphere;
-							sphere.origin = actionPointPosition(io->obj, id);
+							sphere.origin = io->obj->vertexWorldPositions[size_t(id)].v;
 							sphere.radius = 25.f;
 							
 							Entity * hit = nullptr;
 							if(CheckAnythingInSphere(sphere, entities.player(), 0, &hit)) {
 								float dmgs = (player.m_miscFull.damages + 1) * player.m_strikeAimRatio;
 								
-								if(tryToDoDamage(actionPointPosition(io->obj, id), dmgs, 40, *entities.player())) {
+								if(tryToDoDamage(io->obj->vertexWorldPositions[size_t(id)].v, dmgs, 40, *entities.player())) {
 									player.m_weaponBlocked = layer1.ctime;
 								}
 								
@@ -814,11 +812,11 @@ void ManageCombatModeAnimations() {
 					// Use position and direction of the arrow object attached to the player while drawing the bow
 					// We need to manually transform the vertices here or we will be one frame behind
 					
-					ObjVertGroup leftAttach = GetActionPointGroup(io->obj, io->obj->fastaccess.left_attach);
-					arx_assert(leftAttach != ObjVertGroup());
+					ObjVertGroup leftAttach = GetActionPointGroup(io->obj, ActionPoint(size_t(io->obj->fastaccess.left_attach)));
+					arx_assert(leftAttach);
 					
 					const Bone & bone2 = io->obj->m_skeleton->bones[leftAttach.handleData()];
-					TransformInfo t2(actionPointPosition(io->obj, io->obj->fastaccess.left_attach), bone2.anim.quat);
+					TransformInfo t2(io->obj->vertexWorldPositions[size_t(io->obj->fastaccess.left_attach)].v, bone2.anim.quat);
 					t2.pos = t2(arrowobj->vertexlist[size_t(arrowobj->origin)].v - arrowobj->vertexlist[size_t(attach)].v);
 					
 					pos = t2(arrowobj->vertexlist[size_t(attach)].v);
@@ -890,8 +888,8 @@ void ManageCombatModeAnimations() {
 				
 				glm::quat quat; // Arrow object orientation relative to the arrow projectile direction
 				
-				ObjVertGroup group = GetActionPointGroup(io->obj, io->obj->fastaccess.left_attach);
-				if(config.input.improvedBowAim && group != ObjVertGroup()) {
+				ObjVertGroup group = GetActionPointGroup(io->obj, ActionPoint(size_t(io->obj->fastaccess.left_attach)));
+				if(config.input.improvedBowAim && group) {
 					// Maintain arrow object orientation
 					// In practice this is the same as the alternative below except for additional roll around dir
 					quat = io->obj->m_skeleton->bones[group.handleData()].anim.quat;
