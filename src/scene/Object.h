@@ -57,7 +57,7 @@ ObjVertGroup EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, std::string_view gro
 ObjSelection EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, std::string_view selname);
 
 VertexId getNamedVertex(const EERIE_3DOBJ * eobj, std::string_view text);
-ObjVertGroup GetActionPointGroup(const EERIE_3DOBJ * eobj, ActionPoint idx);
+ObjVertGroup getGroupForVertex(const EERIE_3DOBJ * eobj, VertexId vertex);
 
 /*!
  * Load a possibly cached 3D object using the default texture path.

@@ -2156,7 +2156,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 					continue;
 				}
 				VertexId vertex = VertexId(ais->linked_data[i].lidx);
-				ObjVertGroup group = GetActionPointGroup(io->obj, ActionPoint(size_t(vertex)));
+				ObjVertGroup group = getGroupForVertex(io->obj, vertex);
 				if(arx_unlikely(!group)) {
 					LogError << "Could not load link from " << io->idString() << "[" << ais->linked_data[i].lidx
 					         << "] to " << linked->idString() << ": vertex not in group";

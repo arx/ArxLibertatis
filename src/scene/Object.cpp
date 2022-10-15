@@ -96,7 +96,7 @@ VertexId getNamedVertex(const EERIE_3DOBJ * eobj, std::string_view text) {
 	return { };
 }
 
-ObjVertGroup GetActionPointGroup(const EERIE_3DOBJ * eobj, ActionPoint idx) {
+ObjVertGroup getGroupForVertex(const EERIE_3DOBJ * eobj, VertexId vertex) {
 	
 	if(!eobj) {
 		return ObjVertGroup();
@@ -104,7 +104,7 @@ ObjVertGroup GetActionPointGroup(const EERIE_3DOBJ * eobj, ActionPoint idx) {
 	
 	for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
 		for(VertexId index : eobj->grouplist[i].indexes) {
-			if(long(index) == idx.handleData()) {
+			if(index == vertex) {
 				return ObjVertGroup(i);
 			}
 		}

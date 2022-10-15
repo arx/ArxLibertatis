@@ -87,7 +87,7 @@ void EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink,
 		return;
 	}
 	
-	ObjVertGroup group = GetActionPointGroup(obj, ActionPoint(size_t(ni)));
+	ObjVertGroup group = getGroupForVertex(obj, ni);
 	if(!group) {
 		return;
 	}
