@@ -54,29 +54,31 @@
 #include "util/Range.h"
 
 
-enum ProjectileFlag {
-	ATO_UNDERWATER = 1 << 2,
-	ATO_FIERY      = 1 << 3
+enum ProjectileFlag : u8 {
+	ATO_UNDERWATER = 1 << 0,
+	ATO_FIERY      = 1 << 1
 };
 DECLARE_FLAGS(ProjectileFlag, ProjectileFlags)
 DECLARE_FLAGS_OPERATORS(ProjectileFlags)
 
-struct Projectile {
+struct alignas(16) Projectile {
 	
-	ProjectileFlags flags;
 	Vec3f vector = Vec3f(0.f);
-	glm::quat quat = quat_identity();
 	float gravity = 0.f;
 	Vec3f initial_position = Vec3f(0.f);
-	Vec3f position = Vec3f(0.f);
 	float damages = 0.f;
-	EERIE_3DOBJ * obj = nullptr;
-	ActionPoint attach;
-	glm::quat rotation = quat_identity();
-	EntityHandle source;
-	GameInstant creation_time;
+	Vec3f position = Vec3f(0.f);
 	float poisonous = 0.f;
+	
+	glm::quat quat = quat_identity();
+	glm::quat rotation = quat_identity();
+	
+	EERIE_3DOBJ * obj = nullptr;
 	std::unique_ptr<Trail> m_trail;
+	
+	EntityHandle source;
+	VertexId attach;
+	ProjectileFlags flags;
 	
 	Projectile() arx_noexcept_default
 	
@@ -108,7 +110,7 @@ glm::quat getProjectileQuatFromVector(Vec3f vector) {
 }
 
 void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const Vec3f & vect, float gravity,
-                             EERIE_3DOBJ * obj, ActionPoint attach, const glm::quat & rotation,
+                             EERIE_3DOBJ * obj, VertexId attach, const glm::quat & rotation,
                              float damages, float poisonous) {
 	
 	arx_assert(obj);
@@ -131,7 +133,6 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	projectile.m_trail->SetNextPosition(projectile.position);
 	projectile.m_trail->Update(g_gameTime.lastFrameDuration());
 	
-	projectile.creation_time = g_gameTime.now();
 	projectile.flags = 0;
 	
 	if(source == EntityHandle_Player) {
@@ -286,7 +287,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(Projectile & projectile, ShortGam
 	
 	TransformInfo t(projectile.position, projectile.quat);
 	t.pos = t(projectile.obj->vertexlist[size_t(projectile.obj->origin)].v
-	          - projectile.obj->vertexlist[projectile.attach.handleData()].v);
+	          - projectile.obj->vertexlist[size_t(projectile.attach)].v);
 	DrawEERIEInter_ModelTransform(projectile.obj, t);
 	
 	if((projectile.flags & ATO_FIERY) && !(projectile.flags & ATO_UNDERWATER)) {

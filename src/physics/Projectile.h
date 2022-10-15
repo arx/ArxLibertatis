@@ -22,13 +22,14 @@
 
 #include "core/TimeTypes.h"
 #include "game/GameTypes.h"
+#include "graphics/BaseGraphicsTypes.h"
 #include "graphics/GraphicsTypes.h"
 
 
 glm::quat getProjectileQuatFromVector(Vec3f vector);
 
 void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const Vec3f & vect, float gravity,
-                             EERIE_3DOBJ * obj, ActionPoint attach, const glm::quat & rotation,
+                             EERIE_3DOBJ * obj, VertexId attach, const glm::quat & rotation,
                              float damages, float poisonous);
 
 void ARX_THROWN_OBJECT_KillAll();
