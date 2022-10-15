@@ -256,10 +256,10 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		// If no groups were specified
 		
 		eobj->m_skeleton->bones.resize(1);
-		eobj->m_boneVertices.resize(eobj->m_skeleton->bones.size());
+		eobj->m_boneVertices.resize(1);
 		
 		Bone & bone = eobj->m_skeleton->bones[0];
-		auto & vertices = eobj->m_boneVertices[0];
+		auto & vertices = eobj->m_boneVertices[VertexGroupId(0)];
 		
 		// Add all vertices to the bone
 		for(VertexId vertex : eobj->vertexlist.handles()) {
@@ -273,7 +273,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		// Groups were specified
 		
 		eobj->m_skeleton->bones.resize(eobj->grouplist.size());
-		eobj->m_boneVertices.resize(eobj->m_skeleton->bones.size());
+		eobj->m_boneVertices.resize(eobj->grouplist.size());
 		
 		// Create one bone for each vertex group and assign vertices to the inner-most group
 		util::HandleVector<VertexId, bool> vertexAssigned(eobj->vertexlist.size(), false);
@@ -281,7 +281,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			
 			const VertexGroup & group = eobj->grouplist[VertexGroupId(i)];
 			Bone & bone = eobj->m_skeleton->bones[i];
-			auto & vertices = eobj->m_boneVertices[i];
+			auto & vertices = eobj->m_boneVertices[VertexGroupId(i)];
 			
 			for(VertexId vertex : group.indexes) {
 				if(!vertexAssigned[vertex]) {
@@ -299,7 +299,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		// Assign vertices that are not in any group to the root bone
 		for(VertexId vertex : eobj->vertexlist.handles()) {
 			if(!getGroupForVertex(eobj, vertex)) {
-				eobj->m_boneVertices[0].push_back(vertex);
+				eobj->m_boneVertices[VertexGroupId(0)].push_back(vertex);
 			}
 		}
 		
@@ -318,9 +318,8 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 	// Calculate relative vertex positions
 	eobj->vertexlocal.resize(eobj->vertexlist.size());
 	for(size_t i = 0; i < eobj->m_skeleton->bones.size(); i++) {
-		const Bone & bone = eobj->m_skeleton->bones[i];
-		for(VertexId vertex : eobj->m_boneVertices[i]) {
-			eobj->vertexlocal[vertex] = eobj->vertexlist[vertex].v - bone.anim.trans;
+		for(VertexId vertex : eobj->m_boneVertices[VertexGroupId(i)]) {
+			eobj->vertexlocal[vertex] = eobj->vertexlist[vertex].v - eobj->m_skeleton->bones[i].anim.trans;
 		}
 	}
 	

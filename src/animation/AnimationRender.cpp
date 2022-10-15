@@ -378,14 +378,16 @@ static void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, Skeleton * obj) {
 	
 	Vec3f cam_vector = angleToVector(g_camera->angle);
 	
+	arx_assume(eobj->vertexWorldPositions.size() == eobj->vertexlist.size());
+	arx_assume(eobj->m_boneVertices.size() == obj->bones.size());
+	
 	// Apply light on all vertices
 	for(size_t i = 0; i != obj->bones.size(); i++) {
-		const Bone & bone = obj->bones[i];
 		
-		Vec3f t_vector = glm::inverse(bone.anim.quat) * cam_vector;
+		Vec3f t_vector = glm::inverse(obj->bones[i].anim.quat) * cam_vector;
 		
 		// Get light value for each vertex
-		for(VertexId vertex : eobj->m_boneVertices[i]) {
+		for(VertexId vertex : eobj->m_boneVertices[VertexGroupId(i)]) {
 			// Get cos angle between light and vertex norm
 			eobj->vertexWorldPositions[vertex].norm.z = glm::dot(eobj->vertexlist[vertex].norm, t_vector);
 		}
@@ -465,12 +467,14 @@ static void Cedric_ApplyLighting(ShaderLight lights[], size_t lightsCount, EERIE
 	ARX_PROFILE_FUNC();
 	
 	arx_assert(eobj->vertexColors.size() == eobj->vertexWorldPositions.size());
+	arx_assert(eobj->vertexColors.size() == eobj->vertexlist.size());
+	arx_assert(eobj->m_boneVertices.size() == obj->bones.size());
 	
 	/* Apply light on all vertices */
 	for(size_t i = 0; i != obj->bones.size(); i++) {
 		const glm::quat & quat = obj->bones[i].anim.quat;
 		/* Get light value for each vertex */
-		for(VertexId vertex : eobj->m_boneVertices[i]) {
+		for(VertexId vertex : eobj->m_boneVertices[VertexGroupId(i)]) {
 			const Vec3f & position = eobj->vertexWorldPositions[vertex].v;
 			Vec3f normal = quat * eobj->vertexlist[vertex].norm;
 			eobj->vertexColors[vertex] = ApplyLight(lights, lightsCount, position, normal, colorMod);
@@ -1315,32 +1319,33 @@ static void Cedric_ConcatenateTM(Skeleton & rig, const TransformInfo & t) {
  */
 static void Cedric_TransformVerts(EERIE_3DOBJ * eobj) {
 	
-	arx_assert(eobj->vertexWorldPositions.size() == eobj->vertexlist.size());
-	
 	const Skeleton & rig = *eobj->m_skeleton;
-
+	
+	arx_assume(eobj->vertexWorldPositions.size() == eobj->vertexlocal.size());
+	arx_assume(eobj->m_boneVertices.size() == rig.bones.size());
+	
 	// Transform & project all vertices
 	for(size_t i = 0; i != rig.bones.size(); i++) {
 		const Bone & bone = rig.bones[i];
-
+		
 		glm::mat4x4 matrix = glm::mat4_cast(bone.anim.quat);
 		
 		// Apply Scale
 		matrix[0][0] *= bone.anim.scale.x;
 		matrix[0][1] *= bone.anim.scale.x;
 		matrix[0][2] *= bone.anim.scale.x;
-
+		
 		matrix[1][0] *= bone.anim.scale.y;
 		matrix[1][1] *= bone.anim.scale.y;
 		matrix[1][2] *= bone.anim.scale.y;
-
+		
 		matrix[2][0] *= bone.anim.scale.z;
 		matrix[2][1] *= bone.anim.scale.z;
 		matrix[2][2] *= bone.anim.scale.z;
-
+		
 		Vec3f vector = bone.anim.trans;
 		
-		for(VertexId vertex : eobj->m_boneVertices[i]) {
+		for(VertexId vertex : eobj->m_boneVertices[VertexGroupId(i)]) {
 			eobj->vertexWorldPositions[vertex].v = Vec3f(matrix * Vec4f(eobj->vertexlocal[vertex], 1.f)) + vector;
 		}
 		

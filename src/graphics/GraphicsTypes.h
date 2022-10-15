@@ -206,7 +206,7 @@ struct EERIE_3DOBJ {
 	EERIE_FASTACCESS fastaccess;
 	
 	std::unique_ptr<Skeleton> m_skeleton;
-	std::vector<std::vector<VertexId>> m_boneVertices; // TODO use u16 here ?
+	util::HandleVector<VertexGroupId, std::vector<VertexId>> m_boneVertices;
 	
 };
 
