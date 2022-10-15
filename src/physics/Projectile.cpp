@@ -331,17 +331,15 @@ static void ARX_THROWN_OBJECT_ManageProjectile(Projectile & projectile, ShortGam
 	}
 	
 	// Check for collision MUST be done after DRAWING !!!!
-	size_t nbact = projectile.obj->actionlist.size();
-	
-	for(size_t j = 0; j < nbact; j++) {
+	for(EERIE_ACTIONLIST & action : projectile.obj->actionlist) {
 		
-		float rad = GetHitValue(projectile.obj->actionlist[j].name);
+		float rad = GetHitValue(action.name);
 		if(rad == -1.f) {
 			continue;
 		}
 		rad *= .5f;
 		
-		const Vec3f v0 = actionPointPosition(projectile.obj, projectile.obj->actionlist[j].idx);
+		const Vec3f v0 = projectile.obj->vertexWorldPositions[size_t(action.idx)].v;
 		
 		RaycastResult result = raycastScene(original_pos, v0, POLY_WATER | POLY_TRANS | POLY_NOCOL);
 		if(result || IsPointInField(v0)) {
