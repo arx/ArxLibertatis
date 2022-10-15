@@ -1116,10 +1116,10 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 	io->armormaterial = "leather";
 	loadScript(io->script, g_resources->getFile("graph/obj3d/interactive/player/player.asl"));
 	
-	if(EERIE_OBJECT_GetGroup(io->obj, "head") != ObjVertGroup()
-	   && EERIE_OBJECT_GetGroup(io->obj, "neck") != ObjVertGroup()
-	   && EERIE_OBJECT_GetGroup(io->obj, "chest") != ObjVertGroup()
-	   && EERIE_OBJECT_GetGroup(io->obj, "belt") != ObjVertGroup()) {
+	if(EERIE_OBJECT_GetGroup(io->obj, "head") &&
+	   EERIE_OBJECT_GetGroup(io->obj, "neck") &&
+	   EERIE_OBJECT_GetGroup(io->obj, "chest") &&
+	   EERIE_OBJECT_GetGroup(io->obj, "belt")) {
 		io->_npcdata->ex_rotate = new EERIE_EXTRA_ROTATE();
 		io->_npcdata->ex_rotate->group_number[0] = EERIE_OBJECT_GetGroup(io->obj, "head");
 		io->_npcdata->ex_rotate->group_number[1] = EERIE_OBJECT_GetGroup(io->obj, "neck");
@@ -1135,6 +1135,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 	io->inventory = std::make_unique<Inventory>(io, Vec2s(16, 3));
 	
 	ARX_INTERACTIVE_RemoveGoreOnIO(entities.player());
+	
 }
 
 float Falling_Height = 0;
