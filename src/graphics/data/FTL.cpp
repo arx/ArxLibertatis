@@ -243,8 +243,18 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 	
 	// Copy in the action points data
 	for(EERIE_ACTIONLIST & action : object->actionlist) {
-		action = *reinterpret_cast<const EERIE_ACTIONLIST_FTL *>(dat + pos);
+		
+		const EERIE_ACTIONLIST_FTL & rawAction = *reinterpret_cast<const EERIE_ACTIONLIST_FTL *>(dat + pos);
 		pos += sizeof(EERIE_ACTIONLIST_FTL);
+		
+		if(rawAction.idx < 0 || size_t(rawAction.idx) >= object->vertexlist.size()) {
+			LogError << filename << ": Invalid group vertex";
+			return { };
+		}
+		
+		action.name = util::toLowercase(util::loadString(rawAction.name));
+		action.idx = VertexId(rawAction.idx);
+		
 	}
 	
 	// Copy in the selections data

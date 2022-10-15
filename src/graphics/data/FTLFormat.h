@@ -134,13 +134,6 @@ struct EERIE_ACTIONLIST_FTL {
 	s32 action;
 	s32 sfx;
 	
-	operator EERIE_ACTIONLIST() const {
-		EERIE_ACTIONLIST a;
-		a.name = util::toLowercase(util::loadString(name));
-		a.idx = ActionPoint(idx);
-		return a;
-	}
-	
 };
 
 struct EERIE_SELECTIONS_FTL {

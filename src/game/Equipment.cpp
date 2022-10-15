@@ -627,12 +627,12 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 	for(const EERIE_ACTIONLIST & action : io_weapon->obj->actionlist) {
 		
 		float rad = GetHitValue(action.name);
-
-		if(rad == -1)
+		if(rad == -1.f) {
 			continue;
+		}
 		
 		Sphere sphere;
-		sphere.origin = actionPointPosition(io_weapon->obj, action.idx);
+		sphere.origin = io_weapon->obj->vertexWorldPositions[size_t(action.idx)].v;
 		sphere.radius = rad;
 		
 		if(io_source != entities.player()) {

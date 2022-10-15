@@ -777,7 +777,7 @@ void ManageCombatModeAnimations() {
 					attach = ActionPoint(size_t(arrowobj->origin));
 				}
 				
-				ActionPoint hit;
+				VertexId hit;
 				{
 					float maxdist = 0.f;
 					for(const EERIE_ACTIONLIST & action : arrowobj->actionlist) {
@@ -792,14 +792,14 @@ void ManageCombatModeAnimations() {
 						}
 					}
 				}
-				if(hit == ActionPoint()) {
-					hit = attach;
+				if(!hit) {
+					hit = VertexId(size_t(attach));
 					float maxdist = 0.f;
 					for(size_t i = 1; i < arrowobj->vertexlist.size(); i++) {
 						float dist = arx::distance2(arrowobj->vertexlist[attach.handleData()].v,
 						                            arrowobj->vertexlist[i].v);
 						if(dist > maxdist) {
-							hit = ActionPoint(i);
+							hit = VertexId(i);
 							maxdist = dist;
 						}
 					}

@@ -198,7 +198,7 @@ static void ObjectAddAction(EERIE_3DOBJ * obj, std::string_view name, const EERI
 	
 	EERIE_ACTIONLIST & action = obj->actionlist.emplace_back();
 	action.name = name;
-	action.idx = ActionPoint(size_t(newvert));
+	action.idx = newvert;
 	
 }
 

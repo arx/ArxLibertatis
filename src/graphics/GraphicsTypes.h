@@ -147,7 +147,7 @@ struct EERIE_FACE {
 struct EERIE_ACTIONLIST {
 	
 	std::string name;
-	ActionPoint idx;
+	VertexId idx;
 	
 };
 

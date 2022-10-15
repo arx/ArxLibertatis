@@ -102,7 +102,7 @@ ActionPoint GetActionPointIdx(const EERIE_3DOBJ * eobj, std::string_view text) {
 	
 	for(const EERIE_ACTIONLIST & action : eobj->actionlist) {
 		if(action.name == text) {
-			return action.idx;
+			return ActionPoint(size_t(action.idx));
 		}
 	}
 	
