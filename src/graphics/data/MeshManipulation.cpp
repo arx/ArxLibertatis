@@ -147,10 +147,8 @@ static VertexId getEquivalentVertex(const EERIE_3DOBJ & obj, Vec3f vertex) {
 
 static VertexId addVertex(EERIE_3DOBJ * obj, const EERIE_VERTEX * vert) {
 	
-	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
-		if(obj->vertexlist[i].v == vert->v) {
-			return VertexId(i);
-		}
+	if(VertexId index = getEquivalentVertex(*obj, vert->v)) {
+		return index;
 	}
 	
 	obj->vertexlist.push_back(*vert);
