@@ -532,13 +532,13 @@ void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ * eobj) {
 static bool CullFace(const EERIE_3DOBJ * eobj, const EERIE_FACE & face) {
 
 	if(!(face.facetype & POLY_DOUBLESIDED)) {
-		Vec3f normV10 = eobj->vertexWorldPositions[face.vid[1]].v - eobj->vertexWorldPositions[face.vid[0]].v;
-		Vec3f normV20 = eobj->vertexWorldPositions[face.vid[2]].v - eobj->vertexWorldPositions[face.vid[0]].v;
+		Vec3f normV10 = eobj->vertexWorldPositions[size_t(face.vid[1])].v - eobj->vertexWorldPositions[size_t(face.vid[0])].v;
+		Vec3f normV20 = eobj->vertexWorldPositions[size_t(face.vid[2])].v - eobj->vertexWorldPositions[size_t(face.vid[0])].v;
 		Vec3f normFace;
 		normFace.x = (normV10.y * normV20.z) - (normV10.z * normV20.y);
 		normFace.y = (normV10.z * normV20.x) - (normV10.x * normV20.z);
 		normFace.z = (normV10.x * normV20.y) - (normV10.y * normV20.x);
-		Vec3f nrm = eobj->vertexWorldPositions[face.vid[0]].v - g_camera->m_pos;
+		Vec3f nrm = eobj->vertexWorldPositions[size_t(face.vid[0])].v - g_camera->m_pos;
 		if(glm::dot(normFace, nrm) > 0.f) {
 			return true;
 		}
@@ -562,7 +562,7 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 	float _ffr[3];
 	
 	for(long o = 0; o < 3; o++) {
-		Vec3f temporary3D = t.rotation * eobj->vertexlist[face.vid[o]].norm;
+		Vec3f temporary3D = t.rotation * eobj->vertexlist[size_t(face.vid[o])].norm;
 		float power = glm::clamp(1.f - glm::abs(temporary3D.z * 0.5f), 0.f, 1.f);
 		tot += power * 255.f;
 		_ffr[o] = power * 255.f;
@@ -682,20 +682,20 @@ void DrawEERIEInter_Render(EERIE_3DOBJ * eobj, const TransformInfo & t, Entity *
 		
 		for(size_t n = 0; n < 3; n++) {
 			
-			const Vec3f & position = eobj->vertexWorldPositions[face.vid[n]].v;
-			Vec3f normal = t.rotation * (useFaceNormal ? face.norm : eobj->vertexlist[face.vid[n]].norm);
+			const Vec3f & position = eobj->vertexWorldPositions[size_t(face.vid[n])].v;
+			Vec3f normal = t.rotation * (useFaceNormal ? face.norm : eobj->vertexlist[size_t(face.vid[n])].norm);
 			float diffuse = useFaceNormal ? 0.5f : 1.f;
 			
-			eobj->vertexColors[face.vid[n]] = ApplyLight(lights, lightsCount, position, normal, colorMod, diffuse);
+			eobj->vertexColors[size_t(face.vid[n])] = ApplyLight(lights, lightsCount, position, normal, colorMod, diffuse);
 			
-			tvList[n].p = Vec3f(eobj->vertexClipPositions[face.vid[n]]);
-			tvList[n].w = eobj->vertexClipPositions[face.vid[n]].w;
+			tvList[n].p = Vec3f(eobj->vertexClipPositions[size_t(face.vid[n])]);
+			tvList[n].w = eobj->vertexClipPositions[size_t(face.vid[n])].w;
 			tvList[n].uv.x = face.u[n];
 			tvList[n].uv.y = face.v[n];
 
 			// Treat WATER Polys (modify UVs)
 			if(face.facetype & POLY_WATER) {
-				tvList[n].uv += getWaterFxUvOffset(WATEREFFECT, eobj->vertexlist[face.vid[n]].v) * (0.3f * 0.05f);
+				tvList[n].uv += getWaterFxUvOffset(WATEREFFECT, eobj->vertexlist[size_t(face.vid[n])].v) * (0.3f * 0.05f);
 			}
 
 			if(face.facetype & POLY_GLOW) {
@@ -703,7 +703,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ * eobj, const TransformInfo & t, Entity *
 				tvList[n].color = Color::white.toRGB();
 			} else {
 				// Normal Illuminations
-				tvList[n].color = eobj->vertexColors[face.vid[n]];
+				tvList[n].color = eobj->vertexColors[size_t(face.vid[n])];
 			}
 
 			// TODO copy-paste
@@ -715,7 +715,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ * eobj, const TransformInfo & t, Entity *
 
 				dd = glm::clamp(dd, 0.f, 1.f);
 
-				Vec3f & norm = eobj->vertexlist[face.vid[n]].norm;
+				Vec3f & norm = eobj->vertexlist[size_t(face.vid[n])].norm;
 				
 				float fb = ((1.f - dd) * 6.f + (glm::abs(norm.x) + glm::abs(norm.y))) * 0.125f;
 				float fr = ((0.6f - dd) * 6.f + (glm::abs(norm.z) + glm::abs(norm.y))) * 0.125f;
@@ -853,7 +853,7 @@ static void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f & pos,
 }
 
 // TODO copy-paste halo
-static void AddAnimatedObjectHalo(const HaloInfo & haloInfo, const unsigned short * paf,
+static void AddAnimatedObjectHalo(const HaloInfo & haloInfo, const VertexId * paf,
                                   float invisibility, EERIE_3DOBJ * eobj, const Entity * io,
                                   TexturedVertex * tvList) {
 	
@@ -875,7 +875,7 @@ static void AddAnimatedObjectHalo(const HaloInfo & haloInfo, const unsigned shor
 	ColorRGBA colors[3];
 	
 	for(size_t o = 0; o < 3; o++) {
-		float tttz = glm::abs(eobj->vertexWorldPositions[paf[o]].norm.z) * 0.5f;
+		float tttz = glm::abs(eobj->vertexWorldPositions[size_t(paf[o])].norm.z) * 0.5f;
 		float power =  glm::clamp((1.f - tttz) * (1.f - invisibility), 0.f, 1.f);
 		tot += power * 255.f;
 		_ffr[o] = power * 255.f;
@@ -1032,16 +1032,16 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 		TexturedVertex * tvList = GetNewVertexList(pTex->m_modelBatch, face, invisibility, fTransp);
 		
 		for(size_t n = 0; n < 3; n++) {
-			tvList[n].p = Vec3f(eobj->vertexClipPositions[face.vid[n]]);
-			tvList[n].w = eobj->vertexClipPositions[face.vid[n]].w;
+			tvList[n].p = Vec3f(eobj->vertexClipPositions[size_t(face.vid[n])]);
+			tvList[n].w = eobj->vertexClipPositions[size_t(face.vid[n])].w;
 			tvList[n].uv = Vec2f(face.u[n], face.v[n]);
-			tvList[n].color = eobj->vertexColors[face.vid[n]];
+			tvList[n].color = eobj->vertexColors[size_t(face.vid[n])];
 		}
-
+		
 		if((face.facetype & POLY_TRANS) || invisibility > 0.f) {
 			tvList[0].color = tvList[1].color = tvList[2].color = Color::gray(fTransp).toRGB();
 		}
-
+		
 		if(haloInfo.size) {
 			AddAnimatedObjectHalo(haloInfo, face.vid, invisibility, eobj, io, tvList);
 		}

@@ -645,7 +645,7 @@ static void drawDebugMaterials() {
 		const EERIE_FACE & face = *entityHit.face;
 		count = 3;
 		for(size_t i = 0; i < count; i++) {
-			v[i] = obj.vertexWorldPositions[face.vid[i]].v;
+			v[i] = obj.vertexWorldPositions[size_t(face.vid[i])].v;
 			puv[i] = Vec2f(face.u[i], face.v[i]);
 		}
 		if(face.texid >= 0 && size_t(face.texid) < obj.texturecontainer.size()) {

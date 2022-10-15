@@ -433,10 +433,10 @@ float PtIn2DPolyProj(const std::vector<Vec4f> & verts, const EERIE_FACE & ef, fl
 	
 	Vec3f p[3];
 	for(size_t i = 0; i < 3; i++) {
-		if(verts[ef.vid[i]].w <= 0.f) {
+		if(verts[size_t(ef.vid[i])].w <= 0.f) {
 			return 0.f;
 		}
-		p[i] = Vec3f(verts[ef.vid[i]]) / verts[ef.vid[i]].w;
+		p[i] = Vec3f(verts[size_t(ef.vid[i])]) / verts[size_t(ef.vid[i])].w;
 	}
 	
 	bool c = false;
@@ -566,8 +566,8 @@ void Draw3DObject(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos,
 	for(const EERIE_FACE & face : eobj->facelist) {
 		
 		for(size_t j = 0; j < 3; j++) {
-			vert_list[j].p = Vec3f(eobj->vertexClipPositions[face.vid[j]]);
-			vert_list[j].w = eobj->vertexClipPositions[face.vid[j]].w;
+			vert_list[j].p = Vec3f(eobj->vertexClipPositions[size_t(face.vid[j])]);
+			vert_list[j].w = eobj->vertexClipPositions[size_t(face.vid[j])].w;
 		}
 		
 		vert_list[0].uv.x = face.u[0];

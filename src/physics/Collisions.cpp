@@ -287,7 +287,7 @@ void PushIO_ON_Top(const Entity & platform, float ydec) {
 			float cx = 0;
 			float cz = 0;
 			for(long kk = 0; kk < 3; kk++) {
-				ep.v[kk].p = platform.obj->vertexWorldPositions[face.vid[kk]].v;
+				ep.v[kk].p = platform.obj->vertexWorldPositions[size_t(face.vid[kk])].v;
 				cx += ep.v[kk].p.x;
 				cz += ep.v[kk].p.z;
 			}
@@ -394,9 +394,9 @@ static void CheckAnythingInCylinder_Platform(const Cylinder & cylinder, const En
 		
 		Vec3f center(0.f);
 		float height = std::numeric_limits<float>::max();
-		for(size_t vertex : face.vid) {
-			center += target.obj->vertexWorldPositions[vertex].v;
-			height = std::min(height, target.obj->vertexWorldPositions[vertex].v.y);
+		for(VertexId vertex : face.vid) {
+			center += target.obj->vertexWorldPositions[size_t(vertex)].v;
+			height = std::min(height, target.obj->vertexWorldPositions[size_t(vertex)].v.y);
 		}
 		center /= std::size(face.vid);
 		center.y = target.bbox3D.min.y;
@@ -733,11 +733,11 @@ static bool CheckEverythingInSphere_Inner(const Sphere & sphere, Entity & entity
 		if(face.facetype & POLY_HIDE) {
 			continue;
 		}
-		Vec3f center = (vlist[face.vid[0]].v + vlist[face.vid[1]].v + vlist[face.vid[2]].v) * (1.0f / 3);
+		Vec3f center = (vlist[size_t(face.vid[0])].v + vlist[size_t(face.vid[1])].v + vlist[size_t(face.vid[2])].v) * (1.0f / 3);
 		if(closerThan(center, sphere.origin, sphere.radius + 20.f) ||
-		   closerThan(vlist[face.vid[0]].v, sphere.origin, sphere.radius + 20.f) ||
-		   closerThan(vlist[face.vid[1]].v, sphere.origin, sphere.radius + 20.f) ||
-		   closerThan(vlist[face.vid[2]].v, sphere.origin, sphere.radius + 20.f)) {
+		   closerThan(vlist[size_t(face.vid[0])].v, sphere.origin, sphere.radius + 20.f) ||
+		   closerThan(vlist[size_t(face.vid[1])].v, sphere.origin, sphere.radius + 20.f) ||
+		   closerThan(vlist[size_t(face.vid[2])].v, sphere.origin, sphere.radius + 20.f)) {
 			return true;
 		}
 	}
@@ -808,7 +808,7 @@ bool platformCollides(const Entity & platform, const Sphere & sphere) {
 		ep.type = 0;
 		Vec2f center(0.f);
 		for(size_t i = 0; i < std::size(face.vid); i++) {
-			ep.v[i].p = platform.obj->vertexWorldPositions[face.vid[i]].v;
+			ep.v[i].p = platform.obj->vertexWorldPositions[size_t(face.vid[i])].v;
 			center += getXZ(ep.v[i].p);
 		}
 		center /= float(std::size(face.vid));
@@ -910,8 +910,8 @@ bool CheckAnythingInSphere(const Sphere & sphere, Entity * source, CASFlags flag
 			if(face.facetype & POLY_HIDE) {
 				continue;
 			}
-			if(closerThan(vlist[face.vid[0]].v, sphere.origin, sphere.radius + 20.f) ||
-			   closerThan(vlist[face.vid[1]].v, sphere.origin, sphere.radius + 20.f)) {
+			if(closerThan(vlist[size_t(face.vid[0])].v, sphere.origin, sphere.radius + 20.f) ||
+			   closerThan(vlist[size_t(face.vid[1])].v, sphere.origin, sphere.radius + 20.f)) {
 				if(result) {
 					*result = &entity;
 				}

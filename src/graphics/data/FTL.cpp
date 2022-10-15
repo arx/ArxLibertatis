@@ -175,7 +175,11 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 		// Copy in all the texture and normals data
 		static_assert(IOPOLYVERT_FTL == IOPOLYVERT, "array size mismatch");
 		for(size_t kk = 0; kk < IOPOLYVERT_FTL; kk++) {
-			face.vid[kk] = eff->vid[kk];
+			if(eff->vid[kk] >= object->vertexlist.size()) {
+				LogError << filename << ": Invalid face vertex";
+				return { };
+			}
+			face.vid[kk] = VertexId(eff->vid[kk]);
 			face.u[kk] = eff->u[kk];
 			face.v[kk] = eff->v[kk];
 		}

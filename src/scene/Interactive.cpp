@@ -262,7 +262,7 @@ void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state) {
 	
 	if(grp != ObjSelection()) {
 		for(EERIE_FACE & face : io->obj->facelist) {
-			for(short vertex : face.vid) {
+			for(VertexId vertex : face.vid) {
 				if(IsInSelection(io->obj, vertex, grp)) {
 					if(state) {
 						face.facetype |= POLY_HIDE;

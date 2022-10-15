@@ -652,25 +652,25 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						EXCEPTIONS_LIST_Pos--;
 					}
 					
-					long hitpoint = -1;
+					VertexId hitpoint;
 					float curdist = 999999.f;
 					for(const EERIE_FACE & face : target->obj->facelist) {
 						if(face.facetype & POLY_HIDE) {
 							continue;
 						}
-						float d = glm::distance(sphere.origin, target->obj->vertexWorldPositions[face.vid[0]].v);
+						float d = glm::distance(sphere.origin, target->obj->vertexWorldPositions[size_t(face.vid[0])].v);
 						if(d < curdist) {
+							arx_assume(face.vid[0]);
 							hitpoint = face.vid[0];
 							curdist = d;
 						}
 					}
-					
-					if(hitpoint < 0) {
+					if(!hitpoint) {
 						continue;
 					}
 					
 					Color color = (target->ioflags & IO_NPC) ? target->_npcdata->blood_color : Color::white;
-					Vec3f pos = target->obj->vertexWorldPositions[hitpoint].v;
+					Vec3f pos = target->obj->vertexWorldPositions[size_t(hitpoint)].v;
 					
 					float dmgs = 0.f;
 					if(!(flags & 1)) {

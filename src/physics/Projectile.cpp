@@ -391,7 +391,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(Projectile & projectile, ShortGam
 				
 				if(target.ioflags & IO_NPC) {
 					
-					long hitpoint = -1;
+					VertexId hitpoint;
 					float curdist = 999999.f;
 					for(size_t ii = 0 ; ii < target.obj->facelist.size() ; ii++) {
 						
@@ -399,8 +399,8 @@ static void ARX_THROWN_OBJECT_ManageProjectile(Projectile & projectile, ShortGam
 							continue;
 						}
 						
-						unsigned short vid = target.obj->facelist[ii].vid[0];
-						float d = glm::distance(sphere.origin, target.obj->vertexWorldPositions[vid].v);
+						VertexId vid = target.obj->facelist[ii].vid[0];
+						float d = glm::distance(sphere.origin, target.obj->vertexWorldPositions[size_t(vid)].v);
 						if(d < curdist) {
 							hitpoint = target.obj->facelist[ii].vid[0];
 							curdist = d;
@@ -413,9 +413,8 @@ static void ARX_THROWN_OBJECT_ManageProjectile(Projectile & projectile, ShortGam
 						float damages = ARX_THROWN_ComputeDamages(projectile, target);
 						if(damages > 0.f) {
 							
-							arx_assert(hitpoint >= 0);
 							Color color = target._npcdata->blood_color;
-							Vec3f pos = target.obj->vertexWorldPositions[hitpoint].v;
+							Vec3f pos = target.obj->vertexWorldPositions[size_t(hitpoint)].v;
 							
 							target._npcdata->SPLAT_TOT_NB = 0;
 							ARX_PARTICLES_Spawn_Blood2(original_pos, damages, color, &target);

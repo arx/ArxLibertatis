@@ -133,7 +133,7 @@ struct EERIE_FACE {
 	
 	PolyType facetype;
 	short texid = 0; //!< index into the objects texture list
-	unsigned short vid[IOPOLYVERT] = { 0, 0, 0 };
+	VertexId vid[IOPOLYVERT] = { VertexId(0), VertexId(0), VertexId(0) };
 	float u[IOPOLYVERT] = { 0.f, 0.f, 0.f };
 	float v[IOPOLYVERT] = { 0.f, 0.f, 0.f };
 	

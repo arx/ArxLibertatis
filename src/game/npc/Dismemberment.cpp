@@ -35,14 +35,17 @@
 
 #include "scene/GameSound.h"
 
-static bool IsNearSelection(EERIE_3DOBJ * obj, long vert, ObjSelection tw) {
+#include "util/HandleContainer.h"
+
+
+static bool IsNearSelection(EERIE_3DOBJ * obj, VertexId vert, ObjSelection tw) {
 	
-	if(!obj || tw == ObjSelection() || vert < 0) {
+	if(!obj || tw == ObjSelection() || !vert) {
 		return false;
 	}
 	
 	for(size_t vertex : obj->selections[tw.handleData()].selected) {
-		float d = glm::distance(obj->vertexlist[vertex].v, obj->vertexlist[vert].v);
+		float d = glm::distance(obj->vertexlist[vertex].v, obj->vertexlist[size_t(vert)].v);
 		if(d < 8.f) {
 			return true;
 		}
@@ -95,7 +98,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	
 	size_t inpos = 0;
 	
-	std::vector<long> equival(from->vertexlist.size(), -1);
+	util::HandleVector<VertexId, VertexId> equival(from->vertexlist.size());
 	
 	const EERIE_SELECTIONS & cutSelection = from->selections[num.handleData()];
 	
@@ -103,7 +106,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	
 	for(size_t k = 0; k < cutSelection.selected.size(); k++) {
 		inpos = cutSelection.selected[k];
-		equival[cutSelection.selected[k]] = k;
+		equival[VertexId(cutSelection.selected[k])] = VertexId(k);
 		nouvo->vertexlist[k] = from->vertexlist[cutSelection.selected[k]];
 		nouvo->vertexlist[k].v = from->vertexWorldPositions[cutSelection.selected[k]].v;
 		nouvo->vertexlist[k].v -= ioo->pos;
@@ -117,14 +120,14 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 			   || IsNearSelection(from, face.vid[1], num)
 			   || IsNearSelection(from, face.vid[2], num)) {
 				
-				for(short vertex : face.vid) {
+				for(VertexId vertex : face.vid) {
 					if(count < nouvo->vertexlist.size()) {
-						nouvo->vertexlist[count] = from->vertexlist[vertex];
-						nouvo->vertexlist[count].v = from->vertexWorldPositions[vertex].v - ioo->pos;
+						nouvo->vertexlist[count] = from->vertexlist[size_t(vertex)];
+						nouvo->vertexlist[count].v = from->vertexWorldPositions[size_t(vertex)].v - ioo->pos;
 						nouvo->vertexWorldPositions[count] = nouvo->vertexlist[count];
-						equival[vertex] = count;
+						equival[vertex] = VertexId(count);
 					} else {
-						equival[vertex] = -1;
+						equival[vertex] = { };
 					}
 					count++;
 				}
@@ -153,7 +156,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	
 	size_t nfaces = 0;
 	for(const EERIE_FACE & face : from->facelist) {
-		if(equival[face.vid[0]] != -1 && equival[face.vid[1]] != -1 && equival[face.vid[2]] != -1) {
+		if(equival[face.vid[0]] && equival[face.vid[1]] && equival[face.vid[2]]) {
 			nfaces++;
 		}
 	}
@@ -162,11 +165,11 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 		
 		nouvo->facelist.reserve(nfaces);
 		for(const EERIE_FACE & face : from->facelist) {
-			if(equival[face.vid[0]] != -1 && equival[face.vid[1]] != -1 && equival[face.vid[2]] != -1) {
+			if(equival[face.vid[0]] && equival[face.vid[1]] && equival[face.vid[2]]) {
 				EERIE_FACE newface = face;
-				newface.vid[0] = static_cast<unsigned short>(equival[face.vid[0]]);
-				newface.vid[1] = static_cast<unsigned short>(equival[face.vid[1]]);
-				newface.vid[2] = static_cast<unsigned short>(equival[face.vid[2]]);
+				newface.vid[0] = equival[face.vid[0]];
+				newface.vid[1] = equival[face.vid[1]];
+				newface.vid[2] = equival[face.vid[2]];
 				nouvo->facelist.push_back(newface);
 			}
 		}
@@ -240,7 +243,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	io->animBlend.lastanimtime = g_gameTime.now();
 	io->soundtime = 0;
 	io->soundcount = 0;
-
+	
 	EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, vector);
 }
 

@@ -144,7 +144,7 @@ void createObjFireParticles(const EERIE_3DOBJ * obj, int particlePositions, int 
 		}
 		
 		if(notok < 0) {
-			Vec3f pos = obj->vertexWorldPositions[it->vid[0]].v;
+			Vec3f pos = obj->vertexWorldPositions[size_t(it->vid[0])].v;
 			createFireParticles(pos, perPos, delay);
 		}
 		
@@ -163,12 +163,12 @@ void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f pos, Entity * io) {
 			if(io->obj->facelist[num].facetype & POLY_HIDE) {
 				continue;
 			}
-			if(glm::abs(pos.y - io->obj->vertexWorldPositions[io->obj->facelist[num].vid[0]].v.y) > 50.f) {
+			if(glm::abs(pos.y - io->obj->vertexWorldPositions[size_t(io->obj->facelist[num].vid[0])].v.y) > 50.f) {
 				continue;
 			}
 			notok = -1;
 		}
-		pos = io->obj->vertexWorldPositions[io->obj->facelist[num].vid[0]].v;
+		pos = io->obj->vertexWorldPositions[size_t(io->obj->facelist[num].vid[0])].v;
 	}
 	
 	PARTICLE_DEF * pd = createParticle();
