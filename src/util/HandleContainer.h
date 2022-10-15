@@ -57,12 +57,12 @@ public:
 		return util::transform(util::indices(*this), [](size_t i) noexcept { return Handle(i); });
 	}
 	
-	[[nodiscard]] auto & operator[](Handle handle) noexcept {
+	[[nodiscard]] decltype(auto) operator[](Handle handle) noexcept {
 		arx_assume(handle && size_t(handle) < size());
 		return Base::operator[](size_t(handle));
 	}
 	
-	[[nodiscard]] const auto & operator[](Handle handle) const noexcept {
+	[[nodiscard]] decltype(auto) operator[](Handle handle) const noexcept {
 		arx_assume(handle && size_t(handle) < size());
 		return Base::operator[](size_t(handle));
 	}
