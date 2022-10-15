@@ -101,6 +101,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
+#include "util/Cast.h"
+
+
 class TextureContainer;
 
 struct DAMAGE_INFO {
@@ -1390,7 +1393,7 @@ void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent)
 			float mloss = 1.f;
 
 			if(io->ioflags & IO_ITEM) {
-				io->_itemdata->price -= checked_range_cast<long>(float(io->_itemdata->price) / io->max_durability);
+				io->_itemdata->price -= util::to<long>(float(io->_itemdata->price) / io->max_durability);
 			}
 
 			io->max_durability -= mloss;

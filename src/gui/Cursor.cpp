@@ -53,6 +53,9 @@
 #include "gui/Text.h"
 #include "gui/Menu.h"
 
+#include "util/Cast.h"
+
+
 enum ARX_INTERFACE_CURSOR_MODE
 {
 	CURSOR_UNDEFINED,
@@ -269,13 +272,10 @@ void ARX_INTERFACE_RenderCursor(bool flag) {
 	
 	if(FlyingOverIO || g_draggedEntity) {
 		fHighLightAng += toMsf(g_platformTime.lastFrameDuration()) * 0.5f;
-		
-		if(fHighLightAng > 90.f)
+		if(fHighLightAng > 90.f) {
 			fHighLightAng = 90.f;
-		
-		float fHLight = 100.f * glm::sin(glm::radians(fHighLightAng));
-		
-		iHighLight = checked_range_cast<int>(fHLight);
+		}
+		iHighLight = util::to<int>(100.f * glm::sin(glm::radians(fHighLightAng)));
 	} else {
 		fHighLightAng = 0.f;
 		iHighLight = 0;

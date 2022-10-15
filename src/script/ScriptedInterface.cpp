@@ -56,6 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
+#include "util/Cast.h"
+
 
 namespace script {
 
@@ -357,7 +359,7 @@ public:
 			
 			DebugScript(' ' << options << ' ' << x << ' ' << y << ' ' << level << ' ' << marker);
 			
-			if(level < 1.f || !is_in_range<s16>(level)) {
+			if(level < 1.f || !util::is_in_range<s16>(level)) {
 				ScriptError << "Invalid map level: " << level;
 				return Failed;
 			}

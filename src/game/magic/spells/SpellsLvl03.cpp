@@ -43,6 +43,8 @@
 #include "scene/GameSound.h"
 #include "scene/Object.h"
 
+#include "util/Cast.h"
+
 
 SpeedSpell::SpeedTrail::SpeedTrail(short vertex)
 	: Trail(Random::get(130ms, 260ms), Color3f::gray(Random::getf(0.1f, 0.2f)),
@@ -404,7 +406,7 @@ void IceProjectileSpell::Launch() {
 	
 	float fDist = (fd / fspelldist) * iMax;
 	
-	m_icicles.resize(checked_range_cast<size_t>(fDist));
+	m_icicles.resize(util::to<size_t>(fDist));
 	
 	int end = m_icicles.size() / 2;
 	

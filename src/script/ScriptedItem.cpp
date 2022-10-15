@@ -55,6 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
+#include "util/Cast.h"
 
 
 namespace script {
@@ -102,8 +103,8 @@ public:
 		if(poisonous_count == 0) {
 			io->poisonous_count = 0;
 		} else {
-			io->poisonous = checked_range_cast<short>(poisonous);
-			io->poisonous_count = checked_range_cast<short>(poisonous_count);
+			io->poisonous = util::to<short>(poisonous);
+			io->poisonous_count = util::to<short>(poisonous_count);
 		}
 		
 		return Success;

@@ -79,6 +79,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptEvent.h"
 
+#include "util/Cast.h"
 #include "util/Range.h"
 
 
@@ -215,7 +216,7 @@ Speech * ARX_SPEECH_AddSpeech(Entity & speaker, std::string_view data, long mood
 			do {
 				variant = Random::get(1, count);
 			} while(speaker.lastspeechflag == variant);
-			speaker.lastspeechflag = checked_range_cast<short>(variant);
+			speaker.lastspeechflag = util::to<short>(variant);
 		}
 		
 		LogDebug(" -> " << variant << " / " << count);
@@ -312,8 +313,8 @@ void ARX_SPEECH_Update() {
 		
 		float fAdd = fZoneClippY + fZoneClippHeight;
 		
-		Rect::Num y = checked_range_cast<Rect::Num>(fZoneClippY);
-		Rect::Num h = checked_range_cast<Rect::Num>(fAdd);
+		Rect::Num y = util::to<Rect::Num>(fZoneClippY);
+		Rect::Num h = util::to<Rect::Num>(fAdd);
 		Rect clippingRect(0, y + 1, g_size.width(), h);
 		if(config.interface.limitSpeechWidth) {
 			s32 w = std::min(g_size.width(), s32(640 * g_sizeRatio.y));
@@ -359,7 +360,7 @@ void ARX_SPEECH_Update() {
 				speech.fPixelScroll = 0.f;
 				speech.iTimeScroll = 0;
 			}
-			speech.iTimeScroll += checked_range_cast<int>(g_framedelay);
+			speech.iTimeScroll += util::to<int>(g_framedelay);
 			
 		} else {
 			

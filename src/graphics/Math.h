@@ -251,32 +251,4 @@ T positive_modulo(T a, T b) {
 	return (a % b) + T(a < 0) * b;
 }
 
-template <typename To, typename From>
-arx_force_inline constexpr bool is_in_range(From value) noexcept {
-	static_assert(std::is_integral_v<To>);
-	if constexpr(std::is_signed_v<From> && !std::is_signed_v<To>) {
-		if(value < From(0)) {
-			return false;
-		}
-	}
-	if constexpr(std::is_floating_point_v<From> || sizeof(From) > sizeof(To)) {
-		if constexpr(std::is_signed_v<From> && std::is_signed_v<To>) {
-			if(value < From(std::numeric_limits<To>::min())) {
-				return false;
-			}
-		}
-		if(value > From(std::numeric_limits<To>::max())) {
-			return false;
-		}
-	}
-	ARX_UNUSED(value);
-	return true;
-}
-
-template <typename To, typename From>
-arx_force_inline constexpr To checked_range_cast(From value) noexcept {
-	arx_assume(is_in_range<To>(value));
-	return static_cast<To>(value);
-}
-
 #endif // ARX_GRAPHICS_MATH_H

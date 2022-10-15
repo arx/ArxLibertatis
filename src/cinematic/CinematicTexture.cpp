@@ -50,10 +50,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "graphics/Renderer.h"
 #include "graphics/texture/Texture.h"
-
+#include "io/log/Logger.h"
 #include "io/resource/ResourcePath.h"
 #include "io/resource/PakReader.h"
-#include "io/log/Logger.h"
+#include "util/Cast.h"
+
 
 static const Vec2i cinMaxSize = Vec2i(256, 256);
 
@@ -329,9 +330,9 @@ size_t CinematicGrid::AddMaterial(Texture * tex) {
 void CinematicGrid::AddPoly(size_t matIdx, int i0, int i1, int i2) {
 	
 	C_IND ind;
-	ind.i1 = checked_range_cast<unsigned short>(i0);
-	ind.i2 = checked_range_cast<unsigned short>(i1);
-	ind.i3 = checked_range_cast<unsigned short>(i2);
+	ind.i1 = util::to<unsigned short>(i0);
+	ind.i2 = util::to<unsigned short>(i1);
+	ind.i3 = util::to<unsigned short>(i2);
 	m_inds.push_back(ind);
 	
 	m_mats[matIdx].nbind += 3;

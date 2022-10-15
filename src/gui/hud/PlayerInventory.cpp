@@ -37,6 +37,8 @@
 #include "input/Input.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
+#include "util/Cast.h"
+
 
 bool bInventorySwitch = false;
 float fDecPulse;
@@ -408,11 +410,12 @@ bool PlayerInventoryHud::containsPos(const Vec2s & pos) {
 	}
 	
 	if(player.Interface & INTER_INVENTORYALL) {
+		
 		Vec3s size = entities.player()->inventory->size();
 		float fBag = (size.z - 1) * (-121 * m_scale);
-
-		short iY = checked_range_cast<short>(fBag);
-
+		
+		s16 iY = util::to<s16>(fBag);
+		
 		if(   pos.x >= iPos.x
 		   && pos.x <= iPos.x + size.x * (32 * m_scale)
 		   && pos.y >= iPos.y + iY
@@ -430,7 +433,8 @@ bool PlayerInventoryHud::containsPos(const Vec2s & pos) {
 			
 			float fRatio = (121 * m_scale);
 			
-			iY = checked_range_cast<short>(iY + fRatio);
+			iY = util::to<s16>(iY + fRatio);
+			
 		}
 		
 	}
@@ -448,11 +452,11 @@ Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 	
 	if(player.Interface & INTER_INVENTORY) {
 		
-		long tx = pos.x - iPos.x;
-		long ty = pos.y - iPos.y;
+		s16 tx = pos.x - iPos.x;
+		s16 ty = pos.y - iPos.y;
 		if(tx >= 0 && ty >= 0) {
-			tx = checked_range_cast<long>((tx - 6 * m_scale) / (32 * m_scale));
-			ty = checked_range_cast<long>((ty - 5 * m_scale) / (32 * m_scale));
+			tx = util::to<s16>((tx - 6 * m_scale) / (32 * m_scale));
+			ty = util::to<s16>((ty - 5 * m_scale) / (32 * m_scale));
 			if(tx >= 0 && tx < size.x && ty >= 0 && ty < size.y) {
 				Entity * result = entities.player()->inventory->get(Vec3s(tx, ty, m_currentBag)).entity;
 				if(result && (result->gameFlags & GFLAG_INTERACTIVITY)) {
@@ -466,14 +470,14 @@ Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 		
 		float fBag = (size.z - 1) * (-121 * m_scale);
 		
-		int iY = checked_range_cast<int>(fBag);
-
+		s32 iY = util::to<s32>(fBag);
+		
 		for(size_t bag = 0; bag < size_t(size.z); bag++) {
 			
 			long tx = pos.x - iPos.x;
 			long ty = pos.y - iPos.y - iY;
-			tx = checked_range_cast<long>((tx - 6 * m_scale) / (32 * m_scale));
-			ty = checked_range_cast<long>((ty - 5 * m_scale) / (32 * m_scale));
+			tx = util::to<long>((tx - 6 * m_scale) / (32 * m_scale));
+			ty = util::to<long>((ty - 5 * m_scale) / (32 * m_scale));
 			
 			if(tx >= 0 && tx < size.x && ty >= 0 && ty < size.y) {
 				Entity * result = entities.player()->inventory->get(Vec3s(tx, ty, bag)).entity;
@@ -483,11 +487,11 @@ Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 				return nullptr;
 			}
 			
-			iY += checked_range_cast<int>((121 * m_scale));
+			iY += util::to<s32>((121 * m_scale));
 			
 		}
 	}
-
+	
 	return nullptr;
 }
 

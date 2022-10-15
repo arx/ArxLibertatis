@@ -63,6 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Collisions.h"
 #include "scene/Interactive.h"
 #include "script/ScriptUtils.h"
+#include "util/Cast.h"
 
 
 extern Entity * LASTSPAWNED;
@@ -513,7 +514,7 @@ public:
 				float level = context.getFloat();
 				std::string target = context.getWord();
 				
-				if(level < 0.f || !is_in_range<s16>(level)) {
+				if(level < 0.f || !util::is_in_range<s16>(level)) {
 					ScriptWarning << "invalid area number: " << level;
 					return Failed;
 				}
@@ -744,7 +745,7 @@ public:
 		
 		DebugScript(' ' << io->damager_type << damages);
 		
-		io->damager_damages = checked_range_cast<short>(damages);
+		io->damager_damages = util::to<short>(damages);
 		
 		return Success;
 	}

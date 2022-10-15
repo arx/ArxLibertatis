@@ -62,6 +62,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
 #include "script/ScriptUtils.h"
+#include "util/Cast.h"
+
 
 extern Entity * LASTSPAWNED;
 
@@ -239,7 +241,7 @@ class InventoryCommand : public Command {
 					ioo->_itemdata->price = static_cast<long>(count);
 				} else {
 					ioo->_itemdata->maxcount = 9999;
-					ioo->_itemdata->count = std::max(checked_range_cast<short>(count), short(1));
+					ioo->_itemdata->count = std::max(util::to<short>(count), short(1));
 				}
 				
 			} else {
@@ -315,7 +317,7 @@ class InventoryCommand : public Command {
 				
 				DebugScript(' ' << file << ' ' << val);
 				
-				count = static_cast<long>(val);
+				count = util::to<long>(val);
 				
 			} else {
 				DebugScript(' ' << file);
@@ -340,7 +342,7 @@ class InventoryCommand : public Command {
 					item->_itemdata->price = count;
 				} else {
 					item->_itemdata->maxcount = 9999;
-					item->_itemdata->count = std::max(checked_range_cast<short>(count), short(1));
+					item->_itemdata->count = std::max(util::to<short>(count), short(1));
 				}
 			}
 			

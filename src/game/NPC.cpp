@@ -116,6 +116,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
+#include "util/Cast.h"
+
+
 void CheckNPCEx(Entity & io);
 
 static const float ARX_NPC_ON_HEAR_MAX_DISTANCE_STEP = 600.f;
@@ -2359,10 +2362,9 @@ static void ManageNPCMovement(Entity * io) {
 static void ManageNPCMovement_check_target_reached(Entity * io) {
 	
 	long lMax = std::max(ARX_NPC_GetNextAttainableNodeIncrement(io), 1l);
-
-	io->_npcdata->pathfind.listpos = checked_range_cast<unsigned short>(io->_npcdata->pathfind.listpos + lMax);
-
-
+	
+	io->_npcdata->pathfind.listpos = util::to<unsigned short>(io->_npcdata->pathfind.listpos + lMax);
+	
 	if(io->_npcdata->pathfind.listpos >= io->_npcdata->pathfind.listnb) // || (dis<=120.f))
 	{
 		io->_npcdata->pathfind.listpos = 0;

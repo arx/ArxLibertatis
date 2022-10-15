@@ -38,6 +38,7 @@
 #include "input/Input.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
+#include "util/Cast.h"
 
 
 SecondaryInventoryHud g_secondaryInventoryHud;
@@ -292,7 +293,7 @@ void SecondaryInventoryHud::updateInputButtons() {
 bool SecondaryInventoryHud::containsPos(Vec2s pos) const noexcept {
 	
 	if(isOpen()) {
-		Vec2s t = (pos + Vec2s(checked_range_cast<short>(m_fadePosition), 0) - Vec2s(Vec2f(2.f, 13.f) * m_scale))
+		Vec2s t = (pos + Vec2s(util::to<s16>(m_fadePosition), 0) - Vec2s(Vec2f(2.f, 13.f) * m_scale))
 		          / s16(32 * m_scale);
 		if(t.x >= 0 && t.x < m_container->inventory->size().x
 		   && t.y >= 0 && t.y < m_container->inventory->size().y) {
@@ -306,7 +307,7 @@ bool SecondaryInventoryHud::containsPos(Vec2s pos) const noexcept {
 Entity * SecondaryInventoryHud::getObj(Vec2s pos) const noexcept {
 	
 	if(isOpen()) {
-		Vec2s t = (pos + Vec2s(checked_range_cast<short>(m_fadePosition), 0) - Vec2s(Vec2f(2.f, 13.f) * m_scale))
+		Vec2s t = (pos + Vec2s(util::to<s16>(m_fadePosition), 0) - Vec2s(Vec2f(2.f, 13.f) * m_scale))
 		          / s16(32 * m_scale);
 		if(t.x >= 0 && t.x < m_container->inventory->size().x
 		   && t.y >= 0 && t.y < m_container->inventory->size().y) {
@@ -377,7 +378,7 @@ void SecondaryInventoryHud::dragEntity(Entity * io) {
 	if(container->ioflags & IO_SHOP) {
 		
 		long price = ARX_INTERACTIVE_GetPrice(io, container);
-		price = checked_range_cast<long>(float(price) - float(price) * player.m_skillFull.intuition * 0.005f);
+		price = util::to<long>(float(price) - float(price) * player.m_skillFull.intuition * 0.005f);
 		if(player.gold < price) {
 			return;
 		}
@@ -559,7 +560,7 @@ void SecondaryInventoryHud::drawItemPrice(float scale) {
 			// achat
 			float famount = amount - amount * player.m_skillFull.intuition * 0.005f;
 			// check should always be OK because amount is supposed positive
-			amount = checked_range_cast<long>(famount);
+			amount = util::to<long>(famount);
 			
 			Color color = (amount <= player.gold) ? Color::green : Color::red;
 			

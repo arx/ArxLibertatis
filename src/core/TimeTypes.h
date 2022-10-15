@@ -33,6 +33,7 @@
 
 #include "graphics/Math.h"
 #include "platform/Platform.h"
+#include "util/Cast.h"
 
 
 template <typename Tag, typename T>
@@ -114,7 +115,7 @@ public:
 	
 	template <typename Rep, typename Period>
 	/* implicit */ constexpr DurationType(std::chrono::duration<Rep, Period> duration) noexcept
-		: m_value(checked_range_cast<T>(std::chrono::duration_cast<std::chrono::microseconds>(duration).count()))
+		: m_value(util::to<T>(std::chrono::duration_cast<std::chrono::microseconds>(duration).count()))
 	{ }
 	
 	/* implicit */ constexpr DurationType(Zero /* zero */ = 0) noexcept : m_value(0) { }
@@ -127,12 +128,12 @@ public:
 	// TODO C++20 use conditional explicit to allow implicit non-narrowing conversions
 	template <typename T2>
 	[[nodiscard]] explicit constexpr operator DurationType<Tag, T2>() const noexcept {
-		return DurationType<Tag, T2>::ofRaw(checked_range_cast<T2>(m_value));
+		return DurationType<Tag, T2>::ofRaw(util::to<T2>(m_value));
 	}
 	
 	[[nodiscard]] /* implicit */ constexpr operator DurationType<Tag, s64>() const noexcept {
-		static_assert(is_in_range<s64>(std::numeric_limits<T>::min()) &&
-		              is_in_range<s64>(std::numeric_limits<T>::max()));
+		static_assert(util::is_in_range<s64>(std::numeric_limits<T>::min()) &&
+		              util::is_in_range<s64>(std::numeric_limits<T>::max()));
 		return DurationType<Tag, s64>::ofRaw(m_value);
 	}
 	

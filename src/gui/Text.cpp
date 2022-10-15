@@ -63,6 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/resource/ResourcePath.h"
 #include "io/log/Logger.h"
 
+#include "util/Cast.h"
 #include "util/Number.h"
 #include "util/Unicode.h"
 
@@ -240,9 +241,9 @@ void UNICODE_ARXDrawTextCenteredScroll(Font * font, float x, float y, float x2, 
                                        Color col, PlatformDuration iTimeScroll, float fSpeed,
                                        int iNbLigne, PlatformDuration iTimeOut) {
 	
-	Rect::Num _x = checked_range_cast<Rect::Num>(x - x2);
-	Rect::Num _y = checked_range_cast<Rect::Num>(y);
-	Rect::Num w = checked_range_cast<Rect::Num>(x + x2);
+	s32 _x = util::to<s32>(x - x2);
+	s32 _y = util::to<s32>(y);
+	s32 w = util::to<s32>(x + x2);
 	
 	Rect rRect(_x, _y, w, Rect::Limits::max());
 	

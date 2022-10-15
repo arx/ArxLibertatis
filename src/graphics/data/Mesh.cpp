@@ -95,6 +95,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Scene.h"
 #include "scene/Tiles.h"
 
+#include "util/Cast.h"
 #include "util/Range.h"
 #include "util/String.h"
 
@@ -201,32 +202,26 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY) {
 	Vec2s min = tile;
 	Vec2s max = tile;
 	
-	(void)checked_range_cast<short>(tile.y - 1);
-	(void)checked_range_cast<short>(tile.y + 1);
-	
 	if(rz < -40.f) {
-		min.y = tile.y - 1;
-		max.y = tile.y - 1;
+		min.y = util::to<s16>(tile.y - 1);
+		max.y = util::to<s16>(tile.y - 1);
 	} else if(rz < 40.f) {
-		min.y = tile.y - 1;
-		max.y = tile.y;
+		min.y = util::to<s16>(tile.y - 1);
+		max.y = util::to<s16>(tile.y);
 	} else if(rz > 60.f) {
-		min.y = tile.y;
-		max.y = tile.y + 1;
+		min.y = util::to<s16>(tile.y);
+		max.y = util::to<s16>(tile.y + 1);
 	}
 	
-	(void)checked_range_cast<short>(tile.x + 1);
-	(void)checked_range_cast<short>(tile.x - 1);
-	
 	if(rx < -40.f) {
-		min.x = tile.x - 1;
-		max.x = tile.x - 1;
+		min.x = util::to<s16>(tile.x - 1);
+		max.x = util::to<s16>(tile.x - 1);
 	} else if(rx < 40.f) {
-		min.x = tile.x - 1;
-		max.x = tile.x;
+		min.x = util::to<s16>(tile.x - 1);
+		max.x = util::to<s16>(tile.x);
 	} else if(rx > 60.f) {
-		min.x = tile.x;
-		max.x = tile.x + 1;
+		min.x = util::to<s16>(tile.x);
+		max.x = util::to<s16>(tile.x + 1);
 	}
 	
 	EERIEPOLY * found = nullptr;

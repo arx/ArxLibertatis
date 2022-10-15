@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
+#include "util/Cast.h"
 
 
 namespace script {
@@ -134,7 +135,7 @@ public:
 		
 		DebugScript(' ' << options << " \"" << command << "\" " << behavior_param);
 		
-		ARX_NPC_Behaviour_Change(io, behavior, checked_range_cast<long>(behavior_param));
+		ARX_NPC_Behaviour_Change(io, behavior, util::to<long>(behavior_param));
 		
 		return Success;
 	}

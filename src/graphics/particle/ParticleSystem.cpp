@@ -62,6 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Random.h"
 #include "math/RandomVector.h"
 
+#include "util/Cast.h"
 #include "util/Range.h"
 
 
@@ -283,7 +284,7 @@ void ParticleSystem::Render() {
 		int texture = 0;
 		if(iNbTex > 0) {
 			arx_assume(iTexTime != 0);
-			texture = checked_range_cast<int>(particle.m_age / iTexTime) % iNbTex;
+			texture = util::to<int>(particle.m_age / iTexTime) % iNbTex;
 		}
 		
 		if(!tex_tab[texture]) {

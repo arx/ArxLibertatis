@@ -61,6 +61,9 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
+#include "util/Cast.h"
+
+
 extern bool WILLRETURNTOFREELOOK;
 
 static const int indicatorVertSpacing = 30;
@@ -737,7 +740,7 @@ void HealthGauge::updateInput(const Vec2f & mousePos) {
 		if(m_rect.contains(mousePos)) {
 			if(eeMouseDown1()) {
 				std::stringstream ss;
-				ss << checked_range_cast<int>(player.lifePool.current);
+				ss << util::to<int>(player.lifePool.current);
 				notification_add(ss.str());
 			}
 		}
@@ -777,7 +780,7 @@ void ManaGauge::updateInput(const Vec2f & mousePos) {
 		if(m_rect.contains(mousePos)) {
 			if(eeMouseDown1()) {
 				std::stringstream ss;
-				ss << checked_range_cast<int>(player.manaPool.current);
+				ss << util::to<int>(player.manaPool.current);
 				notification_add(ss.str());
 			}
 		}

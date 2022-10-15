@@ -77,6 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/SaveFormat.h"
 #include "scene/Tiles.h"
 
+#include "util/Cast.h"
 #include "util/Range.h"
 
 
@@ -398,7 +399,7 @@ void MiniMap::revealPlayerPos(MapLevel level) {
 		int r = int(revealPercent * 255.f);
 		
 		int ucLevel = std::max(r, int(m_levels[level].m_revealed[tile.x][tile.y]));
-		m_levels[level].m_revealed[tile.x][tile.y] = checked_range_cast<unsigned char>(ucLevel);
+		m_levels[level].m_revealed[tile.x][tile.y] = util::to<unsigned char>(ucLevel);
 		
 	}
 	

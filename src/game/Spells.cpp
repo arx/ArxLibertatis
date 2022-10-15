@@ -126,6 +126,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
+#include "util/Cast.h"
+
+
 bool WILLRETURNTOFREELOOK = false;
 bool GLOBAL_MAGIC_MODE = true;
 
@@ -861,7 +864,7 @@ bool ARX_SPELLS_Launch(SpellType typ, Entity & source, SpellcastFlags flags, lon
 		int l = level;
 		
 		if(l <= 0) {
-			l = checked_range_cast<int>(playerSpellLevel);
+			l = util::to<int>(playerSpellLevel);
 		}
 		
 		SpellcastFlags flgs = flags;
@@ -1074,7 +1077,7 @@ void TryToCastSpell(Entity * io, SpellType spellType, long level, EntityHandle t
 	io->spellcast_data.castingspell = spellType;
 
 	io->spellcast_data.spell_flags = flags;
-	io->spellcast_data.spell_level = checked_range_cast<short>(level);
+	io->spellcast_data.spell_level = util::to<short>(level);
 
 	io->spellcast_data.duration = duration;
 	io->spellcast_data.target = target;

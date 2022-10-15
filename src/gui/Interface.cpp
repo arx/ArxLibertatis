@@ -128,6 +128,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
+#include "util/Cast.h"
 #include "util/Range.h"
 
 #include "window/RenderWindow.h"
@@ -1644,10 +1645,10 @@ void ArxGame::manageEntityDescription() {
 		   << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
 	}
 	
-	Rect::Num x = checked_range_cast<Rect::Num>(120 * g_sizeRatio.x);
-	Rect::Num y = checked_range_cast<Rect::Num>(14 * g_sizeRatio.y);
-	Rect::Num w = checked_range_cast<Rect::Num>((120 + 500) * g_sizeRatio.x);
-	Rect::Num h = checked_range_cast<Rect::Num>((14 + 200) * g_sizeRatio.y);
+	s32 x = util::to<s32>(120.f * g_sizeRatio.x);
+	s32 y = util::to<s32>(14.f * g_sizeRatio.y);
+	s32 w = util::to<s32>(620.f * g_sizeRatio.x);
+	s32 h = util::to<s32>(214.f * g_sizeRatio.y);
 	Rect rDraw(x, y, w, h);
 	
 	pTextManage->Clear();

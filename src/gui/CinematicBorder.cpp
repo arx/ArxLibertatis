@@ -24,6 +24,8 @@
 #include "game/Player.h"
 #include "graphics/Renderer.h"
 #include "gui/Interface.h"
+#include "util/Cast.h"
+
 
 CinematicBorder cinematicBorder = CinematicBorder();
 
@@ -107,11 +109,11 @@ void CinematicBorder::render() const {
 		rectz[0].left = rectz[1].left = 0;
 		rectz[0].right = rectz[1].right = g_size.width();
 		rectz[0].top = 0;
-		s32 lMulResult = checked_range_cast<s32>(CINEMA_DECAL * g_sizeRatio.y);
-		rectz[0].bottom = lMulResult;
-		rectz[1].top = g_size.height() - lMulResult;
+		s32 border = util::to<s32>(CINEMA_DECAL * g_sizeRatio.y);
+		rectz[0].bottom = border;
+		rectz[1].top = g_size.height() - border;
 		rectz[1].bottom = g_size.height();
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, Color(), 0.0f, 2, rectz);
-		GRenderer->SetScissor(Rect(0, lMulResult, g_size.width(), g_size.height() - lMulResult));
+		GRenderer->SetScissor(Rect(0, border, g_size.width(), g_size.height() - border));
 	}
 }

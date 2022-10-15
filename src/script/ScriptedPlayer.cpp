@@ -60,6 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
+#include "util/Cast.h"
 
 
 namespace script {
@@ -120,7 +121,7 @@ public:
 			ARX_SOUND_PlayInterface(g_snd.GOLD);
 		}
 		
-		ARX_PLAYER_AddGold(checked_range_cast<long>(val));
+		ARX_PLAYER_AddGold(util::to<long>(val));
 		
 		return Success;
 	}

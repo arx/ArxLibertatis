@@ -109,6 +109,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
 
+#include "util/Cast.h"
 #include "util/Number.h"
 #include "util/String.h"
 
@@ -937,9 +938,9 @@ static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 	if(io->usepath) {
 		ARX_USE_PATH * aup = io->usepath;
 		ais.usepath_aupflags = aup->aupflags;
-		ais.usepath_curtime = checked_range_cast<u32>(toMsi(aup->_curtime)); // TODO save/load time
+		ais.usepath_curtime = util::to<u32>(toMsi(aup->_curtime)); // TODO save/load time
 		ais.usepath_lastWP = aup->lastWP;
-		ais.usepath_starttime = checked_range_cast<u32>(toMsi(aup->_starttime)); // TODO save/load time
+		ais.usepath_starttime = util::to<u32>(toMsi(aup->_starttime)); // TODO save/load time
 		util::storeString(ais.usepath_name, aup->path->name);
 	}
 	
@@ -1135,8 +1136,8 @@ static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 			as->resist_poison = io->_npcdata->resist_poison;
 			as->resist_magic = io->_npcdata->resist_magic;
 			as->resist_fire = io->_npcdata->resist_fire;
-			as->walk_start_time = checked_range_cast<s16>(toMsi(io->_npcdata->walk_start_time)); // TODO save/load time
-			as->aiming_start = static_cast<s32>(toMsi(io->_npcdata->aiming_start)); // TODO save/load time
+			as->walk_start_time = util::to<s16>(toMsi(io->_npcdata->walk_start_time)); // TODO save/load time
+			as->aiming_start = util::to<s32>(toMsi(io->_npcdata->aiming_start)); // TODO save/load time
 			as->npcflags = io->_npcdata->npcflags;
 			as->pathfind = IO_PATHFIND();
 			
@@ -1464,7 +1465,7 @@ static bool ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	player.jumpstarttime = g_platformTime.frameStart() + (jumpstart - g_gameTime.now()).value();
 	player.m_lastMovement = PlayerMovement::load(asp->Last_Movement); // TODO save/load flags
 	
-	player.level = checked_range_cast<short>(asp->level);
+	player.level = util::to<short>(asp->level);
 	
 	player.lifePool.current = asp->life;
 	player.manaPool.current = asp->mana;
@@ -1522,7 +1523,7 @@ static bool ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	player.m_skill.closeCombat = asp->Skill_Close_Combat;
 	player.m_skill.defense = asp->Skill_Defense;
 	
-	player.skin = checked_range_cast<unsigned char>(asp->skin);
+	player.skin = util::to<unsigned char>(asp->skin);
 	
 	player.xp = asp->xp;
 	GLOBAL_MAGIC_MODE = (asp->Global_Magic_Mode != 0);
