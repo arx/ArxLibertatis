@@ -35,8 +35,8 @@
 
 #include <stddef.h>
 #include <array>
-#include <vector>
 #include <type_traits>
+#include <vector>
 
 #include "util/Range.h"
 #include "platform/Platform.h"
@@ -65,6 +65,11 @@ public:
 	[[nodiscard]] decltype(auto) operator[](Handle handle) const noexcept {
 		arx_assume(handle && size_t(handle) < size());
 		return Base::operator[](size_t(handle));
+	}
+	
+	[[nodiscard]] Handle last() const noexcept {
+		arx_assume(size() > 0 && size() <= size_t(Handle::max()));
+		return Handle(size() - 1);
 	}
 	
 };
