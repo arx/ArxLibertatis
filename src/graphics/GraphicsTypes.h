@@ -171,7 +171,7 @@ struct EERIE_SELECTIONS {
 struct EERIE_FASTACCESS {
 	
 	VertexId view_attach;
-	ActionPoint primary_attach;
+	VertexId primary_attach;
 	ActionPoint left_attach;
 	ActionPoint weapon_attach;
 	ActionPoint secondary_attach;

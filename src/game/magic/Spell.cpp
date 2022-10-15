@@ -70,7 +70,7 @@ void Spell::updateCasterHand() {
 	// Create hand position if a hand is defined
 	Entity * caster = entities.get(m_caster);
 	if(caster == entities.player()) {
-		m_hand_group = caster->obj->fastaccess.primary_attach;
+		m_hand_group = ActionPoint(size_t(caster->obj->fastaccess.primary_attach));
 	} else if(caster) {
 		m_hand_group = caster->obj->fastaccess.left_attach;
 	}

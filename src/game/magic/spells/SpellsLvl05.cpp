@@ -483,7 +483,7 @@ void PoisonProjectileSpell::Launch() {
 	float afBeta = 0.f;
 	
 	Entity * caster = entities[m_caster];
-	m_hand_group = caster->obj->fastaccess.primary_attach;
+	m_hand_group = ActionPoint(size_t(caster->obj->fastaccess.primary_attach));
 
 	if(m_hand_group != ActionPoint()) {
 		ActionPoint group = m_hand_group;

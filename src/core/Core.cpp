@@ -551,7 +551,7 @@ void ManageCombatModeAnimations() {
 						if(layer1.cur_anim == alist[ANIM_BARE_STRIKE_LEFT]) {
 							id = io->obj->fastaccess.left_attach;
 						} else { // Strike Right
-							id = io->obj->fastaccess.primary_attach;
+							id = ActionPoint(size_t(io->obj->fastaccess.primary_attach));
 						}
 						
 						if(id != ActionPoint()) {

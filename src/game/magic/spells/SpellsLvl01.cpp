@@ -125,7 +125,7 @@ void MagicMissileSpell::Launch() {
 	m_duration = 6s;
 	m_hasDuration = true;
 	
-	m_hand_group = entities[m_caster]->obj->fastaccess.primary_attach;
+	m_hand_group = ActionPoint(size_t(entities[m_caster]->obj->fastaccess.primary_attach));
 	
 	if(m_hand_group != ActionPoint()) {
 		Entity * caster = entities[m_caster];

@@ -193,8 +193,8 @@ void FlyingEyeSpell::Update() {
 	
 	size_t particles = m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 0.06f);
 	
-	if(io->obj->fastaccess.primary_attach != ActionPoint()) {
-		Vec3f pos = actionPointPosition(io->obj, io->obj->fastaccess.primary_attach);
+	if(io->obj->fastaccess.primary_attach) {
+		Vec3f pos = io->obj->vertexWorldPositions[size_t(io->obj->fastaccess.primary_attach)].v;
 		FlyingEyeSpellUpdateHand(pos, m_light1, particles);
 	}
 	
