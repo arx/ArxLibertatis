@@ -99,7 +99,7 @@ VertexId getNamedVertex(const EERIE_3DOBJ * eobj, std::string_view text) {
 ObjVertGroup getGroupForVertex(const EERIE_3DOBJ * eobj, VertexId vertex) {
 	
 	if(!eobj) {
-		return ObjVertGroup();
+		return { };
 	}
 	
 	for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
@@ -110,7 +110,7 @@ ObjVertGroup getGroupForVertex(const EERIE_3DOBJ * eobj, VertexId vertex) {
 		}
 	}
 	
-	return ObjVertGroup();
+	return { };
 }
 
 void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * object) {
@@ -222,8 +222,9 @@ ObjSelection EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, std::string_view
 
 ObjVertGroup EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, std::string_view groupname) {
 	
-	if(!obj)
-		return ObjVertGroup();
+	if(!obj) {
+		return { };
+	}
 	
 	for(size_t i = 0; i < obj->grouplist.size(); i++) {
 		if(obj->grouplist[i].name == groupname) {
@@ -231,7 +232,7 @@ ObjVertGroup EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, std::string_view gro
 		}
 	}
 	
-	return ObjVertGroup();
+	return { };
 }
 
 static long GetFather(EERIE_3DOBJ * eobj, VertexId origin, long startgroup) {
