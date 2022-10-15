@@ -64,15 +64,17 @@ void EERIE_LINKEDOBJ_ReleaseData(EERIE_3DOBJ * obj) {
 
 void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, const EERIE_3DOBJ * tounlink) {
 	
-	if(!obj || !tounlink)
+	if(!obj || !tounlink) {
 		return;
+	}
 	
 	for(size_t k = 0; k < obj->linked.size(); k++) {
-		if(obj->linked[k].lgroup != ObjVertGroup() && obj->linked[k].obj == tounlink) {
+		if(obj->linked[k].lgroup && obj->linked[k].obj == tounlink) {
 			obj->linked.erase(obj->linked.begin() + k);
 			return;
 		}
 	}
+	
 }
 
 void EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink, std::string_view actiontext,
