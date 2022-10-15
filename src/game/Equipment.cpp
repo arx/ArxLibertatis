@@ -679,12 +679,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 					float dmgs = 0.f;
 					if(!(flags & 1)) {
 						
-						if(hitpoint >= 0) {
-							Vec3f posi = target->obj->vertexWorldPositions[hitpoint].v;
-							dmgs = ARX_EQUIPMENT_ComputeDamages(io_source, target, ratioaim, &posi);
-						} else {
-							dmgs = ARX_EQUIPMENT_ComputeDamages(io_source, target, ratioaim);
-						}
+						dmgs = ARX_EQUIPMENT_ComputeDamages(io_source, target, ratioaim, &pos);
 						
 						if(target->ioflags & IO_NPC) {
 							ret = true;
