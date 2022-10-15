@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 #include <cstdlib>
 #include <algorithm>
+#include <memory>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -594,24 +595,24 @@ void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path) {
 		return;
 	}
 	
-	EERIE_3DOBJ * tobj = loadObject(path);
+	std::unique_ptr<EERIE_3DOBJ> tobj = loadObject(path);
 	if(!tobj) {
 		return;
 	}
 	
 	EERIE_3DOBJ * result = nullptr;
 	if(tw == (TWEAK_HEAD | TWEAK_TORSO | TWEAK_LEGS)) {
-		result = tobj; // Replace the entire mesh
+		result = tobj.release(); // Replace the entire mesh
 	} else {
 		
 		if(tw & TWEAK_HEAD) {
-			result = CreateIntermediaryMesh(io->obj, tobj, TWEAK_HEAD);
+			result = CreateIntermediaryMesh(io->obj, tobj.get(), TWEAK_HEAD);
 		} else {
 			result = io->obj;
 		}
 		
 		if(result && (tw & TWEAK_TORSO)) {
-			EERIE_3DOBJ * result2 = CreateIntermediaryMesh(result, tobj, TWEAK_TORSO);
+			EERIE_3DOBJ * result2 = CreateIntermediaryMesh(result, tobj.get(), TWEAK_TORSO);
 			if(result != io->obj) {
 				delete result;
 			}
@@ -619,14 +620,12 @@ void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path) {
 		}
 		
 		if(result && (tw & TWEAK_LEGS)) {
-			EERIE_3DOBJ * result2 = CreateIntermediaryMesh(result, tobj, TWEAK_LEGS);
+			EERIE_3DOBJ * result2 = CreateIntermediaryMesh(result, tobj.get(), TWEAK_LEGS);
 			if(result != io->obj) {
 				delete result;
 			}
 			result = result2;
 		}
-		
-		delete tobj;
 		
 		arx_assert(result != io->obj);
 		

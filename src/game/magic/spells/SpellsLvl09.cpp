@@ -372,13 +372,13 @@ void NegateMagicSpell::Update() {
 	{
 		Color3f stitecolor = Color3f::gray(.4f);
 		Vec3f stitescale = Vec3f(3.f + 0.5f * scalediff);
-		Draw3DObject(ssol, stiteangle, stitepos, stitescale, stitecolor, mat);
+		Draw3DObject(ssol.get(), stiteangle, stitepos, stitescale, stitecolor, mat);
 	}
 	
 	{
 		Color3f stitecolor = Color3f(.5f, 0.f, .5f);
 		Vec3f stitescale = Vec3f(3.1f + 0.2f * scalediff);
-		Draw3DObject(ssol, stiteangle, stitepos, stitescale, stitecolor, mat);
+		Draw3DObject(ssol.get(), stiteangle, stitepos, stitescale, stitecolor, mat);
 	}
 	
 }

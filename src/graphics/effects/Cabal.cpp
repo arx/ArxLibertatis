@@ -128,7 +128,7 @@ Vec3f CabalFx::update(Vec3f casterPos) {
 			timeOffset = timeOffset * 2;
 		}
 		cabalcolor = m_ringColors[i];
-		Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
+		Draw3DObject(cabal.get(), cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	}
 	
 	if(m_hasTwoRingSets) {
@@ -143,7 +143,7 @@ Vec3f CabalFx::update(Vec3f casterPos) {
 				timeOffset = timeOffset * 2;
 			}
 			cabalcolor = m_ringColors[m_ringCount - 1 - i];
-			Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
+			Draw3DObject(cabal.get(), cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 		}
 	}
 	return cabalpos;

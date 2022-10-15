@@ -144,17 +144,17 @@ void Split(Vec3f * v, int a, int b, float yo, float fMul) {
 	
 }
 
-EERIE_3DOBJ * cabal = nullptr;
-EERIE_3DOBJ * ssol = nullptr;
-EERIE_3DOBJ * slight = nullptr;
-EERIE_3DOBJ * srune = nullptr;
-EERIE_3DOBJ * smotte = nullptr;
-EERIE_3DOBJ * stite = nullptr;
-EERIE_3DOBJ * smissile = nullptr;
-EERIE_3DOBJ * spapi = nullptr;
-EERIE_3DOBJ * svoodoo = nullptr;
-EERIE_3DOBJ * stone0 = nullptr;
-EERIE_3DOBJ * stone1 = nullptr;
+std::unique_ptr<EERIE_3DOBJ> cabal;
+std::unique_ptr<EERIE_3DOBJ> ssol;
+std::unique_ptr<EERIE_3DOBJ> slight;
+std::unique_ptr<EERIE_3DOBJ> srune;
+std::unique_ptr<EERIE_3DOBJ> smotte;
+std::unique_ptr<EERIE_3DOBJ> stite;
+std::unique_ptr<EERIE_3DOBJ> smissile;
+std::unique_ptr<EERIE_3DOBJ> spapi;
+std::unique_ptr<EERIE_3DOBJ> svoodoo;
+std::unique_ptr<EERIE_3DOBJ> stone0;
+std::unique_ptr<EERIE_3DOBJ> stone1;
 
 void LoadSpellModels() {
 	// TODO Load dynamically
@@ -172,15 +172,15 @@ void LoadSpellModels() {
 }
 
 void ReleaseSpellModels() {
-	delete cabal, cabal = nullptr;
-	delete ssol, ssol = nullptr;
-	delete slight, slight = nullptr;
-	delete srune, srune = nullptr;
-	delete smotte, smotte = nullptr;
-	delete stite, stite = nullptr;
-	delete smissile, smissile = nullptr;
-	delete spapi, spapi = nullptr;
-	delete svoodoo, svoodoo = nullptr;
-	delete stone0, stone0 = nullptr;
-	delete stone1, stone1 = nullptr;
+	cabal = { };
+	ssol = { };
+	slight = { };
+	srune = { };
+	smotte = { };
+	stite = { };
+	smissile = { };
+	spapi = { };
+	svoodoo = { };
+	stone0 = { };
+	stone1 = { };
 }

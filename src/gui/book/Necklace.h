@@ -20,6 +20,7 @@
 #ifndef ARX_GUI_BOOK_NECKLACE_H
 #define ARX_GUI_BOOK_NECKLACE_H
 
+#include <memory>
 #include <array>
 
 #include "game/magic/Rune.h"
@@ -28,10 +29,12 @@
 namespace gui {
 
 struct ARX_NECKLACE {
-	EERIE_3DOBJ * lacet;
-	std::array<EERIE_3DOBJ *, RUNE_COUNT> runes;
+	
+	std::unique_ptr<EERIE_3DOBJ> lacet;
+	std::array<std::unique_ptr<EERIE_3DOBJ>, RUNE_COUNT> runes;
 	std::array<TextureContainer *, RUNE_COUNT> pTexTab;
 	std::array<Anglef, RUNE_COUNT> runeAngles;
+	
 };
 
 extern ARX_NECKLACE necklace;

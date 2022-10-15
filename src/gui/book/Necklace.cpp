@@ -99,11 +99,10 @@ void NecklaceInit() {
 
 void ReleaseNecklace() {
 	
-	delete necklace.lacet, necklace.lacet = nullptr;
+	necklace.lacet = { };
 	
-	for(EERIE_3DOBJ * & rune : necklace.runes) {
-		delete rune;
-		rune = nullptr;
+	for(std::unique_ptr<EERIE_3DOBJ> & rune : necklace.runes) {
+		rune = { };
 	}
 	
 	std::fill(necklace.pTexTab.begin(), necklace.pTexTab.end(), nullptr);
@@ -161,7 +160,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 			continue;
 		}
 		
-		EERIE_3DOBJ * rune = gui::necklace.runes[i];
+		EERIE_3DOBJ * rune = gui::necklace.runes[i].get();
 		
 		Vec2i projectionCenter = Vec2i(rect.topLeft() + (Vec2f(285, 36) + Vec2f(tmpPos) * Vec2f(45, 64)) * scale);
 		
@@ -228,7 +227,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 			}
 		}
 		
-		DrawEERIEInter(gui::necklace.lacet, TransformInfo(pos, quat_identity()), nullptr, false, 0.f);
+		DrawEERIEInter(gui::necklace.lacet.get(), TransformInfo(pos, quat_identity()), nullptr, false, 0.f);
 		
 		PopAllTriangleListOpaque(baseState);
 		

@@ -185,8 +185,6 @@ static fs::path g_saveToLoad;
 
 static const PlatformDuration runeDrawPointInterval = 16ms; // ~60fps
 
-extern EERIE_3DOBJ * arrowobj;
-
 extern CircularVertexBuffer<TexturedVertex> * pDynamicVertexBuffer_TLVERTEX; // VB using TLVERTEX format.
 extern CircularVertexBuffer<SMY_VERTEX3> * pDynamicVertexBuffer;
 
@@ -907,15 +905,16 @@ static void ReleaseSystemObjects() {
 	FlyingEye_Release();
 	ReleaseSpellModels();
 	
-	delete cameraobj, cameraobj = nullptr;
-	delete markerobj, markerobj = nullptr;
-	delete arrowobj, arrowobj = nullptr;
+	cameraobj = { };
+	markerobj = { };
+	arrowobj = { };
 	
 	drawDebugRelease();
-
-	for(EERIE_3DOBJ * & obj : GoldCoinsObj) {
-		delete obj, obj = nullptr;
+	
+	for(std::unique_ptr<EERIE_3DOBJ> & object : GoldCoinsObj) {
+		object = { };
 	}
+	
 }
 
 long EXITING = 0;

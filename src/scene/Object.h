@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SCENE_OBJECT_H
 #define ARX_SCENE_OBJECT_H
 
+#include <memory>
 #include <string_view>
 
 #include "graphics/GraphicsTypes.h"
@@ -64,7 +65,7 @@ ObjVertGroup GetActionPointGroup(const EERIE_3DOBJ * eobj, ActionPoint idx);
  * 
  * \param pbox true if the object should have a physics box.
  */
-EERIE_3DOBJ * loadObject(const res::path & file, bool pbox = true);
+std::unique_ptr<EERIE_3DOBJ> loadObject(const res::path & file, bool pbox = true);
 
 EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj);
 void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * object);

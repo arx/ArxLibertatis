@@ -113,7 +113,7 @@ void FloatingStones::DrawStone() {
 		} else if(age > 0.5f) {
 			col = Color4f::gray(2.f - age * 2.f);
 		}
-		EERIE_3DOBJ * obj = (stone.numstone == 0) ? stone0 : stone1;
+		EERIE_3DOBJ * obj = (stone.numstone == 0) ? stone0.get() : stone1.get();
 		Draw3DObject(obj, stone.ang, stone.pos, stone.scale, col, mat);
 	}
 	

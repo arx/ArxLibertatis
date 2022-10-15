@@ -134,8 +134,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "window/RenderWindow.h"
 
 
-extern EERIE_3DOBJ * arrowobj;
-
 extern AnimationDuration PLAYER_ROTATION;
 extern float SLID_VALUE;
 
@@ -609,7 +607,7 @@ void ARX_INTERFACE_setCombatMode(ARX_INTERFACE_COMBAT_MODE i) {
 		ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon();
 		WeaponType weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
 		if(weapontype == WEAPON_BOW) {
-			EERIE_LINKEDOBJ_UnLinkObjectFromObject(entities.player()->obj, arrowobj);
+			EERIE_LINKEDOBJ_UnLinkObjectFromObject(entities.player()->obj, arrowobj.get());
 		}
 		
 		player.doingmagic = 0;

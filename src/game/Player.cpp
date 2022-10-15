@@ -1081,7 +1081,7 @@ void ARX_PLAYER_Restore_Skin() {
 void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 	
 	const char OBJECT_HUMAN_BASE[] = "graph/obj3d/interactive/npc/human_base/human_base.teo";
-	hero = loadObject(OBJECT_HUMAN_BASE, false);
+	hero = loadObject(OBJECT_HUMAN_BASE, false).release();
 	PLAYER_SKIN_TC = TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero_head");
 	
 	const char ANIM_WAIT_BOOK[] = "graph/obj3d/anims/npc/human_wait_book.tea";

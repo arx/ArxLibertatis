@@ -47,12 +47,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_EFFECTS_SPELLEFFECTS_H
 #define ARX_GRAPHICS_EFFECTS_SPELLEFFECTS_H
 
+#include <memory>
+
 #include "game/GameTypes.h"
 #include "graphics/Color.h"
 #include "graphics/Math.h"
 #include "math/Random.h"
 #include "math/Types.h"
 #include "scene/Light.h"
+
 
 struct RenderMaterial;
 
@@ -83,17 +86,17 @@ void Draw3DLineTexNew(const RenderMaterial & mat, Vec3f startPos, Vec3f endPos, 
 void Split(Vec3f * v, int a, int b, Vec3f f);
 void Split(Vec3f * v, int a, int b, float yo, float fMul = 0.5f);
 
-extern EERIE_3DOBJ * cabal;
-extern EERIE_3DOBJ * ssol;
-extern EERIE_3DOBJ * slight;
-extern EERIE_3DOBJ * srune;
-extern EERIE_3DOBJ * smotte;
-extern EERIE_3DOBJ * stite;
-extern EERIE_3DOBJ * smissile;
-extern EERIE_3DOBJ * spapi;
-extern EERIE_3DOBJ * svoodoo;
-extern EERIE_3DOBJ * stone0;
-extern EERIE_3DOBJ * stone1;
+extern std::unique_ptr<EERIE_3DOBJ> cabal;
+extern std::unique_ptr<EERIE_3DOBJ> ssol;
+extern std::unique_ptr<EERIE_3DOBJ> slight;
+extern std::unique_ptr<EERIE_3DOBJ> srune;
+extern std::unique_ptr<EERIE_3DOBJ> smotte;
+extern std::unique_ptr<EERIE_3DOBJ> stite;
+extern std::unique_ptr<EERIE_3DOBJ> smissile;
+extern std::unique_ptr<EERIE_3DOBJ> spapi;
+extern std::unique_ptr<EERIE_3DOBJ> svoodoo;
+extern std::unique_ptr<EERIE_3DOBJ> stone0;
+extern std::unique_ptr<EERIE_3DOBJ> stone1;
 
 void LoadSpellModels();
 void ReleaseSpellModels();

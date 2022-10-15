@@ -110,8 +110,6 @@ struct EQUIP_INFO {
 extern Vec3f PUSH_PLAYER_FORCE;
 extern bool EXTERNALVIEW;
 
-extern EERIE_3DOBJ * arrowobj;
-
 EQUIP_INFO equipinfo[IO_EQUIPITEM_ELEMENT_Number];
 
 //! \brief Returns the object type flag corresponding to a string
@@ -230,7 +228,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 	if(io->obj != hero)
 		delete io->obj;
 	
-	io->obj = loadObject("graph/obj3d/interactive/npc/human_base/human_base.teo", false);
+	io->obj = loadObject("graph/obj3d/interactive/npc/human_base/human_base.teo", false).release();
 	
 	applyTweak(EQUIP_SLOT_HELMET, TWEAK_HEAD, "head");
 	applyTweak(EQUIP_SLOT_ARMOR, TWEAK_TORSO, "chest");
@@ -401,7 +399,7 @@ void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon() {
 			break;
 		case WEAPON_BOW:
 			anim = io->anims[ANIM_MISSILE_UNREADY_PART_1];
-			EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, arrowobj);
+			EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, arrowobj.get());
 			break;
 		default:
 			anim = io->anims[ANIM_BARE_UNREADY];

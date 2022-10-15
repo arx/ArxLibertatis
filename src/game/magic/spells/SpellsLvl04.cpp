@@ -431,7 +431,7 @@ void CurseSpell::Update() {
 	mat.setDepthTest(true);
 	mat.setBlendType(RenderMaterial::Opaque);
 	
-	Draw3DObject(svoodoo, Anglef(0, fRot, 0), m_pos, Vec3f(1.f), Color3f::white, mat);
+	Draw3DObject(svoodoo.get(), Anglef(0, fRot, 0), m_pos, Vec3f(1.f), Color3f::white, mat);
 	
 	size_t count = m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 0.12f);
 	for(size_t i = 0; i < count; i++) {

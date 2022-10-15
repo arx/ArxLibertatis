@@ -115,18 +115,18 @@ void RuneOfGuardingSpell::Update() {
 	float scale = std::sin(m_elapsed / (GameDuration(200ms) / 3));
 	Vec3f stitescale = Vec3f(1.f, -0.1f, 1.f);
 	
-	Draw3DObject(slight, stiteangle, pos, stitescale, stitecolor, mat);
+	Draw3DObject(slight.get(), stiteangle, pos, stitescale, stitecolor, mat);
 	
 	stiteangle.setYaw(stiteangleb);
 	stitecolor = Color3f(0.6f, 0.f, 0.f);
 	stitescale = Vec3f(2.f) * (1.f + 0.01f * scale);
 	
-	Draw3DObject(ssol, stiteangle, pos, stitescale, stitecolor, mat);
+	Draw3DObject(ssol.get(), stiteangle, pos, stitescale, stitecolor, mat);
 	
 	stitecolor = Color3f(0.6f, 0.3f, 0.45f);
 	stitescale = Vec3f(1.8f) * (1.f + 0.02f * scale);
 	
-	Draw3DObject(srune, stiteangle, pos, stitescale, stitecolor, mat);
+	Draw3DObject(srune.get(), stiteangle, pos, stitescale, stitecolor, mat);
 	
 	size_t count = m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 0.12f);
 	for(size_t i = 0; i < count; i++) {
@@ -430,7 +430,7 @@ void RepelUndeadSpell::Update() {
 	
 	float vv = (1.f + wave) * 0.5f + 1.1f;
 	
-	Draw3DObject(ssol, eObjAngle, m_pos + Vec3f(0.f, -5.f, 0.f), Vec3f(vv), Color3f(0.6f, 0.6f, 0.8f), mat);
+	Draw3DObject(ssol.get(), eObjAngle, m_pos + Vec3f(0.f, -5.f, 0.f), Vec3f(vv), Color3f(0.6f, 0.6f, 0.8f), mat);
 	
 	size_t count = m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 0.12f);
 	for(size_t i = 0; i < count; i++) {

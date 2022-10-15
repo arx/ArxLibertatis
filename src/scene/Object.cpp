@@ -353,14 +353,14 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 	
 }
 
-EERIE_3DOBJ * loadObject(const res::path & file, bool pbox) {
+std::unique_ptr<EERIE_3DOBJ> loadObject(const res::path & file, bool pbox) {
 	
-	EERIE_3DOBJ * ret = ARX_FTL_Load(file).release();
-	if(ret && pbox) {
-		EERIE_PHYSICS_BOX_Create(ret);
+	std::unique_ptr<EERIE_3DOBJ> object = ARX_FTL_Load(file);
+	if(object && pbox) {
+		EERIE_PHYSICS_BOX_Create(object.get());
 	}
 	
-	return ret;
+	return object;
 }
 
 void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret) {

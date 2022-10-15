@@ -125,7 +125,7 @@ Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
 	
 	if(SendIOScriptEvent(nullptr, io, SM_LOAD) == ACCEPT && io->obj == nullptr) {
 		bool pbox = (io->ioflags & IO_ITEM) == IO_ITEM;
-		io->obj = loadObject(io->classPath() + ".teo", pbox);
+		io->obj = loadObject(io->classPath() + ".teo", pbox).release();
 		if(io->ioflags & IO_NPC) {
 			EERIE_COLLISION_Cylinder_Create(io);
 		}

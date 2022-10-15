@@ -492,7 +492,7 @@ void IceProjectileSpell::Update() {
 		Color3f stitecolor = Color3f(0.7f, 0.7f, 0.9f) * tt;
 		stitecolor = componentwise_min(stitecolor, Color3f(1.f, 1.f, 1.f));
 		
-		EERIE_3DOBJ * eobj = (icicle.type == 0) ? smotte : stite;
+		EERIE_3DOBJ * eobj = (icicle.type == 0) ? smotte.get() : stite.get();
 		
 		Draw3DObject(eobj, stiteangle, icicle.pos, icicle.size, stitecolor, mat);
 		

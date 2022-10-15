@@ -175,10 +175,10 @@ TextureContainer * GoldCoinsTC[MAX_GOLD_COINS_VISUALS]; // Gold Coins Icons
 
 Vec2s DANAEMouse;
 Vec3f g_moveto;
-EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];// 3D Objects For Gold Coins
-EERIE_3DOBJ * arrowobj = nullptr; // 3D Object for arrows
-EERIE_3DOBJ * cameraobj = nullptr; // Camera 3D Object // NEEDTO: Remove for Final
-EERIE_3DOBJ * markerobj = nullptr; // Marker 3D Object // NEEDTO: Remove for Final
+std::unique_ptr<EERIE_3DOBJ> GoldCoinsObj[MAX_GOLD_COINS_VISUALS];// 3D Objects For Gold Coins
+std::unique_ptr<EERIE_3DOBJ> arrowobj = nullptr; // 3D Object for arrows
+std::unique_ptr<EERIE_3DOBJ> cameraobj = nullptr; // Camera 3D Object // NEEDTO: Remove for Final
+std::unique_ptr<EERIE_3DOBJ> markerobj = nullptr; // Marker 3D Object // NEEDTO: Remove for Final
 
 Vec2s g_dragStartPos;
 Entity * COMBINE = nullptr;
@@ -763,7 +763,7 @@ void ManageCombatModeAnimations() {
 			if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE_PART_1] && (layer1.flags & EA_ANIMEND)) {
 				player.m_aimTime = 0;
 				changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE_PART_2]);
-				EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, arrowobj, "left_attach", "attach", nullptr);
+				EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, arrowobj.get(), "left_attach", "attach", nullptr);
 			}
 			
 			// Now go for strike cycle...
@@ -772,7 +772,7 @@ void ManageCombatModeAnimations() {
 				player.m_aimTime = PlatformDuration::ofRaw(1);
 			} else if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE_CYCLE]) {
 				
-				ActionPoint attach = GetActionPointIdx(arrowobj, "attach");
+				ActionPoint attach = GetActionPointIdx(arrowobj.get(), "attach");
 				if(attach == ActionPoint()) {
 					attach = ActionPoint(arrowobj->origin);
 				}
@@ -854,7 +854,7 @@ void ManageCombatModeAnimations() {
 				
 				// Launch the arrow
 				
-				EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, arrowobj);
+				EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, arrowobj.get());
 				changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE]);
 				SendIOScriptEvent(nullptr, io, SM_STRIKE, "bow");
 				StrikeAimtime();
@@ -915,14 +915,14 @@ void ManageCombatModeAnimations() {
 				
 				float damages = wd * (1.f + (player.m_skillFull.projectile + player.m_attributeFull.dexterity) * 0.02f);
 				
-				ARX_THROWN_OBJECT_Throw(EntityHandle_Player, pos, vect, gravity, arrowobj, attach, quat,
+				ARX_THROWN_OBJECT_Throw(EntityHandle_Player, pos, vect, gravity, arrowobj.get(), attach, quat,
 				                        damages, poisonous);
 				
 				if(sp_max) {
 					for(int i = -2; i <= 2; i++) {
 						if(i != 0) {
 							Vec3f vect2 = VRotateY(vect, 4.f * float(i));
-							ARX_THROWN_OBJECT_Throw(EntityHandle_Player, pos, vect2, gravity, arrowobj, attach, quat,
+							ARX_THROWN_OBJECT_Throw(EntityHandle_Player, pos, vect2, gravity, arrowobj.get(), attach, quat,
 							                        damages, poisonous);
 						}
 					}
@@ -940,7 +940,7 @@ void ManageCombatModeAnimations() {
 					changeAnimation(io, 1, alist[ANIM_MISSILE_WAIT], EA_LOOP);
 					player.m_aimTime = 0;
 					player.m_weaponBlocked = AnimationDuration::ofRaw(-1);
-					EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, arrowobj);
+					EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, arrowobj.get());
 				}
 			}
 			break;
@@ -1088,7 +1088,7 @@ void ManageCombatModeAnimationsEND() {
 						} else {
 							changeAnimation(io, 1, alist[ANIM_MISSILE_WAIT]);
 						}
-						EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, arrowobj);
+						EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, arrowobj.get());
 					} else if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE_PART_1]) {
 						// TODO why no AcquireLastAnim()?
 						ANIM_Set(layer1, alist[ANIM_MISSILE_STRIKE_PART_2]);

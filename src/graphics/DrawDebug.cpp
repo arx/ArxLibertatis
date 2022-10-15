@@ -19,6 +19,7 @@
 
 #include "graphics/DrawDebug.h"
 
+#include <memory>
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -73,8 +74,8 @@
 extern bool EXTERNALVIEW; // *sigh*
 
 static TextureContainer * g_lightSourceTexture = nullptr;
-static EERIE_3DOBJ * g_fogObject = nullptr;
-static EERIE_3DOBJ * g_nodeObject = nullptr;
+static std::unique_ptr<EERIE_3DOBJ> g_fogObject;
+static std::unique_ptr<EERIE_3DOBJ> g_nodeObject;
 
 const float DebugTextMaxDistance = 1000.f;
 const float DebugPhysicsMaxDistance = 2000.f;
@@ -86,10 +87,8 @@ void drawDebugInitialize() {
 }
 
 void drawDebugRelease() {
-	delete g_fogObject;
-	g_fogObject = nullptr;
-	delete g_nodeObject;
-	g_nodeObject = nullptr;
+	g_fogObject = { };
+	g_nodeObject = { };
 }
 
 enum DebugViewType {
@@ -323,7 +322,7 @@ static void drawDebugPathFinding() {
 			mat.setBlendType(RenderMaterial::Opaque);
 			mat.setDepthTest(true);
 			
-			Draw3DObject(g_nodeObject, angle, g_anchors[k0].pos, scale, Color3f::white, mat);
+			Draw3DObject(g_nodeObject.get(), angle, g_anchors[k0].pos, scale, Color3f::white, mat);
 		}
 		
 		// Show entity ID at the active node
@@ -354,7 +353,7 @@ static void drawDebugFogs() {
 			continue;
 		}
 		
-		Draw3DObject(g_fogObject, Anglef(0.f, 0.f, 0.f), fog.pos, Vec3f(1.f), Color3f::white, mat);
+		Draw3DObject(g_fogObject.get(), Anglef(0.f, 0.f, 0.f), fog.pos, Vec3f(1.f), Color3f::white, mat);
 		
 		if(fog.directional) {
 			drawLine(fog.pos, fog.pos + fog.move * 50.f, Color::white);

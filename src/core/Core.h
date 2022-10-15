@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_CORE_CORE_H
 
 #include <stddef.h>
+#include <memory>
 #include <string>
 
 #include "core/TimeTypes.h"
@@ -66,12 +67,13 @@ struct EERIE_3DOBJ;
 const size_t MAX_GOLD_COINS_VISUALS = 7;
 extern TextureContainer * GoldCoinsTC[MAX_GOLD_COINS_VISUALS];
 
-extern EERIE_3DOBJ * cameraobj;
-extern EERIE_3DOBJ * markerobj;
+extern std::unique_ptr<EERIE_3DOBJ> arrowobj;
+extern std::unique_ptr<EERIE_3DOBJ> cameraobj;
+extern std::unique_ptr<EERIE_3DOBJ> markerobj;
 extern Vec2s DANAEMouse;
 extern Vec3f g_moveto;
 extern Vec2s g_dragStartPos;
-extern EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];
+extern std::unique_ptr<EERIE_3DOBJ> GoldCoinsObj[MAX_GOLD_COINS_VISUALS];
 extern Entity * COMBINE;
 extern res::path LastLoadedScene;
 

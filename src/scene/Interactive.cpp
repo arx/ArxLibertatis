@@ -671,7 +671,7 @@ bool ARX_INTERACTIVE_USEMESH(Entity * io, const res::path & temp) {
 	delete io->obj, io->obj = nullptr;
 	
 	bool pbox = (!(io->ioflags & IO_FIX) && !(io->ioflags & IO_NPC));
-	io->obj = loadObject(io->usemesh, pbox);
+	io->obj = loadObject(io->usemesh, pbox).release();
 	
 	EERIE_COLLISION_Cylinder_Create(io);
 	return true;
@@ -1369,7 +1369,7 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 	}
 	
 	if(!io->obj && !(flags & NO_MESH)) {
-		io->obj = loadObject(object, false);
+		io->obj = loadObject(object, false).release();
 	}
 	
 	io->infracolor = Color3f(0.6f, 0.f, 1.f);
@@ -1427,7 +1427,7 @@ static Entity * AddCamera(const res::path & classPath, EntityInstance instance) 
 	
 	io->lastpos.y = io->initpos.y = io->pos.y += player.baseHeight();
 	
-	io->obj = cameraobj;
+	io->obj = cameraobj.get();
 	
 	io->_camdata = new IO_CAMDATA();
 	io->_camdata->cam = g_playerCamera;
@@ -1479,7 +1479,7 @@ static Entity * AddMarker(const res::path & classPath, EntityInstance instance) 
 	
 	io->lastpos.y = io->initpos.y = io->pos.y += player.baseHeight();
 	
-	io->obj = markerobj;
+	io->obj = markerobj.get();
 	io->ioflags = IO_MARKER;
 	io->collision = 0;
 	
@@ -1593,7 +1593,7 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	}
 	
 	if(!io->obj && !(flags & NO_MESH)) {
-		io->obj = loadObject(object, false);
+		io->obj = loadObject(object, false).release();
 	}
 	
 	io->_npcdata->pathfind.listnb = -1;
@@ -1689,11 +1689,11 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	}
 
 	if(io->ioflags & IO_GOLD) {
-		io->obj = GoldCoinsObj[0];
+		io->obj = GoldCoinsObj[0].get();
 	}
 	
 	if(!io->obj && !(flags & NO_MESH)) {
-		io->obj = loadObject(object);
+		io->obj = loadObject(object).release();
 	}
 	
 	TextureContainer * tc;
@@ -2290,7 +2290,7 @@ void UpdateGoldObject(Entity * io) {
 			num = 6;
 		}
 		
-		io->obj = GoldCoinsObj[num];
+		io->obj = GoldCoinsObj[num].get();
 		io->m_icon = GoldCoinsTC[num];
 		
 	}

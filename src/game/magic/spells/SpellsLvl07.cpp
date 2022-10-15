@@ -468,7 +468,7 @@ void IceFieldSpell::Update() {
 			stitecolor.b = 1;
 		}
 		
-		EERIE_3DOBJ * obj = (tType[i] == 0) ? smotte : stite;
+		EERIE_3DOBJ * obj = (tType[i] == 0) ? smotte.get() : stite.get();
 		
 		Draw3DObject(obj, stiteangle, stitepos, stitescale, stitecolor, mat);
 	}
@@ -688,8 +688,8 @@ void ConfuseSpell::Update() {
 	
 	{
 		AnimationDuration delta = toAnimationDuration(g_gameTime.lastFrameDuration());
-		EERIEDrawAnimQuatUpdate(spapi, animlayer, stiteangle, eCurPos, delta, nullptr, false);
-		EERIEDrawAnimQuatRender(spapi, eCurPos, nullptr, 0.f);
+		EERIEDrawAnimQuatUpdate(spapi.get(), animlayer, stiteangle, eCurPos, delta, nullptr, false);
+		EERIEDrawAnimQuatRender(spapi.get(), eCurPos, nullptr, 0.f);
 	}
 	
 	size_t count = m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 0.18f);

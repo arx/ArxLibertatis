@@ -19,6 +19,8 @@
 
 #include "game/spell/FlyingEye.h"
 
+#include <memory>
+
 #include "core/Core.h"
 #include "core/GameTime.h"
 
@@ -34,16 +36,17 @@ EYEBALL_DEF eyeball;
 float MagicSightFader = 0.f;
 
 static TextureContainer * Flying_Eye = nullptr;
-static EERIE_3DOBJ * eyeballobj = nullptr; // EyeBall 3D Object
+static std::unique_ptr<EERIE_3DOBJ> eyeballobj; // EyeBall 3D Object
 
 void FlyingEye_Init() {
+	
 	Flying_Eye = TextureContainer::LoadUI("graph/particles/flying_eye_fx");
 	eyeballobj = loadObject("editor/obj3d/eyeball.teo");
+	
 }
 
 void FlyingEye_Release() {
-	delete eyeballobj;
-	eyeballobj = nullptr;
+	eyeballobj = { };
 }
 
 void DrawMagicSightInterface() {
@@ -77,14 +80,14 @@ void DrawMagicSightInterface() {
 	
 }
 
-
 void ARXDRAW_DrawEyeBall() {
+	
 	if(eyeball.exist == 0 || !eyeballobj) {
 		return;
 	}
 	
 	float d;
-
+	
 	if(eyeball.exist < 0) {
 		d = -eyeball.exist * (1.0f / 100);
 		eyeball.exist++;
@@ -93,13 +96,13 @@ void ARXDRAW_DrawEyeBall() {
 	} else {
 		return;
 	}
-
+	
 	Anglef angle = eyeball.angle;
 	angle.setYaw(MAKEANGLE(180.f - angle.getYaw()));
-
+	
 	Vec3f pos = eyeball.pos;
 	pos.y += eyeball.floating;
-
+	
 	Vec3f scale = Vec3f(d);
 	Color3f rgb = Color3f::gray(d);
 	
@@ -107,5 +110,6 @@ void ARXDRAW_DrawEyeBall() {
 	mat.setDepthTest(true);
 	mat.setBlendType(RenderMaterial::Additive);
 	
-	Draw3DObject(eyeballobj, angle, pos, scale, rgb, mat);
+	Draw3DObject(eyeballobj.get(), angle, pos, scale, rgb, mat);
+	
 }
