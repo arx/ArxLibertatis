@@ -744,10 +744,6 @@ struct SavedPathfindTarget {
 
 const size_t SAVED_MAX_EXTRA_ROTATE = 4;
 
-inline VertexGroupId saved_toObjGroup(short value) {
-	return VertexGroupId(value);
-}
-
 inline short saved_fromObjGroup(VertexGroupId value) {
 	return value.handleData();
 }
@@ -757,14 +753,6 @@ struct SavedExtraRotate {
 	s32 flags;
 	s16 group_number[SAVED_MAX_EXTRA_ROTATE];
 	SavedAnglef group_rotate[SAVED_MAX_EXTRA_ROTATE];
-	
-	operator EERIE_EXTRA_ROTATE() const {
-		EERIE_EXTRA_ROTATE a;
-		static_assert(SAVED_MAX_EXTRA_ROTATE <= MAX_EXTRA_ROTATE, "array size mismatch");
-		std::transform(group_number, group_number + SAVED_MAX_EXTRA_ROTATE, a.group_number.begin(), saved_toObjGroup);
-		std::copy(group_rotate, group_rotate + SAVED_MAX_EXTRA_ROTATE, a.group_rotate.begin());
-		return a;
-	}
 	
 	SavedExtraRotate & operator=(const EERIE_EXTRA_ROTATE & b) {
 		flags = 0;

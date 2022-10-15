@@ -1150,6 +1150,7 @@ static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 			}
 			
 			if(io->_npcdata->ex_rotate) {
+				// TODO this breaks when the object changes between saving and loading
 				ais.saveflags |= SAVEFLAGS_EXTRA_ROTATE;
 				as->ex_rotate = *io->_npcdata->ex_rotate;
 			}
@@ -2030,7 +2031,19 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 					if(io->_npcdata->ex_rotate == nullptr) {
 						io->_npcdata->ex_rotate = new EERIE_EXTRA_ROTATE();
 					}
-					*io->_npcdata->ex_rotate = as->ex_rotate;
+					static_assert(SAVED_MAX_EXTRA_ROTATE <= MAX_EXTRA_ROTATE, "array size mismatch");
+					for(size_t i = 0; i < MAX_EXTRA_ROTATE; i++) {
+						if(!io->obj ||
+						   as->ex_rotate.group_number[i] < 0 ||
+						   size_t(as->ex_rotate.group_number[i]) >= io->obj->grouplist.size()) {
+							LogError << "Could not load extra rotation for " << io->idString();
+							io->_npcdata->ex_rotate->group_number[i] = { };
+							io->_npcdata->ex_rotate->group_rotate[i] = { };
+						} else {
+							io->_npcdata->ex_rotate->group_number[i] = VertexGroupId(as->ex_rotate.group_number[i]);
+							io->_npcdata->ex_rotate->group_rotate[i] = as->ex_rotate.group_rotate[i];
+						}
+					}
 				}
 				
 				io->_npcdata->blood_color = Color::fromBGRA(ColorBGRA(as->blood_color));
