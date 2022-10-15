@@ -174,7 +174,6 @@ struct EERIE_FASTACCESS {
 	VertexId primary_attach;
 	VertexId left_attach;
 	VertexId weapon_attach;
-	ActionPoint secondary_attach;
 	ObjVertHandle head_group_origin;
 	ObjVertGroup head_group;
 	ActionPoint fire;
