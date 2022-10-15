@@ -473,7 +473,7 @@ static void Cedric_ApplyLighting(ShaderLight lights[], size_t lightsCount, EERIE
 		for(VertexId vertex : eobj->m_boneVertices[i]) {
 			const Vec3f & position = eobj->vertexWorldPositions[vertex].v;
 			Vec3f normal = quat * eobj->vertexlist[vertex].norm;
-			eobj->vertexColors[size_t(vertex)] = ApplyLight(lights, lightsCount, position, normal, colorMod);
+			eobj->vertexColors[vertex] = ApplyLight(lights, lightsCount, position, normal, colorMod);
 		}
 	}
 	
@@ -689,26 +689,26 @@ void DrawEERIEInter_Render(EERIE_3DOBJ * eobj, const TransformInfo & t, Entity *
 			Vec3f normal = t.rotation * (useFaceNormal ? face.norm : eobj->vertexlist[face.vid[n]].norm);
 			float diffuse = useFaceNormal ? 0.5f : 1.f;
 			
-			eobj->vertexColors[size_t(face.vid[n])] = ApplyLight(lights, lightsCount, position, normal, colorMod, diffuse);
+			eobj->vertexColors[face.vid[n]] = ApplyLight(lights, lightsCount, position, normal, colorMod, diffuse);
 			
 			tvList[n].p = Vec3f(eobj->vertexClipPositions[face.vid[n]]);
 			tvList[n].w = eobj->vertexClipPositions[face.vid[n]].w;
 			tvList[n].uv.x = face.u[n];
 			tvList[n].uv.y = face.v[n];
-
+			
 			// Treat WATER Polys (modify UVs)
 			if(face.facetype & POLY_WATER) {
 				tvList[n].uv += getWaterFxUvOffset(WATEREFFECT, eobj->vertexlist[face.vid[n]].v) * (0.3f * 0.05f);
 			}
-
+			
 			if(face.facetype & POLY_GLOW) {
 				// unaffected by light
 				tvList[n].color = Color::white.toRGB();
 			} else {
 				// Normal Illuminations
-				tvList[n].color = eobj->vertexColors[size_t(face.vid[n])];
+				tvList[n].color = eobj->vertexColors[face.vid[n]];
 			}
-
+			
 			// TODO copy-paste
 			if(io && player.m_improve) {
 				
@@ -1037,7 +1037,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 			tvList[n].p = Vec3f(eobj->vertexClipPositions[face.vid[n]]);
 			tvList[n].w = eobj->vertexClipPositions[face.vid[n]].w;
 			tvList[n].uv = Vec2f(face.u[n], face.v[n]);
-			tvList[n].color = eobj->vertexColors[size_t(face.vid[n])];
+			tvList[n].color = eobj->vertexColors[face.vid[n]];
 		}
 		
 		if((face.facetype & POLY_TRANS) || invisibility > 0.f) {
