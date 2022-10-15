@@ -208,16 +208,17 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 
 ObjSelection EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, std::string_view selname) {
 	
-	if(!obj)
-		return ObjSelection();
+	if(!obj) {
+		return { };
+	}
 	
-	for(size_t i = 0; i < obj->selections.size(); i++) {
-		if(obj->selections[i].name == selname) {
-			return ObjSelection(i);
+	for(ObjSelection selection : obj->selections.handles()) {
+		if(obj->selections[selection].name == selname) {
+			return selection;
 		}
 	}
 	
-	return ObjSelection();
+	return { };
 }
 
 VertexGroupId EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, std::string_view groupname) {

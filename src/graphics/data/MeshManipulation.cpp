@@ -129,7 +129,7 @@ bool IsInSelection(const EERIE_3DOBJ * obj, VertexId vert, ObjSelection tw) {
 		return false;
 	}
 	
-	const EERIE_SELECTIONS & sel = obj->selections[tw.handleData()];
+	const EERIE_SELECTIONS & sel = obj->selections[tw];
 	
 	return std::find(sel.selected.begin(), sel.selected.end(), vert) != sel.selected.end();
 }
@@ -230,9 +230,9 @@ static void addVertexToGroup(EERIE_3DOBJ & obj, VertexGroup & group, const EERIE
 static void copySelection(const EERIE_3DOBJ & source, ObjSelection sourceSelection,
                           EERIE_3DOBJ & dest, ObjSelection destSelection) {
 	
-	for(VertexId sourceVertex : source.selections[sourceSelection.handleData()].selected) {
+	for(VertexId sourceVertex : source.selections[sourceSelection].selected) {
 		if(VertexId destVertex = getEquivalentVertex(dest, source.vertexlist[sourceVertex].v)) {
-			auto & selection = dest.selections[destSelection.handleData()].selected;
+			auto & selection = dest.selections[destSelection].selected;
 			if(std::find(selection.begin(), selection.end(), destVertex) == selection.end()) {
 				selection.push_back(destVertex);
 			}
@@ -256,25 +256,23 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 	ObjSelection sel_legs2;
 	
 	// First we retreive selection groups indexes
-	for(size_t i = 0; i < obj1->selections.size(); i++) { // TODO iterator
-		ObjSelection sel = ObjSelection(i);
-		if(obj1->selections[i].name == "head") {
-			sel_head1 = sel;
-		} else if(obj1->selections[i].name == "chest") {
-			sel_torso1 = sel;
-		} else if(obj1->selections[i].name == "leggings") {
-			sel_legs1 = sel;
+	for(ObjSelection selection : obj1->selections.handles()) {
+		if(obj1->selections[selection].name == "head") {
+			sel_head1 = selection;
+		} else if(obj1->selections[selection].name == "chest") {
+			sel_torso1 = selection;
+		} else if(obj1->selections[selection].name == "leggings") {
+			sel_legs1 = selection;
 		}
 	}
 	
-	for(size_t i = 0; i < obj2->selections.size(); i++) { // TODO iterator
-		ObjSelection sel = ObjSelection(i);
-		if(obj2->selections[i].name == "head") {
-			sel_head2 = sel;
-		} else if(obj2->selections[i].name == "chest") {
-			sel_torso2 = sel;
-		} else if(obj2->selections[i].name == "leggings") {
-			sel_legs2 = sel;
+	for(ObjSelection selection : obj2->selections.handles()) {
+		if(obj2->selections[selection].name == "head") {
+			sel_head2 = selection;
+		} else if(obj2->selections[selection].name == "chest") {
+			sel_torso2 = selection;
+		} else if(obj2->selections[selection].name == "leggings") {
+			sel_legs2 = selection;
 		}
 	}
 	
@@ -424,9 +422,9 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 	
 	// Recreate Selection Groups (only the 3 selections needed to reiterate mesh tweaking)
 	work->selections.resize(3);
-	work->selections[0].name = "head";
-	work->selections[1].name = "chest";
-	work->selections[2].name = "leggings";
+	work->selections[ObjSelection(0)].name = "head";
+	work->selections[ObjSelection(1)].name = "chest";
+	work->selections[ObjSelection(2)].name = "leggings";
 	if(tw == TWEAK_HEAD) {
 		copySelection(*obj2, sel_head2, *work, ObjSelection(0));
 	} else {
@@ -444,33 +442,29 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 	}
 	
 	// Now recreates other selections...
-	for(size_t i = 0; i < obj1->selections.size(); i++) {
+	for(ObjSelection selection : obj1->selections.handles()) {
 		
-		if(EERIE_OBJECT_GetSelection(work.get(), obj1->selections[i].name)) {
+		if(EERIE_OBJECT_GetSelection(work.get(), obj1->selections[selection].name)) {
 			continue;
 		}
 		
-		size_t num = work->selections.size();
-		work->selections.resize(num + 1);
-		work->selections[num].name = obj1->selections[i].name;
-		copySelection(*obj1, ObjSelection(i), *work, ObjSelection(num));
+		work->selections.emplace_back().name = obj1->selections[selection].name;
+		copySelection(*obj1, selection, *work,  work->selections.last());
 		
-		if(ObjSelection ii = EERIE_OBJECT_GetSelection(obj2, obj1->selections[i].name)) {
-			copySelection(*obj2, ii, *work, ObjSelection(num));
+		if(ObjSelection ii = EERIE_OBJECT_GetSelection(obj2, obj1->selections[selection].name)) {
+			copySelection(*obj2, ii, *work,  work->selections.last());
 		}
 		
 	}
 	
-	for(size_t i = 0; i < obj2->selections.size(); i++) {
+	for(ObjSelection selection : obj2->selections.handles()) {
 		
-		if(EERIE_OBJECT_GetSelection(work.get(), obj2->selections[i].name)) {
+		if(EERIE_OBJECT_GetSelection(work.get(), obj2->selections[selection].name)) {
 			continue;
 		}
 		
-		size_t num = work->selections.size();
-		work->selections.resize(num + 1);
-		work->selections[num].name = obj2->selections[i].name;
-		copySelection(*obj2, ObjSelection(i), *work, ObjSelection(num));
+		work->selections.emplace_back().name = obj2->selections[selection].name;
+		copySelection(*obj2, selection, *work,  work->selections.last());
 		
 	}
 	

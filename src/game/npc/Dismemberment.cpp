@@ -45,7 +45,7 @@ static bool IsNearSelection(EERIE_3DOBJ * obj, VertexId vert, ObjSelection tw) {
 		return false;
 	}
 	
-	for(VertexId vertex : obj->selections[tw.handleData()].selected) {
+	for(VertexId vertex : obj->selections[tw].selected) {
 		float d = glm::distance(obj->vertexlist[vertex].v, obj->vertexlist[vert].v);
 		if(d < 8.f) {
 			return true;
@@ -65,7 +65,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	}
 	
 	EERIE_3DOBJ * from = ioo->obj;
-	if(!from || num == ObjSelection() || size_t(num.handleData()) >= from->selections.size()) {
+	if(!from || !num) {
 		return;
 	}
 	
@@ -82,7 +82,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 		}
 	}
 	
-	size_t nvertex = from->selections[num.handleData()].selected.size();
+	size_t nvertex = from->selections[num].selected.size();
 	arx_assume(nvertex > 0);
 	for(EERIE_FACE & face : from->facelist) {
 		if(face.texid == gore
@@ -102,7 +102,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	
 	util::HandleVector<VertexId, VertexId> equival(from->vertexlist.size());
 	
-	const EERIE_SELECTIONS & cutSelection = from->selections[num.handleData()];
+	const EERIE_SELECTIONS & cutSelection = from->selections[num];
 	
 	arx_assert(0 < cutSelection.selected.size());
 	
@@ -392,16 +392,17 @@ static bool applyCuts(Entity & npc) {
 
 void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos) {
 	
-	if(!target || !(target->ioflags & IO_NPC))
+	if(!target || !(target->ioflags & IO_NPC)) {
 		return;
-
-	if(target->gameFlags & GFLAG_NOGORE)
+	}
+	
+	if(target->gameFlags & GFLAG_NOGORE) {
 		return;
-
+	}
+	
 	float mindistSqr = std::numeric_limits<float>::max();
-	ObjSelection numsel = ObjSelection();
 	long goretex = -1;
-
+	
 	for(size_t i = 0; i < target->obj->texturecontainer.size(); i++) {
 		if(target->obj->texturecontainer[i]
 		   && boost::contains(target->obj->texturecontainer[i]->m_texName.string(), "gore")
@@ -410,53 +411,48 @@ void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos) {
 			break;
 		}
 	}
-
-	for(size_t i = 0; i < target->obj->selections.size(); i++) {
-		ObjSelection sel = ObjSelection(i);
+	
+	ObjSelection numsel;
+	for(ObjSelection selection : target->obj->selections.handles()) {
 		
-		if(!target->obj->selections[i].selected.empty()
-		   && boost::contains(target->obj->selections[i].name, "cut_")) {
-			
-			DismembermentFlag fll = GetCutFlag(target->obj->selections[i].name);
-
-			if(IsAlreadyCut(target, fll))
-				continue;
-
-			long out = 0;
-
-			for(size_t ll = 0; ll < target->obj->facelist.size(); ll++) {
-				EERIE_FACE & face = target->obj->facelist[ll];
-
-				if(face.texid != goretex) {
-					if(   IsInSelection(target->obj, face.vid[0], sel)
-					   || IsInSelection(target->obj, face.vid[1], sel)
-					   || IsInSelection(target->obj, face.vid[2], sel)
-					) {
-						if(face.facetype & POLY_HIDE) {
-							out++;
-						}
-					}
-				}
-			}
-			
-			if(out < 3) {
-				VertexId vertex = target->obj->selections[i].selected[0];
-				float dist = arx::distance2(*pos, target->obj->vertexWorldPositions[vertex].v);
-				if(dist < mindistSqr) {
-					mindistSqr = dist;
-					numsel = sel;
-				}
-			}
-			
+		if(target->obj->selections[selection].selected.empty() ||
+		   !boost::contains(target->obj->selections[selection].name, "cut_")) {
+			continue;
 		}
+		
+		if(IsAlreadyCut(target, GetCutFlag(target->obj->selections[selection].name))) {
+			continue;
+		}
+		
+		long out = 0;
+		for(EERIE_FACE & face : target->obj->facelist) {
+			if(face.texid != goretex &&
+			   (IsInSelection(target->obj, face.vid[0], selection) ||
+			    IsInSelection(target->obj, face.vid[1], selection) ||
+			    IsInSelection(target->obj, face.vid[2], selection)) &&
+			   (face.facetype & POLY_HIDE)) {
+				out++;
+			}
+		}
+		
+		if(out < 3) {
+			VertexId vertex = target->obj->selections[selection].selected[0];
+			float dist = arx::distance2(*pos, target->obj->vertexWorldPositions[vertex].v);
+			if(dist < mindistSqr) {
+				mindistSqr = dist;
+				numsel = selection;
+			}
+		}
+		
 	}
-
-	if(numsel == ObjSelection())
+	
+	if(!numsel) {
 		return; // Nothing to cut...
-
+	}
+	
 	bool hid = false;
 	if(mindistSqr < square(60)) { // can only cut a close part...
-		DismembermentFlag fl = GetCutFlag(target->obj->selections[numsel.handleData()].name);
+		DismembermentFlag fl = GetCutFlag(target->obj->selections[numsel].name);
 		if(fl && !(target->_npcdata->cuts & fl)) {
 			target->_npcdata->cuts |= fl;
 			hid = applyCuts(*target);
