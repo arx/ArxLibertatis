@@ -99,11 +99,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Platform.h"
 
-#include "scene/Interactive.h"
 #include "scene/GameSound.h"
-#include "scene/LoadLevel.h"
-#include "scene/SaveFormat.h"
+#include "scene/Interactive.h"
 #include "scene/Light.h"
+#include "scene/LoadLevel.h"
+#include "scene/Object.h"
+#include "scene/SaveFormat.h"
 
 #include "script/Script.h"
 #include "script/ScriptEvent.h"
@@ -970,6 +971,7 @@ static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 					LogError << "Entity " << io->idString() << " has more than " << MAX_LINKED_SAVE << " linked entities";
 					break;
 				}
+				// TODO this breaks when the object changes between saving and loading
 				ais.linked_data[ais.nb_linked].lgroup = linked.lgroup.handleData();
 				ais.linked_data[ais.nb_linked].lidx = linked.lidx.handleData();
 				ais.linked_data[ais.nb_linked].lidx2 = linked.lidx2.handleData();
@@ -2139,18 +2141,40 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 		ARX_INTERACTIVE_APPLY_TWEAK_INFO(io);
 		
 		if(io->obj) {
-			
-			io->obj->linked.resize(ais->nb_linked);
-			
-			if(!io->obj->linked.empty()) {
-				for(s32 i = 0; i < ais->nb_linked; i++) {
-					io->obj->linked[i].lgroup = ObjVertGroup(ais->linked_data[i].lgroup);
-					io->obj->linked[i].lidx = ActionPoint(ais->linked_data[i].lidx);
-					io->obj->linked[i].lidx2 = ActionPoint(ais->linked_data[i].lidx2);
-					Entity * iooo = ConvertToValidIO(ais->linked_data[i].linked_id);
-					io->obj->linked[i].io = iooo;
-					io->obj->linked[i].obj = iooo ? iooo->obj : nullptr;
+			io->obj->linked.reserve(ais->nb_linked);
+			for(s32 i = 0; i < ais->nb_linked; i++) {
+				Entity * linked = ConvertToValidIO(ais->linked_data[i].linked_id);
+				if(arx_unlikely(!linked || !linked->obj)) {
+					LogError << "Could not load link from " << io->idString() << " to "
+					         << util::loadString(ais->linked_data[i].linked_id) << ": entity missing";
+					continue;
 				}
+				if(arx_unlikely(ais->linked_data[i].lidx < 0 ||
+				                size_t(ais->linked_data[i].lidx) >= io->obj->vertexlist.size())) {
+					LogError << "Could not load link from " << io->idString() << "[" << ais->linked_data[i].lidx
+					         << "] to " << linked->idString() << ": vertex out of bounds";
+					continue;
+				}
+				ActionPoint vertex = ActionPoint(ais->linked_data[i].lidx);
+				ObjVertGroup group = GetActionPointGroup(io->obj, vertex);
+				if(arx_unlikely(!group)) {
+					LogError << "Could not load link from " << io->idString() << "[" << ais->linked_data[i].lidx
+					         << "] to " << linked->idString() << ": vertex not in group";
+					continue;
+				}
+				if(arx_unlikely(ais->linked_data[i].lidx2 < 0 ||
+				                size_t(ais->linked_data[i].lidx2) >= linked->obj->vertexlist.size())) {
+					LogError << "Could not load link from " << io->idString() << " to "
+					         << util::loadString(ais->linked_data[i].linked_id)
+					         << "[" << ais->linked_data[i].lidx2 << "]: vertex out of bounds";
+					continue;
+				}
+				EERIE_LINKED & link = io->obj->linked.emplace_back();
+				link.lgroup = group;
+				link.lidx = vertex;
+				link.lidx2 = ActionPoint(ais->linked_data[i].lidx2);
+				link.io = linked;
+				link.obj = linked->obj;
 			}
 		}
 		
