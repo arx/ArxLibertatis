@@ -261,8 +261,8 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		auto & vertices = eobj->m_boneVertices[0];
 		
 		// Add all vertices to the bone
-		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
-			vertices.push_back(VertexId(i));
+		for(VertexId vertex : eobj->vertexlist.handles()) {
+			vertices.push_back(vertex);
 		}
 		
 		bone.father = -1;
