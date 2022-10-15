@@ -14,6 +14,7 @@ Graphics:
 * Fixed rendering issues with the levitate spell effect
 * Fixed missing fire animation in the fire field spell
 * Fixed fogs starting out with 0 particles after coming into view
+* Windows: Disabled "Crisp" Alpha Cutout AA with Intel graphics drivers to avoid rendering issues and crashes
 
 Interface:
 

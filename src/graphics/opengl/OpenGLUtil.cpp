@@ -110,14 +110,12 @@ OpenGLInfo::OpenGLInfo()
 	// http://arx.vg/645 and duplicates, before Crisp Alpha Cutout AA was added so other functionality may
 	// also be buggy with this driver.
 	//
-	// For Intel's Iris Xe drivers, it no longer crashes but causes the screen to be black instead.
-	// See bug http://arx.vg/1603 (2022)
+	// For "Intel(R) UHD Graphics" (version 27.20.100.9664) and "Intel(R) Iris(R) Xe Graphics" drivers
+	// (version 27.20.100.9316), it no longer crashes but causes the screen to be black instead.
+	// See https://steamcommunity.com/app/1700/discussions/0/3385042609884865430/ (2022)
+	// and bug http://arx.vg/1603 (2022)
 	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-	if(!isES() && boost::equals(vendor(), "Intel") &&
-	   ((boost::starts_with(renderer(), "Intel(R) HD Graphics") &&
-	     boost::contains(versionString(), "Build 10.18.10.")) ||
-	    (boost::starts_with(renderer(), "Intel(R) Iris(R) Xe Graphics") &&
-	     boost::contains(versionString(), "Build 27.20.100.")))) {
+	if(!isES() && boost::equals(vendor(), "Intel")) {
 		m_extensionOverrides.emplace_back("-GL_ARB_sample_shading");
 	}
 	#endif
