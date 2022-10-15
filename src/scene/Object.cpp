@@ -133,7 +133,7 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * object) {
 		return;
 	}
 	
-	object->fastaccess.view_attach       = ActionPoint(size_t(getNamedVertex(object, "view_attach")));
+	object->fastaccess.view_attach       = getNamedVertex(object, "view_attach");
 	object->fastaccess.primary_attach    = ActionPoint(size_t(getNamedVertex(object, "primary_attach")));
 	object->fastaccess.left_attach       = ActionPoint(size_t(getNamedVertex(object, "left_attach")));
 	object->fastaccess.weapon_attach     = ActionPoint(size_t(getNamedVertex(object, "weapon_attach")));

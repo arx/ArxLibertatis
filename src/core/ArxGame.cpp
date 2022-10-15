@@ -1256,12 +1256,12 @@ void ArxGame::updateFirstPersonCamera() {
 		
 		g_playerCamera.angle = player.angle;
 		
-		ActionPoint id = io->obj->fastaccess.view_attach;
-		if(id != ActionPoint()) {
+		VertexId id = io->obj->fastaccess.view_attach;
+		if(id) {
 			
-			g_playerCameraStablePos = g_playerCamera.m_pos = actionPointPosition(io->obj, id);
+			g_playerCameraStablePos = g_playerCamera.m_pos = io->obj->vertexWorldPositions[size_t(id)].v;
 			
-			ObjVertGroup viewGroup = GetActionPointGroup(io->obj, id);
+			ObjVertGroup viewGroup = GetActionPointGroup(io->obj, ActionPoint(size_t(id)));
 			if(viewGroup != ObjVertGroup()) {
 				AnimLayer animlayer[MAX_ANIM_LAYERS];
 				for(size_t i = 0; i < MAX_ANIM_LAYERS; i++) {
@@ -1444,8 +1444,8 @@ void ArxGame::handlePlayerDeath() {
 
 		float DeadCameraDistance = startDistance + (mdist - startDistance) * ((player.DeadTime - startTime) / (endTime - startTime));
 		
-		ActionPoint id  = entities.player()->obj->fastaccess.view_attach;
-		Vec3f targetpos = (id != ActionPoint()) ? actionPointPosition(entities.player()->obj, id) : player.pos;
+		VertexId id  = entities.player()->obj->fastaccess.view_attach;
+		Vec3f targetpos = id ? entities.player()->obj->vertexWorldPositions[size_t(id)].v : player.pos;
 		
 		VertexId id2 = getNamedVertex(entities.player()->obj, "chest2leggings");
 		Vec3f chest = id2 ? entities.player()->obj->vertexWorldPositions[size_t(id2)].v : targetpos;
