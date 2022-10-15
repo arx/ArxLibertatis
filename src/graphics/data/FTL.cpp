@@ -81,7 +81,7 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 	}
 	
 	std::string buffer = pf->read();
-	if(buffer.size() < 3) {
+	if(arx_unlikely(buffer.size() < 3)) {
 		LogError << filename << ": Error loading FTL file";
 		return { };
 	}
@@ -89,7 +89,7 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 	// Check if we have an uncompressed FTL file
 	if(buffer[0] != 'F' || buffer[1] != 'T' || buffer[2] != 'L') {
 		buffer = blast(buffer);
-		if(buffer.size() < 3) {
+		if(arx_unlikely(buffer.size() < 3)) {
 			LogError << filename << ": Error decompressing FTL file";
 			return { };
 		}
@@ -103,13 +103,13 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 	pos += sizeof(ARX_FTL_PRIMARY_HEADER);
 	
 	// Verify FTL file signature
-	if(afph->ident[0] != 'F' || afph->ident[1] != 'T' || afph->ident[2] != 'L') {
+	if(arx_unlikely(afph->ident[0] != 'F' || afph->ident[1] != 'T' || afph->ident[2] != 'L')) {
 		LogError << filename << ": Invalid FTL signature";
 		return { };
 	}
 	
 	// Verify FTL file version
-	if(afph->version != CURRENT_FTL_VERSION) {
+	if(arx_unlikely(afph->version != CURRENT_FTL_VERSION)) {
 		LogError << filename << ": Unexpected FTL version " << afph->version << ", expected "
 		         << CURRENT_FTL_VERSION;
 		return { };
@@ -121,7 +121,7 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 	// Pointer to Secondary Header
 	const ARX_FTL_SECONDARY_HEADER * afsh;
 	afsh = reinterpret_cast<const ARX_FTL_SECONDARY_HEADER *>(dat + pos);
-	if(afsh->offset_3Ddata == -1) {
+	if(arx_unlikely(afsh->offset_3Ddata < 0 || size_t(afsh->offset_3Ddata) >= buffer.size())) {
 		LogError << filename << ": Invalid data offset";
 		return { };
 	}
@@ -134,7 +134,7 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 	af3Ddh = reinterpret_cast<const ARX_FTL_3D_DATA_HEADER *>(dat + pos);
 	pos += sizeof(ARX_FTL_3D_DATA_HEADER);
 	
-	if(af3Ddh->nb_vertex < 0 || size_t(af3Ddh->nb_vertex) > VertexId::max()) {
+	if(arx_unlikely(af3Ddh->nb_vertex < 0 || size_t(af3Ddh->nb_vertex) > VertexId::max())) {
 		LogError << filename << ": Invalid vertex count";
 		return { };
 	}
@@ -144,7 +144,7 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 	object->grouplist.resize(af3Ddh->nb_groups);
 	object->actionlist.resize(af3Ddh->nb_action);
 	object->selections.resize(af3Ddh->nb_selections);
-	if(af3Ddh->origin < 0 || size_t(af3Ddh->origin) >= object->vertexlist.size()) {
+	if(arx_unlikely(af3Ddh->origin < 0 || size_t(af3Ddh->origin) >= object->vertexlist.size())) {
 		LogError << filename << ": Invalid origin vertex";
 		return { };
 	}
@@ -175,7 +175,7 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 		// Copy in all the texture and normals data
 		static_assert(IOPOLYVERT_FTL == IOPOLYVERT, "array size mismatch");
 		for(size_t kk = 0; kk < IOPOLYVERT_FTL; kk++) {
-			if(eff->vid[kk] >= object->vertexlist.size()) {
+			if(arx_unlikely(eff->vid[kk] >= object->vertexlist.size())) {
 				LogError << filename << ": Invalid face vertex";
 				return { };
 			}
@@ -211,12 +211,12 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 		const EERIE_GROUPLIST_FTL * rawGroup = reinterpret_cast<const EERIE_GROUPLIST_FTL *>(dat + pos);
 		pos += sizeof(EERIE_GROUPLIST_FTL);
 		
-		if(rawGroup->nb_index < 0 || size_t(rawGroup->nb_index) > object->vertexlist.size()) {
+		if(arx_unlikely(rawGroup->nb_index < 0 || size_t(rawGroup->nb_index) > object->vertexlist.size())) {
 			LogError << filename << ": Invalid group size";
 			return { };
 		}
 		
-		if(rawGroup->origin < 0 || size_t(rawGroup->origin) >= object->vertexlist.size()) {
+		if(arx_unlikely(rawGroup->origin < 0 || size_t(rawGroup->origin) >= object->vertexlist.size())) {
 			LogError << filename << ": Invalid group vertex";
 			return { };
 		}
@@ -233,7 +233,7 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 		for(VertexId & index : group.indexes) {
 			const s32 vertex = *reinterpret_cast<const s32 *>(dat + pos);
 			pos += sizeof(s32);
-			if(vertex < 0 || size_t(vertex) >= object->vertexlist.size()) {
+			if(arx_unlikely(vertex < 0 || size_t(vertex) >= object->vertexlist.size())) {
 				LogError << filename << ": Invalid group vertex";
 				return { };
 			}
@@ -247,7 +247,7 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 		const EERIE_ACTIONLIST_FTL & rawAction = *reinterpret_cast<const EERIE_ACTIONLIST_FTL *>(dat + pos);
 		pos += sizeof(EERIE_ACTIONLIST_FTL);
 		
-		if(rawAction.idx < 0 || size_t(rawAction.idx) >= object->vertexlist.size()) {
+		if(arx_unlikely(rawAction.idx < 0 || size_t(rawAction.idx) >= object->vertexlist.size())) {
 			LogError << filename << ": Invalid group vertex";
 			return { };
 		}
@@ -263,7 +263,8 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 		const EERIE_SELECTIONS_FTL * rawSelection = reinterpret_cast<const EERIE_SELECTIONS_FTL *>(dat + pos);
 		pos += sizeof(EERIE_SELECTIONS_FTL);
 		
-		if(rawSelection->nb_selected <= 0 || size_t(rawSelection->nb_selected) > object->vertexlist.size()) {
+		if(arx_unlikely(rawSelection->nb_selected <= 0 ||
+		                size_t(rawSelection->nb_selected) > object->vertexlist.size())) {
 			LogError << filename << ": Invalid selection size";
 			return { };
 		}
@@ -278,7 +279,7 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 		for(VertexId & selected : selection.selected) {
 			const s32 vertex = *reinterpret_cast<const s32 *>(dat + pos);
 			pos += sizeof(s32);
-			if(vertex < 0 || size_t(vertex) >= object->vertexlist.size()) {
+			if(arx_unlikely(vertex < 0 || size_t(vertex) >= object->vertexlist.size())) {
 				LogError << filename << ": Invalid selection vertex";
 				return { };
 			}
