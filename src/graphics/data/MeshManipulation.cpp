@@ -175,21 +175,14 @@ static ActionPoint GetActionPoint(const EERIE_3DOBJ * obj, const char * name) {
 static long ObjectAddFace(EERIE_3DOBJ * obj, const EERIE_FACE * face, const EERIE_3DOBJ * srcobj) {
 	
 	// Check Already existing faces
-	for(size_t i = 0; i < obj->facelist.size(); i++) {
-		if(obj->vertexlist[obj->facelist[i].vid[0]].v.x == srcobj->vertexlist[face->vid[0]].v.x
-		   && obj->vertexlist[obj->facelist[i].vid[1]].v.x == srcobj->vertexlist[face->vid[1]].v.x
-		   && obj->vertexlist[obj->facelist[i].vid[2]].v.x == srcobj->vertexlist[face->vid[2]].v.x
-		   && obj->vertexlist[obj->facelist[i].vid[0]].v.y == srcobj->vertexlist[face->vid[0]].v.y
-		   && obj->vertexlist[obj->facelist[i].vid[1]].v.y == srcobj->vertexlist[face->vid[1]].v.y
-		   && obj->vertexlist[obj->facelist[i].vid[2]].v.y == srcobj->vertexlist[face->vid[2]].v.y
-		   && obj->vertexlist[obj->facelist[i].vid[0]].v.z == srcobj->vertexlist[face->vid[0]].v.z
-		   && obj->vertexlist[obj->facelist[i].vid[1]].v.z == srcobj->vertexlist[face->vid[1]].v.z
-		   && obj->vertexlist[obj->facelist[i].vid[2]].v.z == srcobj->vertexlist[face->vid[2]].v.z
-		) {
+	for(const EERIE_FACE & existing : obj->facelist) {
+		if(obj->vertexlist[existing.vid[0]].v == srcobj->vertexlist[face->vid[0]].v &&
+		   obj->vertexlist[existing.vid[1]].v == srcobj->vertexlist[face->vid[1]].v &&
+		   obj->vertexlist[existing.vid[2]].v == srcobj->vertexlist[face->vid[2]].v) {
 			return -1;
 		}
 	}
-
+	
 	VertexId f0 = addVertex(obj, &srcobj->vertexlist[face->vid[0]]);
 	VertexId f1 = addVertex(obj, &srcobj->vertexlist[face->vid[1]]);
 	VertexId f2 = addVertex(obj, &srcobj->vertexlist[face->vid[2]]);
