@@ -145,19 +145,17 @@ static size_t getEquivalentVertex(const EERIE_3DOBJ & obj, Vec3f vertex) {
 	return size_t(-1);
 }
 
-static size_t ObjectAddVertex(EERIE_3DOBJ * obj, const EERIE_VERTEX * vert) {
+static VertexId addVertex(EERIE_3DOBJ * obj, const EERIE_VERTEX * vert) {
 	
 	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
-		if(obj->vertexlist[i].v.x == vert->v.x
-		   && obj->vertexlist[i].v.y == vert->v.y
-		   && obj->vertexlist[i].v.z == vert->v.z
-		) {
-			return i;
+		if(obj->vertexlist[i].v == vert->v) {
+			return VertexId(i);
 		}
 	}
-
+	
 	obj->vertexlist.push_back(*vert);
-	return obj->vertexlist.size() - 1;
+	
+	return VertexId(obj->vertexlist.size() - 1);
 }
 
 static ActionPoint GetActionPoint(const EERIE_3DOBJ * obj, const char * name) {
@@ -192,15 +190,15 @@ static long ObjectAddFace(EERIE_3DOBJ * obj, const EERIE_FACE * face, const EERI
 		}
 	}
 
-	size_t f0 = ObjectAddVertex(obj, &srcobj->vertexlist[face->vid[0]]);
-	size_t f1 = ObjectAddVertex(obj, &srcobj->vertexlist[face->vid[1]]);
-	size_t f2 = ObjectAddVertex(obj, &srcobj->vertexlist[face->vid[2]]);
+	VertexId f0 = addVertex(obj, &srcobj->vertexlist[face->vid[0]]);
+	VertexId f1 = addVertex(obj, &srcobj->vertexlist[face->vid[1]]);
+	VertexId f2 = addVertex(obj, &srcobj->vertexlist[face->vid[2]]);
 	
 	obj->facelist.push_back(*face);
-
-	obj->facelist.back().vid[0] = static_cast<unsigned short>(f0);
-	obj->facelist.back().vid[1] = static_cast<unsigned short>(f1);
-	obj->facelist.back().vid[2] = static_cast<unsigned short>(f2);
+	
+	obj->facelist.back().vid[0] = u16(f0);
+	obj->facelist.back().vid[1] = u16(f1);
+	obj->facelist.back().vid[2] = u16(f2);
 	obj->facelist.back().texid = 0;
 	
 	for(size_t i = 0; i < obj->texturecontainer.size(); i++) {
@@ -210,13 +208,13 @@ static long ObjectAddFace(EERIE_3DOBJ * obj, const EERIE_FACE * face, const EERI
 			break;
 		}
 	}
-
+	
 	return obj->facelist.size() - 1;
 }
 
 static void ObjectAddAction(EERIE_3DOBJ * obj, std::string_view name, const EERIE_VERTEX * vert) {
 	
-	size_t newvert = ObjectAddVertex(obj, vert);
+	VertexId newvert = addVertex(obj, vert);
 	
 	for(const EERIE_ACTIONLIST & action : obj->actionlist) {
 		if(action.name == name) {
@@ -226,7 +224,7 @@ static void ObjectAddAction(EERIE_3DOBJ * obj, std::string_view name, const EERI
 	
 	EERIE_ACTIONLIST & action = obj->actionlist.emplace_back();
 	action.name = name;
-	action.idx = ActionPoint(newvert);
+	action.idx = ActionPoint(size_t(newvert));
 	
 }
 
@@ -371,9 +369,9 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 	
 	// Is the origin of object in obj1 or obj2 ? Retreives it for work object
 	if(IsInSelection(obj1, size_t(obj1->origin), tw1)) {
-		work->origin = VertexId(ObjectAddVertex(work.get(), &obj2->vertexlist[size_t(obj2->origin)]));
+		work->origin = addVertex(work.get(), &obj2->vertexlist[size_t(obj2->origin)]);
 	} else {
-		work->origin = VertexId(ObjectAddVertex(work.get(), &obj1->vertexlist[size_t(obj1->origin)]));
+		work->origin = addVertex(work.get(), &obj1->vertexlist[size_t(obj1->origin)]);
 	}
 	
 	// Recreate Action Points included in work object.for Obj1
@@ -400,14 +398,14 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 	// Recreate Vertex using Obj1 Vertexes
 	for(size_t i = 0; i < obj1->vertexlist.size(); i++) {
 		if(IsInSelection(obj1, i, iw1) || IsInSelection(obj1, i, jw1)) {
-			ObjectAddVertex(work.get(), &obj1->vertexlist[i]);
+			addVertex(work.get(), &obj1->vertexlist[i]);
 		}
 	}
 	
 	// The same for Obj2
 	for(size_t i = 0; i < obj2->vertexlist.size(); i++) {
 		if(IsInSelection(obj2, i, tw2)) {
-			ObjectAddVertex(work.get(), &obj2->vertexlist[i]);
+			addVertex(work.get(), &obj2->vertexlist[i]);
 		}
 	}
 	
