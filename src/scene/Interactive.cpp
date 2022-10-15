@@ -1228,28 +1228,24 @@ void SetWeapon_On(Entity * io) {
 
 void SetWeapon_Back(Entity * io) {
 	
-	if(!io || !(io->ioflags & IO_NPC))
+	if(!io || !(io->ioflags & IO_NPC) || !io->_npcdata->weapon || !io->_npcdata->weapon->obj) {
 		return;
+	}
 	
 	Entity * weapon = io->_npcdata->weapon;
 	
-	if(weapon && weapon->obj) {
-		EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, weapon->obj);
-
-		if(io->gameFlags & GFLAG_HIDEWEAPON)
-			return;
-
-		ActionPoint ni = ActionPoint(size_t(io->obj->fastaccess.weapon_attach));
-
-		if(ni != ActionPoint()) {
-			EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, weapon->obj, "weapon_attach", "primary_attach", weapon);
-		} else {
-			ni = io->obj->fastaccess.secondary_attach;
-
-			if(ni != ActionPoint())
-				EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, weapon->obj, "secondary_attach", "primary_attach", weapon);
-		}
+	EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, weapon->obj);
+	
+	if(io->gameFlags & GFLAG_HIDEWEAPON) {
+		return;
 	}
+	
+	if(io->obj->fastaccess.weapon_attach) {
+		EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, weapon->obj, "weapon_attach", "primary_attach", weapon);
+	} else {
+		EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, weapon->obj, "secondary_attach", "primary_attach", weapon);
+	}
+	
 }
 
 void Prepare_SetWeapon(Entity * io, const res::path & temp) {
