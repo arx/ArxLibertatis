@@ -1447,8 +1447,8 @@ void ArxGame::handlePlayerDeath() {
 		ActionPoint id  = entities.player()->obj->fastaccess.view_attach;
 		Vec3f targetpos = (id != ActionPoint()) ? actionPointPosition(entities.player()->obj, id) : player.pos;
 		
-		ActionPoint id2 = GetActionPointIdx(entities.player()->obj, "chest2leggings");
-		Vec3f chest = (id2 != ActionPoint()) ? actionPointPosition(entities.player()->obj, id2) : targetpos;
+		VertexId id2 = getNamedVertex(entities.player()->obj, "chest2leggings");
+		Vec3f chest = id2 ? entities.player()->obj->vertexWorldPositions[size_t(id2)].v : targetpos;
 		
 		g_playerCamera.m_pos = chest - Vec3f(0.f, DeadCameraDistance, 0.f);
 		

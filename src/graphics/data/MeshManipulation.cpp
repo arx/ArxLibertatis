@@ -315,10 +315,10 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 		return { };
 	}
 	
-	if(!GetActionPointIdx(obj1, "head2chest") ||
-	   !GetActionPointIdx(obj2, "head2chest") ||
-	   !GetActionPointIdx(obj1, "chest2leggings") ||
-	   !GetActionPointIdx(obj2, "chest2leggings")) {
+	if(!getNamedVertex(obj1, "head2chest") ||
+	   !getNamedVertex(obj2, "head2chest") ||
+	   !getNamedVertex(obj1, "chest2leggings") ||
+	   !getNamedVertex(obj2, "chest2leggings")) {
 		return { };
 	}
 	

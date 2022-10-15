@@ -82,24 +82,24 @@ void EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink,
 		return;
 	}
 	
-	ActionPoint ni = GetActionPointIdx(obj, actiontext);
-	if(ni == ActionPoint()) {
+	VertexId ni = getNamedVertex(obj, actiontext);
+	if(!ni) {
 		return;
 	}
 	
-	ObjVertGroup group = GetActionPointGroup(obj, ni);
-	if(group == ObjVertGroup()) {
+	ObjVertGroup group = GetActionPointGroup(obj, ActionPoint(size_t(ni)));
+	if(!group) {
 		return;
 	}
 	
-	ActionPoint ni2 = GetActionPointIdx(tolink, actiontext2);
-	if(ni2 == ActionPoint()) {
+	VertexId ni2 = getNamedVertex(tolink, actiontext2);
+	if(!ni2) {
 		return;
 	}
 	
 	EERIE_LINKED link;
-	link.lidx2 = ni2;
-	link.lidx = ni;
+	link.lidx2 = ActionPoint(size_t(ni2));
+	link.lidx = ActionPoint(size_t(ni));
 	link.lgroup = group;
 	link.obj = tolink;
 	link.io = io;

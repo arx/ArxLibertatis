@@ -95,18 +95,19 @@ ObjVertHandle GetGroupOriginByName(const EERIE_3DOBJ * eobj, std::string_view te
 	return ObjVertHandle();
 }
 
-ActionPoint GetActionPointIdx(const EERIE_3DOBJ * eobj, std::string_view text) {
+VertexId getNamedVertex(const EERIE_3DOBJ * eobj, std::string_view text) {
 	
-	if(!eobj)
-		return ActionPoint();
+	if(!eobj) {
+		return { };
+	}
 	
 	for(const EERIE_ACTIONLIST & action : eobj->actionlist) {
 		if(action.name == text) {
-			return ActionPoint(size_t(action.idx));
+			return action.idx;
 		}
 	}
 	
-	return ActionPoint();
+	return { };
 }
 
 ObjVertGroup GetActionPointGroup(const EERIE_3DOBJ * eobj, ActionPoint idx) {
@@ -132,12 +133,12 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * object) {
 		return;
 	}
 	
-	object->fastaccess.view_attach       = GetActionPointIdx(object, "view_attach");
-	object->fastaccess.primary_attach    = GetActionPointIdx(object, "primary_attach");
-	object->fastaccess.left_attach       = GetActionPointIdx(object, "left_attach");
-	object->fastaccess.weapon_attach     = GetActionPointIdx(object, "weapon_attach");
-	object->fastaccess.secondary_attach  = GetActionPointIdx(object, "secondary_attach");
-	object->fastaccess.fire              = GetActionPointIdx(object, "fire");
+	object->fastaccess.view_attach       = ActionPoint(size_t(getNamedVertex(object, "view_attach")));
+	object->fastaccess.primary_attach    = ActionPoint(size_t(getNamedVertex(object, "primary_attach")));
+	object->fastaccess.left_attach       = ActionPoint(size_t(getNamedVertex(object, "left_attach")));
+	object->fastaccess.weapon_attach     = ActionPoint(size_t(getNamedVertex(object, "weapon_attach")));
+	object->fastaccess.secondary_attach  = ActionPoint(size_t(getNamedVertex(object, "secondary_attach")));
+	object->fastaccess.fire              = ActionPoint(size_t(getNamedVertex(object, "fire")));
 	
 	object->fastaccess.head_group = EERIE_OBJECT_GetGroup(object, "head");
 	

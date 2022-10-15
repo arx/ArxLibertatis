@@ -772,9 +772,9 @@ void ManageCombatModeAnimations() {
 				player.m_aimTime = PlatformDuration::ofRaw(1);
 			} else if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE_CYCLE]) {
 				
-				ActionPoint attach = GetActionPointIdx(arrowobj.get(), "attach");
-				if(attach == ActionPoint()) {
-					attach = ActionPoint(size_t(arrowobj->origin));
+				VertexId attach = getNamedVertex(arrowobj.get(), "attach");
+				if(!attach) {
+					attach = arrowobj->origin;
 				}
 				
 				VertexId hit;
@@ -784,8 +784,8 @@ void ManageCombatModeAnimations() {
 						if(!boost::starts_with(action.name, "hit_")) {
 							continue;
 						}
-						float dist = arx::distance2(arrowobj->vertexlist[attach.handleData()].v,
-						                            arrowobj->vertexlist[action.idx.handleData()].v);
+						float dist = arx::distance2(arrowobj->vertexlist[size_t(attach)].v,
+						                            arrowobj->vertexlist[size_t(action.idx)].v);
 						if(dist > maxdist) {
 							hit = action.idx;
 							maxdist = dist;
@@ -793,10 +793,10 @@ void ManageCombatModeAnimations() {
 					}
 				}
 				if(!hit) {
-					hit = VertexId(size_t(attach));
+					hit = attach;
 					float maxdist = 0.f;
 					for(size_t i = 1; i < arrowobj->vertexlist.size(); i++) {
-						float dist = arx::distance2(arrowobj->vertexlist[attach.handleData()].v,
+						float dist = arx::distance2(arrowobj->vertexlist[size_t(attach)].v,
 						                            arrowobj->vertexlist[i].v);
 						if(dist > maxdist) {
 							hit = VertexId(i);
@@ -819,10 +819,10 @@ void ManageCombatModeAnimations() {
 					
 					const Bone & bone2 = io->obj->m_skeleton->bones[leftAttach.handleData()];
 					TransformInfo t2(actionPointPosition(io->obj, io->obj->fastaccess.left_attach), bone2.anim.quat);
-					t2.pos = t2(arrowobj->vertexlist[size_t(arrowobj->origin)].v - arrowobj->vertexlist[attach.handleData()].v);
+					t2.pos = t2(arrowobj->vertexlist[size_t(arrowobj->origin)].v - arrowobj->vertexlist[size_t(attach)].v);
 					
-					pos = t2(arrowobj->vertexlist[attach.handleData()].v);
-					dir = glm::normalize(t2(arrowobj->vertexlist[hit.handleData()].v) - pos);
+					pos = t2(arrowobj->vertexlist[size_t(attach)].v);
+					dir = glm::normalize(t2(arrowobj->vertexlist[size_t(hit)].v) - pos);
 					
 					// Rotate the bow towards whatever the player is aiming at
 					
@@ -915,14 +915,14 @@ void ManageCombatModeAnimations() {
 				
 				float damages = wd * (1.f + (player.m_skillFull.projectile + player.m_attributeFull.dexterity) * 0.02f);
 				
-				ARX_THROWN_OBJECT_Throw(EntityHandle_Player, pos, vect, gravity, arrowobj.get(), attach, quat,
+				ARX_THROWN_OBJECT_Throw(EntityHandle_Player, pos, vect, gravity, arrowobj.get(), ActionPoint(size_t(attach)), quat,
 				                        damages, poisonous);
 				
 				if(sp_max) {
 					for(int i = -2; i <= 2; i++) {
 						if(i != 0) {
 							Vec3f vect2 = VRotateY(vect, 4.f * float(i));
-							ARX_THROWN_OBJECT_Throw(EntityHandle_Player, pos, vect2, gravity, arrowobj.get(), attach, quat,
+							ARX_THROWN_OBJECT_Throw(EntityHandle_Player, pos, vect2, gravity, arrowobj.get(), ActionPoint(size_t(attach)), quat,
 							                        damages, poisonous);
 						}
 					}
