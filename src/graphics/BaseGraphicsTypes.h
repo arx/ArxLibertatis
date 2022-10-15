@@ -50,7 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "util/HandleType.h"
 
 
-typedef util::HandleType<struct ActionPointTag, s32> ActionPoint;
 typedef util::HandleType<struct ObjSelectionTag, long> ObjSelection;
 typedef util::HandleType<struct ObjVertGroupTag, short> ObjVertGroup;
 typedef util::HandleType<struct VertexIdtag, u16> VertexId;
