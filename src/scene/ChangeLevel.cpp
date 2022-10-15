@@ -853,7 +853,25 @@ static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 	}
 	
 	// Init Changelevel Main IO Save Structure
-	ARX_CHANGELEVEL_IO_SAVE ais;
+	
+	size_t allocsize =
+		sizeof(ARX_CHANGELEVEL_IO_SAVE)
+		+ sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE)
+		+ sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE)
+		+ getScriptVariableSaveSize(io->m_variables)
+		+ struct_size
+		+ sizeof(SavedTweakerInfo)
+		+ sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE) + 1024
+		+ sizeof(SavedGroupData) * io->groups.size()
+		+ sizeof(SavedTweakInfo) * io->tweaks.size()
+		+ 48000;
+
+	// Allocate Main Save Buffer
+	std::vector<char> buffer(allocsize);
+	char * dat = buffer.data();
+	size_t pos = 0;
+	
+	ARX_CHANGELEVEL_IO_SAVE & ais = *reinterpret_cast<ARX_CHANGELEVEL_IO_SAVE *>(dat + pos);;
 	memset(&ais, 0, sizeof(ARX_CHANGELEVEL_IO_SAVE));
 	
 	// Store IO Data in Main IO Save Structure
@@ -1011,27 +1029,10 @@ static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 			ais.nbtimers++;
 		}
 	}
-	
-	size_t allocsize =
-		sizeof(ARX_CHANGELEVEL_IO_SAVE)
-		+ sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE)
-		+ sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE)
-		+ getScriptVariableSaveSize(io->m_variables)
-		+ struct_size
-		+ sizeof(SavedTweakerInfo)
-		+ sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE) + 1024
-		+ sizeof(SavedGroupData) * io->groups.size()
-		+ sizeof(SavedTweakInfo) * io->tweaks.size()
-		+ 48000;
-
-	// Allocate Main Save Buffer
-	std::vector<char> buffer(allocsize);
-	char * dat = buffer.data();
-	size_t pos = 0;
 
 	ais.halo = io->halo_native;
 	ais.Tweak_nb = io->tweaks.size();
-	memcpy(dat, &ais, sizeof(ARX_CHANGELEVEL_IO_SAVE));
+	
 	pos += sizeof(ARX_CHANGELEVEL_IO_SAVE);
 	
 	for(const SCR_TIMER & timer : g_scriptTimers) {
