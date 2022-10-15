@@ -290,11 +290,11 @@ public:
 		std::string target;
 		if(!group && !zone && !radius) {
 			target = context.getStringVar(context.getWord());
-			
 			// TODO(broken-scripts) work around broken scripts
 			for(size_t i = 0; i < SM_MAXCMD; i++) {
-				arx_assert(boost::starts_with(AS_EVENT[i].name, "on "));
-				if(target == AS_EVENT[i].name.substr(3)) {
+				std::string_view event = ScriptEvent::name(ScriptMessage(i));
+				arx_assert(boost::starts_with(event, "on "));
+				if(target == event.substr(3)) {
 					std::swap(target, eventname);
 					break;
 				}

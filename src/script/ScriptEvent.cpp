@@ -77,87 +77,96 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 long ScriptEvent::totalCount = 0;
 
-const SCRIPT_EVENT AS_EVENT[] = {
-	SCRIPT_EVENT("on null"),
-	SCRIPT_EVENT("on init"),
-	SCRIPT_EVENT("on inventoryin"),
-	SCRIPT_EVENT("on inventoryout"),
-	SCRIPT_EVENT("on inventoryuse"),
-	SCRIPT_EVENT("on sceneuse"),
-	SCRIPT_EVENT("on equipin"),
-	SCRIPT_EVENT("on equipout"),
-	SCRIPT_EVENT("on main"),
-	SCRIPT_EVENT("on reset"),
-	SCRIPT_EVENT("on chat"),
-	SCRIPT_EVENT("on action"),
-	SCRIPT_EVENT("on dead"),
-	SCRIPT_EVENT("on reachedtarget"),
-	SCRIPT_EVENT("on fight"),
-	SCRIPT_EVENT("on flee"),
-	SCRIPT_EVENT("on hit"),
-	SCRIPT_EVENT("on die"),
-	SCRIPT_EVENT("on losttarget"),
-	SCRIPT_EVENT("on treatin"),
-	SCRIPT_EVENT("on treatout"),
-	SCRIPT_EVENT("on move"),
-	SCRIPT_EVENT("on detectplayer"),
-	SCRIPT_EVENT("on undetectplayer"),
-	SCRIPT_EVENT("on combine"),
-	SCRIPT_EVENT("on npc_follow"),
-	SCRIPT_EVENT("on npc_fight"),
-	SCRIPT_EVENT("on npc_stay"),
-	SCRIPT_EVENT("on inventory2_open"),
-	SCRIPT_EVENT("on inventory2_close"),
-	SCRIPT_EVENT("on custom"),
-	SCRIPT_EVENT("on enter_zone"),
-	SCRIPT_EVENT("on leave_zone"),
-	SCRIPT_EVENT("on initend") ,
-	SCRIPT_EVENT("on clicked") ,
-	SCRIPT_EVENT("on insidezone"),
-	SCRIPT_EVENT("on controlledzone_inside"),
-	SCRIPT_EVENT("on leavezone"),
-	SCRIPT_EVENT("on controlledzone_leave"),
-	SCRIPT_EVENT("on enterzone"),
-	SCRIPT_EVENT("on controlledzone_enter"),
-	SCRIPT_EVENT("on load"),
-	SCRIPT_EVENT("on spellcast"),
-	SCRIPT_EVENT("on reload"),
-	SCRIPT_EVENT("on collide_door"),
-	SCRIPT_EVENT("on ouch"),
-	SCRIPT_EVENT("on hear"),
-	SCRIPT_EVENT("on summoned"),
-	SCRIPT_EVENT("on spellend"),
-	SCRIPT_EVENT("on spelldecision"),
-	SCRIPT_EVENT("on strike"),
-	SCRIPT_EVENT("on collision_error"),
-	SCRIPT_EVENT("on waypoint"),
-	SCRIPT_EVENT("on pathend"),
-	SCRIPT_EVENT("on critical"),
-	SCRIPT_EVENT("on collide_npc"),
-	SCRIPT_EVENT("on backstab"),
-	SCRIPT_EVENT("on aggression"),
-	SCRIPT_EVENT("on collision_error_detail"),
-	SCRIPT_EVENT("on game_ready"),
-	SCRIPT_EVENT("on cine_end"),
-	SCRIPT_EVENT("on key_pressed"),
-	SCRIPT_EVENT("on controls_on"),
-	SCRIPT_EVENT("on controls_off"),
-	SCRIPT_EVENT("on pathfinder_failure"),
-	SCRIPT_EVENT("on pathfinder_success"),
-	SCRIPT_EVENT("on trap_disarmed"),
-	SCRIPT_EVENT("on book_open"),
-	SCRIPT_EVENT("on book_close"),
-	SCRIPT_EVENT("on identify"),
-	SCRIPT_EVENT("on break"),
-	SCRIPT_EVENT("on steal"),
-	SCRIPT_EVENT("on collide_field"),
-	SCRIPT_EVENT("on cursormode"),
-	SCRIPT_EVENT("on explorationmode"),
-};
+std::string_view ScriptEvent::name(ScriptMessage event) {
+	
+	switch(event) {
+		case SM_NULL:                   return "on null";
+		case SM_INIT:                   return "on init";
+		case SM_INVENTORYIN:            return "on inventoryin";
+		case SM_INVENTORYOUT:           return "on inventoryout";
+		case SM_INVENTORYUSE:           return "on inventoryuse";
+		case SM_SCENEUSE:               return "on sceneuse";
+		case SM_EQUIPIN:                return "on equipin";
+		case SM_EQUIPOUT:               return "on equipout";
+		case SM_MAIN:                   return "on main";
+		case SM_RESET:                  return "on reset";
+		case SM_CHAT:                   return "on chat";
+		case SM_ACTION:                 return "on action";
+		case SM_DEAD:                   return "on dead";
+		case SM_REACHEDTARGET:          return "on reachedtarget";
+		case SM_FIGHT:                  return "on fight";
+		case SM_FLEE:                   return "on flee";
+		case SM_HIT:                    return "on hit";
+		case SM_DIE:                    return "on die";
+		case SM_LOSTTARGET:             return "on losttarget";
+		case SM_TREATIN:                return "on treatin";
+		case SM_TREATOUT:               return "on treatout";
+		case SM_MOVE:                   return "on move";
+		case SM_DETECTPLAYER:           return "on detectplayer";
+		case SM_UNDETECTPLAYER:         return "on undetectplayer";
+		case SM_COMBINE:                return "on combine";
+		case SM_NPC_FOLLOW:             return "on npc_follow";
+		case SM_NPC_FIGHT:              return "on npc_fight";
+		case SM_NPC_STAY:               return "on npc_stay";
+		case SM_INVENTORY2_OPEN:        return "on inventory2_open";
+		case SM_INVENTORY2_CLOSE:       return "on inventory2_close";
+		case SM_CUSTOM:                 return "on custom";
+		case SM_ENTER_ZONE:             return "on enter_zone";
+		case SM_LEAVE_ZONE:             return "on leave_zone";
+		case SM_INITEND:                return "on initend";
+		case SM_CLICKED:                return "on clicked";
+		case SM_INSIDEZONE:             return "on insidezone";
+		case SM_CONTROLLEDZONE_INSIDE:  return "on controlledzone_inside";
+		case SM_LEAVEZONE:              return "on leavezone";
+		case SM_CONTROLLEDZONE_LEAVE:   return "on controlledzone_leave";
+		case SM_ENTERZONE:              return "on enterzone";
+		case SM_CONTROLLEDZONE_ENTER:   return "on controlledzone_enter";
+		case SM_LOAD:                   return "on load";
+		case SM_SPELLCAST:              return "on spellcast";
+		case SM_RELOAD:                 return "on reload";
+		case SM_COLLIDE_DOOR:           return "on collide_door";
+		case SM_OUCH:                   return "on ouch";
+		case SM_HEAR:                   return "on hear";
+		case SM_SUMMONED:               return "on summoned";
+		case SM_SPELLEND:               return "on spellend";
+		case SM_SPELLDECISION:          return "on spelldecision";
+		case SM_STRIKE:                 return "on strike";
+		case SM_COLLISION_ERROR:        return "on collision_error";
+		case SM_WAYPOINT:               return "on waypoint";
+		case SM_PATHEND:                return "on pathend";
+		case SM_CRITICAL:               return "on critical";
+		case SM_COLLIDE_NPC:            return "on collide_npc";
+		case SM_BACKSTAB:               return "on backstab";
+		case SM_AGGRESSION:             return "on aggression";
+		case SM_COLLISION_ERROR_DETAIL: return "on collision_error_detail";
+		case SM_GAME_READY:             return "on game_ready";
+		case SM_CINE_END:               return "on cine_end";
+		case SM_KEY_PRESSED:            return "on key_pressed";
+		case SM_CONTROLS_ON:            return "on controls_on";
+		case SM_CONTROLS_OFF:           return "on controls_off";
+		case SM_PATHFINDER_FAILURE:     return "on pathfinder_failure";
+		case SM_PATHFINDER_SUCCESS:     return "on pathfinder_success";
+		case SM_TRAP_DISARMED:          return "on trap_disarmed";
+		case SM_BOOK_OPEN:              return "on book_open";
+		case SM_BOOK_CLOSE:             return "on book_close";
+		case SM_IDENTIFY:               return "on identify";
+		case SM_BREAK:                  return "on break";
+		case SM_STEAL:                  return "on steal";
+		case SM_COLLIDE_FIELD:          return "on collide_field";
+		case SM_CURSORMODE:             return "on cursormode";
+		case SM_EXPLORATIONMODE:        return "on explorationmode";
+		case SM_MAXCMD:                 arx_unreachable();
+		case SM_EXECUTELINE:            arx_unreachable();
+		case SM_DUMMY:                  arx_unreachable();
+	}
+	
+	arx_unreachable();
+	
+}
 
 void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT & es) {
-	for(size_t j = 1; j < SM_MAXCMD; j++) {
-		es.shortcut[j] = FindScriptPos(&es, AS_EVENT[j].name);
+	for(size_t i = 1; i < SM_MAXCMD; i++) {
+		es.shortcut[i] = FindScriptPos(&es, ScriptEvent::name(ScriptMessage(i)));
 	}
 }
 

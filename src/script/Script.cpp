@@ -157,7 +157,7 @@ std::ostream & operator<<(std::ostream & os, const SCRIPT_VAR & var) {
 ScriptEventName ScriptEventName::parse(std::string_view name) {
 	
 	for(size_t i = 1; i < SM_MAXCMD; i++) {
-		std::string_view event = AS_EVENT[i].name;
+		std::string_view event = ScriptEvent::name(ScriptMessage(i));
 		arx_assert(boost::starts_with(event, "on "));
 		if(event.substr(3) == name) {
 			return ScriptEventName(ScriptMessage(i));
@@ -174,8 +174,9 @@ std::string_view ScriptEventName::toString() const noexcept {
 		return getName();
 	}
 	
-	arx_assert(getId() < SM_MAXCMD && boost::starts_with(AS_EVENT[getId()].name, "on "));
-	return AS_EVENT[getId()].name.substr(3);
+	std::string_view name = ScriptEvent::name(getId());
+	arx_assert(boost::starts_with(name, "on "));
+	return name.substr(3);
 }
 
 DisabledEvents ScriptEventName::toDisabledEventsMask() const noexcept {
@@ -209,8 +210,9 @@ std::ostream & operator<<(std::ostream & os, const ScriptEventName & event) {
 		return os << "on " << event.getName() << " event";
 	}
 	
-	arx_assert(event.getId() < SM_MAXCMD && boost::starts_with(AS_EVENT[event.getId()].name, "on "));
-	return os << AS_EVENT[event.getId()].name << " event";
+	std::string_view name = ScriptEvent::name(event.getId());
+	arx_assert(boost::starts_with(name, "on "));
+	return os << name << " event";
 }
 
 ScriptParameters ScriptParameters::parse(std::string_view str) {

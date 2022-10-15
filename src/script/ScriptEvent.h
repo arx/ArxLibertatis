@@ -27,13 +27,6 @@
 
 #include "script/Script.h"
 
-struct SCRIPT_EVENT {
-	explicit constexpr SCRIPT_EVENT(std::string_view str) : name(str) { }
-	std::string_view name;
-};
-
-extern const SCRIPT_EVENT AS_EVENT[];
-
 namespace script { class Command; }
 
 class ScriptEvent {
@@ -42,6 +35,8 @@ class ScriptEvent {
 public:
 	
 	static long totalCount;
+	
+	static std::string_view name(ScriptMessage event);
 	
 	static ScriptResult send(const EERIE_SCRIPT * es, Entity * sender, Entity * entity, ScriptEventName event,
 	                         ScriptParameters parameters = { }, size_t position = 0);
