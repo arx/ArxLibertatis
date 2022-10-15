@@ -42,8 +42,8 @@ public:
 private:
 	
 	struct SpeedTrail : public Trail {
-		short vertexIndex;
-		explicit SpeedTrail(short vertex);
+		VertexId vertexIndex;
+		explicit SpeedTrail(VertexId vertex);
 	};
 	
 	std::vector<SpeedTrail> m_trails;

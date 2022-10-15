@@ -46,7 +46,7 @@
 #include "util/Cast.h"
 
 
-SpeedSpell::SpeedTrail::SpeedTrail(short vertex)
+SpeedSpell::SpeedTrail::SpeedTrail(VertexId vertex)
 	: Trail(Random::get(130ms, 260ms), Color3f::gray(Random::getf(0.1f, 0.2f)),
 	        Color3f::black, Random::getf(1.f, 1.5f), 0.f)
 	, vertexIndex(vertex)
@@ -81,7 +81,7 @@ void SpeedSpell::Launch() {
 	for(const VertexGroup & group : entities[m_target]->obj->grouplist) {
 		skip = !skip;
 		if(!skip) {
-			m_trails.emplace_back(group.origin);
+			m_trails.emplace_back(VertexId(group.origin));
 		}
 	}
 	
@@ -110,7 +110,7 @@ void SpeedSpell::Update() {
 		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 	
 	for(SpeedTrail & trail : m_trails) {
-		Vec3f pos = entities[m_target]->obj->vertexWorldPositions[trail.vertexIndex].v;
+		Vec3f pos = entities[m_target]->obj->vertexWorldPositions[size_t(trail.vertexIndex)].v;
 		trail.SetNextPosition(pos);
 		trail.Update(g_gameTime.lastFrameDuration());
 	}
