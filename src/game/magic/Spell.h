@@ -24,9 +24,11 @@
 #include <string_view>
 
 #include "game/Damage.h"
+#include "graphics/BaseGraphicsTypes.h"
 #include "graphics/effects/SpellEffects.h"
 #include "scene/Light.h"
 #include "util/Flags.h"
+
 
 class TextureContainer;
 
@@ -167,7 +169,7 @@ public:
 	EntityHandle m_target; //!< Number of the target interactive obj if any
 	float m_level; //!< Level of Magic 1-10
 	
-	ActionPoint m_hand_group;
+	VertexId m_hand_group;
 	Vec3f m_hand_pos; //!< Only valid if hand_group>=0
 	Vec3f m_caster_pos;
 	

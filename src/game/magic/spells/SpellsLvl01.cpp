@@ -125,12 +125,10 @@ void MagicMissileSpell::Launch() {
 	m_duration = 6s;
 	m_hasDuration = true;
 	
-	m_hand_group = ActionPoint(size_t(entities[m_caster]->obj->fastaccess.primary_attach));
+	m_hand_group = entities[m_caster]->obj->fastaccess.primary_attach;
 	
-	if(m_hand_group != ActionPoint()) {
-		Entity * caster = entities[m_caster];
-		ActionPoint group = m_hand_group;
-		m_hand_pos = actionPointPosition(caster->obj, group);
+	if(m_hand_group) {
+		m_hand_pos = entities[m_caster]->obj->vertexWorldPositions[size_t(m_hand_group)].v;
 	}
 	
 	Vec3f startPos = m_hand_pos;
@@ -138,13 +136,13 @@ void MagicMissileSpell::Launch() {
 	if(m_caster == EntityHandle_Player) {
 		pitch = player.angle.getPitch();
 		yaw = player.angle.getYaw();
-		if(m_hand_group == ActionPoint()) {
+		if(!m_hand_group) {
 			startPos = player.pos + angleToVectorXZ(yaw);
 		}
 	} else {
 		pitch = 0.f;
 		yaw = entities[m_caster]->angle.getYaw();
-		if(m_hand_group == ActionPoint()) {
+		if(!m_hand_group) {
 			startPos = entities[m_caster]->pos;
 		}
 	}
@@ -330,11 +328,7 @@ void IgnitSpell::Launch() {
 	m_duration = 500ms;
 	m_hasDuration = true;
 	
-	if(m_hand_group != ActionPoint()) {
-		m_srcPos = m_hand_pos;
-	} else {
-		m_srcPos = m_caster_pos - Vec3f(0.f, 50.f, 0.f);
-	}
+	m_srcPos = m_hand_group ? m_hand_pos : (m_caster_pos - Vec3f(0.f, 50.f, 0.f));
 	
 	if(EERIE_LIGHT * light = dynLightCreate()) {
 		light->intensity = 1.8f;
@@ -437,7 +431,7 @@ void DouseSpell::Launch() {
 	m_duration = 500ms;
 	m_hasDuration = true;
 	
-	Vec3f target = (m_hand_group != ActionPoint()) ? m_hand_pos : (m_caster_pos - Vec3f(0.f, 50.f, 0.f));
+	Vec3f target = m_hand_group ? m_hand_pos : (m_caster_pos - Vec3f(0.f, 50.f, 0.f));
 	
 	float fPerimeter = 400.f + m_level * 30.f;
 	

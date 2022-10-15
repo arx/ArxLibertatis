@@ -483,30 +483,18 @@ void PoisonProjectileSpell::Launch() {
 	float afBeta = 0.f;
 	
 	Entity * caster = entities[m_caster];
-	m_hand_group = ActionPoint(size_t(caster->obj->fastaccess.primary_attach));
-
-	if(m_hand_group != ActionPoint()) {
-		ActionPoint group = m_hand_group;
-		m_hand_pos = actionPointPosition(caster->obj, group);
+	
+	m_hand_group = caster->obj->fastaccess.primary_attach;
+	if(m_hand_group) {
+		m_hand_pos = caster->obj->vertexWorldPositions[size_t(m_hand_group)].v;
 	}
 	
 	if(m_caster == EntityHandle_Player) {
-
 		afBeta = player.angle.getYaw();
-
-		if(m_hand_group != ActionPoint()) {
-			srcPos = m_hand_pos;
-		} else {
-			srcPos = player.pos;
-		}
+		srcPos = m_hand_group ? m_hand_pos : player.pos;
 	} else {
 		afBeta = entities[m_caster]->angle.getYaw();
-
-		if(m_hand_group != ActionPoint()) {
-			srcPos = m_hand_pos;
-		} else {
-			srcPos = entities[m_caster]->pos;
-		}
+		srcPos = m_hand_group ? m_hand_pos : entities[m_caster]->pos;
 	}
 	
 	srcPos += angleToVectorXZ(afBeta) * 90.f;

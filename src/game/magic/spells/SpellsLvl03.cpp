@@ -169,11 +169,11 @@ void FireballSpell::Launch() {
 	
 	Entity * caster = entities.get(m_caster);
 	if(caster != entities.player()) {
-		m_hand_group = ActionPoint();
+		m_hand_group = { };
 	}
 	
 	Vec3f target = m_hand_pos;
-	if(m_hand_group == ActionPoint()) {
+	if(!m_hand_group) {
 		target = m_caster_pos;
 		if(caster && (caster->ioflags & IO_NPC)) {
 			target += angleToVectorXZ(caster->angle.getYaw()) * 30.f;
