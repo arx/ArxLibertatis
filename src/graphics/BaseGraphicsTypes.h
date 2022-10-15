@@ -54,6 +54,7 @@ typedef util::HandleType<struct ActionPointTag, s32> ActionPoint;
 typedef util::HandleType<struct ObjSelectionTag, long> ObjSelection;
 typedef util::HandleType<struct ObjVertGroupTag, short> ObjVertGroup;
 typedef util::HandleType<struct ObjVertHandleTag, s32> ObjVertHandle;
+typedef util::HandleType<struct VertexIdtag, u16> VertexId;
 typedef util::HandleType<struct RoomHandleTag, u32> RoomHandle;
 typedef util::HandleType<struct PortalHandleTag, u32> PortalHandle;
 typedef util::HandleType<struct AreaIdTag, u32> AreaId;
