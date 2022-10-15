@@ -385,9 +385,9 @@ static void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, Skeleton * obj) {
 		Vec3f t_vector = glm::inverse(bone.anim.quat) * cam_vector;
 		
 		// Get light value for each vertex
-		for(size_t vertIndex : eobj->m_boneVertices[i]) {
+		for(VertexId vertex : eobj->m_boneVertices[i]) {
 			// Get cos angle between light and vertex norm
-			eobj->vertexWorldPositions[vertIndex].norm.z = glm::dot(eobj->vertexlist[vertIndex].norm, t_vector);
+			eobj->vertexWorldPositions[size_t(vertex)].norm.z = glm::dot(eobj->vertexlist[size_t(vertex)].norm, t_vector);
 		}
 		
 	}
@@ -470,10 +470,10 @@ static void Cedric_ApplyLighting(ShaderLight lights[], size_t lightsCount, EERIE
 	for(size_t i = 0; i != obj->bones.size(); i++) {
 		const glm::quat & quat = obj->bones[i].anim.quat;
 		/* Get light value for each vertex */
-		for(size_t vertexIndex : eobj->m_boneVertices[i]) {
-			const Vec3f & position = eobj->vertexWorldPositions[vertexIndex].v;
-			Vec3f normal = quat * eobj->vertexlist[vertexIndex].norm;
-			eobj->vertexColors[vertexIndex] = ApplyLight(lights, lightsCount, position, normal, colorMod);
+		for(VertexId vertex : eobj->m_boneVertices[i]) {
+			const Vec3f & position = eobj->vertexWorldPositions[size_t(vertex)].v;
+			Vec3f normal = quat * eobj->vertexlist[size_t(vertex)].norm;
+			eobj->vertexColors[size_t(vertex)] = ApplyLight(lights, lightsCount, position, normal, colorMod);
 		}
 	}
 	
@@ -1338,8 +1338,8 @@ static void Cedric_TransformVerts(EERIE_3DOBJ * eobj) {
 
 		Vec3f vector = bone.anim.trans;
 		
-		for(size_t index : eobj->m_boneVertices[i]) {
-			eobj->vertexWorldPositions[index].v = Vec3f(matrix * Vec4f(eobj->vertexlocal[VertexId(index)], 1.f)) + vector;
+		for(VertexId vertex : eobj->m_boneVertices[i]) {
+			eobj->vertexWorldPositions[size_t(vertex)].v = Vec3f(matrix * Vec4f(eobj->vertexlocal[vertex], 1.f)) + vector;
 		}
 		
 	}

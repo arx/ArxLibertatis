@@ -258,11 +258,11 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		eobj->m_boneVertices.resize(eobj->m_skeleton->bones.size());
 		
 		Bone & bone = eobj->m_skeleton->bones[0];
-		std::vector<u32> & vertices = eobj->m_boneVertices[0];
+		auto & vertices = eobj->m_boneVertices[0];
 		
 		// Add all vertices to the bone
 		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
-			vertices.push_back(i);
+			vertices.push_back(VertexId(i));
 		}
 		
 		bone.father = -1;
@@ -280,12 +280,12 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			
 			const VertexGroup & group = eobj->grouplist[i];
 			Bone & bone = eobj->m_skeleton->bones[i];
-			std::vector<u32> & vertices = eobj->m_boneVertices[i];
+			auto & vertices = eobj->m_boneVertices[i];
 			
-			for(VertexId index : group.indexes) {
-				if(!vertexAssigned[index]) {
-					vertexAssigned[index] = true;
-					vertices.push_back(u32(index));
+			for(VertexId vertex : group.indexes) {
+				if(!vertexAssigned[vertex]) {
+					vertexAssigned[vertex] = true;
+					vertices.push_back(vertex);
 				}
 			}
 			
@@ -310,7 +310,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 				}
 			}
 			if(!found) {
-				eobj->m_boneVertices[0].push_back(i);
+				eobj->m_boneVertices[0].push_back(VertexId(i));
 			}
 		}
 		
@@ -330,9 +330,8 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 	eobj->vertexlocal.resize(eobj->vertexlist.size());
 	for(size_t i = 0; i < eobj->m_skeleton->bones.size(); i++) {
 		const Bone & bone = eobj->m_skeleton->bones[i];
-		const std::vector<u32> & vertices = eobj->m_boneVertices[i];
-		for(u32 index : vertices) {
-			eobj->vertexlocal[VertexId(index)] = eobj->vertexlist[index].v - bone.anim.trans;
+		for(VertexId vertex : eobj->m_boneVertices[i]) {
+			eobj->vertexlocal[vertex] = eobj->vertexlist[size_t(vertex)].v - bone.anim.trans;
 		}
 	}
 	
