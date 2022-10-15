@@ -2155,8 +2155,8 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 					         << "] to " << linked->idString() << ": vertex out of bounds";
 					continue;
 				}
-				ActionPoint vertex = ActionPoint(ais->linked_data[i].lidx);
-				ObjVertGroup group = GetActionPointGroup(io->obj, vertex);
+				VertexId vertex = VertexId(ais->linked_data[i].lidx);
+				ObjVertGroup group = GetActionPointGroup(io->obj, ActionPoint(size_t(vertex)));
 				if(arx_unlikely(!group)) {
 					LogError << "Could not load link from " << io->idString() << "[" << ais->linked_data[i].lidx
 					         << "] to " << linked->idString() << ": vertex not in group";
@@ -2172,7 +2172,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 				EERIE_LINKED & link = io->obj->linked.emplace_back();
 				link.lgroup = group;
 				link.lidx = vertex;
-				link.lidx2 = ActionPoint(ais->linked_data[i].lidx2);
+				link.lidx2 = VertexId(ais->linked_data[i].lidx2);
 				link.io = linked;
 				link.obj = linked->obj;
 			}

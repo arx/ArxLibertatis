@@ -1092,11 +1092,11 @@ static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos
 		
 		// specific check to avoid drawing player weapon on its back when in subjective view
 		if(!EXTERNALVIEW && io == entities.player() &&
-		   link.lidx == entities.player()->obj->fastaccess.weapon_attach) {
+		   ActionPoint(size_t(link.lidx)) == entities.player()->obj->fastaccess.weapon_attach) {
 			continue;
 		}
 		
-		TransformInfo t(actionPointPosition(eobj, link.lidx),
+		TransformInfo t(eobj->vertexWorldPositions[size_t(link.lidx)].v,
 		                eobj->m_skeleton->bones[link.lgroup.handleData()].anim.quat,
 		                link.io ? link.io->scale : 1.f);
 		t.pos = t(link.obj->vertexlist[size_t(link.obj->origin)].v - link.obj->vertexlist[link.lidx2.handleData()].v);

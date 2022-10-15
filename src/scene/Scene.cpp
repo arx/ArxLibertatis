@@ -536,7 +536,7 @@ EntityVisibility getEntityVisibility(Entity & entity, bool cullingOnly) {
 				for(const EERIE_LINKED & link : other.obj->linked) {
 					if(link.io == &entity) {
 						if(&other == entities.player() && !EXTERNALVIEW &&
-						   link.lidx == entities.player()->obj->fastaccess.weapon_attach) {
+						   ActionPoint(size_t(link.lidx)) == entities.player()->obj->fastaccess.weapon_attach) {
 							return EntityInactive;
 						}
 						parent = &other;

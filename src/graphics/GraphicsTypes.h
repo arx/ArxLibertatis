@@ -154,8 +154,8 @@ struct EERIE_ACTIONLIST {
 struct EERIE_LINKED {
 	
 	ObjVertGroup lgroup;
-	ActionPoint lidx;
-	ActionPoint lidx2;
+	VertexId lidx;
+	VertexId lidx2;
 	EERIE_3DOBJ * obj = nullptr;
 	Entity * io = nullptr;
 	

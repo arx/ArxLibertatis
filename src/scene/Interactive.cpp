@@ -383,7 +383,7 @@ void IO_UnlinkAllLinkedObjects(Entity * io) {
 		linked->show = SHOW_FLAG_IN_SCENE;
 		linked->no_collide = io->index();
 		
-		Vec3f pos = actionPointPosition(io->obj, io->obj->linked[k].lidx);
+		Vec3f pos = io->obj->vertexWorldPositions[size_t(io->obj->linked[k].lidx)].v;
 		
 		Vec3f vector = angleToVectorXZ(linked->angle.getYaw()) * 0.5f;
 		
@@ -394,6 +394,7 @@ void IO_UnlinkAllLinkedObjects(Entity * io) {
 	}
 	
 	EERIE_LINKEDOBJ_ReleaseData(io->obj);
+	
 }
 
 // First is always the player

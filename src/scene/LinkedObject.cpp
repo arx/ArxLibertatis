@@ -98,8 +98,8 @@ void EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink,
 	}
 	
 	EERIE_LINKED link;
-	link.lidx2 = ActionPoint(size_t(ni2));
-	link.lidx = ActionPoint(size_t(ni));
+	link.lidx2 = ni2;
+	link.lidx = ni;
 	link.lgroup = group;
 	link.obj = tolink;
 	link.io = io;
