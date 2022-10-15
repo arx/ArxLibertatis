@@ -370,10 +370,10 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 	}
 	
 	// Is the origin of object in obj1 or obj2 ? Retreives it for work object
-	if(IsInSelection(obj1, obj1->origin, tw1)) {
-		work->origin = ObjectAddVertex(work.get(), &obj2->vertexlist[obj2->origin]);
+	if(IsInSelection(obj1, size_t(obj1->origin), tw1)) {
+		work->origin = VertexId(ObjectAddVertex(work.get(), &obj2->vertexlist[size_t(obj2->origin)]));
 	} else {
-		work->origin = ObjectAddVertex(work.get(), &obj1->vertexlist[obj1->origin]);
+		work->origin = VertexId(ObjectAddVertex(work.get(), &obj1->vertexlist[size_t(obj1->origin)]));
 	}
 	
 	// Recreate Action Points included in work object.for Obj1

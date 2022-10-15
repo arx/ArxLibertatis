@@ -774,7 +774,7 @@ void ManageCombatModeAnimations() {
 				
 				ActionPoint attach = GetActionPointIdx(arrowobj.get(), "attach");
 				if(attach == ActionPoint()) {
-					attach = ActionPoint(arrowobj->origin);
+					attach = ActionPoint(size_t(arrowobj->origin));
 				}
 				
 				ActionPoint hit;
@@ -819,7 +819,7 @@ void ManageCombatModeAnimations() {
 					
 					const Bone & bone2 = io->obj->m_skeleton->bones[leftAttach.handleData()];
 					TransformInfo t2(actionPointPosition(io->obj, io->obj->fastaccess.left_attach), bone2.anim.quat);
-					t2.pos = t2(arrowobj->vertexlist[arrowobj->origin].v - arrowobj->vertexlist[attach.handleData()].v);
+					t2.pos = t2(arrowobj->vertexlist[size_t(arrowobj->origin)].v - arrowobj->vertexlist[attach.handleData()].v);
 					
 					pos = t2(arrowobj->vertexlist[attach.handleData()].v);
 					dir = glm::normalize(t2(arrowobj->vertexlist[hit.handleData()].v) - pos);

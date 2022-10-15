@@ -592,7 +592,7 @@ static void CheckAnythingInCylinder_Inner(const Cylinder & cylinder, Entity * so
 		}
 		
 		for(size_t i = 1; i < target->obj->vertexlist.size(); i += step) {
-			if(i != target->obj->origin) {
+			if(VertexId(i) != target->obj->origin) {
 				Vec3f pos = target->obj->vertexWorldPositions[i].v;
 				if(SphereInCylinder(cylinder, Sphere(pos, radius))) {
 					if(!(flags & CFLAG_JUST_TEST) && source) {

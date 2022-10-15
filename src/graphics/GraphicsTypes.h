@@ -187,7 +187,7 @@ struct EERIE_FASTACCESS {
 struct EERIE_3DOBJ {
 	
 	res::path file;
-	size_t origin = 0;
+	VertexId origin = VertexId(0);
 	util::HandleVector<VertexId, Vec3f> vertexlocal;
 	std::vector<EERIE_VERTEX> vertexlist;
 	std::vector<EERIE_VERTEX> vertexWorldPositions;

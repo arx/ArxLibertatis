@@ -369,7 +369,7 @@ void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret) {
 		return;
 	}
 	
-	Vec3f offset = ret->vertexlist[ret->origin].v;
+	Vec3f offset = ret->vertexlist[size_t(ret->origin)].v;
 	if(offset == Vec3f(0.f)) {
 		return;
 	}

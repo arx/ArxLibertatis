@@ -134,14 +134,21 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 	af3Ddh = reinterpret_cast<const ARX_FTL_3D_DATA_HEADER *>(dat + pos);
 	pos += sizeof(ARX_FTL_3D_DATA_HEADER);
 	
+	if(af3Ddh->nb_vertex < 0 || size_t(af3Ddh->nb_vertex) > VertexId::max()) {
+		LogError << filename << ": Invalid vertex count";
+		return { };
+	}
 	object->vertexlist.resize(af3Ddh->nb_vertex);
 	object->facelist.resize(af3Ddh->nb_faces);
 	object->texturecontainer.resize(af3Ddh->nb_maps);
 	object->grouplist.resize(af3Ddh->nb_groups);
 	object->actionlist.resize(af3Ddh->nb_action);
 	object->selections.resize(af3Ddh->nb_selections);
-	arx_assert(af3Ddh->origin >= 0);
-	object->origin = af3Ddh->origin;
+	if(af3Ddh->origin < 0 || size_t(af3Ddh->origin) >= object->vertexlist.size()) {
+		LogError << filename << ": Invalid origin vertex";
+		return { };
+	}
+	object->origin = VertexId(af3Ddh->origin);
 	object->file = res::path::load(util::loadString(af3Ddh->name));
 	
 	// Vertices stored as EERIE_OLD_VERTEX, copy in to new one

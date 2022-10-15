@@ -1099,7 +1099,7 @@ static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos
 		TransformInfo t(actionPointPosition(eobj, link.lidx),
 		                eobj->m_skeleton->bones[link.lgroup.handleData()].anim.quat,
 		                link.io ? link.io->scale : 1.f);
-		t.pos = t(link.obj->vertexlist[link.obj->origin].v - link.obj->vertexlist[link.lidx2.handleData()].v);
+		t.pos = t(link.obj->vertexlist[size_t(link.obj->origin)].v - link.obj->vertexlist[link.lidx2.handleData()].v);
 		
 		DrawEERIEInter(link.obj, t, link.io, true, invisibility);
 		

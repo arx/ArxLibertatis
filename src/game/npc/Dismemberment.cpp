@@ -134,17 +134,17 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	}
 	
 	float min = nouvo->vertexlist[0].v.y;
-	long nummm = 0;
+	VertexId nummm(0);
 	for(size_t k = 1; k < nouvo->vertexlist.size(); k++) {
 		if(nouvo->vertexlist[k].v.y > min) {
 			min = nouvo->vertexlist[k].v.y;
-			nummm = k;
+			nummm = VertexId(k);
 		}
 	}
 	
 	nouvo->origin = nummm;
 	
-	Vec3f point0 = nouvo->vertexlist[nouvo->origin].v;
+	Vec3f point0 = nouvo->vertexlist[size_t(nouvo->origin)].v;
 	for(EERIE_VERTEX & vertex : nouvo->vertexlist) {
 		vertex.v -= point0;
 	}

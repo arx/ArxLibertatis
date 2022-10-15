@@ -92,8 +92,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj) {
 	Vec3f cubmin = Vec3f(std::numeric_limits<float>::max());
 	Vec3f cubmax = Vec3f(-std::numeric_limits<float>::max());
 	
-	arx_assert(obj->origin < obj->vertexlist.size());
-	const EERIE_VERTEX & origin = obj->vertexlist[obj->origin];
+	const EERIE_VERTEX & origin = obj->vertexlist[size_t(obj->origin)];
 	for(const EERIE_VERTEX & vertex : obj->vertexlist) {
 		if(&vertex != &origin) {
 			cubmin = glm::min(cubmin, vertex.v);
@@ -476,7 +475,7 @@ static bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, En
 		
 		const std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
 		for(size_t i = 1; i < nbv; i += step) {
-			if(i != entity.obj->origin) {
+			if(VertexId(i) != entity.obj->origin) {
 				sp.origin = vlist[i].v;
 				for(const PhysicsParticle & vertex : pbox.vert) {
 					if(sp.contains(vertex.pos)) {

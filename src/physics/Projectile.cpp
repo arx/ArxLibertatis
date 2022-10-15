@@ -243,7 +243,7 @@ void ARX_THROWN_OBJECT_Render() {
 		arx_assert(projectile.obj);
 		
 		TransformInfo t(projectile.position, projectile.quat);
-		t.pos = t(projectile.obj->vertexlist[projectile.obj->origin].v
+		t.pos = t(projectile.obj->vertexlist[size_t(projectile.obj->origin)].v
 		          - projectile.obj->vertexlist[projectile.attach.handleData()].v);
 		// Object has to be retransformed because arrows share the same object
 		DrawEERIEInter_ModelTransform(projectile.obj, t);
@@ -285,7 +285,7 @@ static void ARX_THROWN_OBJECT_ManageProjectile(Projectile & projectile, ShortGam
 	}
 	
 	TransformInfo t(projectile.position, projectile.quat);
-	t.pos = t(projectile.obj->vertexlist[projectile.obj->origin].v
+	t.pos = t(projectile.obj->vertexlist[size_t(projectile.obj->origin)].v
 	          - projectile.obj->vertexlist[projectile.attach.handleData()].v);
 	DrawEERIEInter_ModelTransform(projectile.obj, t);
 	

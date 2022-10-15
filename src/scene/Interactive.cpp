@@ -1874,7 +1874,7 @@ static bool IsCollidingInter(Entity * io, const Vec3f & pos) {
 		}
 	} else {
 		for(size_t i : util::indices(vlist)) {
-			if(i != io->obj->origin && !fartherThan(pos, vlist[i].v, 30.f)) {
+			if(VertexId(i) != io->obj->origin && !fartherThan(pos, vlist[i].v, 30.f)) {
 				return true;
 			}
 		}

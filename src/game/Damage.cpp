@@ -685,7 +685,7 @@ void ARX_DAMAGES_ForceDeath(Entity & io_dead, Entity * io_killer) {
 				removeFromInventories(ioo);
 				ioo->show = SHOW_FLAG_IN_SCENE;
 				ioo->ioflags |= IO_NO_NPC_COLLIDE;
-				ioo->pos = ioo->obj->vertexWorldPositions[ioo->obj->origin].v;
+				ioo->pos = ioo->obj->vertexWorldPositions[size_t(ioo->obj->origin)].v;
 				// TODO old broken code suggested that physics sim might be enabled here
 			}
 		}
