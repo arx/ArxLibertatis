@@ -81,7 +81,7 @@ void SpeedSpell::Launch() {
 	for(const VertexGroup & group : entities[m_target]->obj->grouplist) {
 		skip = !skip;
 		if(!skip) {
-			m_trails.emplace_back(VertexId(group.origin));
+			m_trails.emplace_back(group.origin);
 		}
 	}
 	
