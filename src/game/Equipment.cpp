@@ -648,9 +648,9 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 					bool HIT_SPARK = false;
 					EXCEPTIONS_LIST[EXCEPTIONS_LIST_Pos] = target->index();
 					EXCEPTIONS_LIST_Pos++;
-
-					if(EXCEPTIONS_LIST_Pos >= MAX_IN_SPHERE)
+					if(EXCEPTIONS_LIST_Pos >= MAX_IN_SPHERE) {
 						EXCEPTIONS_LIST_Pos--;
+					}
 					
 					long hitpoint = -1;
 					float curdist = 999999.f;
@@ -669,7 +669,10 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						}
 					}
 					
-					arx_assert(hitpoint >= 0);
+					if(hitpoint < 0) {
+						continue;
+					}
+					
 					Color color = (target->ioflags & IO_NPC) ? target->_npcdata->blood_color : Color::white;
 					Vec3f pos = target->obj->vertexWorldPositions[hitpoint].v;
 					
