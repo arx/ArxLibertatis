@@ -190,7 +190,7 @@ struct EERIE_3DOBJ {
 	util::HandleVector<VertexId, Vec3f> vertexlocal;
 	util::HandleVector<VertexId, EERIE_VERTEX> vertexlist;
 	util::HandleVector<VertexId, EERIE_VERTEX> vertexWorldPositions;
-	std::vector<Vec4f> vertexClipPositions;
+	util::HandleVector<VertexId, Vec4f> vertexClipPositions;
 	std::vector<ColorRGBA> vertexColors;
 	
 	std::vector<EERIE_FACE> facelist;

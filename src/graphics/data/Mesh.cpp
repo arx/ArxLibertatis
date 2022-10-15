@@ -562,14 +562,14 @@ void Draw3DObject(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos,
 		Vec3f scaled = eobj->vertexlist[vertex].v * scale;
 		Vec3f rotated = Vec3f(rotation * Vec4f(scaled, 1.f)) + pos;
 		eobj->vertexWorldPositions[vertex].v = rotated;
-		eobj->vertexClipPositions[size_t(vertex)] = worldToClipSpace(rotated);
+		eobj->vertexClipPositions[vertex] = worldToClipSpace(rotated);
 	}
 	
 	for(const EERIE_FACE & face : eobj->facelist) {
 		
 		for(size_t j = 0; j < 3; j++) {
-			vert_list[j].p = Vec3f(eobj->vertexClipPositions[size_t(face.vid[j])]);
-			vert_list[j].w = eobj->vertexClipPositions[size_t(face.vid[j])].w;
+			vert_list[j].p = Vec3f(eobj->vertexClipPositions[face.vid[j]]);
+			vert_list[j].w = eobj->vertexClipPositions[face.vid[j]].w;
 		}
 		
 		vert_list[0].uv.x = face.u[0];

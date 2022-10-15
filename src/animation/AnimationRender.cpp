@@ -527,7 +527,7 @@ void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ * eobj) {
 	arx_assert(eobj->vertexClipPositions.size() == eobj->vertexWorldPositions.size());
 	
 	for(VertexId vertex : eobj->vertexWorldPositions.handles()) {
-		eobj->vertexClipPositions[size_t(vertex)] = worldToClipSpace(eobj->vertexWorldPositions[vertex].v);
+		eobj->vertexClipPositions[vertex] = worldToClipSpace(eobj->vertexWorldPositions[vertex].v);
 	}
 	
 }
@@ -691,8 +691,8 @@ void DrawEERIEInter_Render(EERIE_3DOBJ * eobj, const TransformInfo & t, Entity *
 			
 			eobj->vertexColors[size_t(face.vid[n])] = ApplyLight(lights, lightsCount, position, normal, colorMod, diffuse);
 			
-			tvList[n].p = Vec3f(eobj->vertexClipPositions[size_t(face.vid[n])]);
-			tvList[n].w = eobj->vertexClipPositions[size_t(face.vid[n])].w;
+			tvList[n].p = Vec3f(eobj->vertexClipPositions[face.vid[n]]);
+			tvList[n].w = eobj->vertexClipPositions[face.vid[n]].w;
 			tvList[n].uv.x = face.u[n];
 			tvList[n].uv.y = face.v[n];
 
@@ -846,10 +846,9 @@ static void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f & pos,
 	Cedric_PrepareHalo(eobj, obj);
 	
 	haloInfo.MAX_ZEDE = 0.f;
-	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
-		if(eobj->vertexClipPositions[i].w > 0.f) {
-			haloInfo.MAX_ZEDE = std::max(eobj->vertexClipPositions[i].z / eobj->vertexClipPositions[i].w,
-			                             haloInfo.MAX_ZEDE);
+	for(Vec4f vertex : eobj->vertexClipPositions) {
+		if(vertex.w > 0.f) {
+			haloInfo.MAX_ZEDE = std::max(vertex.z / vertex.w, haloInfo.MAX_ZEDE);
 		}
 	}
 	
@@ -1035,8 +1034,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 		TexturedVertex * tvList = GetNewVertexList(pTex->m_modelBatch, face, invisibility, fTransp);
 		
 		for(size_t n = 0; n < 3; n++) {
-			tvList[n].p = Vec3f(eobj->vertexClipPositions[size_t(face.vid[n])]);
-			tvList[n].w = eobj->vertexClipPositions[size_t(face.vid[n])].w;
+			tvList[n].p = Vec3f(eobj->vertexClipPositions[face.vid[n]]);
+			tvList[n].w = eobj->vertexClipPositions[face.vid[n]].w;
 			tvList[n].uv = Vec2f(face.u[n], face.v[n]);
 			tvList[n].color = eobj->vertexColors[size_t(face.vid[n])];
 		}
