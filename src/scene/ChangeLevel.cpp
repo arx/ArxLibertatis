@@ -988,17 +988,15 @@ static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 	if(io->tweakerinfo) {
 		ais.system_flags |= SYSTEM_FLAG_TWEAKER_INFO;
 	}
-
+	
 	if(io->inventory) {
 		ais.system_flags |= SYSTEM_FLAG_INVENTORY;
 	}
-
-	if(type == TYPE_ITEM) {
-		if(io->_itemdata->equipitem) {
-			ais.system_flags |= SYSTEM_FLAG_EQUIPITEMDATA;
-		}
+	
+	if(type == TYPE_ITEM && io->_itemdata->equipitem) {
+		ais.system_flags |= SYSTEM_FLAG_EQUIPITEMDATA;
 	}
-
+	
 	if(io->usepath) {
 		ais.system_flags |= SYSTEM_FLAG_USEPATH;
 	}
