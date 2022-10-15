@@ -525,7 +525,7 @@ float GetColorz(const Vec3f & pos) {
 		Color3f _ff = Color3f(0.f, 0.f, 0.f);
 		
 		size_t to = (ep->type & POLY_QUAD) ? 4 : 3;
-		float div = (1.0f / to);
+		float div = 1.f / float(to);
 		
 		if(auto tile = g_tiles->getTile(ep->center)) {
 			if(!tile.active()) {
