@@ -19,6 +19,8 @@
 
 #include "gui/hud/PlayerInventory.h"
 
+#include <cmath>
+
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/Core.h"
@@ -99,8 +101,7 @@ bool PlayerInventoryHud::updateInput() {
 
 	if(size_t(m_currentBag) < entities.player()->inventory->bags() - 1) {
 		
-		float fRatio = (32 + 5) * m_scale;
-		pos.y += checked_range_cast<int>(fRatio);
+		pos.y += std::floor(37.f * m_scale);
 		
 		const Rect mouseTestRect(Vec2i(pos), int(32 * m_scale), int(32 * m_scale));
 		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
