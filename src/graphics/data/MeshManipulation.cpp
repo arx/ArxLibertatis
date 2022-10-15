@@ -339,8 +339,8 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 	// Recreate Action Points included in work object.for Obj1
 	for(size_t i = 0; i < obj1->actionlist.size(); i++) {
 		const EERIE_ACTIONLIST & action = obj1->actionlist[i];
-		if(IsInSelection(obj1, VertexId(action.idx.handleData()), iw1) ||
-		   IsInSelection(obj1, VertexId(action.idx.handleData()), jw1) ||
+		if(IsInSelection(obj1, action.idx, iw1) ||
+		   IsInSelection(obj1, action.idx, jw1) ||
 		   action.name == "head2chest" ||
 		   action.name == "chest2leggings") {
 			addNamedVertex(*work, action.name, obj1->vertexlist[action.idx]);
@@ -350,7 +350,7 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 	// Do the same for Obj2
 	for(size_t i = 0; i < obj2->actionlist.size(); i++) {
 		const EERIE_ACTIONLIST & action = obj2->actionlist[i];
-		if(IsInSelection(obj2, VertexId(action.idx.handleData()), tw2) ||
+		if(IsInSelection(obj2, action.idx, tw2) ||
 		   action.name == "head2chest" ||
 		   action.name == "chest2leggings") {
 			addNamedVertex(*work, action.name, obj2->vertexlist[action.idx]);
