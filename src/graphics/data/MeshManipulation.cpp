@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <memory>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 #include "game/Entity.h"
@@ -280,23 +281,23 @@ static void copySelection(const EERIE_3DOBJ & source, ObjSelection sourceSelecti
 	
 }
 
-static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERIE_3DOBJ * obj2, long tw) {
+static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERIE_3DOBJ * obj2,
+                                                           long tw) {
 	
-	ObjSelection tw1 = ObjSelection();
-	ObjSelection tw2 = ObjSelection();
-	ObjSelection iw1 = ObjSelection();
-	ObjSelection jw1 = ObjSelection();
-	ObjSelection sel_head1 = ObjSelection();
-	ObjSelection sel_head2 = ObjSelection();
-	ObjSelection sel_torso1 = ObjSelection();
-	ObjSelection sel_torso2 = ObjSelection();
-	ObjSelection sel_legs1 = ObjSelection();
-	ObjSelection sel_legs2 = ObjSelection();
-
+	ObjSelection tw1;
+	ObjSelection tw2;
+	ObjSelection iw1;
+	ObjSelection jw1;
+	ObjSelection sel_head1;
+	ObjSelection sel_head2;
+	ObjSelection sel_torso1;
+	ObjSelection sel_torso2;
+	ObjSelection sel_legs1;
+	ObjSelection sel_legs2;
+	
 	// First we retreive selection groups indexes
 	for(size_t i = 0; i < obj1->selections.size(); i++) { // TODO iterator
 		ObjSelection sel = ObjSelection(i);
-		
 		if(obj1->selections[i].name == "head") {
 			sel_head1 = sel;
 		} else if(obj1->selections[i].name == "chest") {
@@ -305,10 +306,9 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 			sel_legs1 = sel;
 		}
 	}
-
+	
 	for(size_t i = 0; i < obj2->selections.size(); i++) { // TODO iterator
 		ObjSelection sel = ObjSelection(i);
-		
 		if(obj2->selections[i].name == "head") {
 			sel_head2 = sel;
 		} else if(obj2->selections[i].name == "chest") {
@@ -317,64 +317,50 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 			sel_legs2 = sel;
 		}
 	}
-
-	if(sel_head1 == ObjSelection()) return nullptr;
-
-	if(sel_head2 == ObjSelection()) return nullptr;
-
-	if(sel_torso1 == ObjSelection()) return nullptr;
-
-	if(sel_torso2 == ObjSelection()) return nullptr;
-
-	if(sel_legs1 == ObjSelection()) return nullptr;
-
-	if(sel_legs2 == ObjSelection()) return nullptr;
-
+	
+	if(sel_head1 == ObjSelection() ||
+	   sel_head2 == ObjSelection() ||
+	   sel_torso1 == ObjSelection() ||
+	   sel_torso2 == ObjSelection() ||
+	   sel_legs1 == ObjSelection() ||
+	   sel_legs2 == ObjSelection()) {
+		return nullptr;
+	}
+	
 	if(tw == TWEAK_HEAD) {
 		tw1 = sel_head1;
 		tw2 = sel_head2;
 		iw1 = sel_torso1;
 		jw1 = sel_legs1;
 	}
-
+	
 	if(tw == TWEAK_TORSO) {
 		tw1 = sel_torso1;
 		tw2 = sel_torso2;
 		iw1 = sel_head1;
 		jw1 = sel_legs1;
 	}
-
+	
 	if(tw == TWEAK_LEGS) {
 		tw1 = sel_legs1;
 		tw2 = sel_legs2;
 		iw1 = sel_torso1;
 		jw1 = sel_head1;
 	}
-
-	if(tw1 == ObjSelection() || tw2 == ObjSelection())
-		return nullptr;
-
-	// Now Retreives Tweak Action Points
-	{
-		ActionPoint idx_head1 = GetActionPoint(obj1, "head2chest");
-		if(idx_head1 == ActionPoint())
-			return nullptr;
-
-		ActionPoint idx_head2 = GetActionPoint(obj2, "head2chest");
-		if(idx_head2 == ActionPoint())
-			return nullptr;
-
-		ActionPoint idx_torso1 = GetActionPoint(obj1, "chest2leggings");
-		if(idx_torso1 == ActionPoint())
-			return nullptr;
-
-		ActionPoint idx_torso2 = GetActionPoint(obj2, "chest2leggings");
-		if(idx_torso2 == ActionPoint())
-			return nullptr;
+	
+	if(tw1 == ObjSelection() || tw2 == ObjSelection()) {
+		return { };
+	}
+	
+	if(!GetActionPoint(obj1, "head2chest") ||
+	   !GetActionPoint(obj2, "head2chest") ||
+	   !GetActionPoint(obj1, "chest2leggings") ||
+	   !GetActionPoint(obj2, "chest2leggings")) {
+		return { };
 	}
 	
 	// Work will contain the Tweaked object
-	EERIE_3DOBJ * work = new EERIE_3DOBJ;
+	std::unique_ptr<EERIE_3DOBJ> work = std::make_unique<EERIE_3DOBJ>();
 	
 	// Linked objects are linked to this object.
 	if(obj1->linked.size() > obj2->linked.size()) {
@@ -385,89 +371,73 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	
 	// Is the origin of object in obj1 or obj2 ? Retreives it for work object
 	if(IsInSelection(obj1, obj1->origin, tw1)) {
-		work->origin = ObjectAddVertex(work, &obj2->vertexlist[obj2->origin]);
+		work->origin = ObjectAddVertex(work.get(), &obj2->vertexlist[obj2->origin]);
 	} else {
-		work->origin = ObjectAddVertex(work, &obj1->vertexlist[obj1->origin]);
+		work->origin = ObjectAddVertex(work.get(), &obj1->vertexlist[obj1->origin]);
 	}
 	
 	// Recreate Action Points included in work object.for Obj1
 	for(size_t i = 0; i < obj1->actionlist.size(); i++) {
 		const EERIE_ACTIONLIST & action = obj1->actionlist[i];
-		if(   IsInSelection(obj1, action.idx.handleData(), iw1)
-		   || IsInSelection(obj1, action.idx.handleData(), jw1)
-		   || action.name == "head2chest"
-		   || action.name == "chest2leggings"
-		) {
-			ObjectAddAction(work, action.name, &obj1->vertexlist[action.idx.handleData()]);
+		if(IsInSelection(obj1, action.idx.handleData(), iw1) ||
+		   IsInSelection(obj1, action.idx.handleData(), jw1) ||
+		   action.name == "head2chest" ||
+		   action.name == "chest2leggings") {
+			ObjectAddAction(work.get(), action.name, &obj1->vertexlist[action.idx.handleData()]);
 		}
 	}
-
+	
 	// Do the same for Obj2
 	for(size_t i = 0; i < obj2->actionlist.size(); i++) {
 		const EERIE_ACTIONLIST & action = obj2->actionlist[i];
-
-		if(   IsInSelection(obj2, action.idx.handleData(), tw2)
-		   || action.name == "head2chest"
-		   || action.name == "chest2leggings"
-		) {
-			ObjectAddAction(work, action.name, &obj2->vertexlist[action.idx.handleData()]);
+		if(IsInSelection(obj2, action.idx.handleData(), tw2) ||
+		   action.name == "head2chest" ||
+		   action.name == "chest2leggings") {
+			ObjectAddAction(work.get(), action.name, &obj2->vertexlist[action.idx.handleData()]);
 		}
 	}
-
+	
 	// Recreate Vertex using Obj1 Vertexes
 	for(size_t i = 0; i < obj1->vertexlist.size(); i++) {
 		if(IsInSelection(obj1, i, iw1) || IsInSelection(obj1, i, jw1)) {
-			ObjectAddVertex(work, &obj1->vertexlist[i]);
+			ObjectAddVertex(work.get(), &obj1->vertexlist[i]);
 		}
 	}
-
+	
 	// The same for Obj2
 	for(size_t i = 0; i < obj2->vertexlist.size(); i++) {
 		if(IsInSelection(obj2, i, tw2)) {
-			ObjectAddVertex(work, &obj2->vertexlist[i]);
+			ObjectAddVertex(work.get(), &obj2->vertexlist[i]);
 		}
 	}
-
-
+	
 	// Look in Faces for forgotten Vertexes... AND
 	// Re-Create TextureContainers Infos
 	// We look for texturecontainers included in the future tweaked object
 	TextureContainer * tc = nullptr;
-
 	for(size_t i = 0; i < obj1->facelist.size(); i++) {
 		const EERIE_FACE & face = obj1->facelist[i];
-
-		if(   (IsInSelection(obj1, face.vid[0], iw1) || IsInSelection(obj1, face.vid[0], jw1))
-		   && (IsInSelection(obj1, face.vid[1], iw1) || IsInSelection(obj1, face.vid[1], jw1))
-		   && (IsInSelection(obj1, face.vid[2], iw1) || IsInSelection(obj1, face.vid[2], jw1))
-		) {
-			if(face.texid != -1) {
-				if(tc != obj1->texturecontainer[face.texid]) {
-					tc = obj1->texturecontainer[face.texid];
-					ObjectAddMap(work, tc);
-				}
+		if((IsInSelection(obj1, face.vid[0], iw1) || IsInSelection(obj1, face.vid[0], jw1)) &&
+		   (IsInSelection(obj1, face.vid[1], iw1) || IsInSelection(obj1, face.vid[1], jw1)) &&
+		   (IsInSelection(obj1, face.vid[2], iw1) || IsInSelection(obj1, face.vid[2], jw1))) {
+			if(face.texid != -1 && tc != obj1->texturecontainer[face.texid]) {
+				tc = obj1->texturecontainer[face.texid];
+				ObjectAddMap(work.get(), tc);
 			}
-
-			ObjectAddFace(work, &face, obj1);
+			ObjectAddFace(work.get(), &face, obj1);
 		}
 	}
-
+	
 	for(size_t i = 0; i < obj2->facelist.size(); i++) {
 		const EERIE_FACE & face = obj2->facelist[i];
-
-		if(   IsInSelection(obj2, face.vid[0], tw2)
-		   || IsInSelection(obj2, face.vid[1], tw2)
-		   || IsInSelection(obj2, face.vid[2], tw2)
-		) {
-
-			if(face.texid != -1) {
-				if(tc != obj2->texturecontainer[face.texid]) {
-					tc = obj2->texturecontainer[face.texid];
-					ObjectAddMap(work, tc);
-				}
+		if(IsInSelection(obj2, face.vid[0], tw2) ||
+		   IsInSelection(obj2, face.vid[1], tw2) ||
+		   IsInSelection(obj2, face.vid[2], tw2)) {
+			if(face.texid != -1 && tc != obj2->texturecontainer[face.texid]) {
+				tc = obj2->texturecontainer[face.texid];
+				ObjectAddMap(work.get(), tc);
 			}
-
-			ObjectAddFace(work, &face, obj2);
+			ObjectAddFace(work.get(), &face, obj2);
 		}
 	}
 	
@@ -523,7 +493,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	// Now recreates other selections...
 	for(size_t i = 0; i < obj1->selections.size(); i++) {
 		
-		if(EERIE_OBJECT_GetSelection(work, obj1->selections[i].name) != ObjSelection()) {
+		if(EERIE_OBJECT_GetSelection(work.get(), obj1->selections[i].name) != ObjSelection()) {
 			continue;
 		}
 		
@@ -541,7 +511,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	}
 	
 	for(size_t i = 0; i < obj2->selections.size(); i++) {
-		if(EERIE_OBJECT_GetSelection(work, obj2->selections[i].name) == ObjSelection()) {
+		if(EERIE_OBJECT_GetSelection(work.get(), obj2->selections[i].name) == ObjSelection()) {
 			size_t num = work->selections.size();
 			work->selections.resize(num + 1);
 			work->selections[num].name = obj2->selections[i].name;
@@ -552,13 +522,13 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	// Recreate Animation-groups vertex
 	for(size_t i = 0; i < obj1->grouplist.size(); i++) {
 		for(size_t j = 0; j < obj1->grouplist[i].indexes.size(); j++) {
-			AddVertexToGroup(work, i, &obj1->vertexlist[obj1->grouplist[i].indexes[j]]);
+			AddVertexToGroup(work.get(), i, &obj1->vertexlist[obj1->grouplist[i].indexes[j]]);
 		}
 	}
 
 	for(size_t i = 0; i < obj2->grouplist.size(); i++) {
 		for(size_t j = 0; j < obj2->grouplist[i].indexes.size(); j++) {
-			AddVertexToGroup(work, i, &obj2->vertexlist[obj2->grouplist[i].indexes[j]]);
+			AddVertexToGroup(work.get(), i, &obj2->vertexlist[obj2->grouplist[i].indexes[j]]);
 		}
 	}
 	
@@ -571,23 +541,22 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 
 void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path) {
 	
+	if(!io || !io->obj) {
+		return;
+	}
+	
 	res::path ftl_file = ("game" / path).set_ext("ftl");
-
-	if ((!g_resources->getFile(ftl_file)) && (!g_resources->getFile(path))) return;
-
-	if (io == nullptr) return;
-
-	if (io->obj == nullptr) return;
-
+	if((!g_resources->getFile(ftl_file)) && (!g_resources->getFile(path))) {
+		return;
+	}
+	
 	if(path.empty() && tw == TWEAK_REMOVE) {
-		
 		if(io->tweaky) {
 			delete io->obj;
 			io->obj = io->tweaky;
 			EERIE_Object_Precompute_Fast_Access(io->obj);
 			io->tweaky = nullptr;
 		}
-		
 		return;
 	}
 	
@@ -600,46 +569,40 @@ void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path) {
 		return;
 	}
 	
-	EERIE_3DOBJ * result = nullptr;
+	std::unique_ptr<EERIE_3DOBJ> result;
 	if(tw == (TWEAK_HEAD | TWEAK_TORSO | TWEAK_LEGS)) {
-		result = tobj.release(); // Replace the entire mesh
+		
+		result = std::move(tobj); // Replace the entire mesh
+		
 	} else {
 		
 		if(tw & TWEAK_HEAD) {
 			result = CreateIntermediaryMesh(io->obj, tobj.get(), TWEAK_HEAD);
-		} else {
-			result = io->obj;
-		}
-		
-		if(result && (tw & TWEAK_TORSO)) {
-			EERIE_3DOBJ * result2 = CreateIntermediaryMesh(result, tobj.get(), TWEAK_TORSO);
-			if(result != io->obj) {
-				delete result;
+			if(!result) {
+				return;
 			}
-			result = result2;
 		}
-		
-		if(result && (tw & TWEAK_LEGS)) {
-			EERIE_3DOBJ * result2 = CreateIntermediaryMesh(result, tobj.get(), TWEAK_LEGS);
-			if(result != io->obj) {
-				delete result;
+		if(tw & TWEAK_TORSO) {
+			result = CreateIntermediaryMesh(result ? result.get() : io->obj, tobj.get(), TWEAK_TORSO);
+			if(!result) {
+				return;
 			}
-			result = result2;
+		}
+		if(tw & TWEAK_LEGS) {
+			result = CreateIntermediaryMesh(result ? result.get() : io->obj, tobj.get(), TWEAK_LEGS);
+			if(!result) {
+				return;
+			}
 		}
 		
-		arx_assert(result != io->obj);
+		EERIE_Object_Precompute_Fast_Access(result.get());
 		
-		if(!result) {
-			return;
-		}
-		
-		EERIE_Object_Precompute_Fast_Access(result);
-		
-		EERIE_CreateCedricData(result);
+		EERIE_CreateCedricData(result.get());
 		
 		// TODO also do this for the other branch?
 		io->animBlend.lastanimtime = 0;
 		io->animBlend.m_active = false;
+		
 	}
 	
 	if(!io->tweaky) {
@@ -648,6 +611,6 @@ void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path) {
 		delete io->obj;
 	}
 	
-	io->obj = result;
+	io->obj = result.release();
 	
 }
