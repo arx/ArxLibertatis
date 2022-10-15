@@ -295,16 +295,16 @@ void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle sourc
 	}
 	
 	float nearest_dist = std::numeric_limits<float>::max();
-	long nearest = -1;
+	VertexId nearest;
 	for(size_t i = 0; i < sourceIo->obj->grouplist.size(); i += 2) {
 		VertexId vertex = sourceIo->obj->grouplist[i].origin;
 		float dist = arx::distance2(pos, sourceIo->obj->vertexWorldPositions[size_t(vertex)].v);
 		if(dist < nearest_dist) {
 			nearest_dist = dist;
-			nearest = i;
+			nearest = vertex;
 		}
 	}
-	if(nearest < 0) {
+	if(!nearest) {
 		return;
 	}
 	
@@ -321,7 +321,7 @@ void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle sourc
 		pd->size = 0.f;
 		pd->sizeDelta = float(spawn_nb);
 		pd->m_flags = GRAVITY | ROTATING | DELAY_FOLLOW_SOURCE;
-		pd->source = &sourceIo->obj->vertexWorldPositions[nearest].v;
+		pd->source = &sourceIo->obj->vertexWorldPositions[size_t(nearest)].v;
 		pd->sourceionum = source;
 		pd->duration = 1200ms + spawn_nb * 5ms;
 		elapsed -= 45ms + Random::get(0ms, 150ms - std::chrono::milliseconds(spawn_nb));
