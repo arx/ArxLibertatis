@@ -39,15 +39,10 @@
 #include "util/Range.h"
 
 
-static bool IsNearSelection(EERIE_3DOBJ * obj, VertexId vert, VertexSelectionId tw) {
+static bool isNearSelection(const EERIE_3DOBJ & object, VertexId vertex, VertexSelectionId selection) {
 	
-	if(!obj || !tw || !vert) {
-		return false;
-	}
-	
-	for(VertexId vertex : obj->selections[tw].selected) {
-		float d = glm::distance(obj->vertexlist[vertex].v, obj->vertexlist[vert].v);
-		if(d < 8.f) {
+	for(VertexId selected : object.selections[selection].selected) {
+		if(glm::distance(object.vertexlist[selected].v, object.vertexlist[vertex].v) < 8.f) {
 			return true;
 		}
 	}
@@ -91,10 +86,10 @@ static void ARX_NPC_SpawnMember(Entity * ioo, VertexSelectionId num) {
 	size_t nvertex = from->selections[num].selected.size();
 	arx_assume(nvertex > 0);
 	for(EERIE_FACE & face : from->facelist) {
-		if(face.material == gore
-		   && (IsNearSelection(from, face.vid[0], num)
-		       || IsNearSelection(from, face.vid[1], num)
-		       || IsNearSelection(from, face.vid[2], num))) {
+		if(face.material == gore &&
+		   (isNearSelection(*from, face.vid[0], num) ||
+		    isNearSelection(*from, face.vid[1], num) ||
+		    isNearSelection(*from, face.vid[2], num))) {
 			nvertex += 3;
 		}
 	}
@@ -124,25 +119,24 @@ static void ARX_NPC_SpawnMember(Entity * ioo, VertexSelectionId num) {
 	
 	size_t count = cutSelection.selected.size();
 	for(const EERIE_FACE & face : from->facelist) {
-		if(face.material == gore) {
-			if(IsNearSelection(from, face.vid[0], num)
-			   || IsNearSelection(from, face.vid[1], num)
-			   || IsNearSelection(from, face.vid[2], num)) {
-				
-				for(VertexId vertex : face.vid) {
-					if(count < nouvo->vertexlist.size()) {
-						VertexId outpos = VertexId(count);
-						nouvo->vertexlist[outpos] = from->vertexlist[vertex];
-						nouvo->vertexlist[outpos].v = from->vertexWorldPositions[vertex].v - ioo->pos;
-						nouvo->vertexWorldPositions[outpos] = nouvo->vertexlist[outpos];
-						equival[vertex] = outpos;
-					} else {
-						equival[vertex] = { };
-					}
-					count++;
+		if(face.material == gore &&
+		   (isNearSelection(*from, face.vid[0], num) ||
+		    isNearSelection(*from, face.vid[1], num) ||
+		    isNearSelection(*from, face.vid[2], num))) {
+			
+			for(VertexId vertex : face.vid) {
+				if(count < nouvo->vertexlist.size()) {
+					VertexId outpos = VertexId(count);
+					nouvo->vertexlist[outpos] = from->vertexlist[vertex];
+					nouvo->vertexlist[outpos].v = from->vertexWorldPositions[vertex].v - ioo->pos;
+					nouvo->vertexWorldPositions[outpos] = nouvo->vertexlist[outpos];
+					equival[vertex] = outpos;
+				} else {
+					equival[vertex] = { };
 				}
-				
+				count++;
 			}
+			
 		}
 	}
 	
