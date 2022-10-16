@@ -1610,10 +1610,10 @@ static void print_io_npc(SaveBlock & save, const ARX_CHANGELEVEL_IO_SAVE & ais,
 	std::cout << "  Detect: " << as->fDetect << '\n';
 	if(as->cuts) std::cout << "  Cuts: " << as->cuts << '\n';
 	
-	if(as->pathfind.truetarget != TARGET_NONE) {
+	if(as->pathfind.truetarget != s32(TARGET_NONE)) {
 		std::cout << "  True target: ";
 		switch(as->pathfind.truetarget) {
-			case TARGET_PATH: std::cout << "path"; break;
+			case s32(TARGET_PATH): std::cout << "path"; break;
 			case 0: std::cout << "player"; break;
 			default: std::cout << "(unknown)";
 		}

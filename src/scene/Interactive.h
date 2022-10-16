@@ -62,10 +62,8 @@ struct EERIE_3DOBJ;
 
 namespace res { class path; }
 
-enum TargetInfo {
-	TARGET_PATH = -3,
-	TARGET_NONE = -2,
-};
+static inline constexpr EntityHandle TARGET_PATH = EntityHandle(-3);
+static inline constexpr EntityHandle TARGET_NONE = EntityHandle(-2);
 
 enum AddInteractiveFlag {
 	NO_MESH          = 1 << 0,
