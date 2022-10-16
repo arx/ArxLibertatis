@@ -100,7 +100,7 @@ public:
 	~ResourceList() { clear(); }
 	
 	bool isValid(Handle handle) const {
-		return (size_t(handle) < m_list.size() && m_list[size_t(handle)]);
+		return (handle && size_t(handle) < m_list.size() && m_list[size_t(handle)]);
 	}
 	
 	T * operator[](Handle handle) { return m_list[size_t(handle)]; }
