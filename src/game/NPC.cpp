@@ -284,24 +284,12 @@ void ARX_NPC_Revive(Entity * io, bool init) {
 		io->pos = io->initpos;
 	}
 	
-	long goretex = -1;
-	for(size_t i = 0; i < io->obj->texturecontainer.size(); i++) {
-		if(!io->obj->texturecontainer.empty() && io->obj->texturecontainer[i]
-		   && boost::contains(io->obj->texturecontainer[i]->m_texName.string(), "gore")) {
-			goretex = i;
-			break;
-		}
+	ARX_INTERACTIVE_HideGore(io, true);
+	
+	if(io->ioflags & IO_NPC) {
+		io->_npcdata->cuts = 0;
 	}
 	
-	for(EERIE_FACE & face : io->obj->facelist) {
-		if(face.texid != goretex)
-			face.facetype &= ~POLY_HIDE;
-		else
-			face.facetype |= POLY_HIDE;
-	}
-
-	if(io->ioflags & IO_NPC)
-		io->_npcdata->cuts = 0;
 }
 
 //! Sets a new behaviour for NPC
