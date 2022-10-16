@@ -142,11 +142,15 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 	object->facelist.resize(af3Ddh->nb_faces);
 	object->texturecontainer.resize(af3Ddh->nb_maps);
 	if(arx_unlikely(af3Ddh->nb_groups < 0 || size_t(af3Ddh->nb_groups) > VertexGroupId::max())) {
-		LogError << filename << ": Invalid vertex group count";
+		LogError << filename << ": Invalid group count";
 		return { };
 	}
 	object->grouplist.resize(af3Ddh->nb_groups);
 	object->actionlist.resize(af3Ddh->nb_action);
+	if(arx_unlikely(af3Ddh->nb_selections < 0 || size_t(af3Ddh->nb_selections) > VertexSelectionId::max())) {
+		LogError << filename << ": Invalid selection count";
+		return { };
+	}
 	object->selections.resize(af3Ddh->nb_selections);
 	if(arx_unlikely(af3Ddh->origin < 0 || size_t(af3Ddh->origin) >= object->vertexlist.size())) {
 		LogError << filename << ": Invalid origin vertex";
