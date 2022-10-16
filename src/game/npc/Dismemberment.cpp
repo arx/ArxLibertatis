@@ -146,7 +146,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, VertexSelectionId num) {
 		}
 	}
 	
-	arx_assume(nouvo->vertexlist.size() > 0);
+	arx_assume(!nouvo->vertexlist.empty());
 	nouvo->origin = { };
 	float min = 0.f;
 	for(VertexId vertex : nouvo->vertexlist.handles()) {
