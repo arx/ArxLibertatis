@@ -47,6 +47,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <memory>
 #include <vector>
 
+#include <boost/container/small_vector.hpp>
+
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/GraphicsTypes.h"
 #include "math/Types.h"
@@ -90,28 +92,14 @@ struct Room {
 	
 };
 
-#define MAX_FRUSTRUMS 32
-
-struct EERIE_FRUSTRUM_DATA {
-	
-	long nb_frustrums = 0;
-	EERIE_FRUSTRUM frustrums[MAX_FRUSTRUMS];
-	
-};
-
-struct PORTAL_ROOM_DRAW {
-	
-	short count = 0;
-	EERIE_FRUSTRUM_DATA frustrum;
-	
-};
-
 struct RoomData {
+	
+	typedef boost::container::small_vector<EERIE_FRUSTRUM, 8> Frustums;
 	
 	util::HandleVector<RoomHandle, Room> rooms;
 	util::HandleVector<PortalHandle, RoomPortal> portals;
 	
-	util::HandleVector<RoomHandle, PORTAL_ROOM_DRAW> visibility;
+	util::HandleVector<RoomHandle, Frustums> frustums;
 	std::vector<RoomHandle> visibleRooms;
 	
 };

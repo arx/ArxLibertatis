@@ -240,18 +240,17 @@ static void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to,
 
 bool IsSphereInFrustrum(const Vec3f & point, const EERIE_FRUSTRUM & frustrum, float radius = 0.f);
 
-static bool FrustrumsClipSphere(const EERIE_FRUSTRUM_DATA & frustrums,
-                                const Sphere & sphere) {
+static bool FrustrumsClipSphere(const RoomData::Frustums & frustums, const Sphere & sphere) {
 	
 	float dists = distanceToPoint(efpPlaneNear, sphere.origin);
-
+	
 	if(dists + sphere.radius > 0) {
-		for(long i = 0; i < frustrums.nb_frustrums; i++) {
-			if(IsSphereInFrustrum(sphere.origin, frustrums.frustrums[i], sphere.radius))
+		for(const EERIE_FRUSTRUM & frustum : frustums) {
+			if(IsSphereInFrustrum(sphere.origin, frustum, sphere.radius))
 				return false;
 		}
 	}
-
+	
 	return true;
 }
 
@@ -269,7 +268,7 @@ bool VisibleSphere(const Sphere & sphere) {
 	
 	if(RoomHandle room = ARX_PORTALS_GetRoomNumForPosition(sphere.origin)) {
 		arx_assert(g_rooms);
-		if(FrustrumsClipSphere(g_rooms->visibility[room].frustrum, sphere)) {
+		if(FrustrumsClipSphere(g_rooms->frustums[room], sphere)) {
 			return false;
 		}
 	}
@@ -306,11 +305,10 @@ static bool IsBBoxInFrustrum(const EERIE_3D_BBOX & bbox, const EERIE_FRUSTRUM & 
 	return true;
 }
 
-static bool FrustrumsClipBBox3D(const EERIE_FRUSTRUM_DATA & frustrums,
-                                const EERIE_3D_BBOX & bbox) {
+static bool FrustrumsClipBBox3D(const RoomData::Frustums & frustums, const EERIE_3D_BBOX & bbox) {
 	
-	for(long i = 0; i < frustrums.nb_frustrums; i++) {
-		if(IsBBoxInFrustrum(bbox, frustrums.frustrums[i])) {
+	for(const EERIE_FRUSTRUM & frustum : frustums) {
+		if(IsBBoxInFrustrum(bbox, frustum)) {
 			return false;
 		}
 	}
@@ -371,9 +369,10 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 		return false;
 	}
 	
-	arx_assume(size_t(room) < g_rooms->visibility.size());
+	arx_assume(size_t(room) < g_rooms->frustums.size());
 	
-	if(g_rooms->visibility[room].count == 0) {
+	const RoomData::Frustums & frustums = g_rooms->frustums[room];
+	if(frustums.empty()) {
 		if(io) {
 			io->bbox2D.min = Vec2f(-1.f, -1.f);
 			io->bbox2D.max = Vec2f(-1.f, -1.f);
@@ -382,9 +381,8 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 	}
 	
 	if(io) {
-		const EERIE_FRUSTRUM_DATA & frustrums = g_rooms->visibility[room].frustrum;
 		// TODO also use the portals from intermediate rooms for clipping
-		if(FrustrumsClipSphere(frustrums, sphere) || FrustrumsClipBBox3D(frustrums, io->bbox3D)) {
+		if(FrustrumsClipSphere(frustums, sphere) || FrustrumsClipBBox3D(frustums, io->bbox3D)) {
 			io->bbox2D.min = Vec2f(-1.f, -1.f);
 			io->bbox2D.max = Vec2f(-1.f, -1.f);
 			return true;
@@ -442,8 +440,8 @@ static bool isOccludedByPortals(Entity & entity, float dist2, RoomHandle current
 	sphere.origin = (entity.bbox3D.min + entity.bbox3D.max) / 2.f;
 	sphere.radius = glm::distance(sphere.origin, entity.bbox3D.min);
 	
-	const EERIE_FRUSTRUM_DATA & frustrums = g_rooms->visibility[currentRoom].frustrum;
-	if(FrustrumsClipSphere(frustrums, sphere) || FrustrumsClipBBox3D(frustrums, entity.bbox3D)) {
+	if(FrustrumsClipSphere(g_rooms->frustums[currentRoom], sphere) ||
+	   FrustrumsClipBBox3D(g_rooms->frustums[currentRoom], entity.bbox3D)) {
 		return true;
 	}
 	
@@ -569,13 +567,13 @@ EntityVisibility getEntityVisibility(Entity & entity, bool cullingOnly) {
 		}
 		if(g_rooms && USE_PLAYERCOLLISIONS) {
 			if(RoomHandle room = ARX_PORTALS_GetRoomNumForPosition(g_camera->m_pos, RoomPositionForCamera)) {
-				arx_assume(size_t(room) < g_rooms->visibility.size());
+				arx_assume(size_t(room) < g_rooms->frustums.size());
 				RoomHandle room2 = entity.room;
 				if(!room2) {
 					room2 = ARX_PORTALS_GetRoomNumForPosition(parent->pos - Vec3f(0.f, 120.f, 0.f));
 				}
 				if(room2 && room2 != room) {
-					arx_assume(size_t(room2) < g_rooms->visibility.size());
+					arx_assume(size_t(room2) < g_rooms->frustums.size());
 					if(isOccludedByPortals(entity, arx::distance2(parent->pos, g_camera->m_pos), room2, room)) {
 						return EntityFullyOccluded;
 					}
@@ -833,10 +831,9 @@ static void ARX_PORTALS_InitDrawnRooms() {
 		ARX_PORTALS_Frustrum_ClearIndexCount(room);
 	}
 	
-	g_rooms->visibility.resize(g_rooms->rooms.size());
-	for(PORTAL_ROOM_DRAW & room : g_rooms->visibility) {
-		room.count = 0;
-		room.frustrum.nb_frustrums = 0;
+	g_rooms->frustums.resize(g_rooms->rooms.size());
+	for(RoomData::Frustums & frustums : g_rooms->frustums) {
+		frustums.clear();
 	}
 	
 	g_rooms->visibleRooms.clear();
@@ -862,12 +859,12 @@ bool IsSphereInFrustrum(const Vec3f & point, const EERIE_FRUSTRUM & frustrum, fl
 	return (dists[0] + radius > 0 && dists[1] + radius > 0 && dists[2] + radius > 0 && dists[3] + radius > 0);
 }
 
-static bool FrustrumsClipPoly(const EERIE_FRUSTRUM_DATA & frustrums,
-                              const EERIEPOLY & ep) {
+static bool FrustrumsClipPoly(const RoomData::Frustums & frustums, const EERIEPOLY & ep) {
 	
-	for(long i = 0; i < frustrums.nb_frustrums; i++) {
-		if(IsSphereInFrustrum(ep.center, frustrums.frustrums[i], ep.v[0].w))
+	for(const EERIE_FRUSTRUM & frustum : frustums) {
+		if(IsSphereInFrustrum(ep.center, frustum, ep.v[0].w)) {
 			return false;
+		}
 	}
 	
 	return true;
@@ -946,17 +943,8 @@ static void CreateScreenFrustrum() {
 void RoomDrawRelease() {
 	if(g_rooms) {
 		g_rooms->visibleRooms.clear();
-		g_rooms->visibility.clear();
+		g_rooms->frustums.clear();
 	}
-}
-
-static void RoomFrustrumAdd(RoomHandle room, const EERIE_FRUSTRUM & fr) {
-	
-	if(g_rooms->visibility[room].frustrum.nb_frustrums < MAX_FRUSTRUMS - 1) {
-		g_rooms->visibility[room].frustrum.frustrums[g_rooms->visibility[room].frustrum.nb_frustrums] = fr;
-		g_rooms->visibility[room].frustrum.nb_frustrums++;
-	}
-	
 }
 
 static void RenderWaterBatch() {
@@ -1204,13 +1192,12 @@ static void RenderLava() {
 	vPolyLava.clear();
 }
 
-static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomHandle roomIndex,
-                                                     const EERIE_FRUSTRUM_DATA & frustrums,
-                                                     const Vec3f & camPos) {
+static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomHandle roomIndex, const Vec3f & camPos) {
 	
 	ARX_PROFILE_FUNC();
 	
-	if(!g_rooms->visibility[roomIndex].count) {
+	const RoomData::Frustums & frustums = g_rooms->frustums[roomIndex];
+	if(frustums.empty()) {
 		return;
 	}
 	
@@ -1247,7 +1234,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomHandle roomIndex,
 			continue;
 		}
 		
-		if(FrustrumsClipPoly(frustrums, *ep)) {
+		if(FrustrumsClipPoly(frustums, *ep)) {
 			continue;
 		}
 
@@ -1494,12 +1481,11 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(RoomHandle roomIndex,
 	
 	arx_assume(roomIndex && size_t(roomIndex) < g_rooms->rooms.size());
 	
-	if(g_rooms->visibility[roomIndex].count == 0) {
+	if(g_rooms->frustums[roomIndex].empty()) {
 		g_rooms->visibleRooms.push_back(roomIndex);
 	}
 	
-	RoomFrustrumAdd(roomIndex, frustrum);
-	g_rooms->visibility[roomIndex].count++;
+	g_rooms->frustums[roomIndex].push_back(frustrum);
 	
 	float fClippZFar = camDepth * fZFogEnd * 1.1f;
 	
@@ -1584,16 +1570,15 @@ void ARX_SCENE_Update() {
 	
 	if(!USE_PLAYERCOLLISIONS) {
 		for(RoomHandle room : g_rooms->rooms.handles()) {
-			g_rooms->visibility[room].count = 1;
 			g_rooms->visibleRooms.push_back(room);
-			RoomFrustrumAdd(room, g_screenFrustum);
+			g_rooms->frustums[room].push_back(g_screenFrustum);
 		}
 	} else if(RoomHandle room = ARX_PORTALS_GetRoomNumForPosition(camPos, RoomPositionForCamera)) {
 		ARX_PORTALS_Frustrum_ComputeRoom(room, g_screenFrustum, camPos, camDepth);
 	}
 	
 	for(RoomHandle room : g_rooms->visibleRooms) {
-		ARX_PORTALS_Frustrum_RenderRoomTCullSoft(room, g_rooms->visibility[room].frustrum, camPos);
+		ARX_PORTALS_Frustrum_RenderRoomTCullSoft(room, camPos);
 	}
 	
 	ARX_THROWN_OBJECT_Manage(g_gameTime.lastFrameDuration());
