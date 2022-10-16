@@ -154,7 +154,7 @@ void CCreateField::RenderSubDivFace(Vec3f * b, Vec3f * t, int b1, int b2, int t1
 
 void CCreateField::Update(ShortGameDuration timeDelta) {
 	
-	arx_assume(timeDelta >= 0 && timeDelta <= GameTime::MaxFrameDuration);
+	arx_assume(timeDelta >= 0 && timeDelta <= ShortGameDuration::max() / 2);
 	
 	m_elapsed += timeDelta;
 	
