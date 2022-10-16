@@ -56,7 +56,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/EntityId.h"
 #include "graphics/data/MeshManipulation.h"
 #include "math/Vector.h"
+#include "platform/Platform.h"
 #include "util/Flags.h"
+
 
 struct EERIE_3DOBJ;
 
@@ -160,8 +162,8 @@ std::string_view GetMaterialString(const res::path & texture);
 Entity * CloneIOItem(Entity * src);
 
 float ARX_INTERACTIVE_GetArmorClass(Entity * io);
-long ARX_INTERACTIVE_GetPrice(Entity * io, Entity * shop);
-long ARX_INTERACTIVE_GetSellValue(Entity * item, Entity * shop, long count = 1);
+s32 ARX_INTERACTIVE_GetPrice(Entity * io, Entity * shop);
+s32 ARX_INTERACTIVE_GetSellValue(Entity * item, Entity * shop, long count = 1);
 void IO_UnlinkAllLinkedObjects(Entity * io);
 
 struct TREATZONE_IO {

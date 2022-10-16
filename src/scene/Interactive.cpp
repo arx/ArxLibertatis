@@ -143,7 +143,7 @@ bool ValidIOAddress(const Entity * io) {
 	return false;
 }
 
-long ARX_INTERACTIVE_GetPrice(Entity * io, Entity * shop) {
+s32 ARX_INTERACTIVE_GetPrice(Entity * io, Entity * shop) {
 	
 	if(!io || !(io->ioflags & IO_ITEM))
 		return 0;
@@ -151,14 +151,14 @@ long ARX_INTERACTIVE_GetPrice(Entity * io, Entity * shop) {
 	float shop_multiply = shop ? shop->shop_multiply : 1.f;
 	float durability_ratio = io->durability / io->max_durability;
 	
-	return long(io->_itemdata->price * shop_multiply * durability_ratio);
+	return s32(io->_itemdata->price * shop_multiply * durability_ratio);
 }
 
-long ARX_INTERACTIVE_GetSellValue(Entity * item, Entity * shop, long count) {
+s32 ARX_INTERACTIVE_GetSellValue(Entity * item, Entity * shop, long count) {
 	
 	float price = float(ARX_INTERACTIVE_GetPrice(item, shop) / 3 * count);
 	
-	return long(price + price * player.m_skillFull.intuition * 0.005f);
+	return s32(price + price * player.m_skillFull.intuition * 0.005f);
 }
 
 static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io) {
