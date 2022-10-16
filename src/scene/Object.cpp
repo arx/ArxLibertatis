@@ -102,7 +102,7 @@ VertexGroupId getGroupForVertex(const EERIE_3DOBJ * eobj, VertexId vertex) {
 		return { };
 	}
 	
-	for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
+	for(size_t i = eobj->grouplist.size(); i-- > 0;) {
 		for(VertexId index : eobj->grouplist[VertexGroupId(i)].indexes) {
 			if(index == vertex) {
 				return VertexGroupId(i);
