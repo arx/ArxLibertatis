@@ -146,13 +146,14 @@ bool ValidIOAddress(const Entity * io) {
 
 s32 ARX_INTERACTIVE_GetPrice(Entity * io, Entity * shop) {
 	
-	if(!io || !(io->ioflags & IO_ITEM))
+	if(!io || !(io->ioflags & IO_ITEM)) {
 		return 0;
+	}
 	
 	float shop_multiply = shop ? shop->shop_multiply : 1.f;
 	float durability_ratio = io->durability / io->max_durability;
 	
-	return s32(io->_itemdata->price * shop_multiply * durability_ratio);
+	return s32(float(io->_itemdata->price) * shop_multiply * durability_ratio);
 }
 
 s32 ARX_INTERACTIVE_GetSellValue(Entity * item, Entity * shop, long count) {
