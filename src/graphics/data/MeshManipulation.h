@@ -75,6 +75,6 @@ struct TWEAK_INFO {
 void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path);
 bool IsInSelection(const EERIE_3DOBJ * obj, VertexId vert, VertexSelectionId tw);
 void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & s1, const res::path & s2);
-long ObjectAddMap(EERIE_3DOBJ * obj, TextureContainer * tc);
+MaterialId addMaterial(EERIE_3DOBJ & obj, TextureContainer * material);
 
 #endif // ARX_GRAPHICS_DATA_MESHMANIPULATION_H

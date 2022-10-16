@@ -177,9 +177,7 @@ static void applyTweak(EquipmentSlot equip, TweakType tw, std::string_view selec
 	}
 	
 	res::path file = "graph/obj3d/textures" / tweak.skinchangeto;
-	TextureContainer * temp = TextureContainer::Load(file, TextureContainer::Level);
-	
-	long mapidx = ObjectAddMap(io->obj, temp);
+	MaterialId newMaterial = addMaterial(*io->obj, TextureContainer::Load(file, TextureContainer::Level));
 	
 	VertexSelectionId sel;
 	for(VertexSelectionId i : io->obj->selections.handles()) {
@@ -208,7 +206,7 @@ static void applyTweak(EquipmentSlot equip, TweakType tw, std::string_view selec
 		   IsInSelection(io->obj, face.vid[1], sel) &&
 		   IsInSelection(io->obj, face.vid[2], sel)) {
 			if(face.material == oldMaterial) {
-				face.material = MaterialId(mapidx);
+				face.material = newMaterial;
 			}
 		}
 	}

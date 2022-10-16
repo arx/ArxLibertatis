@@ -200,21 +200,21 @@ static void addNamedVertex(EERIE_3DOBJ & obj, std::string_view name, const EERIE
 	
 }
 
-long ObjectAddMap(EERIE_3DOBJ * obj, TextureContainer * tc) {
+MaterialId addMaterial(EERIE_3DOBJ & obj, TextureContainer * material) {
 	
-	if(tc == nullptr) {
-		return -1;
+	if(!material) {
+		return { };
 	}
 	
-	for(MaterialId id : obj->materials.handles()) {
-		if(obj->materials[id] == tc) {
-			return long(id);
+	for(MaterialId id : obj.materials.handles()) {
+		if(obj.materials[id] == material) {
+			return id;
 		}
 	}
 	
-	obj->materials.push_back(tc);
+	obj.materials.push_back(material);
 	
-	return obj->materials.size() - 1;
+	return obj.materials.last();
 }
 
 static void addVertexToGroup(EERIE_3DOBJ & obj, VertexGroup & group, const EERIE_VERTEX & vertex) {
@@ -377,7 +377,7 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 		   (IsInSelection(obj1, face.vid[2], iw1) || IsInSelection(obj1, face.vid[2], jw1))) {
 			if(face.material && tc != obj1->materials[face.material]) {
 				tc = obj1->materials[face.material];
-				ObjectAddMap(work.get(), tc);
+				addMaterial(*work, tc);
 			}
 			ObjectAddFace(work.get(), &face, obj1);
 		}
@@ -389,7 +389,7 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 		   IsInSelection(obj2, face.vid[2], tw2)) {
 			if(face.material && tc != obj2->materials[face.material]) {
 				tc = obj2->materials[face.material];
-				ObjectAddMap(work.get(), tc);
+				addMaterial(*work, tc);
 			}
 			ObjectAddFace(work.get(), &face, obj2);
 		}
