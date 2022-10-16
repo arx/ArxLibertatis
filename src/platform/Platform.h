@@ -312,13 +312,13 @@ namespace ARX_ANONYMOUS_NAMESPACE {
  * \def arx_likely(Condition)
  * \brief Indicate that a condition is likely true
  */
-#define arx_likely(Condition) arx_expect(!!(Condition), 1)
+#define arx_likely(Condition) arx_expect(bool(Condition), 1)
 
 /*!
  * \def arx_unlikely(Condition)
  * \brief Indicate that a condition is likely false
  */
-#define arx_unlikely(Condition) arx_expect(!!(Condition), 0)
+#define arx_unlikely(Condition) arx_expect(bool(Condition), 0)
 
 /*!
  * \def arx_assume(Expression)
