@@ -17,7 +17,7 @@ Website: [arx-libertatis.org](https://arx-libertatis.org/)
 
 Bug Tracker: [bugs.arx-libertatis.org](https://bugs.arx-libertatis.org/)
 
-IRC: \#arxfatalis on irc.freenode.net
+IRC: \#arx on libera.chat
 
 Wiki: [wiki.arx-libertatis.org](https://wiki.arx-libertatis.org/)
 
