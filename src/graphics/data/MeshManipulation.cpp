@@ -171,12 +171,12 @@ static long ObjectAddFace(EERIE_3DOBJ * obj, const EERIE_FACE * face, const EERI
 	newface.vid[0] = addVertex(*obj, srcobj->vertexlist[face->vid[0]]);
 	newface.vid[1] = addVertex(*obj, srcobj->vertexlist[face->vid[1]]);
 	newface.vid[2] = addVertex(*obj, srcobj->vertexlist[face->vid[2]]);
-	newface.texid = 0;
+	newface.material = MaterialId(0);
 	
 	for(size_t i = 0; i < obj->texturecontainer.size(); i++) {
-		if(face->texid >= 0 && size_t(face->texid) < srcobj->texturecontainer.size()
-		   && obj->texturecontainer[i] == srcobj->texturecontainer[face->texid]) {
-			newface.texid = short(i);
+		if(face->material && size_t(face->material) < srcobj->texturecontainer.size()
+		   && obj->texturecontainer[i] == srcobj->texturecontainer[size_t(face->material)]) {
+			newface.material = MaterialId(i);
 			break;
 		}
 	}
@@ -369,26 +369,24 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 	// Re-Create TextureContainers Infos
 	// We look for texturecontainers included in the future tweaked object
 	TextureContainer * tc = nullptr;
-	for(size_t i = 0; i < obj1->facelist.size(); i++) {
-		const EERIE_FACE & face = obj1->facelist[i];
+	for(const EERIE_FACE & face : obj1->facelist) {
 		if((IsInSelection(obj1, face.vid[0], iw1) || IsInSelection(obj1, face.vid[0], jw1)) &&
 		   (IsInSelection(obj1, face.vid[1], iw1) || IsInSelection(obj1, face.vid[1], jw1)) &&
 		   (IsInSelection(obj1, face.vid[2], iw1) || IsInSelection(obj1, face.vid[2], jw1))) {
-			if(face.texid != -1 && tc != obj1->texturecontainer[face.texid]) {
-				tc = obj1->texturecontainer[face.texid];
+			if(face.material && tc != obj1->texturecontainer[size_t(face.material)]) {
+				tc = obj1->texturecontainer[size_t(face.material)];
 				ObjectAddMap(work.get(), tc);
 			}
 			ObjectAddFace(work.get(), &face, obj1);
 		}
 	}
 	
-	for(size_t i = 0; i < obj2->facelist.size(); i++) {
-		const EERIE_FACE & face = obj2->facelist[i];
+	for(const EERIE_FACE & face : obj2->facelist) {
 		if(IsInSelection(obj2, face.vid[0], tw2) ||
 		   IsInSelection(obj2, face.vid[1], tw2) ||
 		   IsInSelection(obj2, face.vid[2], tw2)) {
-			if(face.texid != -1 && tc != obj2->texturecontainer[face.texid]) {
-				tc = obj2->texturecontainer[face.texid];
+			if(face.material && tc != obj2->texturecontainer[size_t(face.material)]) {
+				tc = obj2->texturecontainer[size_t(face.material)];
 				ObjectAddMap(work.get(), tc);
 			}
 			ObjectAddFace(work.get(), &face, obj2);

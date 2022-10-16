@@ -192,13 +192,13 @@ static void applyTweak(EquipmentSlot equip, TweakType tw, std::string_view selec
 		return;
 	}
 	
-	long textochange = -1;
+	MaterialId textochange;
 	for(size_t i = 0; i < io->obj->texturecontainer.size(); i++) {
 		if(tweak.skintochange == io->obj->texturecontainer[i]->m_texName.filename()) {
-			textochange = i;
+			textochange = MaterialId(i);
 		}
 	}
-	if(textochange == -1) {
+	if(!textochange) {
 		return;
 	}
 	
@@ -206,8 +206,8 @@ static void applyTweak(EquipmentSlot equip, TweakType tw, std::string_view selec
 		if(IsInSelection(io->obj, face.vid[0], sel) &&
 		   IsInSelection(io->obj, face.vid[1], sel) &&
 		   IsInSelection(io->obj, face.vid[2], sel)) {
-			if(face.texid == textochange) {
-				face.texid = short(mapidx);
+			if(face.material == textochange) {
+				face.material = MaterialId(mapidx);
 			}
 		}
 	}

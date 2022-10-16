@@ -669,17 +669,15 @@ void DrawEERIEInter_Render(EERIE_3DOBJ * eobj, const TransformInfo & t, Entity *
 	UpdateLlights(lights, lightsCount, tv, false);
 	
 	arx_assert(eobj->vertexColors.size() == eobj->vertexWorldPositions.size());
-
+		
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		const EERIE_FACE & face = eobj->facelist[i];
-
-		if(CullFace(eobj, face))
-			continue;
-
-		if(face.texid < 0)
-			continue;
 		
-		TextureContainer * pTex = eobj->texturecontainer[face.texid];
+		if(CullFace(eobj, face) || !face.material) {
+			continue;
+		}
+		
+		TextureContainer * pTex = eobj->texturecontainer[size_t(face.material)];
 		if(!pTex) {
 			continue;
 		}
@@ -1019,17 +1017,16 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 	
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		const EERIE_FACE & face = eobj->facelist[i];
-
-		if((face.facetype & POLY_HIDE) && !IN_BOOK_DRAW)
-			continue;
-
-		if(CullFace(eobj, face))
-			continue;
-
-		if(face.texid < 0)
-			continue;
 		
-		TextureContainer * pTex = eobj->texturecontainer[face.texid];
+		if((face.facetype & POLY_HIDE) && !IN_BOOK_DRAW) {
+			continue;
+		}
+		
+		if(CullFace(eobj, face) || !face.material) {
+			continue;
+		}
+		
+		TextureContainer * pTex = eobj->texturecontainer[size_t(face.material)];
 		if(!pTex) {
 			continue;
 		}

@@ -74,10 +74,10 @@ static void ARX_NPC_SpawnMember(Entity * ioo, VertexSelectionId num) {
 		return;
 	}
 	
-	long gore = -1;
+	MaterialId gore;
 	for(size_t k = 0; k < from->texturecontainer.size(); k++) {
 		if(from->texturecontainer[k] && boost::contains(from->texturecontainer[k]->m_texName.string(), "gore")) {
-			gore = k;
+			gore = MaterialId(k);
 			break;
 		}
 	}
@@ -85,7 +85,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, VertexSelectionId num) {
 	size_t nvertex = from->selections[num].selected.size();
 	arx_assume(nvertex > 0);
 	for(EERIE_FACE & face : from->facelist) {
-		if(face.texid == gore
+		if(face.material == gore
 		   && (IsNearSelection(from, face.vid[0], num)
 		       || IsNearSelection(from, face.vid[1], num)
 		       || IsNearSelection(from, face.vid[2], num))) {
@@ -118,7 +118,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, VertexSelectionId num) {
 	
 	size_t count = cutSelection.selected.size();
 	for(const EERIE_FACE & face : from->facelist) {
-		if(face.texid == gore) {
+		if(face.material == gore) {
 			if(IsNearSelection(from, face.vid[0], num)
 			   || IsNearSelection(from, face.vid[1], num)
 			   || IsNearSelection(from, face.vid[2], num)) {
@@ -178,19 +178,9 @@ static void ARX_NPC_SpawnMember(Entity * ioo, VertexSelectionId num) {
 			}
 		}
 		
-		long goreTexture = -1;
-		for(size_t k = 0; k < from->texturecontainer.size(); k++) {
-			if(from->texturecontainer[k]
-			   && boost::contains(from->texturecontainer[k]->m_texName.string(), "gore")
-			) {
-				goreTexture = k;
-				break;
-			}
-		}
-		
 		for(EERIE_FACE & face : nouvo->facelist) {
 			face.facetype &= ~POLY_HIDE;
-			if(face.texid == goreTexture) {
+			if(face.material == gore) {
 				face.facetype |= POLY_DOUBLESIDED;
 			}
 		}
@@ -350,11 +340,11 @@ static bool applyCuts(Entity & npc) {
 	
 	ReComputeCutFlags(&npc);
 	
-	long goretex = -1;
+	MaterialId gore;
 	for(size_t i = 0; i < npc.obj->texturecontainer.size(); i++) {
 		if(npc.obj->texturecontainer[i]
 		   && boost::contains(npc.obj->texturecontainer[i]->m_texName.string(), "gore")) {
-			goretex = i;
+			gore = MaterialId(i);
 			break;
 		}
 	}
@@ -376,7 +366,7 @@ static bool applyCuts(Entity & npc) {
 			if(IsInSelection(npc.obj, face.vid[0], selection)
 			   || IsInSelection(npc.obj, face.vid[1], selection)
 			   || IsInSelection(npc.obj, face.vid[2], selection)) {
-				if(!(face.facetype & POLY_HIDE) && face.texid != goretex) {
+				if(!(face.facetype & POLY_HIDE) && face.material != gore) {
 					hid = true;
 				}
 				face.facetype |= POLY_HIDE;
@@ -401,13 +391,13 @@ void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos) {
 	}
 	
 	float mindistSqr = std::numeric_limits<float>::max();
-	long goretex = -1;
 	
+	MaterialId gore;
 	for(size_t i = 0; i < target->obj->texturecontainer.size(); i++) {
 		if(target->obj->texturecontainer[i]
 		   && boost::contains(target->obj->texturecontainer[i]->m_texName.string(), "gore")
 		) {
-			goretex = i;
+			gore = MaterialId(i);
 			break;
 		}
 	}
@@ -426,7 +416,7 @@ void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos) {
 		
 		long out = 0;
 		for(EERIE_FACE & face : target->obj->facelist) {
-			if(face.texid != goretex &&
+			if(face.material != gore &&
 			   (IsInSelection(target->obj, face.vid[0], selection) ||
 			    IsInSelection(target->obj, face.vid[1], selection) ||
 			    IsInSelection(target->obj, face.vid[2], selection)) &&

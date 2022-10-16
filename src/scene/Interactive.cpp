@@ -284,20 +284,20 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(Entity * io) {
 		return;
 	}
 	
-	long gorenum = -1;
+	MaterialId gore;
 	for(size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++) {
 		if(io->obj->texturecontainer[nn]
 		   && boost::contains(io->obj->texturecontainer[nn]->m_texName.string(), "gore")) {
-			gorenum = nn;
+			gore = MaterialId(nn);
 			break;
 		}
 	}
 	
-	if(gorenum > -1) {
+	if(gore) {
 		for(EERIE_FACE & face : io->obj->facelist) {
-			if(face.texid == gorenum) {
+			if(face.material == gore) {
 				face.facetype |= POLY_HIDE;
-				face.texid = -1;
+				face.material = { };
 			}
 		}
 	}
@@ -316,19 +316,18 @@ void ARX_INTERACTIVE_HideGore(Entity * io, bool unhideNonGore) {
 		return;
 	}
 	
-	long gorenum = -1;
+	MaterialId gore;
 	for(size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++) {
 		if(io->obj->texturecontainer[nn]
 		   && boost::contains(io->obj->texturecontainer[nn]->m_texName.string(), "gore")) {
-			gorenum = nn;
+			gore = MaterialId(nn);
 			break;
 		}
 	}
 	
-	if(gorenum > -1) {
+	if(gore) {
 		for(EERIE_FACE & face : io->obj->facelist) {
-			// Hide gore faces...
-			if(face.texid == gorenum) {
+			if(face.material == gore) {
 				face.facetype |= POLY_HIDE;
 			} else if(unhideNonGore) {
 				face.facetype &= ~POLY_HIDE;

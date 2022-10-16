@@ -175,8 +175,13 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 		const EERIE_FACE_FTL * eff = reinterpret_cast<const EERIE_FACE_FTL *>(dat + pos);
 		pos += sizeof(EERIE_FACE_FTL);
 		
+		if(arx_unlikely(eff->texid != -1 && size_t(eff->texid) >= object->texturecontainer.size())) {
+			LogError << filename << ": Invalid face material";
+			return { };
+		}
+		
 		face.facetype = PolyType::load(eff->facetype);
-		face.texid = eff->texid;
+		face.material = eff->texid == -1 ? MaterialId() : MaterialId(eff->texid);
 		face.transval = eff->transval;
 		face.norm = eff->norm.toVec3();
 		

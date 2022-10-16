@@ -580,10 +580,10 @@ void Draw3DObject(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos,
 		vert_list[2].uv.y = face.v[2];
 		vert_list[0].color = vert_list[1].color = vert_list[2].color = coll.toRGBA();
 		
-		if(face.facetype == 0 || eobj->texturecontainer[face.texid] == nullptr) {
+		if(face.facetype == 0 || eobj->texturecontainer[size_t(face.material)] == nullptr) {
 			mat.resetTexture();
 		} else {
-			mat.setTexture(eobj->texturecontainer[face.texid]);
+			mat.setTexture(eobj->texturecontainer[size_t(face.material)]);
 		}
 		
 		mat.setCulling(!(face.facetype & POLY_DOUBLESIDED));

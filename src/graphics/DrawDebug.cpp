@@ -648,8 +648,8 @@ static void drawDebugMaterials() {
 			v[i] = obj.vertexWorldPositions[face.vid[i]].v;
 			puv[i] = Vec2f(face.u[i], face.v[i]);
 		}
-		if(face.texid >= 0 && size_t(face.texid) < obj.texturecontainer.size()) {
-			material = obj.texturecontainer[face.texid];
+		if(face.material && size_t(face.material) < obj.texturecontainer.size()) {
+			material = obj.texturecontainer[size_t(face.material)];
 		} else {
 			material = nullptr;
 		}
