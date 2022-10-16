@@ -1104,8 +1104,8 @@ void ComputePortalVertexBuffer() {
 		
 		SMY_VERTEX * vertex = room->pVertexBuffer->lock(NoOverwrite);
 		
-		int startIndex = 0;
-		int startIndexCull = 0;
+		u32 startIndex = 0;
+		u32 startIndexCull = 0;
 		
 		size_t ntextures = infos.size();
 		
@@ -1120,7 +1120,7 @@ void ComputePortalVertexBuffer() {
 			TextureContainer * texture = entry.first;
 			const SINFO_TEXTURE_VERTEX & info = entry.second;
 			
-			unsigned short index = 0;
+			u16 index = 0;
 			
 			// Upload all vertices for this texture and remember the indices
 			for(const EP_DATA & epd : room->epdata) {
@@ -1176,21 +1176,21 @@ void ComputePortalVertexBuffer() {
 			
 			SMY_ARXMAT & m = texture->m_roomBatches[roomIndex];
 			
-			m.uslStartVertex = startIndex;
-			m.uslNbVertex = index;
+			m.vertexOffset = startIndex;
+			m.vertexCount = index;
 			
-			m.offset[BatchBucket_Opaque]         =  startIndexCull;
-			m.offset[BatchBucket_Blended]        = (startIndexCull += info.opaque);
-			m.offset[BatchBucket_Multiplicative] = (startIndexCull += info.blended);
-			m.offset[BatchBucket_Additive]       = (startIndexCull += info.multiplicative);
-			m.offset[BatchBucket_Subtractive]    = (startIndexCull += info.additive);
-			                                       (startIndexCull += info.subtractive);
+			m.indexOffsets[BatchBucket_Opaque]         =  startIndexCull;
+			m.indexOffsets[BatchBucket_Blended]        = (startIndexCull += info.opaque);
+			m.indexOffsets[BatchBucket_Multiplicative] = (startIndexCull += info.blended);
+			m.indexOffsets[BatchBucket_Additive]       = (startIndexCull += info.multiplicative);
+			m.indexOffsets[BatchBucket_Subtractive]    = (startIndexCull += info.additive);
+			                                             (startIndexCull += info.subtractive);
 			
-			m.count[BatchBucket_Opaque] = 0;
-			m.count[BatchBucket_Blended] = 0;
-			m.count[BatchBucket_Multiplicative] = 0;
-			m.count[BatchBucket_Additive] = 0;
-			m.count[BatchBucket_Subtractive] = 0;
+			m.indexCounts[BatchBucket_Opaque] = 0;
+			m.indexCounts[BatchBucket_Blended] = 0;
+			m.indexCounts[BatchBucket_Multiplicative] = 0;
+			m.indexCounts[BatchBucket_Additive] = 0;
+			m.indexCounts[BatchBucket_Subtractive] = 0;
 			
 			if(   info.opaque > 65535
 			   || info.blended > 65535

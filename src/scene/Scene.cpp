@@ -808,11 +808,11 @@ static void ARX_PORTALS_Frustrum_ClearIndexCount(RoomHandle room) {
 	
 	for(TextureContainer & material : util::dereference(g_rooms->rooms[room].ppTextureContainer)) {
 		SMY_ARXMAT & roomMat = material.m_roomBatches[room];
-		roomMat.count[BatchBucket_Opaque] = 0;
-		roomMat.count[BatchBucket_Blended] = 0;
-		roomMat.count[BatchBucket_Multiplicative] = 0;
-		roomMat.count[BatchBucket_Additive] = 0;
-		roomMat.count[BatchBucket_Subtractive] = 0;
+		roomMat.indexCounts[BatchBucket_Opaque] = 0;
+		roomMat.indexCounts[BatchBucket_Blended] = 0;
+		roomMat.indexCounts[BatchBucket_Multiplicative] = 0;
+		roomMat.indexCounts[BatchBucket_Additive] = 0;
+		roomMat.indexCounts[BatchBucket_Subtractive] = 0;
 	}
 	
 }
@@ -1211,8 +1211,6 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomHandle roomIndex, const
 	
 	SMY_VERTEX * pMyVertex = room.pVertexBuffer->lock(NoOverwrite);
 	
-	unsigned short * pIndices = room.indexBuffer.data();
-	
 	for(const EP_DATA & epd : room.epdata) {
 		
 		auto tile = g_tiles->get(epd.tile);
@@ -1237,22 +1235,22 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomHandle roomIndex, const
 		if(FrustrumsClipPoly(frustums, *ep)) {
 			continue;
 		}
-
+		
 		if(ep->v[0].w < -distanceToPoint(efpPlaneNear, ep->center)) {
 			continue;
 		}
-
+		
 		Vec3f nrm = ep->v[2].p - camPos;
 		int to = (ep->type & POLY_QUAD) ? 4 : 3;
-
+		
 		if(!(ep->type & POLY_DOUBLESIDED) && glm::dot(ep->norm , nrm) > 0.f) {
 			if(to == 3 || glm::dot(ep->norm2 , nrm) > 0.f) {
 				continue;
 			}
 		}
-
+		
 		BatchBucket transparencyType;
-
+		
 		if(ep->type & POLY_TRANS) {
 			if(ep->transval >= 2.f) {
 				transparencyType = BatchBucket_Multiplicative;
@@ -1269,101 +1267,97 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomHandle roomIndex, const
 		
 		SMY_ARXMAT & roomMat = ep->tex->m_roomBatches[roomIndex];
 		
-		unsigned short * pIndicesCurr = pIndices + roomMat.offset[transparencyType] + roomMat.count[transparencyType];
-		unsigned long * pNumIndices = &roomMat.count[transparencyType];
+		u32 & indexCount = roomMat.indexCounts[transparencyType];
+		unsigned short * indices = room.indexBuffer.data() + roomMat.indexOffsets[transparencyType] + indexCount;
 		
-		*pIndicesCurr++ = ep->uslInd[0];
-		*pIndicesCurr++ = ep->uslInd[1];
-		*pIndicesCurr++ = ep->uslInd[2];
-		*pNumIndices += 3;
-
+		*indices++ = ep->uslInd[0];
+		*indices++ = ep->uslInd[1];
+		*indices++ = ep->uslInd[2];
+		indexCount += 3;
+		
 		if(to == 4) {
-			*pIndicesCurr++ = ep->uslInd[3];
-			*pIndicesCurr++ = ep->uslInd[2];
-			*pIndicesCurr++ = ep->uslInd[1];
-			*pNumIndices += 3;
+			*indices++ = ep->uslInd[3];
+			*indices++ = ep->uslInd[2];
+			*indices++ = ep->uslInd[1];
+			indexCount += 3;
 		}
-
-		SMY_VERTEX * pMyVertexCurr = &pMyVertex[roomMat.uslStartVertex];
-
+		
+		SMY_VERTEX * vertices = &pMyVertex[roomMat.vertexOffset];
+		
 		if(!player.m_improve) { // Normal View...
+			
 			if(ep->type & POLY_GLOW) {
-				pMyVertexCurr[ep->uslInd[0]].color = Color::white.toRGBA();
-				pMyVertexCurr[ep->uslInd[1]].color = Color::white.toRGBA();
-				pMyVertexCurr[ep->uslInd[2]].color = Color::white.toRGBA();
-
+				vertices[ep->uslInd[0]].color = Color::white.toRGBA();
+				vertices[ep->uslInd[1]].color = Color::white.toRGBA();
+				vertices[ep->uslInd[2]].color = Color::white.toRGBA();
 				if(to == 4) {
-					pMyVertexCurr[ep->uslInd[3]].color = Color::white.toRGBA();
+					vertices[ep->uslInd[3]].color = Color::white.toRGBA();
 				}
-			} else {
-				if(!(ep->type & POLY_TRANS)) {
-					ApplyTileLights(ep, epd.tile);
-					pMyVertexCurr[ep->uslInd[0]].color = ep->color[0];
-					pMyVertexCurr[ep->uslInd[1]].color = ep->color[1];
-					pMyVertexCurr[ep->uslInd[2]].color = ep->color[2];
-					if(to & 4) {
-						pMyVertexCurr[ep->uslInd[3]].color = ep->color[3];
-					}
-				}
-
-			}
-
-		} else { // Improve Vision Activated
-			if(!(ep->type & POLY_TRANS)) {
-
+			} else  if(!(ep->type & POLY_TRANS)) {
 				ApplyTileLights(ep, epd.tile);
-
-				bool valid = true;
-				for(int k = 0; k < to; k++) {
-					
-					float lr = Color4f::fromRGBA(ep->color[k]).r;
-					
-					Vec4f p = worldToClipSpace(ep->v[1].p);
-					if(p.w <= 0.f || p.z <= 0.f) {
-						valid = false;
-						break;
-					}
-					
-					float dd = 1.f / p.w;
-					dd = glm::clamp(dd, 0.f, 1.f);
-					Vec3f & norm = ep->nrml[k];
-					float fb = ((1.f - dd) * 6.f + glm::abs(norm.x) + glm::abs(norm.y)) * 0.125f;
-					float fr = ((0.6f - dd) * 6.f + glm::abs(norm.z) + glm::abs(norm.y)) * 0.125f;
-					if(fr < 0.f) {
-						fr = 0.f;
-					} else {
-						fr = std::max(lr, fr);
-					}
-					
-					ep->color[k] = Color3f(fr, 0.12f, fb).toRGB();
-				}
-				if(!valid) {
-					continue;
-				}
-
-				pMyVertexCurr[ep->uslInd[0]].color = ep->color[0];
-				pMyVertexCurr[ep->uslInd[1]].color = ep->color[1];
-				pMyVertexCurr[ep->uslInd[2]].color = ep->color[2];
-
-				if(to == 4) {
-					pMyVertexCurr[ep->uslInd[3]].color = ep->color[3];
+				vertices[ep->uslInd[0]].color = ep->color[0];
+				vertices[ep->uslInd[1]].color = ep->color[1];
+				vertices[ep->uslInd[2]].color = ep->color[2];
+				if(to & 4) {
+					vertices[ep->uslInd[3]].color = ep->color[3];
 				}
 			}
+			
+		} else if(!(ep->type & POLY_TRANS)) { // Improve Vision Activated
+			
+			ApplyTileLights(ep, epd.tile);
+			bool valid = true;
+			for(int k = 0; k < to; k++) {
+				
+				float lr = Color4f::fromRGBA(ep->color[k]).r;
+				
+				Vec4f p = worldToClipSpace(ep->v[1].p);
+				if(p.w <= 0.f || p.z <= 0.f) {
+					valid = false;
+					break;
+				}
+				
+				float dd = 1.f / p.w;
+				dd = glm::clamp(dd, 0.f, 1.f);
+				Vec3f & norm = ep->nrml[k];
+				float fb = ((1.f - dd) * 6.f + glm::abs(norm.x) + glm::abs(norm.y)) * 0.125f;
+				float fr = ((0.6f - dd) * 6.f + glm::abs(norm.z) + glm::abs(norm.y)) * 0.125f;
+				if(fr < 0.f) {
+					fr = 0.f;
+				} else {
+					fr = std::max(lr, fr);
+				}
+				
+				ep->color[k] = Color3f(fr, 0.12f, fb).toRGB();
+				
+			}
+			
+			if(!valid) {
+				continue;
+			}
+			vertices[ep->uslInd[0]].color = ep->color[0];
+			vertices[ep->uslInd[1]].color = ep->color[1];
+			vertices[ep->uslInd[2]].color = ep->color[2];
+			if(to == 4) {
+				vertices[ep->uslInd[3]].color = ep->color[3];
+			}
+			
 		}
 		
 		if(ep->type & POLY_LAVA) {
 			float uvScroll = timeWaveSaw(g_gameTime.now(), 12s);
-			ManageLava_VertexBuffer(ep, to, uvScroll, pMyVertexCurr);
+			ManageLava_VertexBuffer(ep, to, uvScroll, vertices);
 			vPolyLava.push_back(ep);
 		} else if(ep->type & POLY_WATER) {
 			float uvScroll = timeWaveSaw(g_gameTime.now(), 1s);
-			ManageWater_VertexBuffer(ep, to, uvScroll, pMyVertexCurr);
+			ManageWater_VertexBuffer(ep, to, uvScroll, vertices);
 			vPolyWater.push_back(ep);
 		}
 		
 	}
-
+	
 	room.pVertexBuffer->unlock();
+	
 }
 
 static void BackgroundRenderOpaque(RoomHandle roomIndex) {
@@ -1375,7 +1369,7 @@ static void BackgroundRenderOpaque(RoomHandle roomIndex) {
 	for(TextureContainer & material : util::dereference(room.ppTextureContainer)) {
 		
 		const SMY_ARXMAT & roomMat = material.m_roomBatches[roomIndex];
-		if(!roomMat.count[BatchBucket_Opaque]) {
+		if(!roomMat.indexCounts[BatchBucket_Opaque]) {
 			continue;
 		}
 		
@@ -1391,11 +1385,11 @@ static void BackgroundRenderOpaque(RoomHandle roomIndex) {
 			GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
 		}
 		
-		room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex,
-		                                &room.indexBuffer[roomMat.offset[BatchBucket_Opaque]],
-		                                roomMat.count[BatchBucket_Opaque]);
+		room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.vertexCount, roomMat.vertexOffset,
+		                                room.indexBuffer.data() + roomMat.indexOffsets[BatchBucket_Opaque],
+		                                roomMat.indexCounts[BatchBucket_Opaque]);
 		
-		EERIEDrawnPolys += roomMat.count[BatchBucket_Opaque];
+		EERIEDrawnPolys += roomMat.indexCounts[BatchBucket_Opaque];
 		
 	}
 	
@@ -1420,7 +1414,7 @@ static void BackgroundRenderTransparent(RoomHandle roomIndex) {
 		
 		SMY_ARXMAT & roomMat = material.m_roomBatches[roomIndex];
 		bool empty = std::all_of(transRenderOrder.begin(), transRenderOrder.end(), [&](BatchBucket transType) {
-			return !roomMat.count[transType];
+			return !roomMat.indexCounts[transType];
 		});
 		if(empty) {
 			continue;
@@ -1433,7 +1427,7 @@ static void BackgroundRenderTransparent(RoomHandle roomIndex) {
 		
 		for(BatchBucket transType : transRenderOrder) {
 			
-			if(!roomMat.count[transType]) {
+			if(!roomMat.indexCounts[transType]) {
 				continue;
 			}
 			
@@ -1463,11 +1457,11 @@ static void BackgroundRenderTransparent(RoomHandle roomIndex) {
 			}
 			
 			UseRenderState state(desiredState);
-			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex,
-			                                &room.indexBuffer[roomMat.offset[transType]],
-			                                roomMat.count[transType]);
+			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.vertexCount, roomMat.vertexOffset,
+			                                room.indexBuffer.data() + roomMat.indexOffsets[transType],
+			                                roomMat.indexCounts[transType]);
 			
-			EERIEDrawnPolys += roomMat.count[transType];
+			EERIEDrawnPolys += roomMat.indexCounts[transType];
 			
 		}
 		

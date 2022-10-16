@@ -65,6 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsTypes.h"
 #include "io/resource/ResourcePath.h"
 #include "math/Vector.h"
+#include "platform/Platform.h"
 #include "util/Flags.h"
 #include "util/HandleContainer.h"
 
@@ -82,10 +83,12 @@ enum BatchBucket {
 };
 
 struct SMY_ARXMAT {
-	unsigned long uslStartVertex;
-	unsigned long uslNbVertex;
-	unsigned long offset[5];
-	unsigned long count[5];
+	
+	u32 vertexOffset;
+	u32 vertexCount;
+	util::HandleArray<BatchBucket, u32, 5> indexOffsets;
+	util::HandleArray<BatchBucket, u32, 5> indexCounts;
+	
 };
 
 /*!
