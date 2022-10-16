@@ -205,37 +205,33 @@ static void ApplyLavaGlowToVertex(const Vec3f & odtv, ColorRGBA & color, float p
 	color = (Color4f::fromRGBA(color) * power).toRGBA();
 }
 
-static void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to,
-                                     float uvScroll, SMY_VERTEX * _pVertex) {
+static void ManageWater_VertexBuffer(EERIEPOLY * ep, float uvScroll, SMY_VERTEX * vertices) {
 	
-	for(long k = 0; k < to; k++) {
-		Vec2f uv = ep->v[k].uv;
-		
-		uv += getWaterFxUvOffset(WATEREFFECT, ep->v[k].p) * (0.35f * 0.05f);
-			
+	size_t count = (ep->type & POLY_QUAD) ? 4 : 3;
+	for(size_t i = 0; i < count; i++) {
+		Vec2f uv = ep->v[i].uv;
+		uv += getWaterFxUvOffset(WATEREFFECT, ep->v[i].p) * (0.35f * 0.05f);
 		if(ep->type & POLY_FALL) {
 			uv.y -= uvScroll;
 		}
-		
-		_pVertex[ep->uslInd[k]].uv = uv;
+		vertices[ep->uslInd[i]].uv = uv;
 	}
+	
 }
 
-static void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to,
-                                    float uvScroll, SMY_VERTEX * _pVertex) {
+static void ManageLava_VertexBuffer(EERIEPOLY * ep, float uvScroll, SMY_VERTEX * vertices) {
 	
-	for(long k = 0; k < to; k++) {
-		Vec2f uv = ep->v[k].uv;
-		
-		uv += getWaterFxUvOffset(WATEREFFECT, ep->v[k].p) * (0.35f * 0.05f);
-		ApplyLavaGlowToVertex(ep->v[k].p, ep->color[k], 0.6f);
-			
+	size_t count = (ep->type & POLY_QUAD) ? 4 : 3;
+	for(size_t i = 0; i < count; i++) {
+		Vec2f uv = ep->v[i].uv;
+		uv += getWaterFxUvOffset(WATEREFFECT, ep->v[i].p) * (0.35f * 0.05f);
+		ApplyLavaGlowToVertex(ep->v[i].p, ep->color[i], 0.6f);
 		if(ep->type & POLY_FALL) {
 			uv.y -= uvScroll;
 		}
-		
-		_pVertex[ep->uslInd[k]].uv = uv;
+		vertices[ep->uslInd[i]].uv = uv;
 	}
+	
 }
 
 bool IsSphereInFrustrum(const Vec3f & point, const EERIE_FRUSTRUM & frustrum, float radius = 0.f);
@@ -1346,11 +1342,11 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomHandle roomIndex, const
 		
 		if(ep->type & POLY_LAVA) {
 			float uvScroll = timeWaveSaw(g_gameTime.now(), 12s);
-			ManageLava_VertexBuffer(ep, to, uvScroll, vertices);
+			ManageLava_VertexBuffer(ep, uvScroll, vertices);
 			vPolyLava.push_back(ep);
 		} else if(ep->type & POLY_WATER) {
 			float uvScroll = timeWaveSaw(g_gameTime.now(), 1s);
-			ManageWater_VertexBuffer(ep, to, uvScroll, vertices);
+			ManageWater_VertexBuffer(ep, uvScroll, vertices);
 			vPolyWater.push_back(ep);
 		}
 		
