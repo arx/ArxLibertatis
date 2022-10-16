@@ -293,6 +293,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			
 			bone.anim.trans = eobj->vertexlist[group.origin].v;
 			bone.father = GetFather(eobj, group.origin, i);
+			arx_assert(!bone.father || size_t(bone.father) < i);
 			bone.anim.scale = Vec3f(1.f);
 			
 		}
