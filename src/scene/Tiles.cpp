@@ -71,8 +71,8 @@ void TileData::computeIntersectingPolygons() {
 				}
 				
 				bool insert = PointInBBox(ep2.center, bb);
-				long nbvert = (ep2.type & POLY_QUAD) ? 4 : 3;
-				for(long k = 0; !insert && k < nbvert; k++) {
+				size_t nbvert = (ep2.type & POLY_QUAD) ? 4 : 3;
+				for(size_t k = 0; !insert && k < nbvert; k++) {
 					insert = PointInBBox(ep2.v[k].p, bb) || PointInBBox((ep2.v[k].p + ep2.center) * 0.5f, bb);
 				}
 				
