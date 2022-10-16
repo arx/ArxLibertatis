@@ -37,6 +37,8 @@
 #include <ostream>
 #include <type_traits>
 
+#include "util/Cast.h"
+
 
 namespace util {
 
@@ -47,7 +49,8 @@ class HandleType {
 	
 public:
 	
-	explicit constexpr HandleType(const T t_) noexcept : t(t_) { }
+	template <typename O, typename = std::enable_if_t<std::is_integral_v<O>>>
+	explicit constexpr HandleType(const O value) noexcept : t(to<T>(value)) { }
 	constexpr HandleType() noexcept = default;
 	
 	[[nodiscard]] constexpr bool operator==(const HandleType & rhs) const noexcept { return t == rhs.t; }
@@ -56,7 +59,7 @@ public:
 	[[nodiscard]] constexpr T handleData() const noexcept { return t; }
 	
 	template <typename O, typename = std::enable_if_t<std::is_integral_v<O>>>
-	[[nodiscard]] explicit constexpr operator O() const noexcept { return t; }
+	[[nodiscard]] explicit constexpr operator O() const noexcept { return to<O>(t); }
 	
 	[[nodiscard]] explicit constexpr operator bool() const noexcept { return t != Invalid; }
 	[[nodiscard]] constexpr bool operator!() const noexcept { return t == Invalid; }
