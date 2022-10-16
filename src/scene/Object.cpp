@@ -236,9 +236,9 @@ VertexGroupId EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, std::string_view gr
 	return { };
 }
 
-static VertexGroupId GetFather(EERIE_3DOBJ * eobj, VertexId origin, long startgroup) {
+static VertexGroupId GetFather(EERIE_3DOBJ * eobj, VertexId origin, size_t size) {
 	
-	for(long i = startgroup; i >= 0; i--) {
+	for(size_t i = size; i-- > 0;) {
 		for(VertexId index : eobj->grouplist[VertexGroupId(i)].indexes) {
 			if(index == origin) {
 				return VertexGroupId(i);
@@ -278,7 +278,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		
 		// Create one bone for each vertex group and assign vertices to the inner-most group
 		util::HandleVector<VertexId, bool> vertexAssigned(eobj->vertexlist.size(), false);
-		for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
+		for(size_t i = eobj->grouplist.size(); i-- > 0;) {
 			
 			const VertexGroup & group = eobj->grouplist[VertexGroupId(i)];
 			Bone & bone = eobj->m_skeleton->bones[VertexGroupId(i)];
@@ -292,7 +292,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			}
 			
 			bone.anim.trans = eobj->vertexlist[group.origin].v;
-			bone.father = GetFather(eobj, group.origin, i - 1);
+			bone.father = GetFather(eobj, group.origin, i);
 			bone.anim.scale = Vec3f(1.f);
 			
 		}
