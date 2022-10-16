@@ -54,7 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 void MakeUserFlag(TextureContainer * tc);
 VertexGroupId EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, std::string_view groupname);
-ObjSelection EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, std::string_view selname);
+VertexSelectionId EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, std::string_view selname);
 
 VertexId getNamedVertex(const EERIE_3DOBJ * eobj, std::string_view text);
 VertexGroupId getGroupForVertex(const EERIE_3DOBJ * eobj, VertexId vertex);

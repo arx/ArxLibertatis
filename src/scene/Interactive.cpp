@@ -258,12 +258,11 @@ void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state) {
 	}
 	
 	HERO_SHOW_1ST = state;
-	ObjSelection grp = EERIE_OBJECT_GetSelection(io->obj, "1st");
 	
-	if(grp != ObjSelection()) {
+	if(VertexSelectionId selection = EERIE_OBJECT_GetSelection(io->obj, "1st")) {
 		for(EERIE_FACE & face : io->obj->facelist) {
 			for(VertexId vertex : face.vid) {
-				if(IsInSelection(io->obj, vertex, grp)) {
+				if(IsInSelection(io->obj, vertex, selection)) {
 					if(state) {
 						face.facetype |= POLY_HIDE;
 					} else {

@@ -123,7 +123,7 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & s1, const res::p
 	
 }
 
-bool IsInSelection(const EERIE_3DOBJ * obj, VertexId vert, ObjSelection tw) {
+bool IsInSelection(const EERIE_3DOBJ * obj, VertexId vert, VertexSelectionId tw) {
 	
 	if(!obj || !tw) {
 		return false;
@@ -227,8 +227,8 @@ static void addVertexToGroup(EERIE_3DOBJ & obj, VertexGroup & group, const EERIE
 	
 }
 
-static void copySelection(const EERIE_3DOBJ & source, ObjSelection sourceSelection,
-                          EERIE_3DOBJ & dest, ObjSelection destSelection) {
+static void copySelection(const EERIE_3DOBJ & source, VertexSelectionId sourceSelection,
+                          EERIE_3DOBJ & dest, VertexSelectionId destSelection) {
 	
 	for(VertexId sourceVertex : source.selections[sourceSelection].selected) {
 		if(VertexId destVertex = getEquivalentVertex(dest, source.vertexlist[sourceVertex].v)) {
@@ -244,19 +244,15 @@ static void copySelection(const EERIE_3DOBJ & source, ObjSelection sourceSelecti
 static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERIE_3DOBJ * obj2,
                                                            long tw) {
 	
-	ObjSelection tw1;
-	ObjSelection tw2;
-	ObjSelection iw1;
-	ObjSelection jw1;
-	ObjSelection sel_head1;
-	ObjSelection sel_head2;
-	ObjSelection sel_torso1;
-	ObjSelection sel_torso2;
-	ObjSelection sel_legs1;
-	ObjSelection sel_legs2;
+	VertexSelectionId sel_head1;
+	VertexSelectionId sel_head2;
+	VertexSelectionId sel_torso1;
+	VertexSelectionId sel_torso2;
+	VertexSelectionId sel_legs1;
+	VertexSelectionId sel_legs2;
 	
 	// First we retreive selection groups indexes
-	for(ObjSelection selection : obj1->selections.handles()) {
+	for(VertexSelectionId selection : obj1->selections.handles()) {
 		if(obj1->selections[selection].name == "head") {
 			sel_head1 = selection;
 		} else if(obj1->selections[selection].name == "chest") {
@@ -266,7 +262,7 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 		}
 	}
 	
-	for(ObjSelection selection : obj2->selections.handles()) {
+	for(VertexSelectionId selection : obj2->selections.handles()) {
 		if(obj2->selections[selection].name == "head") {
 			sel_head2 = selection;
 		} else if(obj2->selections[selection].name == "chest") {
@@ -279,6 +275,11 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 	if(!sel_head1 || !sel_head2 || !sel_torso1 || !sel_torso2 || !sel_legs1 || !sel_legs2) {
 		return nullptr;
 	}
+	
+	VertexSelectionId tw1;
+	VertexSelectionId tw2;
+	VertexSelectionId iw1;
+	VertexSelectionId jw1;
 	
 	if(tw == TWEAK_HEAD) {
 		tw1 = sel_head1;
@@ -422,27 +423,27 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 	
 	// Recreate Selection Groups (only the 3 selections needed to reiterate mesh tweaking)
 	work->selections.resize(3);
-	work->selections[ObjSelection(0)].name = "head";
-	work->selections[ObjSelection(1)].name = "chest";
-	work->selections[ObjSelection(2)].name = "leggings";
+	work->selections[VertexSelectionId(0)].name = "head";
+	work->selections[VertexSelectionId(1)].name = "chest";
+	work->selections[VertexSelectionId(2)].name = "leggings";
 	if(tw == TWEAK_HEAD) {
-		copySelection(*obj2, sel_head2, *work, ObjSelection(0));
+		copySelection(*obj2, sel_head2, *work, VertexSelectionId(0));
 	} else {
-		copySelection(*obj1, sel_head1, *work, ObjSelection(0));
+		copySelection(*obj1, sel_head1, *work, VertexSelectionId(0));
 	}
 	if(tw == TWEAK_TORSO) {
-		copySelection(*obj2, sel_torso2, *work, ObjSelection(1));
+		copySelection(*obj2, sel_torso2, *work, VertexSelectionId(1));
 	} else {
-		copySelection(*obj1, sel_torso1, *work, ObjSelection(1));
+		copySelection(*obj1, sel_torso1, *work, VertexSelectionId(1));
 	}
 	if(tw == TWEAK_LEGS) {
-		copySelection(*obj2, sel_legs2, *work, ObjSelection(2));
+		copySelection(*obj2, sel_legs2, *work, VertexSelectionId(2));
 	} else {
-		copySelection(*obj1, sel_legs1, *work, ObjSelection(2));
+		copySelection(*obj1, sel_legs1, *work, VertexSelectionId(2));
 	}
 	
 	// Now recreates other selections...
-	for(ObjSelection selection : obj1->selections.handles()) {
+	for(VertexSelectionId selection : obj1->selections.handles()) {
 		
 		if(EERIE_OBJECT_GetSelection(work.get(), obj1->selections[selection].name)) {
 			continue;
@@ -451,13 +452,13 @@ static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * o
 		work->selections.emplace_back().name = obj1->selections[selection].name;
 		copySelection(*obj1, selection, *work,  work->selections.last());
 		
-		if(ObjSelection ii = EERIE_OBJECT_GetSelection(obj2, obj1->selections[selection].name)) {
+		if(VertexSelectionId ii = EERIE_OBJECT_GetSelection(obj2, obj1->selections[selection].name)) {
 			copySelection(*obj2, ii, *work,  work->selections.last());
 		}
 		
 	}
 	
-	for(ObjSelection selection : obj2->selections.handles()) {
+	for(VertexSelectionId selection : obj2->selections.handles()) {
 		
 		if(EERIE_OBJECT_GetSelection(work.get(), obj2->selections[selection].name)) {
 			continue;

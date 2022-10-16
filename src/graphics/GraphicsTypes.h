@@ -177,9 +177,9 @@ struct EERIE_FASTACCESS {
 	VertexId fire;
 	VertexId head_group_origin;
 	VertexGroupId head_group;
-	ObjSelection sel_head;
-	ObjSelection sel_chest;
-	ObjSelection sel_leggings;
+	VertexSelectionId sel_head;
+	VertexSelectionId sel_chest;
+	VertexSelectionId sel_leggings;
 	
 };
 
@@ -196,7 +196,7 @@ struct EERIE_3DOBJ {
 	std::vector<EERIE_FACE> facelist;
 	util::HandleVector<VertexGroupId, VertexGroup> grouplist;
 	std::vector<EERIE_ACTIONLIST> actionlist;
-	util::HandleVector<ObjSelection, EERIE_SELECTIONS> selections;
+	util::HandleVector<VertexSelectionId, EERIE_SELECTIONS> selections;
 	std::vector<TextureContainer *> texturecontainer;
 	
 	std::vector<res::path> originaltextures;

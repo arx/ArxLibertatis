@@ -788,13 +788,13 @@ struct HaloRenderInfo {
 		: halo(nullptr)
 	{ }
 	
-	explicit  HaloRenderInfo(IO_HALO * halo_, ObjSelection selection_ = ObjSelection())
+	explicit  HaloRenderInfo(IO_HALO * halo_, VertexSelectionId selection_ = { })
 		: halo(halo_)
 		, selection(selection_)
-	{}
+	{ }
 	
 	IO_HALO * halo;
-	ObjSelection selection;
+	VertexSelectionId selection;
 	
 };
 
@@ -819,7 +819,7 @@ struct HaloInfo {
 	}
 };
 
-static void pushSlotHalo(HaloInfo & haloInfo, EquipmentSlot slot, ObjSelection selection) {
+static void pushSlotHalo(HaloInfo & haloInfo, EquipmentSlot slot, VertexSelectionId selection) {
 	
 	if(Entity * item = entities.get(player.equiped[slot])) {
 		if(item->halo.flags & HALO_ACTIVE) {
@@ -864,18 +864,19 @@ static void AddAnimatedObjectHalo(const HaloInfo & haloInfo, const VertexId * pa
                                   TexturedVertex * tvList) {
 	
 	IO_HALO * curhalo = nullptr;
-
+	
 	for(size_t h = 0; h < haloInfo.size; h++) {
 		const HaloRenderInfo & entry = haloInfo.entries[h];
-		if(entry.selection == ObjSelection() || IsInSelection(eobj, paf[0], entry.selection)) {
+		if(!entry.selection || IsInSelection(eobj, paf[0], entry.selection)) {
 			curhalo = entry.halo;
 			break;
 		}
 	}
-
-	if(!curhalo)
+	
+	if(!curhalo) {
 		return;
-
+	}
+	
 	float tot = 0;
 	float _ffr[3];
 	ColorRGBA colors[3];

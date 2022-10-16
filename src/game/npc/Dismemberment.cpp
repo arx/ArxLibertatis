@@ -39,9 +39,9 @@
 #include "util/Range.h"
 
 
-static bool IsNearSelection(EERIE_3DOBJ * obj, VertexId vert, ObjSelection tw) {
+static bool IsNearSelection(EERIE_3DOBJ * obj, VertexId vert, VertexSelectionId tw) {
 	
-	if(!obj || tw == ObjSelection() || !vert) {
+	if(!obj || !tw || !vert) {
 		return false;
 	}
 	
@@ -58,7 +58,7 @@ static bool IsNearSelection(EERIE_3DOBJ * obj, VertexId vert, ObjSelection tw) {
 /*!
  * \brief Spawns a body part from NPC
  */
-static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
+static void ARX_NPC_SpawnMember(Entity * ioo, VertexSelectionId num) {
 	
 	if(!ioo) {
 		return;
@@ -277,11 +277,12 @@ static DismembermentFlag GetCutFlag(std::string_view str) {
 	return DismembermentFlag(0);
 }
 
-static ObjSelection GetCutSelection(Entity * io, DismembermentFlag flag) {
+static VertexSelectionId GetCutSelection(Entity * io, DismembermentFlag flag) {
 	
-	if(!io || !(io->ioflags & IO_NPC) || flag == 0)
-		return ObjSelection();
-
+	if(!io || !(io->ioflags & IO_NPC) || flag == 0) {
+		return { };
+	}
+	
 	std::string_view tx;
 	if(flag == FLAG_CUT_HEAD) {
 		tx =  "cut_head";
@@ -298,15 +299,14 @@ static ObjSelection GetCutSelection(Entity * io, DismembermentFlag flag) {
 	}
 	
 	if(!tx.empty()) {
-		typedef std::vector<EERIE_SELECTIONS>::iterator iterator; // Convenience
-		for(iterator iter = io->obj->selections.begin(); iter != io->obj->selections.end(); ++iter) {
-			if(!iter->selected.empty() && iter->name == tx) {
-				return ObjSelection(iter - io->obj->selections.begin());
+		for(VertexSelectionId selection : io->obj->selections.handles()) {
+			if(!io->obj->selections[selection].selected.empty() && io->obj->selections[selection].name == tx) {
+				return selection;
 			}
 		}
 	}
-
-	return ObjSelection();
+	
+	return { };
 }
 
 static void ReComputeCutFlags(Entity * io) {
@@ -367,15 +367,15 @@ static bool applyCuts(Entity & npc) {
 	for(long jj = 0; jj < 6; jj++) {
 		DismembermentFlag flg = DismembermentFlag(1 << jj);
 		
-		ObjSelection numsel = GetCutSelection(&npc, flg);
-		if(!(npc._npcdata->cuts & flg) || numsel == ObjSelection()) {
+		VertexSelectionId selection = GetCutSelection(&npc, flg);
+		if(!(npc._npcdata->cuts & flg) || !selection) {
 			continue;
 		}
 		
 		for(EERIE_FACE & face : npc.obj->facelist) {
-			if(IsInSelection(npc.obj, face.vid[0], numsel)
-			   || IsInSelection(npc.obj, face.vid[1], numsel)
-			   || IsInSelection(npc.obj, face.vid[2], numsel)) {
+			if(IsInSelection(npc.obj, face.vid[0], selection)
+			   || IsInSelection(npc.obj, face.vid[1], selection)
+			   || IsInSelection(npc.obj, face.vid[2], selection)) {
 				if(!(face.facetype & POLY_HIDE) && face.texid != goretex) {
 					hid = true;
 				}
@@ -412,8 +412,8 @@ void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos) {
 		}
 	}
 	
-	ObjSelection numsel;
-	for(ObjSelection selection : target->obj->selections.handles()) {
+	VertexSelectionId numsel;
+	for(VertexSelectionId selection : target->obj->selections.handles()) {
 		
 		if(target->obj->selections[selection].selected.empty() ||
 		   !boost::contains(target->obj->selections[selection].name, "cut_")) {

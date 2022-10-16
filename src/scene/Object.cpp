@@ -206,13 +206,13 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	return nouvo;
 }
 
-ObjSelection EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, std::string_view selname) {
+VertexSelectionId EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, std::string_view selname) {
 	
 	if(!obj) {
 		return { };
 	}
 	
-	for(ObjSelection selection : obj->selections.handles()) {
+	for(VertexSelectionId selection : obj->selections.handles()) {
 		if(obj->selections[selection].name == selname) {
 			return selection;
 		}
