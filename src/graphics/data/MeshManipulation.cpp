@@ -244,7 +244,7 @@ static void copySelection(const EERIE_3DOBJ & source, VertexSelectionId sourceSe
 }
 
 static std::unique_ptr<EERIE_3DOBJ> CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERIE_3DOBJ * obj2,
-                                                           long tw) {
+                                                           TweakFlag tw) {
 	
 	VertexSelectionId sel_head1;
 	VertexSelectionId sel_head2;
