@@ -525,7 +525,7 @@ if(NOT ARX_HAVE_SDL AND (NOT WITH_SDL OR WITH_SDL EQUAL 1))
 endif()
 
 # Boost
-find_package(Boost 1.50 REQUIRED)
+find_package(Boost 1.58 REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 add_definitions(-DBOOST_ALL_NO_LIB)
 add_definitions(-DBOOST_EXCEPTION_DISABLE)
