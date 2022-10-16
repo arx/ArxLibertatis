@@ -140,7 +140,7 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 	}
 	object->vertexlist.resize(af3Ddh->nb_vertex);
 	object->facelist.resize(af3Ddh->nb_faces);
-	object->texturecontainer.resize(af3Ddh->nb_maps);
+	object->materials.resize(af3Ddh->nb_maps);
 	if(arx_unlikely(af3Ddh->nb_groups < 0 || size_t(af3Ddh->nb_groups) > VertexGroupId::max())) {
 		LogError << filename << ": Invalid group count";
 		return { };
@@ -175,7 +175,7 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 		const EERIE_FACE_FTL * eff = reinterpret_cast<const EERIE_FACE_FTL *>(dat + pos);
 		pos += sizeof(EERIE_FACE_FTL);
 		
-		if(arx_unlikely(eff->texid != -1 && size_t(eff->texid) >= object->texturecontainer.size())) {
+		if(arx_unlikely(eff->texid != -1 && size_t(eff->texid) >= object->materials.size())) {
 			LogError << filename << ": Invalid face material";
 			return { };
 		}
@@ -200,7 +200,7 @@ std::unique_ptr<EERIE_3DOBJ> ARX_FTL_Load(const res::path & file) {
 	}
 	
 	// Copy in the texture containers
-	for(TextureContainer * & texture : object->texturecontainer) {
+	for(TextureContainer * & texture : object->materials) {
 		
 		const Texture_Container_FTL * tex;
 		tex = reinterpret_cast<const Texture_Container_FTL *>(dat + pos);

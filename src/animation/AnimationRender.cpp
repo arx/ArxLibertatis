@@ -677,7 +677,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ * eobj, const TransformInfo & t, Entity *
 			continue;
 		}
 		
-		TextureContainer * pTex = eobj->texturecontainer[size_t(face.material)];
+		TextureContainer * pTex = eobj->materials[face.material];
 		if(!pTex) {
 			continue;
 		}
@@ -1026,7 +1026,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 			continue;
 		}
 		
-		TextureContainer * pTex = eobj->texturecontainer[size_t(face.material)];
+		TextureContainer * pTex = eobj->materials[face.material];
 		if(!pTex) {
 			continue;
 		}

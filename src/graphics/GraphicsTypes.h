@@ -197,7 +197,7 @@ struct EERIE_3DOBJ {
 	util::HandleVector<VertexGroupId, VertexGroup> grouplist;
 	std::vector<EERIE_ACTIONLIST> actionlist;
 	util::HandleVector<VertexSelectionId, EERIE_SELECTIONS> selections;
-	std::vector<TextureContainer *> texturecontainer;
+	util::HandleVector<MaterialId, TextureContainer *> materials;
 	
 	std::vector<res::path> originaltextures;
 	std::vector<EERIE_LINKED> linked;

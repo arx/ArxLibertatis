@@ -57,10 +57,10 @@ static bool IsNearSelection(EERIE_3DOBJ * obj, VertexId vert, VertexSelectionId 
 
 MaterialId getGoreMaterial(const EERIE_3DOBJ & object) {
 	
-	for(size_t i = 0; i < object.texturecontainer.size(); i++) {
-		if(object.texturecontainer[i] &&
-		   boost::contains(object.texturecontainer[i]->m_texName.string(), "gore")) {
-			return MaterialId(i);
+	for(MaterialId material : object.materials.handles()) {
+		if(object.materials[material] &&
+		   boost::contains(object.materials[material]->m_texName.string(), "gore")) {
+			return material;
 		}
 	}
 	
@@ -193,7 +193,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, VertexSelectionId num) {
 		
 	}
 	
-	nouvo->texturecontainer = from->texturecontainer;
+	nouvo->materials = from->materials;
 	
 	nouvo->linked.clear();
 	nouvo->originaltextures.clear();
@@ -245,6 +245,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, VertexSelectionId num) {
 	io->soundcount = 0;
 	
 	EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, vector);
+	
 }
 
 

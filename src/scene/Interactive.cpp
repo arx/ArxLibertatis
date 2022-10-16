@@ -281,7 +281,7 @@ void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, bool hide1st) {
 
 void ARX_INTERACTIVE_RemoveGoreOnIO(Entity * io) {
 	
-	if(!io || !io->obj || io->obj->texturecontainer.empty()) {
+	if(!io || !io->obj) {
 		return;
 	}
 	
@@ -298,7 +298,7 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(Entity * io) {
 
 void ARX_INTERACTIVE_HideGore(Entity * io, bool unhideNonGore) {
 	
-	if(!io || !io->obj || io->obj->texturecontainer.empty()) {
+	if(!io || !io->obj) {
 		return;
 	}
 	
