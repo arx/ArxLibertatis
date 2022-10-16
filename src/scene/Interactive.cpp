@@ -77,6 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Levels.h"
 #include "game/NPC.h"
 #include "game/Player.h"
+#include "game/npc/Dismemberment.h"
 
 #include "gui/Cursor.h"
 #include "gui/Dragging.h"
@@ -284,16 +285,7 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(Entity * io) {
 		return;
 	}
 	
-	MaterialId gore;
-	for(size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++) {
-		if(io->obj->texturecontainer[nn]
-		   && boost::contains(io->obj->texturecontainer[nn]->m_texName.string(), "gore")) {
-			gore = MaterialId(nn);
-			break;
-		}
-	}
-	
-	if(gore) {
+	if(MaterialId gore = getGoreMaterial(*io->obj)) {
 		for(EERIE_FACE & face : io->obj->facelist) {
 			if(face.material == gore) {
 				face.facetype |= POLY_HIDE;
@@ -304,8 +296,6 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(Entity * io) {
 	
 }
 
-// flag & 1 == no unhide non-gore
-// TODO very similar to ARX_INTERACTIVE_RemoveGoreOnIO
 void ARX_INTERACTIVE_HideGore(Entity * io, bool unhideNonGore) {
 	
 	if(!io || !io->obj || io->obj->texturecontainer.empty()) {
@@ -316,16 +306,7 @@ void ARX_INTERACTIVE_HideGore(Entity * io, bool unhideNonGore) {
 		return;
 	}
 	
-	MaterialId gore;
-	for(size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++) {
-		if(io->obj->texturecontainer[nn]
-		   && boost::contains(io->obj->texturecontainer[nn]->m_texName.string(), "gore")) {
-			gore = MaterialId(nn);
-			break;
-		}
-	}
-	
-	if(gore) {
+	if(MaterialId gore = getGoreMaterial(*io->obj)) {
 		for(EERIE_FACE & face : io->obj->facelist) {
 			if(face.material == gore) {
 				face.facetype |= POLY_HIDE;

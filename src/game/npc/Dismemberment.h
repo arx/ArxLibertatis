@@ -21,8 +21,12 @@
 #define ARX_GAME_NPC_DISMEMBERMENT_H
 
 #include "math/Types.h"
+#include "graphics/BaseGraphicsTypes.h"
 
 class Entity;
+struct EERIE_3DOBJ;
+
+MaterialId getGoreMaterial(const EERIE_3DOBJ & object);
 
 void ARX_NPC_RestoreCuts();
 

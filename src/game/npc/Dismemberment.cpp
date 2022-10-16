@@ -55,6 +55,18 @@ static bool IsNearSelection(EERIE_3DOBJ * obj, VertexId vert, VertexSelectionId 
 	return false;
 }
 
+MaterialId getGoreMaterial(const EERIE_3DOBJ & object) {
+	
+	for(size_t i = 0; i < object.texturecontainer.size(); i++) {
+		if(object.texturecontainer[i] &&
+		   boost::contains(object.texturecontainer[i]->m_texName.string(), "gore")) {
+			return MaterialId(i);
+		}
+	}
+	
+	return { };
+}
+
 /*!
  * \brief Spawns a body part from NPC
  */
@@ -74,13 +86,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, VertexSelectionId num) {
 		return;
 	}
 	
-	MaterialId gore;
-	for(size_t k = 0; k < from->texturecontainer.size(); k++) {
-		if(from->texturecontainer[k] && boost::contains(from->texturecontainer[k]->m_texName.string(), "gore")) {
-			gore = MaterialId(k);
-			break;
-		}
-	}
+	MaterialId gore = getGoreMaterial(*from);
 	
 	size_t nvertex = from->selections[num].selected.size();
 	arx_assume(nvertex > 0);
@@ -340,14 +346,7 @@ static bool applyCuts(Entity & npc) {
 	
 	ReComputeCutFlags(&npc);
 	
-	MaterialId gore;
-	for(size_t i = 0; i < npc.obj->texturecontainer.size(); i++) {
-		if(npc.obj->texturecontainer[i]
-		   && boost::contains(npc.obj->texturecontainer[i]->m_texName.string(), "gore")) {
-			gore = MaterialId(i);
-			break;
-		}
-	}
+	MaterialId gore = getGoreMaterial(*npc.obj);
 	
 	for(EERIE_FACE & face : npc.obj->facelist) {
 		face.facetype &= ~POLY_HIDE;
@@ -392,15 +391,7 @@ void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos) {
 	
 	float mindistSqr = std::numeric_limits<float>::max();
 	
-	MaterialId gore;
-	for(size_t i = 0; i < target->obj->texturecontainer.size(); i++) {
-		if(target->obj->texturecontainer[i]
-		   && boost::contains(target->obj->texturecontainer[i]->m_texName.string(), "gore")
-		) {
-			gore = MaterialId(i);
-			break;
-		}
-	}
+	MaterialId gore = getGoreMaterial(*target->obj);
 	
 	VertexSelectionId numsel;
 	for(VertexSelectionId selection : target->obj->selections.handles()) {
