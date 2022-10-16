@@ -249,21 +249,21 @@ void ARX_INTERACTIVE_Detach(EntityHandle n_source, EntityHandle n_target)
 	EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, source->obj);
 }
 
-void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state) {
+void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, bool hide1st) {
 	
 	ARX_PROFILE_FUNC();
 	
-	if(!io || HERO_SHOW_1ST == state) {
+	if(!io || HERO_SHOW_1ST == hide1st) {
 		return;
 	}
 	
-	HERO_SHOW_1ST = state;
+	HERO_SHOW_1ST = hide1st ? 1 : 0;
 	
 	if(VertexSelectionId selection = EERIE_OBJECT_GetSelection(io->obj, "1st")) {
 		for(EERIE_FACE & face : io->obj->facelist) {
 			for(VertexId vertex : face.vid) {
 				if(IsInSelection(io->obj, vertex, selection)) {
-					if(state) {
+					if(hide1st) {
 						face.facetype |= POLY_HIDE;
 					} else {
 						face.facetype &= ~POLY_HIDE;

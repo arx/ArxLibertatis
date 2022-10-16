@@ -1097,11 +1097,10 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 	arx_assert(io->idString() == "player");
 	
 	io->obj = hero;
-
+	
 	player.skin = 0;
 	ARX_PLAYER_Restore_Skin();
-
-	ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 0);
+	ARX_INTERACTIVE_Show_Hide_1st(entities.player(), false);
 	ARX_INTERACTIVE_HideGore(entities.player(), false);
 	
 	ANIM_Set(player.bookAnimation[0], herowaitbook);

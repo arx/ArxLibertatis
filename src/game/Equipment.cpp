@@ -250,18 +250,14 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 	
 	ARX_PLAYER_Restore_Skin();
 	HERO_SHOW_1ST = -1;
-
-	if(EXTERNALVIEW) {
-		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 0);
-	} else {
-		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 1);
-	}
-
+	ARX_INTERACTIVE_Show_Hide_1st(entities.player(), !EXTERNALVIEW);
 	ARX_INTERACTIVE_HideGore(entities.player(), false);
+	
 	EERIE_Object_Precompute_Fast_Access(hero);
 	EERIE_Object_Precompute_Fast_Access(entities.player()->obj);
 	
 	ARX_INTERACTIVE_RemoveGoreOnIO(entities.player());
+	
 }
 
 void ARX_EQUIPMENT_UnEquipAllPlayer() {

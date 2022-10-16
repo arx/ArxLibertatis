@@ -88,7 +88,7 @@ void ARX_INTERACTIVE_HideGore(Entity * io, bool unhideNonGore = true);
 void ARX_INTERACTIVE_Attach(EntityHandle n_source, EntityHandle n_target,
                             std::string_view ap_source, std::string_view ap_target);
 void ARX_INTERACTIVE_Detach(EntityHandle n_source, EntityHandle n_target);
-void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state);
+void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, bool hide1st);
 
 void ARX_INTERACTIVE_RemoveGoreOnIO(Entity * io);
 bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target);

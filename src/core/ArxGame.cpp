@@ -1702,13 +1702,13 @@ void ArxGame::updateLevel() {
 	
 	// Check For Hiding/unHiding Player Gore
 	if(EXTERNALVIEW || player.lifePool.current <= 0) {
-		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 0);
+		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), false);
 	}
-
+	
 	if(!EXTERNALVIEW) {
-		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 1);
+		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), true);
 	}
-
+	
 	PrepareIOTreatZone();
 	ARX_PHYSICS_Apply();
 	
