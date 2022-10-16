@@ -53,22 +53,35 @@ public:
 	using Base::size;
 	
 	[[nodiscard]] auto handles() const noexcept {
-		arx_assume(size() <= size_t(Handle::max()));
+		if constexpr(!std::is_enum_v<Handle>) {
+			arx_assume(size() <= size_t(Handle::max()));
+		}
 		return util::transform(util::indices(*this), [](size_t i) noexcept { return Handle(i); });
 	}
 	
 	[[nodiscard]] decltype(auto) operator[](Handle handle) noexcept {
-		arx_assume(handle && size_t(handle) < size());
+		if constexpr(!std::is_enum_v<Handle>) {
+			arx_assume(handle && size_t(handle) < size());
+		} else {
+			arx_assume(handle >= 0 && size_t(handle) < size());
+		}
 		return Base::operator[](size_t(handle));
 	}
 	
 	[[nodiscard]] decltype(auto) operator[](Handle handle) const noexcept {
-		arx_assume(handle && size_t(handle) < size());
+		if constexpr(!std::is_enum_v<Handle>) {
+			arx_assume(handle && size_t(handle) < size());
+		} else {
+			arx_assume(handle >= 0 && size_t(handle) < size());
+		}
 		return Base::operator[](size_t(handle));
 	}
 	
 	[[nodiscard]] Handle last() const noexcept {
-		arx_assume(size() > 0 && size() <= size_t(Handle::max()));
+		if constexpr(!std::is_enum_v<Handle>) {
+			arx_assume(size() <= size_t(Handle::max()));
+		}
+		arx_assume(size() > 0);
 		return Handle(size() - 1);
 	}
 	
