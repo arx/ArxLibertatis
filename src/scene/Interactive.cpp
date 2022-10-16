@@ -254,11 +254,11 @@ void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, bool hide1st) {
 	
 	ARX_PROFILE_FUNC();
 	
-	if(!io || HERO_SHOW_1ST == hide1st) {
+	if(!io || HERO_SHOW_1ST == long(hide1st)) {
 		return;
 	}
 	
-	HERO_SHOW_1ST = hide1st ? 1 : 0;
+	HERO_SHOW_1ST = long(hide1st);
 	
 	if(VertexSelectionId selection = EERIE_OBJECT_GetSelection(io->obj, "1st")) {
 		for(EERIE_FACE & face : io->obj->facelist) {
