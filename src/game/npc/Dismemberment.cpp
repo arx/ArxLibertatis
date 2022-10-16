@@ -196,7 +196,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, VertexSelectionId num) {
 	nouvo->materials = from->materials;
 	
 	nouvo->linked.clear();
-	nouvo->originaltextures.clear();
+	nouvo->originalMaterials.clear();
 	
 	Entity * io = new Entity("noname", EntityInstance(0));
 	

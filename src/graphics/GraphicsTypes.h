@@ -199,7 +199,7 @@ struct EERIE_3DOBJ {
 	util::HandleVector<VertexSelectionId, EERIE_SELECTIONS> selections;
 	util::HandleVector<MaterialId, TextureContainer *> materials;
 	
-	std::vector<res::path> originaltextures;
+	util::HandleVector<MaterialId, res::path> originalMaterials;
 	std::vector<EERIE_LINKED> linked;
 	
 	std::unique_ptr<PHYSICS_BOX_DATA> pbox;

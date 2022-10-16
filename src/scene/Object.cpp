@@ -201,7 +201,7 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	}
 	
 	nouvo->linked.clear();
-	nouvo->originaltextures.clear();
+	nouvo->originalMaterials.clear();
 	
 	return nouvo;
 }
