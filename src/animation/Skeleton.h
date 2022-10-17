@@ -35,9 +35,9 @@
 struct VertexGroup {
 	
 	std::string name;
-	VertexId origin = VertexId(0);
 	std::vector<VertexId> indexes;
 	float m_blobShadowSize = 0.f;
+	VertexId origin = VertexId(0);
 	
 };
 
