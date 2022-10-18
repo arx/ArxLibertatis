@@ -37,6 +37,7 @@
 #include <ostream>
 #include <type_traits>
 
+#include "platform/Platform.h"
 #include "util/Cast.h"
 
 
@@ -59,7 +60,10 @@ public:
 	[[nodiscard]] constexpr T handleData() const noexcept { return t; }
 	
 	template <typename O, typename = std::enable_if_t<std::is_integral_v<O>>>
-	[[nodiscard]] explicit constexpr operator O() const noexcept { return to<O>(t); }
+	[[nodiscard]] explicit constexpr operator O() const noexcept {
+		arx_assume(t != Invalid);
+		return to<O>(t);
+	}
 	
 	[[nodiscard]] explicit constexpr operator bool() const noexcept { return t != Invalid; }
 	[[nodiscard]] constexpr bool operator!() const noexcept { return t == Invalid; }
