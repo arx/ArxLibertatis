@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/range/adaptor/reversed.hpp>
 
 #include "core/Config.h"
 #include "core/Core.h"
@@ -102,10 +103,10 @@ VertexGroupId getGroupForVertex(const EERIE_3DOBJ * eobj, VertexId vertex) {
 		return { };
 	}
 	
-	for(size_t i = eobj->grouplist.size(); i-- > 0;) {
-		for(VertexId index : eobj->grouplist[VertexGroupId(i)].indexes) {
+	for(VertexGroupId group : eobj->grouplist.handles() | boost::adaptors::reversed) {
+		for(VertexId index : eobj->grouplist[group].indexes) {
 			if(index == vertex) {
-				return VertexGroupId(i);
+				return group;
 			}
 		}
 	}
