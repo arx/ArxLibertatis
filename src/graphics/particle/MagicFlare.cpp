@@ -238,7 +238,7 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 		flare.tolive = Random::get(3400000us, 4400000us);
 	}
 	
-	flare.dynlight = LightHandle();
+	flare.dynlight = { };
 	
 	for(unsigned int kk = 0; kk < 3; kk++) {
 		
