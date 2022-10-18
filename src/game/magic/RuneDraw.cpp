@@ -228,7 +228,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 		AnimationDuration elapsed = toAnimationDuration(now - entity.symboldraw->starttime);
 		if(elapsed > entity.symboldraw->duration) {
 			endLightDelayed(entity.dynlight, 600ms);
-			entity.dynlight = LightHandle();
+			entity.dynlight = { };
 			delete entity.symboldraw;
 			entity.symboldraw = nullptr;
 			continue;
