@@ -73,16 +73,16 @@ void ARX_FOGS_Clear() {
 
 FogHandle ARX_FOGS_GetFree() {
 	
-	for(size_t i = 0; i < g_fogs.size(); i++) {
-		if(!g_fogs[FogHandle(i)].exist) {
-			g_fogs[FogHandle(i)] = FOG_DEF();
-			return FogHandle(i);
+	for(FogHandle fog : g_fogs.handles()) {
+		if(!g_fogs[fog].exist) {
+			g_fogs[fog] = FOG_DEF();
+			return fog;
 		}
 	}
 	
 	g_fogs.emplace_back();
 	
-	return FogHandle(g_fogs.size() - 1);
+	return g_fogs.last();
 }
 
 void ARX_FOGS_Render() {
