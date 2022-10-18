@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/range/adaptor/strided.hpp>
 
 #include "ai/Anchors.h"
 #include "ai/Paths.h"
@@ -1926,14 +1927,15 @@ void UpdateCameras() {
 					}
 					
 					bool touched = false;
-					for(size_t i = 0; i < entity.obj->vertexlist.size(); i += 3) {
-						for(size_t j = 0; j < other.obj->vertexlist.size(); j += 3) {
-							if(closerThan(entity.obj->vertexWorldPositions[VertexId(i)].v,
-							              other.obj->vertexWorldPositions[VertexId(j)].v, 20.f)) {
+					for(const EERIE_VERTEX & i : entity.obj->vertexWorldPositions | boost::adaptors::strided(3)) {
+						for(const EERIE_VERTEX & j : other.obj->vertexWorldPositions | boost::adaptors::strided(3)) {
+							if(closerThan(i.v, j.v, 20.f)) {
 								touched = true;
-								i = entity.obj->vertexlist.size();
 								break;
 							}
+						}
+						if(touched) {
+							break;
 						}
 					}
 					
