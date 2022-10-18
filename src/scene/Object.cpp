@@ -237,12 +237,12 @@ VertexGroupId EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, std::string_view gr
 	return { };
 }
 
-static VertexGroupId GetFather(EERIE_3DOBJ * eobj, VertexId origin, size_t size) {
+static VertexGroupId getParentGroup(EERIE_3DOBJ * eobj, VertexGroupId child) {
 	
-	for(size_t i = size; i-- > 0;) {
-		for(VertexId index : eobj->grouplist[VertexGroupId(i)].indexes) {
-			if(index == origin) {
-				return VertexGroupId(i);
+	for(VertexGroupId group : eobj->grouplist.handles(0, size_t(child)) | boost::adaptors::reversed) {
+		for(VertexId index : eobj->grouplist[group].indexes) {
+			if(index == eobj->grouplist[child].origin) {
+				return group;
 			}
 		}
 	}
@@ -293,7 +293,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			}
 			
 			bone.anim.trans = eobj->vertexlist[group.origin].v;
-			bone.father = GetFather(eobj, group.origin, size_t(i));
+			bone.father = getParentGroup(eobj, i);
 			arx_assert(!bone.father || size_t(bone.father) < size_t(i));
 			bone.anim.scale = Vec3f(1.f);
 			
