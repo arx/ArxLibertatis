@@ -74,7 +74,7 @@ static const Color3f defaultAmbient = Color3f(0.09f, 0.09f, 0.09f);
 static const int NPC_ITEMS_AMBIENT_VALUE_255 = 35;
 
 std::vector<EERIE_LIGHT> g_staticLights;
-EERIE_LIGHT g_dynamicLights[g_dynamicLightsMax];
+util::HandleArray<LightHandle, EERIE_LIGHT, g_dynamicLightsMax> g_dynamicLights;
 
 EERIE_LIGHT * g_culledDynamicLights[g_dynamicLightsMax];
 size_t g_culledDynamicLightsCount = 0;
@@ -281,14 +281,14 @@ void PrecalcIOLighting(const Vec3f & pos, float radius) {
 	
 }
 
-static bool lightHandleIsValid(LightHandle num) {
-	return num.handleData() >= 0 && size_t(num.handleData()) < g_dynamicLightsMax
-	       && g_dynamicLights[num.handleData()].m_exists;
+static bool lightHandleIsValid(LightHandle lightHandle) {
+	return lightHandle && size_t(lightHandle) < g_dynamicLights.size() &&
+	       g_dynamicLights[lightHandle].m_exists;
 }
 
 EERIE_LIGHT * lightHandleGet(LightHandle lightHandle) {
 	if(lightHandleIsValid(lightHandle) || lightHandle == torchLightHandle) {
-		return &g_dynamicLights[lightHandle.handleData()];
+		return &g_dynamicLights[lightHandle];
 	} else {
 		return nullptr;
 	}
@@ -320,9 +320,9 @@ void resetDynLights() {
 
 
 LightHandle GetFreeDynLight() {
-
-	for(size_t i = 1; i < g_dynamicLightsMax; i++) {
-		EERIE_LIGHT & light = g_dynamicLights[i];
+	
+	for(LightHandle handle : g_dynamicLights.handles(1)) {
+		EERIE_LIGHT & light = g_dynamicLights[handle];
 		if(!light.m_exists) {
 			light.m_exists = true;
 			light.m_isIgnitionLight = false;
@@ -332,11 +332,11 @@ LightHandle GetFreeDynLight() {
 			light.duration = 0;
 			light.extras = 0;
 			light.m_storedFlameTime.reset();
-			return LightHandle(i);
+			return handle;
 		}
 	}
-
-	return LightHandle();
+	
+	return { };
 }
 
 EERIE_LIGHT * dynLightCreate(LightHandle & handle) {

@@ -61,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Quantizer.h"
 #include "platform/Platform.h"
 #include "util/Flags.h"
+#include "util/HandleContainer.h"
 #include "util/HandleType.h"
 
 
@@ -69,16 +70,16 @@ struct EERIEPOLY;
 struct SMY_VERTEX;
 class Entity;
 
+typedef util::HandleType<struct LightHandleTag, s32> LightHandle;
+
 const size_t g_dynamicLightsMax = 500;
 
 extern EERIE_LIGHT * g_culledDynamicLights[g_dynamicLightsMax];
 extern std::vector<EERIE_LIGHT> g_staticLights;
-extern EERIE_LIGHT g_dynamicLights[g_dynamicLightsMax];
+extern util::HandleArray<LightHandle, EERIE_LIGHT, g_dynamicLightsMax> g_dynamicLights;
 extern size_t g_culledDynamicLightsCount;
 
 void culledStaticLightsReset();
-
-typedef util::HandleType<struct LightHandleTag, s32> LightHandle;
 
 enum EERIE_TYPES_EXTRAS_MODE
 {
