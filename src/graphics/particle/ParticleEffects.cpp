@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <chrono>
 
 #include <boost/format.hpp>
+#include <boost/range/adaptor/strided.hpp>
 
 #include "core/Application.h"
 #include "core/Config.h"
@@ -90,6 +91,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "scene/Light.h"
 #include "scene/Tiles.h"
+
 
 static const size_t MAX_PARTICLES = 2200;
 static long ParticleCount = 0;
@@ -296,12 +298,11 @@ void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle sourc
 	
 	float nearest_dist = std::numeric_limits<float>::max();
 	VertexId nearest;
-	for(size_t i = 0; i < sourceIo->obj->grouplist.size(); i += 2) {
-		VertexId vertex = sourceIo->obj->grouplist[VertexGroupId(i)].origin;
-		float dist = arx::distance2(pos, sourceIo->obj->vertexWorldPositions[vertex].v);
+	for(const VertexGroup & group : sourceIo->obj->grouplist | boost::adaptors::strided(2)) {
+		float dist = arx::distance2(pos, sourceIo->obj->vertexWorldPositions[group.origin].v);
 		if(dist < nearest_dist) {
 			nearest_dist = dist;
-			nearest = vertex;
+			nearest = group.origin;
 		}
 	}
 	if(!nearest) {
