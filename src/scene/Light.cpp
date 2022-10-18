@@ -178,7 +178,7 @@ void TreatBackgroundDynlights() {
 			// Just extinguished
 			if(EERIE_LIGHT * dynLight = lightHandleGet(light.m_ignitionLightHandle)) {
 				dynLight->m_exists = false;
-				light.m_ignitionLightHandle = LightHandle();
+				light.m_ignitionLightHandle = { };
 				for(Entity & marker : entities(IO_MARKER)) {
 					if(!fartherThan(light.pos, GetItemWorldPosition(&marker), 300.f)) {
 						SendIOScriptEvent(nullptr, &marker, SM_CUSTOM, "douse");
@@ -300,7 +300,8 @@ void lightHandleDestroy(LightHandle & handle) {
 		light->m_exists = false;
 	}
 	
-	handle = LightHandle();
+	handle = { };
+	
 }
 
 void endLightDelayed(LightHandle handle, GameDuration delay) {
@@ -359,7 +360,7 @@ void ClearDynLights() {
 	}
 	
 	for(EERIE_LIGHT & light : g_staticLights) {
-		light.m_ignitionLightHandle = LightHandle();
+		light.m_ignitionLightHandle = { };
 	}
 	
 	g_culledDynamicLightsCount = 0;
