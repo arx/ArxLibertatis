@@ -260,8 +260,8 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		eobj->m_skeleton->bones.resize(1);
 		eobj->m_boneVertices.resize(1);
 		
-		Bone & bone = eobj->m_skeleton->bones[VertexGroupId(0)];
-		auto & vertices = eobj->m_boneVertices[VertexGroupId(0)];
+		Bone & bone = eobj->m_skeleton->bones.front();
+		auto & vertices = eobj->m_boneVertices.front();
 		
 		// Add all vertices to the bone
 		for(VertexId vertex : eobj->vertexlist.handles()) {
@@ -279,11 +279,11 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		
 		// Create one bone for each vertex group and assign vertices to the inner-most group
 		util::HandleVector<VertexId, bool> vertexAssigned(eobj->vertexlist.size(), false);
-		for(size_t i = eobj->grouplist.size(); i-- > 0;) {
+		for(VertexGroupId i : eobj->grouplist.handles() | boost::adaptors::reversed) {
 			
-			const VertexGroup & group = eobj->grouplist[VertexGroupId(i)];
-			Bone & bone = eobj->m_skeleton->bones[VertexGroupId(i)];
-			auto & vertices = eobj->m_boneVertices[VertexGroupId(i)];
+			const VertexGroup & group = eobj->grouplist[i];
+			Bone & bone = eobj->m_skeleton->bones[i];
+			auto & vertices = eobj->m_boneVertices[i];
 			
 			for(VertexId vertex : group.indexes) {
 				if(!vertexAssigned[vertex]) {
@@ -293,8 +293,8 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			}
 			
 			bone.anim.trans = eobj->vertexlist[group.origin].v;
-			bone.father = GetFather(eobj, group.origin, i);
-			arx_assert(!bone.father || size_t(bone.father) < i);
+			bone.father = GetFather(eobj, group.origin, size_t(i));
+			arx_assert(!bone.father || size_t(bone.father) < size_t(i));
 			bone.anim.scale = Vec3f(1.f);
 			
 		}
@@ -302,7 +302,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		// Assign vertices that are not in any group to the root bone
 		for(VertexId vertex : eobj->vertexlist.handles()) {
 			if(!getGroupForVertex(eobj, vertex)) {
-				eobj->m_boneVertices[VertexGroupId(0)].push_back(vertex);
+				eobj->m_boneVertices.front().push_back(vertex);
 			}
 		}
 		
