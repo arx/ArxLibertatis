@@ -57,6 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/range/adaptor/reversed.hpp>
+#include <boost/range/adaptor/strided.hpp>
 
 #include "animation/Animation.h"
 
@@ -188,10 +189,10 @@ static void CheckHit(Entity * source, float ratioaim) {
 	float dist_limit = source->_npcdata->reach + source->physics.cyl.radius;
 	long count = 0;
 	float mindist = std::numeric_limits<float>::max();
-
-	for(size_t k = 0; k < target->obj->vertexWorldPositions.size(); k += 2) {
-		float dist = fdist(pos, target->obj->vertexWorldPositions[VertexId(k)].v);
-		if(dist <= dist_limit && glm::abs(pos.y - target->obj->vertexWorldPositions[VertexId(k)].v.y) < 60.f) {
+	
+	for(const EERIE_VERTEX & vertex : target->obj->vertexWorldPositions | boost::adaptors::strided(2)) {
+		float dist = fdist(pos, vertex.v);
+		if(dist <= dist_limit && glm::abs(pos.y - vertex.v.y) < 60.f) {
 			count++;
 			if(dist < mindist) {
 				mindist = dist;
