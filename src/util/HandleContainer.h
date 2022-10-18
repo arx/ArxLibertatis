@@ -38,6 +38,8 @@
 #include <type_traits>
 #include <vector>
 
+#include <boost/range/adaptor/transformed.hpp>
+
 #include "util/Range.h"
 #include "platform/Platform.h"
 
@@ -56,7 +58,9 @@ public:
 		if constexpr(!std::is_enum_v<Handle>) {
 			arx_assume(size() <= size_t(Handle::max()));
 		}
-		return util::transform(util::indices(*this), [](size_t i) noexcept { return Handle(i); });
+		return util::indices(*this) | boost::adaptors::transformed([](size_t i) noexcept {
+			return Handle(i);
+		});
 	}
 	
 	[[nodiscard]] decltype(auto) operator[](Handle handle) noexcept {
