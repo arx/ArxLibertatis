@@ -49,6 +49,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <limits>
 
+#include <boost/range/adaptor/strided.hpp>
+
 #include "ai/Anchors.h"
 #include "core/GameTime.h"
 #include "core/Core.h"
@@ -968,9 +970,9 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 	}
 	
 	long count = 0;
-	for(size_t i = 0; i < vlist.size(); i += step) {
+	for(const EERIE_VERTEX & vertex : vlist | boost::adaptors::strided(step)) {
 		
-		if(closerThan(vlist[VertexId(i)].v, sphere.origin, sr30)) {
+		if(closerThan(vertex.v, sphere.origin, sr30)) {
 			count++;
 			if(count > 6) {
 				return true;
@@ -982,11 +984,11 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 		}
 		
 		for(const EERIE_VERTEX & other : vlist) {
-			if(&other == &vlist[VertexId(i)]) {
+			if(&other == &vertex) {
 				continue;
 			}
 			for(size_t n = 1; n < 5; n++) {
-				if(!fartherThan(sphere.origin, glm::mix(other.v, vlist[VertexId(i)].v, float(n) * 0.2f), sr30 + 20)) {
+				if(!fartherThan(sphere.origin, glm::mix(other.v, vertex.v, float(n) * 0.2f), sr30 + 20)) {
 					count++;
 					if(count > ((entity.ioflags & IO_FIX) ? 3 : 6)) {
 						return true;
