@@ -55,8 +55,6 @@ public:
 	const QString & getErrorString() const { return m_strErrorDescription; }
 	const QString & getDetailedErrorString() const { return m_strDetailedErrorDescription; }
 	
-	static void msleep(unsigned long msecs) { QThread::msleep(msecs); }
-	
 signals:
 	
 	void taskStarted(const QString & taskDescription, int numSteps) override;
