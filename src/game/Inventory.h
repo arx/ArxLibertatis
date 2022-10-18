@@ -52,6 +52,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <utility>
 #include <vector>
 
+#include <boost/range/counting_range.hpp>
+#include <boost/range/adaptor/transformed.hpp>
+
 #include "game/GameTypes.h"
 #include "math/Types.h"
 #include "script/Script.h"
@@ -266,7 +269,7 @@ public:
 	
 	//! Returns an iterable over all slots in any order
 	[[nodiscard]] auto slots() const noexcept {
-		return util::transform(util::IntRange(slotCount()), [this](size_t index) {
+		return boost::counting_range(size_t(0), slotCount()) | boost::adaptors::transformed([this](size_t index) {
 			return SlotView<false>(this, index);
 		});
 	}
