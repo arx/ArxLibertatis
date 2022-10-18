@@ -186,8 +186,8 @@ static void loadLights(const char * dat, size_t & pos, size_t count, const Vec3f
 			}
 		}
 		
-		light.m_ignitionLightHandle = LightHandle();
-		light.sample = audio::SourcedSample();
+		light.m_ignitionLightHandle = { };
+		light.sample = { };
 		
 	}
 	
