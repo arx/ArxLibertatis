@@ -54,6 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 #include <sstream>
 
+#include <boost/range/adaptor/strided.hpp>
+
 #include "ai/Paths.h"
 
 #include "core/GameTime.h"
@@ -1182,8 +1184,8 @@ static bool SphereInIO(Entity * io, const Sphere & sphere) {
 		step = 7;
 	}
 	
-	for(size_t i = 0; i < io->obj->vertexlist.size(); i += step) {
-		if(!fartherThan(sphere.origin, io->obj->vertexWorldPositions[VertexId(i)].v, sphere.radius)) {
+	for(const EERIE_VERTEX & vertex : io->obj->vertexWorldPositions | boost::adaptors::strided(step)) {
+		if(!fartherThan(sphere.origin, vertex.v, sphere.radius)) {
 			return true;
 		}
 	}
