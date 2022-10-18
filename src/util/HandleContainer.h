@@ -38,6 +38,7 @@
 #include <type_traits>
 #include <vector>
 
+#include <boost/range/counting_range.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 
 #include "util/Range.h"
@@ -54,13 +55,17 @@ public:
 	using Base::Base;
 	using Base::size;
 	
-	[[nodiscard]] auto handles() const noexcept {
+	[[nodiscard]] auto handles(size_t begin, size_t end) const noexcept {
 		if constexpr(!std::is_enum_v<Handle>) {
 			arx_assume(size() <= size_t(Handle::max()));
 		}
-		return util::indices(*this) | boost::adaptors::transformed([](size_t i) noexcept {
+		return boost::counting_range(begin, end) | boost::adaptors::transformed([](size_t i) noexcept {
 			return Handle(i);
 		});
+	}
+	
+	[[nodiscard]] auto handles(size_t begin = 0) const noexcept {
+		return handles(begin, size());
 	}
 	
 	[[nodiscard]] decltype(auto) operator[](Handle handle) noexcept {
