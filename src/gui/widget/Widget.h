@@ -25,7 +25,7 @@
 #include "core/SaveGame.h"
 #include "input/InputKey.h"
 #include "math/Rectangle.h"
-#include "util/HandleType.h"
+
 
 enum MENUSTATE {
 	NOP,
