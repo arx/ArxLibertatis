@@ -1080,16 +1080,12 @@ void ARX_PLAYER_Restore_Skin() {
  */
 void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 	
-	const char OBJECT_HUMAN_BASE[] = "graph/obj3d/interactive/npc/human_base/human_base.teo";
-	hero = loadObject(OBJECT_HUMAN_BASE, false).release();
+	hero = loadObject("graph/obj3d/interactive/npc/human_base/human_base.teo", false).release();
 	PLAYER_SKIN_TC = TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero_head");
 	
-	const char ANIM_WAIT_BOOK[] = "graph/obj3d/anims/npc/human_wait_book.tea";
-	herowaitbook = EERIE_ANIMMANAGER_Load(ANIM_WAIT_BOOK);
-	const char ANIM_WAIT_NORMAL[] = "graph/obj3d/anims/npc/human_normal_wait.tea";
-	EERIE_ANIMMANAGER_Load(ANIM_WAIT_NORMAL);
-	const char ANIM_WAIT_TWOHANDED[] = "graph/obj3d/anims/npc/human_wait_book_2handed.tea";
-	herowait_2h = EERIE_ANIMMANAGER_Load(ANIM_WAIT_TWOHANDED);
+	herowaitbook = EERIE_ANIMMANAGER_Load("graph/obj3d/anims/npc/human_wait_book.tea");
+	EERIE_ANIMMANAGER_Load("graph/obj3d/anims/npc/human_normal_wait.tea");
+	herowait_2h = EERIE_ANIMMANAGER_Load("graph/obj3d/anims/npc/human_wait_book_2handed.tea");
 	
 	Entity * io = new Entity("graph/obj3d/interactive/player/player", EntityInstance(-1));
 	arx_assert_msg(io->index() == EntityHandle_Player, "player entity didn't get index 0");
