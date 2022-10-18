@@ -972,9 +972,9 @@ static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 					break;
 				}
 				// TODO this breaks when the object changes between saving and loading
-				ais.linked_data[ais.nb_linked].lgroup = linked.lgroup.handleData();
-				ais.linked_data[ais.nb_linked].lidx = linked.lidx.handleData();
-				ais.linked_data[ais.nb_linked].lidx2 = linked.lidx2.handleData();
+				ais.linked_data[ais.nb_linked].lgroup = linked.lgroup ? s32(linked.lgroup) : -1;
+				ais.linked_data[ais.nb_linked].lidx = linked.lidx ? s32(linked.lidx) : -1;
+				ais.linked_data[ais.nb_linked].lidx2 = linked.lidx2 ? s32(linked.lidx2) : -1;
 				ais.linked_data[ais.nb_linked].modinfo = SavedModInfo();
 				storeIdString(ais.linked_data[ais.nb_linked].linked_id, linked.io);
 				ais.nb_linked++;
