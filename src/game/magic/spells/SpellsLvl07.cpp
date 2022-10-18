@@ -222,7 +222,7 @@ void FireFieldSpell::Launch() {
 	m_duration = (m_launchDuration >= 0) ? m_launchDuration : 100s;
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 2.8f;
-	m_light = LightHandle();
+	m_light = { };
 	
 	Vec3f target;
 	float beta;
@@ -349,7 +349,7 @@ void IceFieldSpell::Launch() {
 	m_duration = (m_launchDuration >= 0) ? m_launchDuration : 100s;
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 2.8f;
-	m_light = LightHandle();
+	m_light = { };
 	
 	Vec3f target;
 	float beta;
