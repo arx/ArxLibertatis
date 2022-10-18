@@ -145,7 +145,7 @@ void RaiseDeadSpell::End() {
 void RaiseDeadSpell::Update() {
 	
 	if(m_creationFailed) {
-		m_light = LightHandle();
+		m_light = { };
 		return;
 	}
 	
@@ -201,12 +201,16 @@ void RaiseDeadSpell::Update() {
 				MakeCoolFx(pos);
 			}
 			
-			m_light = LightHandle();
+			m_light = { };
+			
 		} else {
+			
 			ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE);
 			m_creationFailed = true;
 			requestEnd();
+			
 		}
+		
 	} else if(!g_gameTime.isPaused() && tim < 4s) {
 		if(Random::getf() > 0.95f) {
 			MakeCoolFx(m_fissure.m_eSrc);
