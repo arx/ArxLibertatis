@@ -812,7 +812,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->ioflags &= ~IO_INVERTED;
 		io->lastspeechflag = 2;
 	
-		io->no_collide = EntityHandle();
+		io->no_collide = { };
 
 		MagicFlareReleaseEntity(io);
 
@@ -837,7 +837,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->scale = 1.f;
 		io->move = Vec3f(0.f);
 		io->type_flags = 0;
-		io->m_sound = audio::SourcedSample();
+		io->m_sound = { };
 		io->soundtime = 0;
 		io->soundcount = 0;
 		io->material = MATERIAL_STONE;
@@ -845,8 +845,8 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->ouch_time = 0;
 		io->dmg_sum = 0;
 		io->ignition = 0.f;
-		io->ignit_light = LightHandle();
-		io->ignit_sound = audio::SourcedSample();
+		io->ignit_light = { };
+		io->ignit_sound = { };
 		
 		if(io->obj && io->obj->pbox) {
 			io->obj->pbox->active = 0;
