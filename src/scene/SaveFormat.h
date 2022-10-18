@@ -744,10 +744,6 @@ struct SavedPathfindTarget {
 
 const size_t SAVED_MAX_EXTRA_ROTATE = 4;
 
-inline short saved_fromObjGroup(VertexGroupId value) {
-	return value.handleData();
-}
-
 struct SavedExtraRotate {
 	
 	s32 flags;
@@ -757,7 +753,10 @@ struct SavedExtraRotate {
 	SavedExtraRotate & operator=(const EERIE_EXTRA_ROTATE & b) {
 		flags = 0;
 		static_assert(SAVED_MAX_EXTRA_ROTATE <= MAX_EXTRA_ROTATE, "array size mismatch");
-		std::transform(b.group_number.begin(), b.group_number.end(), group_number, saved_fromObjGroup);
+		std::transform(b.group_number.begin(), b.group_number.end(), group_number, [](VertexGroupId group) {
+			// TODO this breaks when the object changes between saving and loading
+			return group ? s16(group) : s16(-1);
+		});
 		std::copy(b.group_rotate.begin(), b.group_rotate.end(), group_rotate);
 		#ifdef ARX_DEBUG
 		for(size_t i = SAVED_MAX_EXTRA_ROTATE; i < MAX_EXTRA_ROTATE; i++) {
