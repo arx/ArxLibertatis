@@ -22,6 +22,8 @@
 #include <array>
 #include <vector>
 
+#include <boost/range/adaptor/strided.hpp>
+
 #include "game/Entity.h"
 #include "graphics/Draw.h"
 #include "graphics/GlobalFog.h"
@@ -33,9 +35,7 @@
 
 static std::vector<TexturedVertex> g_shadowBatch;
 
-static void addShadowBlob(const Entity & entity, VertexId vertex, float scale, bool isGroup) {
-	
-	Vec3f pos = entity.obj->vertexWorldPositions[vertex].v;
+static void addShadowBlob(const Entity & entity, Vec3f pos, float scale, bool isGroup) {
 	
 	EERIEPOLY * ep = CheckInPoly(pos);
 	if(!ep) {
@@ -99,13 +99,13 @@ void ARXDRAW_DrawInterShadows() {
 			continue;
 		}
 		
-		if(entity.obj->grouplist.size() <= 1) {
-			for(size_t k = 0; k < entity.obj->vertexlist.size(); k += 9) {
-				addShadowBlob(entity, VertexId(k), entity.scale, false);
+		if(entity.obj->grouplist.size() > 1) {
+			for(const VertexGroup & group : entity.obj->grouplist) {
+				addShadowBlob(entity, entity.obj->vertexWorldPositions[group.origin].v, group.m_blobShadowSize, true);
 			}
 		} else {
-			for(const VertexGroup & group : entity.obj->grouplist) {
-				addShadowBlob(entity, group.origin, group.m_blobShadowSize, true);
+			for(const EERIE_VERTEX & vertex : entity.obj->vertexWorldPositions | boost::adaptors::strided(9)) {
+				addShadowBlob(entity, vertex.v, entity.scale, false);
 			}
 		}
 		
