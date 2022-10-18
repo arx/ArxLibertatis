@@ -761,7 +761,7 @@ struct SavedExtraRotate {
 		std::copy(b.group_rotate.begin(), b.group_rotate.end(), group_rotate);
 		#ifdef ARX_DEBUG
 		for(size_t i = SAVED_MAX_EXTRA_ROTATE; i < MAX_EXTRA_ROTATE; i++) {
-			arx_assert(b.group_number[i] == VertexGroupId());
+			arx_assert(!b.group_number[i]);
 			arx_assert(b.group_rotate[i] == Anglef());
 		}
 		#endif
