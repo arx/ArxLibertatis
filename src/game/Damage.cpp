@@ -104,26 +104,23 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/Script.h"
 
 #include "util/Cast.h"
+#include "util/HandleContainer.h"
 
 
 class TextureContainer;
 
 struct DAMAGE_INFO {
 	
-	bool exist;
+	bool exist = false;
 	GameInstant start_time;
 	GameInstant lastupd;
 	
 	DamageParameters params;
-	Spell * spell;
-	
-	DAMAGE_INFO()
-		: exist(false)
-	{ }
+	Spell * spell = nullptr;
 	
 };
 
-static std::vector<DAMAGE_INFO> g_damages;
+static util::HandleVector<DamageHandle, DAMAGE_INFO> g_damages;
 
 void damageClearSpell(const Spell * spell) {
 	for(DAMAGE_INFO & damage : g_damages) {
@@ -136,37 +133,40 @@ void damageClearSpell(const Spell * spell) {
 
 DamageHandle DamageCreate(Spell * spell, const DamageParameters & params) {
 	
-	size_t i = std::find_if(g_damages.begin(), g_damages.end(), [](const DAMAGE_INFO & damage) {
-		return !damage.exist;
-	}) - g_damages.begin();
-	if(i == g_damages.size()) {
+	DamageHandle handle = []() {
+		for(DamageHandle damage : g_damages.handles()) {
+			if(!g_damages[damage].exist) {
+				return damage;
+			}
+		}
 		g_damages.emplace_back();
-	}
+		return g_damages.last();
+	}();
 	
-	DAMAGE_INFO & damage = g_damages[i];
+	DAMAGE_INFO & damage = g_damages[handle];
 	damage.spell = spell;
 	damage.params = params;
 	damage.start_time = g_gameTime.now();
 	damage.lastupd = 0;
 	damage.exist = true;
 	
-	return DamageHandle(i);
+	return handle;
 }
 
 DamageParameters & damageGet(Spell * spell, DamageHandle & handle) {
 	
-	if(handle.handleData() >= 0 && size_t(handle.handleData()) < g_damages.size()) {
-		g_damages[handle.handleData()].spell = spell;
-		return g_damages[handle.handleData()].params;
+	if(handle && size_t(handle) < g_damages.size()) {
+		g_damages[handle].spell = spell;
+	} else {
+		handle = DamageCreate(spell, DamageParameters());
 	}
 	
-	handle = DamageCreate(spell, DamageParameters());
-	return g_damages[handle.handleData()].params;
+	return g_damages[handle].params;
 }
 
 void DamageRequestEnd(DamageHandle handle) {
-	if(handle.handleData() >= 0 && size_t(handle.handleData()) < g_damages.size()) {
-		g_damages[handle.handleData()].exist = false;
+	if(handle && size_t(handle) < g_damages.size()) {
+		g_damages[handle].exist = false;
 		while(!g_damages.empty() && !g_damages.back().exist) {
 			g_damages.pop_back();
 		}
