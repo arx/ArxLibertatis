@@ -908,7 +908,7 @@ void TreatBackgroundActions() {
 			ARX_SOUND_Stop(light.sample);
 			light.sample = audio::SourcedSample();
 			DamageRequestEnd(light.m_damage);
-			light.m_damage = DamageHandle();
+			light.m_damage = { };
 			continue;
 		}
 		
@@ -923,9 +923,9 @@ void TreatBackgroundActions() {
 			damage.flags = 0;
 			damage.type = DAMAGE_TYPE_FAKESPELL | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_NO_FIX;
 			damage.pos = light.pos;
-		} else if(light.m_damage != DamageHandle()) {
+		} else if(light.m_damage) {
 			DamageRequestEnd(light.m_damage);
-			light.m_damage = DamageHandle();
+			light.m_damage = { };
 		}
 		
 		if(!(light.extras & (EXTRAS_SPAWNFIRE | EXTRAS_SPAWNSMOKE)) || !light.m_ignitionStatus) {
