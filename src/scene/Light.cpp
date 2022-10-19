@@ -125,9 +125,9 @@ void EERIE_LIGHT_GlobalInit() {
 		if(EERIE_LIGHT * dynLight = lightHandleGet(light.m_ignitionLightHandle)) {
 			dynLight->m_exists = false;
 		}
-		if(light.m_damage != DamageHandle()) {
+		if(light.m_damage) {
 			DamageRequestEnd(light.m_damage);
-			light.m_damage = DamageHandle();
+			light.m_damage = { };
 		}
 	}
 	
