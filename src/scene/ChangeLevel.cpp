@@ -72,6 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 #include "game/Levels.h"
 #include "game/Inventory.h"
+#include "game/magic/Precast.h"
 #include "game/spell/Cheat.h"
 
 #include "gui/Dragging.h"
@@ -660,12 +661,12 @@ static bool ARX_CHANGELEVEL_Push_Player(AreaId area) {
 	storeIdString(asp->rightIO, nullptr);
 	storeIdString(asp->curtorch, player.torch);
 	
-	for(size_t i = 0; i < SAVED_MAX_PRECAST; i++) {
+	arx_assume(g_precast.size() <= std::size(asp->precast));
+	for(PrecastHandle handle : g_precast.handles()) {
+		asp->precast[size_t(handle)] = g_precast[handle];
+	}
+	for(size_t i = g_precast.size(); i < std::size(asp->precast); i++) {
 		asp->precast[i].typ = SPELL_NONE;
-		
-		if(i < Precast.size()) {
-			asp->precast[i] = Precast[i];
-		}
 	}
 	
 	arx_assert(entities.player()->inventory->bags() <= SAVED_INVENTORY_BAGS);
@@ -1453,7 +1454,7 @@ static bool ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	
 	for(PRECAST_STRUCT precastSlot : asp->precast) {
 		if(precastSlot.typ != SPELL_NONE) {
-			Precast.push_back(precastSlot);
+			g_precast.push_back(precastSlot);
 		}
 	}
 	

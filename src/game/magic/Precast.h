@@ -22,7 +22,9 @@
 
 #include <string>
 
+#include "game/GameTypes.h"
 #include "game/magic/Spell.h"
+#include "util/HandleContainer.h"
 
 
 struct PRECAST_STRUCT {
@@ -33,12 +35,12 @@ struct PRECAST_STRUCT {
 	GameDuration duration;
 };
 
-extern std::vector<PRECAST_STRUCT> Precast;
+extern util::HandleVector<PrecastHandle, PRECAST_STRUCT> g_precast;
 
 void ARX_SPELLS_Precast_Reset();
 
 void ARX_SPELLS_Precast_Add(SpellType typ, long _level, SpellcastFlags flags, GameDuration duration);
-void ARX_SPELLS_Precast_Launch(PrecastHandle num);
+void ARX_SPELLS_Precast_Launch(PrecastHandle handle);
 void ARX_SPELLS_Precast_Check();
 
 #endif // ARX_GAME_MAGIC_PRECAST_H

@@ -38,6 +38,7 @@
 #include "game/Item.h"
 #include "game/Player.h"
 #include "game/Spells.h"
+#include "game/magic/Precast.h"
 
 #include "graphics/Draw.h"
 #include "graphics/Renderer.h"
@@ -897,19 +898,21 @@ void PrecastSpellsGui::PrecastSpellIconSlot::update(const Rectf & rect, TextureC
 }
 
 void PrecastSpellsGui::PrecastSpellIconSlot::updateInput() {
+	
 	if(m_rect.contains(Vec2f(DANAEMouse))) {
+		
 		cursorSetInteraction();
 		
-		if(eeMouseUp1()) {
-			if(Precast[m_precastIndex.handleData()].typ >= 0) {
-				notification_add(std::string(spellicons[Precast[m_precastIndex.handleData()].typ].name));
-			}
+		if(eeMouseUp1() && g_precast[m_precastIndex].typ >= 0) {
+			notification_add(std::string(spellicons[g_precast[m_precastIndex].typ].name));
 		}
 		
 		if(eeMouseDoubleClick1()) {
 			ARX_SPELLS_Precast_Launch(m_precastIndex);
 		}
+		
 	}
+	
 }
 
 void PrecastSpellsGui::PrecastSpellIconSlot::draw() const {
@@ -926,7 +929,7 @@ bool PrecastSpellsGui::isVisible() {
 
 void PrecastSpellsGui::updateRect(const Rectf & parent) {
 	
-	Vec2f size = m_iconSize * Vec2f(Precast.size(), 1);
+	Vec2f size = m_iconSize * Vec2f(g_precast.size(), 1);
 	
 	m_rect = createChild(parent, Anchor_BottomRight, size * m_scale, Anchor_BottomLeft);
 	
@@ -936,34 +939,30 @@ void PrecastSpellsGui::updateRect(const Rectf & parent) {
 }
 
 void PrecastSpellsGui::update() {
+	
 	m_icons.clear();
 	
-	if(!isVisible())
+	if(!isVisible()) {
 		return;
+	}
 	
 	float intensity = 1.f - PULSATE * 0.5f;
 	intensity = glm::clamp(intensity, 0.f, 1.f);
 	
-	
-	for(size_t i = 0; i < Precast.size(); i++) {
+	for(PrecastHandle handle : g_precast.handles()) {
 		
-		const PRECAST_STRUCT & precastSlot = Precast[i];
+		const PRECAST_STRUCT & precastSlot = g_precast[handle];
 		
 		float val = intensity;
 		
 		if(precastSlot.launch_time > 0 && g_gameTime.now() >= precastSlot.launch_time) {
-			float tt = (g_gameTime.now() - precastSlot.launch_time) / 1s;
-			
-			if(tt > 1.f)
-				tt = 1.f;
-			
-			val *= (1.f - tt);
+			val *= (1.f - std::min((g_gameTime.now() - precastSlot.launch_time) / 1s, 1.f));
 		}
 		
 		Color color = Color::rgb(0, val * 0.5f, val);
 		
 		Rectf childRect = createChild(m_rect, Anchor_BottomLeft, m_iconSize * m_scale, Anchor_BottomLeft);
-		childRect.move(i * m_iconSize.x * m_scale, 0);
+		childRect.move(size_t(handle) * m_iconSize.x * m_scale, 0);
 		
 		SpellType typ = precastSlot.typ;
 		
@@ -971,13 +970,16 @@ void PrecastSpellsGui::update() {
 		arx_assert(tc);
 		
 		PrecastSpellIconSlot icon;
-		icon.update(childRect, tc, color, PrecastHandle(i));
+		icon.update(childRect, tc, color, handle);
 		
-		if(!(player.Interface & INTER_COMBATMODE))
+		if(!(player.Interface & INTER_COMBATMODE)) {
 			icon.updateInput();
+		}
 		
 		m_icons.push_back(icon);
+		
 	}
+	
 }
 
 void PrecastSpellsGui::draw() {

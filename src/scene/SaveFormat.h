@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MiniMap.h"
 #include "game/Item.h"
 #include "game/NPC.h"
+#include "game/magic/Precast.h"
 #include "graphics/GlobalFog.h"
 #include "graphics/GraphicsFormat.h"
 #include "graphics/GraphicsTypes.h"
@@ -57,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/MeshManipulation.h"
 #include "platform/Platform.h"
 #include "util/String.h"
+
 
 const s32 SAVEFLAGS_EXTRA_ROTATE = 1;
 const float ARX_GAMESAVE_VERSION = 1.005f;

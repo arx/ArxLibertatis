@@ -53,7 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/AudioTypes.h"
 
-#include "game/magic/Precast.h"
 #include "game/magic/Rune.h"
 #include "game/magic/RuneDraw.h"
 #include "game/magic/SpellData.h"

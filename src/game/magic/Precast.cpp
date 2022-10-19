@@ -19,7 +19,7 @@
 
 #include "game/magic/Precast.h"
 
-#include <string.h>
+#include <algorithm>
 
 #include "core/GameTime.h"
 #include "core/Localisation.h"
@@ -35,40 +35,35 @@ const size_t MAX_PRECAST = 3;
 
 GameInstant LAST_PRECAST_TIME = 0;
 
-std::vector<PRECAST_STRUCT> Precast;
+util::HandleVector<PrecastHandle, PRECAST_STRUCT> g_precast;
 
 void ARX_SPELLS_Precast_Reset() {
 	LAST_PRECAST_TIME = 0;
-	Precast.clear();
+	g_precast.clear();
 }
 
 void ARX_SPELLS_Precast_Add(SpellType typ, long _level, SpellcastFlags flags, GameDuration duration) {
 	
-	if(Precast.size() >= MAX_PRECAST) {
-		Precast.erase(Precast.begin());
+	if(g_precast.size() >= MAX_PRECAST) {
+		g_precast.erase(g_precast.begin());
 	}
 	
-	if(typ == SPELL_NONE)
+	if(typ == SPELL_NONE) {
 		return;
+	}
 	
-	PRECAST_STRUCT precast;
+	PRECAST_STRUCT & precast = g_precast.emplace_back();
 	precast.typ = typ;
 	precast.level = _level;
 	precast.launch_time = 0;
 	precast.flags = flags;
 	precast.duration = duration;
 	
-	Precast.push_back(precast);
 }
 
-void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
+void ARX_SPELLS_Precast_Launch(PrecastHandle handle) {
 	
-	if(num.handleData() < 0)
-		return;
-	
-	size_t idx = size_t(num.handleData());
-	
-	if(idx >= Precast.size()) {
+	if(!handle || size_t(handle) >= g_precast.size()) {
 		return;
 	}
 	
@@ -77,7 +72,7 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 		return;
 	}
 	
-	PRECAST_STRUCT & precast = Precast[idx];
+	PRECAST_STRUCT & precast = g_precast[handle];
 	
 	if(precast.typ == SPELL_NONE) {
 		return;
@@ -89,52 +84,51 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 	
 	float cost = ARX_SPELLS_GetManaCost(precast.typ, playerSpellLevel);
 	
-	if(   (precast.flags & SPELLCAST_FLAG_NOMANA)
-	   || player.manaPool.current >= cost
-	) {
+	if((precast.flags & SPELLCAST_FLAG_NOMANA) || player.manaPool.current >= cost) {
 		LAST_PRECAST_TIME = g_gameTime.now();
-		
 		if(precast.launch_time == 0) {
 			precast.launch_time = g_gameTime.now();
 			ARX_SOUND_PlaySFX(g_snd.SPELL_CREATE_FIELD);
 		}
 	} else {
 		ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE);
-		
 		notification_add("player_cantcast");
 		ARX_SPEECH_AddSpeech(*entities.player(), "player_cantcast", ANIM_TALK_NEUTRAL);
 	}
+	
 }
 
 void ARX_SPELLS_Precast_Check() {
-	for(size_t i = 0; i < Precast.size(); i++) {
-		if(Precast[i].launch_time > 0 && g_gameTime.now() >= Precast[i].launch_time) {
-			AnimLayer & layer1 = entities.player()->animlayer[1];
-			
-			if(player.Interface & INTER_COMBATMODE) {
-				WILLRETURNTOCOMBATMODE = true;
-				ARX_INTERFACE_setCombatMode(COMBAT_MODE_OFF);
-				ResetAnim(layer1);
-				layer1.flags &= ~EA_LOOP;
-			}
-			
-			if(layer1.cur_anim && layer1.cur_anim == entities.player()->anims[ANIM_CAST]) {
-				if(layer1.ctime + 550ms > layer1.currentAltAnim()->anim_time) {
-					
-					ARX_SPELLS_Launch(Precast[i].typ,
-					                  *entities.player(),
-					                  Precast[i].flags | SPELLCAST_FLAG_LAUNCHPRECAST,
-					                  Precast[i].level,
-					                  nullptr,
-					                  Precast[i].duration);
-					
-					Precast.erase(Precast.begin() + i);
-					
-				}
-			} else {
-				changeAnimation(entities.player(), 1, entities.player()->anims[ANIM_CAST]);
-			}
-			
+	
+	for(PRECAST_STRUCT & precast : g_precast) {
+		
+		if(precast.launch_time <= 0 || g_gameTime.now() < precast.launch_time) {
+			continue;
 		}
+		
+		AnimLayer & layer1 = entities.player()->animlayer[1];
+		if(player.Interface & INTER_COMBATMODE) {
+			WILLRETURNTOCOMBATMODE = true;
+			ARX_INTERFACE_setCombatMode(COMBAT_MODE_OFF);
+			ResetAnim(layer1);
+			layer1.flags &= ~EA_LOOP;
+		}
+		
+		if(!layer1.cur_anim || layer1.cur_anim != entities.player()->anims[ANIM_CAST]) {
+			changeAnimation(entities.player(), 1, entities.player()->anims[ANIM_CAST]);
+			continue;
+		}
+		
+		if(layer1.ctime + 550ms > layer1.currentAltAnim()->anim_time) {
+			ARX_SPELLS_Launch(precast.typ, *entities.player(), precast.flags | SPELLCAST_FLAG_LAUNCHPRECAST,
+			                  precast.level, nullptr, precast.duration);
+			precast.typ = SPELL_NONE;
+		}
+		
 	}
+	
+	std::remove_if(g_precast.begin(), g_precast.end(), [](const PRECAST_STRUCT & precast) {
+		return precast.typ == SPELL_NONE;
+	});
+	
 }
