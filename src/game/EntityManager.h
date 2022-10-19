@@ -49,16 +49,16 @@ public:
 	[[nodiscard]] Entity * getById(std::string_view idString, Entity * self = nullptr) const;
 	
 	[[nodiscard]] Entity * operator[](EntityHandle index) const {
-		return entries[index.handleData()];
+		return entries[size_t(index)];
 	}
 	
 	[[nodiscard]] Entity * get(EntityHandle handle) const {
 		
-		if(handle.handleData() < 0 || handle.handleData() >= long(size())) {
+		if(handle.handleData() < 0 || size_t(handle) >= size()) {
 			return nullptr;
 		}
 		
-		return entries[handle.handleData()];
+		return entries[size_t(handle)];
 	}
 	
 	
