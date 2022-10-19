@@ -158,7 +158,7 @@ void SpellManager::clearAll() {
 }
 
 Spell * SpellManager::operator[](const SpellHandle handle) const noexcept {
-	return size_t(handle.handleData()) < m_spells.size() ? m_spells[handle.handleData()].get() : nullptr;
+	return handle && size_t(handle) < m_spells.size() ? m_spells[size_t(handle)].get() : nullptr;
 }
 
 static void SPELLEND_Notify(const Spell & spell);
