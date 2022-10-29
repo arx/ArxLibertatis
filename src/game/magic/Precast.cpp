@@ -127,8 +127,8 @@ void ARX_SPELLS_Precast_Check() {
 		
 	}
 	
-	std::remove_if(g_precast.begin(), g_precast.end(), [](const PRECAST_STRUCT & precast) {
+	g_precast.erase(std::remove_if(g_precast.begin(), g_precast.end(), [](const PRECAST_STRUCT & precast) {
 		return precast.typ == SPELL_NONE;
-	});
+	}), g_precast.end());
 	
 }
