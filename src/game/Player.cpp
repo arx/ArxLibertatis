@@ -2370,7 +2370,7 @@ void ARX_PLAYER_Start_New_Quest() {
 }
 
 void ARX_PLAYER_AddBag() {
-	entities.player()->inventory->setBags(std::min(entities.player()->inventory->bags() + 1, size_t(3)));
+	entities.player()->inventory->setBags(std::min(entities.player()->inventory->bags() + 1, size_t(10)));
 }
 
 bool ARX_PLAYER_CanStealItem(Entity * item) {
