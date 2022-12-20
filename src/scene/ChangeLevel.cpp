@@ -2212,6 +2212,14 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 					         << "[" << ais->linked_data[i].lidx2 << "]: vertex out of bounds";
 					continue;
 				}
+				if(InventoryPos invPos = locateInInventories(linked)) {
+					Entity * owner = entities.get(invPos.io);
+					arx_assert(owner);
+					LogError << "Could not load link from " << io->idString() << " to "
+					         << util::loadString(ais->linked_data[i].linked_id)
+					         << ": linked entity is in the inventory of " << owner->idString();
+					continue;
+				}
 				EERIE_LINKED & link = io->obj->linked.emplace_back();
 				link.lgroup = group;
 				link.lidx = vertex;
