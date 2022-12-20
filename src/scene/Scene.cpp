@@ -474,7 +474,6 @@ static bool isPointInViewCenter(Vec3f pos) {
 EntityVisibility getEntityVisibility(Entity & entity, bool cullingOnly) {
 	
 	switch(entity.show) {
-		case SHOW_FLAG_NOT_DRAWN:    return EntityInactive;
 		case SHOW_FLAG_IN_SCENE:     break;
 		case SHOW_FLAG_LINKED:       break;
 		case SHOW_FLAG_IN_INVENTORY: break;

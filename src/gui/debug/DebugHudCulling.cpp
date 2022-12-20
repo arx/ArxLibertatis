@@ -162,7 +162,6 @@ void debugHud_Culling() {
 	for(Entity & entity : entities) {
 		
 		switch(entity.show) {
-			case SHOW_FLAG_NOT_DRAWN:    continue;
 			case SHOW_FLAG_IN_SCENE:     break;
 			case SHOW_FLAG_LINKED:       break;
 			case SHOW_FLAG_IN_INVENTORY: continue;

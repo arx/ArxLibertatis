@@ -910,7 +910,6 @@ static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 	
 	ais.show = [&]() {
 		switch(io->show) {
-			case SHOW_FLAG_NOT_DRAWN:    return SAVED_SHOW_FLAG_NOT_DRAWN;
 			case SHOW_FLAG_IN_SCENE:     return SAVED_SHOW_FLAG_IN_SCENE;
 			case SHOW_FLAG_LINKED:       return SAVED_SHOW_FLAG_LINKED;
 			case SHOW_FLAG_IN_INVENTORY: return SAVED_SHOW_FLAG_IN_INVENTORY;
@@ -1786,7 +1785,6 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 		
 		io->show = [&]() {
 			switch(ais->show) {
-				case SAVED_SHOW_FLAG_NOT_DRAWN:    return SHOW_FLAG_NOT_DRAWN;
 				case SAVED_SHOW_FLAG_IN_SCENE:     return SHOW_FLAG_IN_SCENE;
 				case SAVED_SHOW_FLAG_LINKED:       return SHOW_FLAG_LINKED;
 				case SAVED_SHOW_FLAG_IN_INVENTORY: return SHOW_FLAG_IN_INVENTORY;

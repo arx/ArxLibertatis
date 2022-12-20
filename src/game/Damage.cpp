@@ -573,7 +573,7 @@ void damageProp(Entity & prop, float dmg, Entity * source, Spell * spell, Damage
 	
 	arx_assert(prop.ioflags & IO_FIX);
 	
-	if(!prop.show || (prop.ioflags & IO_INVULNERABILITY) || !prop.script.valid) {
+	if((prop.ioflags & IO_INVULNERABILITY) || !prop.script.valid) {
 		return;
 	}
 	
@@ -788,7 +788,7 @@ float damageNpc(Entity & npc, float dmg, Entity * source, Spell * spell, DamageT
 	arx_assert(npc.ioflags & IO_NPC);
 	arx_assert(npc != *entities.player());
 	
-	if(!npc.show || (npc.ioflags & IO_INVULNERABILITY)) {
+	if((npc.ioflags & IO_INVULNERABILITY)) {
 		return 0.f;
 	}
 	

@@ -987,10 +987,6 @@ void ARX_PHYSICS_Apply() {
 
 void FaceTarget2(Entity * io) {
 	
-	if(!io->show) {
-		return;
-	}
-	
 	if(io->ioflags & IO_NPC) {
 		if(io->_npcdata->lifePool.current <= 0.f) {
 			return;
@@ -1041,15 +1037,12 @@ void FaceTarget2(Entity * io) {
 	io->angle.setYaw(MAKEANGLE(io->angle.getYaw() - rot)); // -tt
 }
 
-void StareAtTarget(Entity * io)
-{
+void StareAtTarget(Entity * io) {
+	
 	if(io->_npcdata->ex_rotate == nullptr) {
 		ARX_NPC_CreateExRotateData(io);
 	}
-
-	if(!io->show)
-		return;
-
+	
 	if(io->ioflags & IO_NPC) {
 		if(io->_npcdata->lifePool.current <= 0.f)
 			return;
@@ -2251,7 +2244,7 @@ static void ManageNPCMovement(Entity * io) {
 	ARX_PROFILE_FUNC();
 	
 	// Ignores invalid or dead IO
-	if(!io || !io->show || !(io->ioflags & IO_NPC)) {
+	if(!io || !(io->ioflags & IO_NPC)) {
 		return;
 	}
 	

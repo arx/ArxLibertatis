@@ -390,7 +390,7 @@ void TREATZONE_RemoveIO(const Entity * io) {
 		if(entry.io == io) {
 			entry.io = nullptr;
 			entry.ioflags = 0;
-			entry.show = SHOW_FLAG_NOT_DRAWN;
+			entry.show = SHOW_FLAG_MEGAHIDE;
 		}
 	}
 }

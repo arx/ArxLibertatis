@@ -500,7 +500,6 @@ static void drawDebugEntities(bool drawSkeletons) {
 			case SHOW_FLAG_IN_INVENTORY: continue;
 			case SHOW_FLAG_ON_PLAYER:    continue;
 			case SHOW_FLAG_LINKED:       continue;
-			case SHOW_FLAG_NOT_DRAWN:    color = Color::magenta; visible = false; break;
 			case SHOW_FLAG_HIDDEN:       color = Color::yellow;  visible = false; break;
 			case SHOW_FLAG_MEGAHIDE:     color = Color::green;   visible = false; break;
 			case SHOW_FLAG_IN_SCENE:     color = Color::white;   visible = true;  break;
