@@ -865,7 +865,6 @@ void ARX_PHYSICS_Apply() {
 		   && io->obj
 		   && !io->obj->vertexlist.empty()
 		) {
-			arx_assert(io->show != SHOW_FLAG_DESTROYED);
 			long cnt = (io->obj->vertexlist.size() << 12) + 1;
 
 			cnt = glm::clamp(cnt, 2l, 10l);

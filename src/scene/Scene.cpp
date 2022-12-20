@@ -480,10 +480,8 @@ EntityVisibility getEntityVisibility(Entity & entity, bool cullingOnly) {
 		case SHOW_FLAG_IN_INVENTORY: break;
 		case SHOW_FLAG_HIDDEN:       return EntityInactive;
 		case SHOW_FLAG_TELEPORTING:  return EntityVisibilityUnknown;
-		case SHOW_FLAG_KILLED:       return EntityInactive;
 		case SHOW_FLAG_MEGAHIDE:     return EntityInactive;
 		case SHOW_FLAG_ON_PLAYER:    break;
-		case SHOW_FLAG_DESTROYED:    return EntityInactive;
 	}
 	
 	// Special handling for items in inventories

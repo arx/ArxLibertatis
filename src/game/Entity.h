@@ -234,17 +234,15 @@ enum GameFlag {
 DECLARE_FLAGS(GameFlag, GameFlags)
 DECLARE_FLAGS_OPERATORS(GameFlags)
 
-enum EntityVisilibity {
-	SHOW_FLAG_NOT_DRAWN    = 0,
-	SHOW_FLAG_IN_SCENE     = 1,
-	SHOW_FLAG_LINKED       = 2,
-	SHOW_FLAG_IN_INVENTORY = 4,
-	SHOW_FLAG_HIDDEN       = 5,
-	SHOW_FLAG_TELEPORTING  = 6,
-	SHOW_FLAG_KILLED       = 7, // Deprecated, use SHOW_FLAG_DESTROYED instead
-	SHOW_FLAG_MEGAHIDE     = 8,
-	SHOW_FLAG_ON_PLAYER    = 9,
-	SHOW_FLAG_DESTROYED    = 255 // Only used in save files
+enum EntityShowState {
+	SHOW_FLAG_NOT_DRAWN,
+	SHOW_FLAG_IN_SCENE,
+	SHOW_FLAG_LINKED,
+	SHOW_FLAG_IN_INVENTORY,
+	SHOW_FLAG_HIDDEN,
+	SHOW_FLAG_TELEPORTING,
+	SHOW_FLAG_MEGAHIDE,
+	SHOW_FLAG_ON_PLAYER,
 };
 
 struct AnimationBlendStatus {
@@ -302,7 +300,7 @@ public:
 	};
 	
 	std::unique_ptr<Inventory> inventory;
-	EntityVisilibity show; // Show status (in scene, in inventory...)
+	EntityShowState show; // Show status (in scene, in inventory...)
 	IOCollisionFlags collision; // collision type
 	ScriptEventName mainevent;
 	Color3f infracolor; // Improve Vision Color (Heat)
@@ -378,7 +376,7 @@ public:
 	float shop_multiply;
 	res::path inventory_skin;
 	long isHit;
-	EntityVisilibity inzone_show;
+	EntityShowState inzone_show;
 	long spark_n_blood;
 
 	Color3f special_color;

@@ -108,7 +108,7 @@ class Inventory {
 	Entity & m_owner;
 	const Vec2s m_size;
 	size_t m_bags;
-	std::vector<Slot> m_slots;
+	std::vector<Slot> m_slots; // TODO use SoA
 	
 	//! Tile data accessor
 	template <bool Mutable>

@@ -198,7 +198,6 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 			   && io->ioflags & (IO_NPC | IO_ITEM)
 			   && io->show != SHOW_FLAG_MEGAHIDE
 			) {
-				arx_assert(io->show != SHOW_FLAG_DESTROYED);
 				Zone * current = ARX_PATH_CheckInZone(io);
 				Zone * last = io->inzone;
 				

@@ -595,6 +595,19 @@ struct SavedHalo {
 	
 };
 
+enum SavedEntityShowState {
+	SAVED_SHOW_FLAG_NOT_DRAWN    = 0,
+	SAVED_SHOW_FLAG_IN_SCENE     = 1,
+	SAVED_SHOW_FLAG_LINKED       = 2,
+	SAVED_SHOW_FLAG_IN_INVENTORY = 4,
+	SAVED_SHOW_FLAG_HIDDEN       = 5,
+	SAVED_SHOW_FLAG_TELEPORTING  = 6,
+	SAVED_SHOW_FLAG_KILLED       = 7, // Deprecated, equivalent to SHOW_FLAG_DESTROYED
+	SAVED_SHOW_FLAG_MEGAHIDE     = 8,
+	SAVED_SHOW_FLAG_ON_PLAYER    = 9,
+	SAVED_SHOW_FLAG_DESTROYED    = 255 // Only used in save files
+};
+
 struct ARX_CHANGELEVEL_IO_SAVE {
 	
 	s32 savesystem_type;

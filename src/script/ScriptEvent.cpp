@@ -169,8 +169,6 @@ static bool checkInteractiveObject(Entity * io, ScriptMessage msg, ScriptResult 
 		return true;
 	}
 	
-	arx_assert(io->show != SHOW_FLAG_DESTROYED);
-	
 	if(io->ioflags & IO_FREEZESCRIPT) {
 		ret = (msg == SM_LOAD) ? ACCEPT : REFUSE;
 		return true;

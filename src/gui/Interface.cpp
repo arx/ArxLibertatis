@@ -1896,7 +1896,7 @@ void ArxGame::manageEditorControls() {
 					setDraggedEntity(io);
 					
 					if(!g_cursorOverBook && (io->ioflags & IO_ITEM) && GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
-						EntityVisilibity show = io->show;
+						EntityShowState show = io->show;
 						io->show = SHOW_FLAG_MEGAHIDE;
 						while(io->_itemdata->count < io->_itemdata->playerstacksize) {
 							Entity * other = InterClick(g_dragStartPos);

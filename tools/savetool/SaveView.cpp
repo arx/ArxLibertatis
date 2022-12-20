@@ -1274,16 +1274,16 @@ static void print_io_header(SaveBlock & save, const ARX_CHANGELEVEL_IO_SAVE & ai
 	
 	std::cout << "Show: ";
 	switch(ais.show) {
-		case SHOW_FLAG_NOT_DRAWN: std::cout << "not drawn"; break;
-		case SHOW_FLAG_IN_SCENE: std::cout << "in scene"; break;
-		case SHOW_FLAG_LINKED: std::cout << "linked"; break;
-		case SHOW_FLAG_IN_INVENTORY: std::cout << "in inventory"; break;
-		case SHOW_FLAG_HIDDEN: std::cout << "hidden"; break;
-		case SHOW_FLAG_TELEPORTING: std::cout << "teleporting"; break;
-		case SHOW_FLAG_KILLED: std::cout << "killed"; break;
-		case SHOW_FLAG_MEGAHIDE: std::cout << "megahide"; break;
-		case SHOW_FLAG_ON_PLAYER: std::cout << "on player"; break;
-		case SHOW_FLAG_DESTROYED: std::cout << "destroyed"; break;
+		case SAVED_SHOW_FLAG_NOT_DRAWN: std::cout << "not drawn"; break;
+		case SAVED_SHOW_FLAG_IN_SCENE: std::cout << "in scene"; break;
+		case SAVED_SHOW_FLAG_LINKED: std::cout << "linked"; break;
+		case SAVED_SHOW_FLAG_IN_INVENTORY: std::cout << "in inventory"; break;
+		case SAVED_SHOW_FLAG_HIDDEN: std::cout << "hidden"; break;
+		case SAVED_SHOW_FLAG_TELEPORTING: std::cout << "teleporting"; break;
+		case SAVED_SHOW_FLAG_KILLED: std::cout << "killed"; break;
+		case SAVED_SHOW_FLAG_MEGAHIDE: std::cout << "megahide"; break;
+		case SAVED_SHOW_FLAG_ON_PLAYER: std::cout << "on player"; break;
+		case SAVED_SHOW_FLAG_DESTROYED: std::cout << "destroyed"; break;
 		default: std::cout << "(unknown)";
 	}
 	std::cout << '\n';

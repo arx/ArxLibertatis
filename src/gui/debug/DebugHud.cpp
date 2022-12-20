@@ -143,7 +143,7 @@ const FlagName<AnimUseType> AnimUseFlagNames[] = {
 	{EA_EXCONTROL  , "EXCONTROL"}
 };
 
-static const char * entityVisilibityToString(EntityVisilibity value) {
+static const char * entityVisilibityToString(EntityShowState value) {
 	switch (value) {
 		case SHOW_FLAG_NOT_DRAWN:    return "NOT_DRAWN";
 		case SHOW_FLAG_IN_SCENE:     return "IN_SCENE";
@@ -151,10 +151,8 @@ static const char * entityVisilibityToString(EntityVisilibity value) {
 		case SHOW_FLAG_IN_INVENTORY: return "IN_INVENTORY";
 		case SHOW_FLAG_HIDDEN:       return "HIDDEN";
 		case SHOW_FLAG_TELEPORTING:  return "TELEPORTING";
-		case SHOW_FLAG_KILLED:       return "KILLED";
 		case SHOW_FLAG_MEGAHIDE:     return "MEGAHIDE";
 		case SHOW_FLAG_ON_PLAYER:    return "ON_PLAYER";
-		case SHOW_FLAG_DESTROYED:    return "DESTROYED";
 	}
 	return "Unknown";
 }

@@ -303,7 +303,7 @@ void currentSavedGameStoreEntityDeletion(std::string_view idString) {
 	ARX_CHANGELEVEL_IO_SAVE ais;
 	memset(&ais, 0, sizeof(ARX_CHANGELEVEL_IO_SAVE));
 	ais.version = ARX_GAMESAVE_VERSION;
-	ais.show = SHOW_FLAG_DESTROYED;
+	ais.show = SAVED_SHOW_FLAG_DESTROYED;
 	
 	const char * data = reinterpret_cast<const char *>(&ais);
 	g_currentSavedGame->save(idString, data, sizeof(ais));
@@ -832,9 +832,6 @@ static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 	
 	arx_assert(io);
 	
-	arx_assert(io->show != SHOW_FLAG_DESTROYED);
-	arx_assert(io->show != SHOW_FLAG_KILLED);
-	
 	// Define Type & Affiliated Structure Size
 	SavedIOType type;
 	size_t struct_size = 0;
@@ -910,7 +907,21 @@ static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 	ais.material = io->material;
 	ais.level = ais.truelevel = s16(area);
 	ais.scriptload = io->scriptload;
-	ais.show = io->show;
+	
+	ais.show = [&]() {
+		switch(io->show) {
+			case SHOW_FLAG_NOT_DRAWN:    return SAVED_SHOW_FLAG_NOT_DRAWN;
+			case SHOW_FLAG_IN_SCENE:     return SAVED_SHOW_FLAG_IN_SCENE;
+			case SHOW_FLAG_LINKED:       return SAVED_SHOW_FLAG_LINKED;
+			case SHOW_FLAG_IN_INVENTORY: return SAVED_SHOW_FLAG_IN_INVENTORY;
+			case SHOW_FLAG_HIDDEN:       return SAVED_SHOW_FLAG_HIDDEN;
+			case SHOW_FLAG_TELEPORTING:  return SAVED_SHOW_FLAG_TELEPORTING;
+			case SHOW_FLAG_MEGAHIDE:     return SAVED_SHOW_FLAG_MEGAHIDE;
+			case SHOW_FLAG_ON_PLAYER:    return SAVED_SHOW_FLAG_ON_PLAYER;
+		}
+		arx_unreachable();
+	} ();
+	
 	ais.collision = io->collision;
 	if(io->mainevent != SM_MAIN) {
 		util::storeString(ais.mainevent, io->mainevent.toString());
@@ -1691,7 +1702,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 		return nullptr;
 	}
 	
-	if(ais->show == SHOW_FLAG_DESTROYED || ais->show == SHOW_FLAG_KILLED) {
+	if(ais->show == SAVED_SHOW_FLAG_DESTROYED || ais->show == SAVED_SHOW_FLAG_KILLED) {
 		// Not supposed to happen anymore, but older saves have these (this is harmless bloat)
 		LogWarning << "Found destroyed entity " << idString << " in save file";
 		return nullptr;
@@ -1772,7 +1783,26 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 		
 		// Script data
 		io->scriptload = ais->scriptload;
-		io->show = EntityVisilibity(ais->show); // TODO save/load enum
+		
+		io->show = [&]() {
+			switch(ais->show) {
+				case SAVED_SHOW_FLAG_NOT_DRAWN:    return SHOW_FLAG_NOT_DRAWN;
+				case SAVED_SHOW_FLAG_IN_SCENE:     return SHOW_FLAG_IN_SCENE;
+				case SAVED_SHOW_FLAG_LINKED:       return SHOW_FLAG_LINKED;
+				case SAVED_SHOW_FLAG_IN_INVENTORY: return SHOW_FLAG_IN_INVENTORY;
+				case SAVED_SHOW_FLAG_HIDDEN:       return SHOW_FLAG_HIDDEN;
+				case SAVED_SHOW_FLAG_TELEPORTING:  return SHOW_FLAG_TELEPORTING;
+				case SAVED_SHOW_FLAG_KILLED:       arx_unreachable();
+				case SAVED_SHOW_FLAG_MEGAHIDE:     return SHOW_FLAG_MEGAHIDE;
+				case SAVED_SHOW_FLAG_ON_PLAYER:    return SHOW_FLAG_ON_PLAYER;
+				case SAVED_SHOW_FLAG_DESTROYED:    arx_unreachable();
+				default: {
+					LogWarning << "Unexpected show flag " << ais->show << " in " << io->idString();
+					return SHOW_FLAG_MEGAHIDE;
+				}
+			}
+		} ();
+		
 		io->collision = IOCollisionFlags::load(ais->collision); // TODO save/load flags
 		io->mainevent = ScriptEventName::parse(util::toLowercase(util::loadString(ais->mainevent)));
 		if(io->mainevent == SM_NULL && io->mainevent.getName().empty()) {

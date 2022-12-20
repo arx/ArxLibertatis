@@ -168,10 +168,8 @@ void debugHud_Culling() {
 			case SHOW_FLAG_IN_INVENTORY: continue;
 			case SHOW_FLAG_HIDDEN:       continue;
 			case SHOW_FLAG_TELEPORTING:  continue;
-			case SHOW_FLAG_KILLED:       continue;
 			case SHOW_FLAG_MEGAHIDE:     continue;
 			case SHOW_FLAG_ON_PLAYER:    break;
-			case SHOW_FLAG_DESTROYED:    continue;
 		}
 		
 		if(!entity.obj) {
