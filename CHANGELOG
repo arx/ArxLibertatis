@@ -68,6 +68,7 @@ Other Fixes:
 * Fixed a crash when dragging an entity without a 3D object (bug #1592)
 * Fixed a crash when an equipped candle is destroyed (bug #1622)
 * Fixed a crash with negative (or zero with -i) intervals in the `timer` command
+* Fixed a crash when loading save files with linked items inside an inventory
 
 Technical Changes:
 

@@ -912,7 +912,7 @@ static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 		switch(io->show) {
 			case SHOW_FLAG_IN_SCENE:     return SAVED_SHOW_FLAG_IN_SCENE;
 			case SHOW_FLAG_LINKED:       return SAVED_SHOW_FLAG_LINKED;
-			case SHOW_FLAG_IN_INVENTORY: return SAVED_SHOW_FLAG_IN_INVENTORY;
+			case SHOW_FLAG_IN_INVENTORY: return SAVED_SHOW_FLAG_IN_INVENTORY; // Ignored by us, for compat only
 			case SHOW_FLAG_HIDDEN:       return SAVED_SHOW_FLAG_HIDDEN;
 			case SHOW_FLAG_TELEPORTING:  return SAVED_SHOW_FLAG_TELEPORTING;
 			case SHOW_FLAG_MEGAHIDE:     return SAVED_SHOW_FLAG_MEGAHIDE;
@@ -1787,7 +1787,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 			switch(ais->show) {
 				case SAVED_SHOW_FLAG_IN_SCENE:     return SHOW_FLAG_IN_SCENE;
 				case SAVED_SHOW_FLAG_LINKED:       return SHOW_FLAG_LINKED;
-				case SAVED_SHOW_FLAG_IN_INVENTORY: return SHOW_FLAG_IN_INVENTORY;
+				case SAVED_SHOW_FLAG_IN_INVENTORY: return SHOW_FLAG_IN_SCENE; // Real flag is restored along with link
 				case SAVED_SHOW_FLAG_HIDDEN:       return SHOW_FLAG_HIDDEN;
 				case SAVED_SHOW_FLAG_TELEPORTING:  return SHOW_FLAG_TELEPORTING;
 				case SAVED_SHOW_FLAG_KILLED:       arx_unreachable();
@@ -2141,10 +2141,11 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 				if(!item || locateInInventories(item).io == io->index()) {
 					continue;
 				}
-				arx_assert(item->show == SHOW_FLAG_IN_INVENTORY);
 				if(!insertIntoInventoryAtNoEvent(item, InventoryPos(io->index(), 0, slot.x, slot.y))) {
 					LogWarning << "Could not load item " << item->idString() << " into inventory of " << io->idString();
 					PutInFrontOfPlayer(item);
+				} else {
+					arx_assert(item->show == SHOW_FLAG_IN_INVENTORY);
 				}
 			}
 			
