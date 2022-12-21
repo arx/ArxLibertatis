@@ -295,7 +295,9 @@ void Entity::cleanReferences() {
 	ignit_sound = audio::SourcedSample();
 	
 	for(Entity & parent : entities) {
-		EERIE_LINKEDOBJ_UnLinkObjectFromObject(parent.obj, obj);
+		if(parent.obj && obj) {
+			unlinkEntities(parent, *this);
+		}
 		if((parent.ioflags & IO_NPC) && parent._npcdata->weapon == this) {
 			parent._npcdata->weapon = nullptr;
 		}
@@ -318,12 +320,11 @@ void Entity::destroy() {
 	
 	if(obj) {
 		while(!obj->linked.empty()) {
-			if(obj->linked[0].lgroup && obj->linked[0].obj) {
-				Entity * linked = obj->linked[0].io;
-				if(linked && ValidIOAddress(linked)) {
-					EERIE_LINKEDOBJ_UnLinkObjectFromObject(obj, linked->obj);
-					linked->destroy();
-				}
+			if(obj->linked.back().lgroup && obj->linked.back().obj && obj->linked.back().io) {
+				Entity * linked = obj->linked.back().io;
+				arx_assert(ValidIOAddress(linked) && linked->obj);
+				unlinkEntities(*this, *linked);
+				linked->destroy();
 			}
 		}
 	}
