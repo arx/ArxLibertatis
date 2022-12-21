@@ -126,17 +126,14 @@ void linkEntities(Entity & master, std::string_view masterVertex,
 	
 }
 
-void ARX_INTERACTIVE_Detach(EntityHandle n_source, EntityHandle n_target)
-{
-	Entity * source = entities.get(n_source);
-	Entity * target = entities.get(n_target);
+void unlinkEntities(Entity & master, Entity & slave) {
 	
-	if(!source || !target)
-		return;
-
-	removeFromInventories(source);
-	source->show = SHOW_FLAG_IN_SCENE;
-	EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, source->obj);
+	arx_assert(master.obj && slave.obj);
+	
+	removeFromInventories(&slave);
+	slave.show = SHOW_FLAG_IN_SCENE;
+	EERIE_LINKEDOBJ_UnLinkObjectFromObject(master.obj, slave.obj);
+	
 }
 
 void IO_UnlinkAllLinkedObjects(Entity * io) {

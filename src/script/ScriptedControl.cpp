@@ -345,24 +345,24 @@ public:
 	
 	Result execute(Context & context) override {
 		
-		std::string source = context.getWord(); // source IO
-		std::string target = context.getWord(); // target IO
+		std::string slaveId = context.getWord(); // source IO
+		std::string masterId = context.getWord(); // target IO
 		
-		DebugScript(' ' << source << ' ' << target);
+		DebugScript(' ' << slaveId << ' ' << masterId);
 		
-		Entity * t = entities.getById(source, context.getEntity());
-		if(!t) {
-			ScriptWarning << "unknown source: " << source;
+		Entity * slave = entities.getById(slaveId, context.getEntity());
+		if(!slave || !slave->obj) {
+			ScriptWarning << "unknown source: " << slaveId;
 			return Failed;
 		}
 		
-		Entity * t2 = entities.getById(target, context.getEntity());
-		if(!t2) {
-			ScriptWarning << "unknown target: " << target;
+		Entity * master = entities.getById(masterId, context.getEntity());
+		if(!master || !master->obj) {
+			ScriptWarning << "unknown target: " << masterId;
 			return Failed;
 		}
 		
-		ARX_INTERACTIVE_Detach(t->index(), t2->index());
+		unlinkEntities(*master, *slave);
 		
 		return Success;
 	}
