@@ -59,8 +59,8 @@ void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, const EERIE_3DOBJ
 void EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink, std::string_view actiontext,
                                         std::string_view actiontext2, Entity * io = nullptr);
 
-void ARX_INTERACTIVE_Attach(EntityHandle n_source, EntityHandle n_target,
-                            std::string_view ap_source, std::string_view ap_target);
+void linkEntities(Entity & master, std::string_view masterVertex,
+                  Entity & slave, std::string_view slaveVertex);
 void ARX_INTERACTIVE_Detach(EntityHandle n_source, EntityHandle n_target);
 
 void IO_UnlinkAllLinkedObjects(Entity * io);

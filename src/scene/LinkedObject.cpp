@@ -114,21 +114,16 @@ void EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink,
 	obj->linked.push_back(link);
 }
 
-void ARX_INTERACTIVE_Attach(EntityHandle n_source, EntityHandle n_target,
-                            std::string_view ap_source, std::string_view ap_target) {
+void linkEntities(Entity & master, std::string_view masterVertex,
+                  Entity & slave, std::string_view slaveVertex) {
 	
-	Entity * source = entities.get(n_source);
-	Entity * target = entities.get(n_target);
+	arx_assert(master.obj && slave.obj);
 	
-	if(!source || !target) {
-		return;
-	}
+	removeFromInventories(&slave);
+	slave.show = SHOW_FLAG_LINKED;
+	EERIE_LINKEDOBJ_UnLinkObjectFromObject(master.obj, slave.obj);
+	EERIE_LINKEDOBJ_LinkObjectToObject(master.obj, slave.obj, masterVertex, slaveVertex, &slave);
 	
-	removeFromInventories(source);
-	source->show = SHOW_FLAG_LINKED;
-	EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, source->obj);
-	EERIE_LINKEDOBJ_LinkObjectToObject(target->obj,
-	        source->obj, ap_target, ap_source, source);
 }
 
 void ARX_INTERACTIVE_Detach(EntityHandle n_source, EntityHandle n_target)

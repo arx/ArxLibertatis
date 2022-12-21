@@ -185,22 +185,24 @@ public:
 	
 	Result execute(Context & context) override {
 		
-		std::string sourceio = context.getWord();
-		Entity * t = entities.getById(sourceio, context.getEntity());
+		std::string slaveId = context.getWord();
+		Entity * slave = entities.getById(slaveId, context.getEntity());
 		
-		std::string source = context.getWord(); // source action_point
+		std::string slaveVertex = context.getWord(); // source action_point
 		
-		std::string targetio = context.getWord();
-		Entity * t2 = entities.getById(targetio, context.getEntity());
+		std::string masterId = context.getWord();
+		Entity * master = entities.getById(masterId, context.getEntity());
 		
-		std::string target = context.getWord();
+		std::string masterVertex = context.getWord();
 		
-		DebugScript(' ' << sourceio << ' ' << source << ' ' << targetio << ' ' << target);
+		DebugScript(' ' << slaveId << ' ' << slaveVertex << ' ' << masterId << ' ' << masterVertex);
 		
-		EntityHandle i = (t == nullptr) ? EntityHandle() : t->index();
-		EntityHandle i2 = (t2 == nullptr) ? EntityHandle() : t2->index();
+		if(arx_unlikely(!master || !master->obj || !slave || !slave->obj)) {
+			ScriptWarning << "Cannot link " << slaveId << " to " << masterId << ": missing object";
+			return Failed;
+		}
 		
-		ARX_INTERACTIVE_Attach(i, i2, source, target);
+		linkEntities(*master, masterVertex, *slave, slaveVertex);
 		
 		return Success;
 	}
