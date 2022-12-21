@@ -1130,62 +1130,54 @@ Entity * AddInteractive(const res::path & classPath, EntityInstance instance, Ad
  */
 void SetWeapon_On(Entity * io) {
 	
-	if(!io || !(io->ioflags & IO_NPC))
+	if(!io || !io->obj || !(io->ioflags & IO_NPC) || !io->_npcdata->weapon || !io->_npcdata->weapon->obj) {
 		return;
-	
-	Entity * ioo = io->_npcdata->weapon;
-	
-	if(ioo && ioo->obj) {
-		EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
-		EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, ioo->obj, "primary_attach", "primary_attach", ioo);
 	}
+	
+	linkEntities(*io, "primary_attach", *io->_npcdata->weapon, "primary_attach");
+	
 }
 
 void SetWeapon_Back(Entity * io) {
 	
-	if(!io || !(io->ioflags & IO_NPC) || !io->_npcdata->weapon || !io->_npcdata->weapon->obj) {
+	if(!io || !io->obj || !(io->ioflags & IO_NPC) || !io->_npcdata->weapon || !io->_npcdata->weapon->obj) {
 		return;
 	}
 	
-	Entity * weapon = io->_npcdata->weapon;
-	
-	EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, weapon->obj);
+	Entity & weapon = *io->_npcdata->weapon;
 	
 	if(io->gameFlags & GFLAG_HIDEWEAPON) {
-		return;
-	}
-	
-	if(io->obj->fastaccess.weapon_attach) {
-		EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, weapon->obj, "weapon_attach", "primary_attach", weapon);
+		unlinkEntities(*io, weapon);
+		weapon.show = SHOW_FLAG_LINKED;
+	} else if(io->obj->fastaccess.weapon_attach) {
+		linkEntities(*io, "weapon_attach", weapon, "primary_attach");
 	} else {
-		EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, weapon->obj, "secondary_attach", "primary_attach", weapon);
+		linkEntities(*io, "secondary_attach", weapon, "primary_attach");
 	}
 	
 }
 
 void Prepare_SetWeapon(Entity * io, const res::path & temp) {
 	
-	arx_assert(io && (io->ioflags & IO_NPC));
+	arx_assert(io && io->obj && (io->ioflags & IO_NPC));
 	
 	if(io->_npcdata->weapon) {
-		Entity * ioo = io->_npcdata->weapon;
-		EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
+		unlinkEntities(*io, *io->_npcdata->weapon);
+		delete io->_npcdata->weapon;
 		io->_npcdata->weapon = nullptr;
-		delete ioo;
 	}
 	
 	res::path file = "graph/obj3d/interactive/items/weapons" / temp / temp;
 	Entity * ioo = io->_npcdata->weapon = AddItem(file);
 	if(ioo) {
-		
 		SendInitScriptEvent(ioo);
 		io->_npcdata->weapontype = ioo->type_flags;
 		removeFromInventories(ioo);
 		ioo->show = SHOW_FLAG_LINKED;
 		ioo->scriptload = 2;
-		
 		SetWeapon_Back(io);
 	}
+	
 }
 
 /*!

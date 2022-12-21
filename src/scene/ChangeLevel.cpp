@@ -2013,6 +2013,9 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 				io->_npcdata->fightdecision = as->fightdecision;
 				
 				io->_npcdata->weapon = ConvertToValidIO(as->id_weapon);
+				if(io->_npcdata->weapon) {
+					io->_npcdata->weapon->show = SHOW_FLAG_LINKED;
+				}
 				
 				io->_npcdata->lastmouth = as->lastmouth;
 				io->_npcdata->look_around_inc = as->look_around_inc;
