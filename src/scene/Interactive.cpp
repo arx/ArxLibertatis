@@ -1189,19 +1189,6 @@ void Prepare_SetWeapon(Entity * io, const res::path & temp) {
 }
 
 /*!
- * \brief Links an Interactive Object to another interactive object using an attach point
- */
-void LinkObjToMe(Entity * io, Entity * io2, std::string_view attach) {
-	
-	if(!io || !io2)
-		return;
-	
-	removeFromInventories(io2);
-	io2->show = SHOW_FLAG_LINKED;
-	EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, io2->obj, attach, attach, io2);
-}
-
-/*!
  * \brief Creates a Temporary IO Ident
  */
 static EntityInstance getFreeEntityInstance(const res::path & classPath) {

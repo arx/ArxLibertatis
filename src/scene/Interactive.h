@@ -99,8 +99,6 @@ bool IsEquipedByPlayer(const Entity * io);
 void CleanScriptLoadedIO();
 void PrepareIOTreatZone(long flag = 0);
 
-void LinkObjToMe(Entity * io, Entity * io2, std::string_view attach);
-
 /*!
  * Destroy an entity at the end of the current frame
  *
