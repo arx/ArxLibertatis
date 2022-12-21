@@ -62,6 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/resource/ResourcePath.h"
 #include "physics/Collisions.h"
 #include "scene/Interactive.h"
+#include "scene/LinkedObject.h"
 #include "script/ScriptUtils.h"
 #include "util/Cast.h"
 
@@ -357,19 +358,19 @@ public:
 	
 	Result execute(Context & context) override {
 		
-		std::string name = context.getStringVar(context.getWord());
+		std::string slaveId = context.getStringVar(context.getWord());
 		
-		std::string attach = context.getWord();
+		std::string vertex = context.getWord();
 		
-		DebugScript(' ' << name << ' ' << attach);
+		DebugScript(' ' << slaveId << ' ' << vertex);
 		
-		Entity * target = entities.getById(name);
-		if(!target) {
-			ScriptWarning << "unknown target: " << name;
+		Entity * slave = entities.getById(slaveId);
+		if(!slave) {
+			ScriptWarning << "unknown target: " << slaveId;
 			return Failed;
 		}
 		
-		LinkObjToMe(context.getEntity(), target, attach);
+		linkEntities(*context.getEntity(), vertex, *slave, vertex);
 		
 		return Success;
 	}
