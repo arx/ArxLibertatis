@@ -120,7 +120,7 @@ void linkEntities(Entity & master, std::string_view masterVertex,
 	arx_assert(master.obj && slave.obj);
 	
 	removeFromInventories(&slave);
-	slave.show = SHOW_FLAG_LINKED;
+	slave.show = (master == *entities.player()) ? SHOW_FLAG_ON_PLAYER : SHOW_FLAG_LINKED;
 	EERIE_LINKEDOBJ_UnLinkObjectFromObject(master.obj, slave.obj);
 	EERIE_LINKEDOBJ_LinkObjectToObject(master.obj, slave.obj, masterVertex, slaveVertex, &slave);
 	
