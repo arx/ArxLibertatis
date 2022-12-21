@@ -230,19 +230,17 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 	applyTweak(EQUIP_SLOT_ARMOR, TWEAK_TORSO, "chest");
 	applyTweak(EQUIP_SLOT_LEGGINGS, TWEAK_LEGS, "leggings");
 	
-	Entity * target = entities.player();
-	
 	for(EntityHandle equipment : player.equiped) {
-		if(Entity * toequip = entities.get(equipment)) {
+		if(Entity * toequip = entities.get(equipment); toequip && toequip->obj) {
 			if(toequip->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW)) {
 				if(player.Interface & INTER_COMBATMODE) {
 					ARX_EQUIPMENT_AttachPlayerWeaponToHand();
 				} else {
-					EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "weapon_attach", "primary_attach", toequip);
+					linkEntities(*entities.player(), "weapon_attach", *toequip, "primary_attach");
 				}
 			} else if((toequip->type_flags & OBJECT_TYPE_SHIELD)
 			          && entities.get(player.equiped[EQUIP_SLOT_SHIELD])) {
-				EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "shield_attach", "shield_attach", toequip);
+				linkEntities(*entities.player(), "shield_attach", *toequip, "shield_attach");
 			}
 		}
 	}
@@ -290,7 +288,7 @@ void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags) {
 	
 	for(EntityHandle & equipment : player.equiped) {
 		if(equipment == tounequip->index()) {
-			EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, tounequip->obj);
+			unlinkEntities(*target, *tounequip);
 			equipment = EntityHandle();
 			arx_assert(!isEquippedByPlayer(tounequip));
 			target->bbox2D.min.x = 9999;
@@ -317,13 +315,11 @@ void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags) {
 void ARX_EQUIPMENT_AttachPlayerWeaponToHand() {
 	
 	arx_assert(entities.player());
-	Entity * target = entities.player();
 	
 	for(EntityHandle equipment : player.equiped) {
-		if(Entity * toequip = entities.get(equipment)) {
+		if(Entity * toequip = entities.get(equipment); toequip && toequip->obj) {
 			if(toequip->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW)) {
-				EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, toequip->obj);
-				EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "primary_attach", "primary_attach", toequip);
+				linkEntities(*entities.player(), "primary_attach", *toequip, "primary_attach");
 				return;
 			}
 		}
@@ -334,15 +330,13 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToHand() {
 void ARX_EQUIPMENT_AttachPlayerWeaponToBack() {
 	
 	arx_assert(entities.player());
-	Entity * target = entities.player();
 	
 	for(EntityHandle equipment : player.equiped) {
 		if(Entity * toequip = entities.get(equipment)) {
 			if((toequip->type_flags & OBJECT_TYPE_DAGGER) || (toequip->type_flags & OBJECT_TYPE_1H)
 			   || (toequip->type_flags & OBJECT_TYPE_2H) || (toequip->type_flags & OBJECT_TYPE_BOW)) {
-				EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, toequip->obj);
 				std::string_view attach = (toequip->type_flags & OBJECT_TYPE_BOW) ? "test" : "primary_attach";
-				EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "weapon_attach", attach, toequip);
+				linkEntities(*entities.player(), "weapon_attach", *toequip, attach);
 				return;
 			}
 		}
@@ -887,7 +881,7 @@ void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip) {
 		}
 		player.equiped[EQUIP_SLOT_WEAPON] = toequip->index();
 		std::string_view attach = (toequip->type_flags & OBJECT_TYPE_BOW) ? "test" : "primary_attach";
-		EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "weapon_attach", attach, toequip);
+		linkEntities(*target, "weapon_attach", *toequip, attach);
 		
 		if(toequip->type_flags & (OBJECT_TYPE_2H | OBJECT_TYPE_BOW)) {
 			if(Entity * shield = entities.get(player.equiped[EQUIP_SLOT_SHIELD])) {
@@ -901,7 +895,7 @@ void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip) {
 			ARX_EQUIPMENT_UnEquip(target, shield);
 		}
 		player.equiped[EQUIP_SLOT_SHIELD] = toequip->index();
-		EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "shield_attach", "shield_attach", toequip);
+		linkEntities(*target, "shield_attach", *toequip, "shield_attach");
 		
 		if(Entity * weapon = entities.get(player.equiped[EQUIP_SLOT_WEAPON])) {
 			if(weapon->type_flags & (OBJECT_TYPE_2H | OBJECT_TYPE_BOW)) {
