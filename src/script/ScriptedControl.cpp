@@ -52,8 +52,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Collisions.h"
 #include "io/resource/PakReader.h"
 #include "io/resource/ResourcePath.h"
-#include "scene/Interactive.h"
 #include "scene/GameSound.h"
+#include "scene/Interactive.h"
+#include "scene/LinkedObject.h"
 #include "script/ScriptUtils.h"
 #include "cinematic/CinematicController.h"
 

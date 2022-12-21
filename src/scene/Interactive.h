@@ -85,9 +85,6 @@ DECLARE_FLAGS_OPERATORS(DeleteByIndexFlags)
 void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1);
 void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io);
 void ARX_INTERACTIVE_HideGore(Entity * io, bool unhideNonGore = true);
-void ARX_INTERACTIVE_Attach(EntityHandle n_source, EntityHandle n_target,
-                            std::string_view ap_source, std::string_view ap_target);
-void ARX_INTERACTIVE_Detach(EntityHandle n_source, EntityHandle n_target);
 void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, bool hide1st);
 
 void ARX_INTERACTIVE_RemoveGoreOnIO(Entity * io);
@@ -164,7 +161,6 @@ Entity * CloneIOItem(Entity * src);
 float ARX_INTERACTIVE_GetArmorClass(Entity * io);
 s32 ARX_INTERACTIVE_GetPrice(Entity * io, Entity * shop);
 s32 ARX_INTERACTIVE_GetSellValue(Entity * item, Entity * shop, long count = 1);
-void IO_UnlinkAllLinkedObjects(Entity * io);
 
 struct TREATZONE_IO {
 	Entity * io;

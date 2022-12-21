@@ -49,7 +49,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 #include <cstring>
 
+#include "game/Entity.h"
+#include "game/EntityManager.h"
+#include "game/Inventory.h"
+#include "scene/Interactive.h"
 #include "scene/Object.h"
+
 
 /*!
  * \brief Releases Data for linked objects
@@ -107,4 +112,69 @@ void EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink,
 	link.io = io;
 	
 	obj->linked.push_back(link);
+}
+
+void ARX_INTERACTIVE_Attach(EntityHandle n_source, EntityHandle n_target,
+                            std::string_view ap_source, std::string_view ap_target) {
+	
+	Entity * source = entities.get(n_source);
+	Entity * target = entities.get(n_target);
+	
+	if(!source || !target) {
+		return;
+	}
+	
+	removeFromInventories(source);
+	source->show = SHOW_FLAG_LINKED;
+	EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, source->obj);
+	EERIE_LINKEDOBJ_LinkObjectToObject(target->obj,
+	        source->obj, ap_target, ap_source, source);
+}
+
+void ARX_INTERACTIVE_Detach(EntityHandle n_source, EntityHandle n_target)
+{
+	Entity * source = entities.get(n_source);
+	Entity * target = entities.get(n_target);
+	
+	if(!source || !target)
+		return;
+
+	removeFromInventories(source);
+	source->show = SHOW_FLAG_IN_SCENE;
+	EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, source->obj);
+}
+
+void IO_UnlinkAllLinkedObjects(Entity * io) {
+	
+	if(!io || !io->obj) {
+		return;
+	}
+	
+	for(size_t k = 0; k < io->obj->linked.size(); k++) {
+		
+		Entity * linked = io->obj->linked[k].io;
+		if(!ValidIOAddress(linked)) {
+			continue;
+		}
+		
+		linked->angle = Anglef(Random::getf(340.f, 380.f), Random::getf(0.f, 360.f), 0.f);
+		linked->soundtime = 0;
+		linked->soundcount = 0;
+		linked->gameFlags |= GFLAG_NO_PHYS_IO_COL;
+		removeFromInventories(io);
+		linked->show = SHOW_FLAG_IN_SCENE;
+		linked->no_collide = io->index();
+		
+		Vec3f pos = io->obj->vertexWorldPositions[io->obj->linked[k].lidx].v;
+		
+		Vec3f vector = angleToVectorXZ(linked->angle.getYaw()) * 0.5f;
+		
+		vector.y = std::sin(glm::radians(linked->angle.getPitch()));
+		
+		EERIE_PHYSICS_BOX_Launch(linked->obj, pos, linked->angle, vector);
+		
+	}
+	
+	EERIE_LINKEDOBJ_ReleaseData(io->obj);
+	
 }
