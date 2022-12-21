@@ -67,51 +67,81 @@ void EERIE_LINKEDOBJ_ReleaseData(EERIE_3DOBJ * obj) {
 	obj->linked.clear();
 }
 
-void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, const EERIE_3DOBJ * tounlink) {
+static void unlinkObjects(EERIE_3DOBJ & master, const EERIE_3DOBJ & slave) {
 	
-	if(!obj || !tounlink) {
-		return;
-	}
-	
-	for(size_t k = 0; k < obj->linked.size(); k++) {
-		if(obj->linked[k].lgroup && obj->linked[k].obj == tounlink) {
-			obj->linked.erase(obj->linked.begin() + k);
+	for(size_t k = 0; k < master.linked.size(); k++) {
+		if(master.linked[k].lgroup && master.linked[k].obj == &slave) {
+			master.linked.erase(master.linked.begin() + k);
 			return;
 		}
 	}
 	
 }
 
-void EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink, std::string_view actiontext,
-                                        std::string_view actiontext2, Entity * io) {
+static bool linkObjects(EERIE_3DOBJ & master, std::string_view masterVertex,
+                        EERIE_3DOBJ & slave, std::string_view slaveVertex, Entity * slaveEntity) {
+	
+	VertexId masterVertexIndex = getNamedVertex(&master, masterVertex);
+	if(!masterVertexIndex) {
+		return false;
+	}
+	
+	VertexGroupId masterVertexGroup = getGroupForVertex(&master, masterVertexIndex);
+	if(!masterVertexGroup) {
+		return false;
+	}
+	
+	VertexId slaveVertexIndex = getNamedVertex(&slave, slaveVertex);
+	if(!slaveVertexIndex) {
+		return false;
+	}
+	
+	EERIE_LINKED link;
+	link.lidx = masterVertexIndex;
+	link.lgroup = masterVertexGroup;
+	link.lidx2 = slaveVertexIndex;
+	link.obj = &slave;
+	link.io = slaveEntity;
+	
+	master.linked.push_back(link);
+	
+	return true;
+}
+
+#ifdef ARX_DEBUG
+static Entity * entityForObject(const EERIE_3DOBJ & object) {
+	for(Entity & entity : entities) {
+		if(entity.obj == &object) {
+			return &entity;
+		}
+	}
+	return nullptr;
+}
+#endif
+
+void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, const EERIE_3DOBJ * tounlink) {
+	
+	if(!obj || !tounlink) {
+		return;
+	}
+	
+	arx_assert(!entityForObject(*tounlink));
+	
+	unlinkObjects(*obj, *tounlink);
+	
+}
+
+void EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink,
+                                        std::string_view actiontext, std::string_view actiontext2) {
 	
 	if(!obj || !tolink) {
 		return;
 	}
 	
-	VertexId ni = getNamedVertex(obj, actiontext);
-	if(!ni) {
-		return;
-	}
+	arx_assert(!entityForObject(*tolink));
 	
-	VertexGroupId group = getGroupForVertex(obj, ni);
-	if(!group) {
-		return;
-	}
+	linkObjects(*obj, actiontext, *tolink, actiontext2, nullptr);
 	
-	VertexId ni2 = getNamedVertex(tolink, actiontext2);
-	if(!ni2) {
-		return;
-	}
-	
-	EERIE_LINKED link;
-	link.lidx2 = ni2;
-	link.lidx = ni;
-	link.lgroup = group;
-	link.obj = tolink;
-	link.io = io;
-	
-	obj->linked.push_back(link);
 }
 
 void linkEntities(Entity & master, std::string_view masterVertex,
@@ -120,9 +150,12 @@ void linkEntities(Entity & master, std::string_view masterVertex,
 	arx_assert(master.obj && slave.obj);
 	
 	removeFromInventories(&slave);
-	slave.show = (master == *entities.player()) ? SHOW_FLAG_ON_PLAYER : SHOW_FLAG_LINKED;
-	EERIE_LINKEDOBJ_UnLinkObjectFromObject(master.obj, slave.obj);
-	EERIE_LINKEDOBJ_LinkObjectToObject(master.obj, slave.obj, masterVertex, slaveVertex, &slave);
+	unlinkObjects(*master.obj, *slave.obj);
+	if(linkObjects(*master.obj, masterVertex, *slave.obj, slaveVertex, &slave)) {
+		slave.show = (master == *entities.player()) ? SHOW_FLAG_ON_PLAYER : SHOW_FLAG_LINKED;
+	} else {
+		slave.show = SHOW_FLAG_IN_SCENE;
+	}
 	
 }
 
@@ -131,8 +164,8 @@ void unlinkEntities(Entity & master, Entity & slave) {
 	arx_assert(master.obj && slave.obj);
 	
 	removeFromInventories(&slave);
+	unlinkObjects(*master.obj, *slave.obj);
 	slave.show = SHOW_FLAG_IN_SCENE;
-	EERIE_LINKEDOBJ_UnLinkObjectFromObject(master.obj, slave.obj);
 	
 }
 

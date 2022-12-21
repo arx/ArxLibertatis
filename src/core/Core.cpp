@@ -761,7 +761,7 @@ void ManageCombatModeAnimations() {
 			if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE_PART_1] && (layer1.flags & EA_ANIMEND)) {
 				player.m_aimTime = 0;
 				changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE_PART_2]);
-				EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, arrowobj.get(), "left_attach", "attach", nullptr);
+				EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, arrowobj.get(), "left_attach", "attach");
 			}
 			
 			// Now go for strike cycle...
