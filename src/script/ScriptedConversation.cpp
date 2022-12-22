@@ -165,7 +165,8 @@ public:
 		
 		// TODO check if we actually need to succeed if tooFar becomes true
 		bool tooFar = false;
-		audio::SourcedSample num = ARX_SOUND_PlaySpeech(sample, &tooFar, io && io->show == 1 ? io : nullptr);
+		audio::SourcedSample num = ARX_SOUND_PlaySpeech(sample, &tooFar,
+		                                                io && io->show == SHOW_FLAG_IN_SCENE ? io : nullptr);
 		
 		if(!tooFar && num == audio::SourcedSample()) {
 			ScriptWarning << "unable to load sound file " << sample;
