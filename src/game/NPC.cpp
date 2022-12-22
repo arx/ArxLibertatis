@@ -2746,7 +2746,7 @@ void ManageIgnition_2(Entity & io) {
 		if(io.obj) {
 			if(&io == g_draggedEntity && io.show == SHOW_FLAG_ON_PLAYER) {
 				position = player.pos;
-			} else {
+			} else if(io.obj->fastaccess.fire) {
 				position = io.obj->vertexWorldPositions[io.obj->fastaccess.fire].v;
 			}
 		}
