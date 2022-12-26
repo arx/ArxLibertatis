@@ -752,20 +752,10 @@ void ManageCombatModeAnimations() {
 			if(layer1.cur_anim == alist[ANIM_MISSILE_WAIT]) {
 				player.m_aimTime = PlatformDuration::ofRaw(1);
 				
-				if(eeMousePressed1()) {
-					if (getInventoryItemWithLowestDurability("arrow", 1.f) != nullptr) {
-						changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE_PART_1]);
-						io->isHit = false;
-					} else if (getInventoryItemWithLowestDurability("arrows", 1.f) != nullptr) {
-						changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE_PART_1]);
-						io->isHit = false;
-					}
+				if(eeMousePressed1() && getInventoryItemWithLowestDurability("arrow", 1.f) != nullptr && getInventoryItemWithLowestDurability("arrows", 1.f) != nullptr) {
+					changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE_PART_1]);
+					io->isHit = false;
 				}
-
-				// if(eeMousePressed1() && getInventoryItemWithLowestDurability("arrows", 1.f) != nullptr) {
-				// 	changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE_PART_1]);
-				// 	io->isHit = false;
-				// }
 			}
 			
 			if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE_PART_1] && (layer1.flags & EA_ANIMEND)) {
@@ -867,7 +857,7 @@ void ManageCombatModeAnimations() {
 
 				float poisonous = 0.f;
 				Entity * arrow = getInventoryItemWithLowestDurability("arrow", 1.f);
-				if (arrow) {
+				if (arrow != nullptr) {
 					arrow->destroyOne();
 
 					poisonous = arrow->poisonous;
