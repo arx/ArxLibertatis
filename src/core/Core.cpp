@@ -752,9 +752,11 @@ void ManageCombatModeAnimations() {
 			if(layer1.cur_anim == alist[ANIM_MISSILE_WAIT]) {
 				player.m_aimTime = PlatformDuration::ofRaw(1);
 				
-				if(eeMousePressed1() && getInventoryItemWithLowestDurability("arrow", 1.f) != nullptr && getInventoryItemWithLowestDurability("arrows", 1.f) != nullptr) {
-					changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE_PART_1]);
-					io->isHit = false;
+				if(eeMousePressed1()) {
+					if (getInventoryItemWithLowestDurability("arrow", 1.f) != nullptr || getInventoryItemWithLowestDurability("arrows", 1.f) != nullptr) {
+						changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE_PART_1]);
+						io->isHit = false;
+					}
 				}
 			}
 			
@@ -864,7 +866,7 @@ void ManageCombatModeAnimations() {
 				} else {
 					Entity * quiver = getInventoryItemWithLowestDurability("arrows", 1.f);
 				
-					if(quiver) {
+					if(quiver != nullptr) {
 						poisonous = quiver->poisonous;
 						if(quiver->poisonous_count > 0) {
 							quiver->poisonous_count--;
