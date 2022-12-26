@@ -752,10 +752,20 @@ void ManageCombatModeAnimations() {
 			if(layer1.cur_anim == alist[ANIM_MISSILE_WAIT]) {
 				player.m_aimTime = PlatformDuration::ofRaw(1);
 				
-				if(eeMousePressed1() && getInventoryItemWithLowestDurability("arrows", 1.f) != nullptr) {
-					changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE_PART_1]);
-					io->isHit = false;
+				if(eeMousePressed1()) {
+					if (getInventoryItemWithLowestDurability("arrow", 1.f) != nullptr) {
+						changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE_PART_1]);
+						io->isHit = false;
+					} else if (getInventoryItemWithLowestDurability("arrows", 1.f) != nullptr) {
+						changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE_PART_1]);
+						io->isHit = false;
+					}
 				}
+
+				// if(eeMousePressed1() && getInventoryItemWithLowestDurability("arrows", 1.f) != nullptr) {
+				// 	changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE_PART_1]);
+				// 	io->isHit = false;
+				// }
 			}
 			
 			if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE_PART_1] && (layer1.flags & EA_ANIMEND)) {
@@ -849,29 +859,36 @@ void ManageCombatModeAnimations() {
 				}
 				
 				// Launch the arrow
-				
 				EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, arrowobj.get());
 				changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE]);
 				SendIOScriptEvent(nullptr, io, SM_STRIKE, "bow");
 				StrikeAimtime();
 				player.m_strikeAimRatio = player.m_bowAimRatio;
-				Entity * quiver = getInventoryItemWithLowestDurability("arrows", 1.f);
+
 				float poisonous = 0.f;
+				Entity * arrow = getInventoryItemWithLowestDurability("arrow", 1.f);
+				if (arrow) {
+					arrow->destroyOne();
+
+					poisonous = arrow->poisonous;
+				} else {
+					Entity * quiver = getInventoryItemWithLowestDurability("arrows", 1.f);
 				
-				if(quiver) {
-					poisonous = quiver->poisonous;
-					if(quiver->poisonous_count > 0) {
-						quiver->poisonous_count--;
+					if(quiver) {
+						poisonous = quiver->poisonous;
+						if(quiver->poisonous_count > 0) {
+							quiver->poisonous_count--;
+							
+							if(quiver->poisonous_count <= 0)
+								quiver->poisonous = 0;
+						}
 						
-						if(quiver->poisonous_count <= 0)
-							quiver->poisonous = 0;
-					}
-					
-					ARX_DAMAGES_DurabilityLoss(quiver, 1.f);
-					
-					// TODO is this needed ?, quivers seem to self destruct via script, but maybe not all
-					if(ValidIOAddress(quiver) && quiver->durability <= 0.f) {
-						ARX_INTERACTIVE_DestroyIOdelayed(quiver);
+						ARX_DAMAGES_DurabilityLoss(quiver, 1.f);
+						
+						// TODO is this needed ?, quivers seem to self destruct via script, but maybe not all
+						if(ValidIOAddress(quiver) && quiver->durability <= 0.f) {
+							ARX_INTERACTIVE_DestroyIOdelayed(quiver);
+						}
 					}
 				}
 				
@@ -1073,7 +1090,7 @@ void ManageCombatModeAnimationsEND() {
 						ARX_EQUIPMENT_AttachPlayerWeaponToHand();
 						changeAnimation(io, 1, alist[ANIM_MISSILE_READY_PART_2]);
 					} else if(layer1.cur_anim == alist[ANIM_MISSILE_READY_PART_2]) {
-						if(getInventoryItemWithLowestDurability("arrows", 1.f) != nullptr) {
+						if(getInventoryItemWithLowestDurability("arrow", 1.f) != nullptr || getInventoryItemWithLowestDurability("arrows", 1.f) != nullptr) {
 							if(player.Interface & INTER_NO_STRIKE) {
 								player.Interface &= ~INTER_NO_STRIKE;
 								changeAnimation(io, 1, alist[ANIM_MISSILE_WAIT], EA_LOOP);
