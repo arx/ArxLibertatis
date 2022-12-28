@@ -753,7 +753,9 @@ void ManageCombatModeAnimations() {
 				player.m_aimTime = PlatformDuration::ofRaw(1);
 				
 				if(eeMousePressed1()) {
-					if (getInventoryItemWithLowestDurability("arrow", 1.f) != nullptr || getInventoryItemWithLowestDurability("arrows", 1.f) != nullptr) {
+					Entity * quiver = getInventoryItemWithLowestDurability("arrows", 1.f);
+					Entity * arrow = getInventoryItemWithLowestDurability("arrow", 1.f);
+					if (quiver != nullptr || arrow != nullptr) {
 						changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE_PART_1]);
 						io->isHit = false;
 					}
@@ -858,30 +860,28 @@ void ManageCombatModeAnimations() {
 				player.m_strikeAimRatio = player.m_bowAimRatio;
 
 				float poisonous = 0.f;
+				Entity * quiver = getInventoryItemWithLowestDurability("arrows", 1.f);
 				Entity * arrow = getInventoryItemWithLowestDurability("arrow", 1.f);
-				if (arrow != nullptr) {
+
+				if(quiver != nullptr) {
+					poisonous = quiver->poisonous;
+					if(quiver->poisonous_count > 0) {
+						quiver->poisonous_count--;
+						
+						if(quiver->poisonous_count <= 0)
+							quiver->poisonous = 0;
+					}
+
+					ARX_DAMAGES_DurabilityLoss(quiver, 1.f);
+						
+					// TODO is this needed ?, quivers seem to self destruct via script, but maybe not all
+					if(ValidIOAddress(quiver) && quiver->durability <= 0.f) {
+						ARX_INTERACTIVE_DestroyIOdelayed(quiver);
+					}
+				} else if (arrow != nullptr) {
 					arrow->destroyOne();
 
 					poisonous = arrow->poisonous;
-				} else {
-					Entity * quiver = getInventoryItemWithLowestDurability("arrows", 1.f);
-				
-					if(quiver != nullptr) {
-						poisonous = quiver->poisonous;
-						if(quiver->poisonous_count > 0) {
-							quiver->poisonous_count--;
-							
-							if(quiver->poisonous_count <= 0)
-								quiver->poisonous = 0;
-						}
-						
-						ARX_DAMAGES_DurabilityLoss(quiver, 1.f);
-						
-						// TODO is this needed ?, quivers seem to self destruct via script, but maybe not all
-						if(ValidIOAddress(quiver) && quiver->durability <= 0.f) {
-							ARX_INTERACTIVE_DestroyIOdelayed(quiver);
-						}
-					}
 				}
 				
 				float aimratio = player.m_strikeAimRatio;
@@ -1082,7 +1082,9 @@ void ManageCombatModeAnimationsEND() {
 						ARX_EQUIPMENT_AttachPlayerWeaponToHand();
 						changeAnimation(io, 1, alist[ANIM_MISSILE_READY_PART_2]);
 					} else if(layer1.cur_anim == alist[ANIM_MISSILE_READY_PART_2]) {
-						if(getInventoryItemWithLowestDurability("arrow", 1.f) != nullptr || getInventoryItemWithLowestDurability("arrows", 1.f) != nullptr) {
+						Entity * quiver = getInventoryItemWithLowestDurability("arrows", 1.f);
+						Entity * arrow = getInventoryItemWithLowestDurability("arrow", 1.f);
+						if(quiver != nullptr || arrow != nullptr) {
 							if(player.Interface & INTER_NO_STRIKE) {
 								player.Interface &= ~INTER_NO_STRIKE;
 								changeAnimation(io, 1, alist[ANIM_MISSILE_WAIT], EA_LOOP);
