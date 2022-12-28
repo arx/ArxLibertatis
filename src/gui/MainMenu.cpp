@@ -1725,17 +1725,18 @@ public:
 		addBackButton(Page_OptionsInputCustomizeKeys1);
 		
 		{
-			TextWidget * txt = new TextWidget(hFontMenu, getLocalised("system_menus_options_input_customize_default"));
+			std::string_view label = getLocalised("system_menus_options_input_customize_default");
+			auto txt = std::make_unique<TextWidget>(hFontMenu, label);
 			txt->clicked = [this](Widget * /* widget */) {
 				resetActionKeys();
 			};
-			addCorner(txt, BottomCenter);
+			addCorner(std::move(txt), BottomCenter);
 		}
 
 		{
-			ButtonWidget * cb = new ButtonWidget(buttonSize(16, 16), "graph/interface/menus/next");
+			auto cb = std::make_unique<ButtonWidget>(buttonSize(16, 16), "graph/interface/menus/next");
 			cb->setTargetPage(Page_OptionsInputCustomizeKeys3);
-			addCorner(cb, BottomRight);
+			addCorner(std::move(cb), BottomRight);
 		}
 		
 		reinitActionKeys();
