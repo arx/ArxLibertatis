@@ -106,6 +106,7 @@ std::string_view ScriptEvent::name(ScriptMessage event) {
 		case SM_DEAD:                   return "on dead";
 		case SM_DETECTPLAYER:           return "on detectplayer";
 		case SM_DIE:                    return "on die";
+		case SM_DURABILITY_LOSS:        return "on durability_loss";
 		case SM_ENTERZONE:              return "on enterzone";
 		case SM_EQUIPIN:                return "on equipin";
 		case SM_EQUIPOUT:               return "on equipout";

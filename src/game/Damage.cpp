@@ -1435,9 +1435,13 @@ void ARX_DAMAGES_DurabilityLoss(Entity * io, float loss) {
 	
 	arx_assert(io);
 	
+	if (SendIOScriptEvent(nullptr, io, SM_DURABILITY_LOSS, loss) == REFUSE) {
+		return;
+	}
+
 	io->durability -= loss;
 	
-	if(io->durability <= 0) {
+	if (io->durability <= 0) {
 		SendIOScriptEvent(nullptr, io, SM_BREAK);
 	}
 	
