@@ -288,7 +288,7 @@ void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags) {
 	
 	for(EntityHandle & equipment : player.equiped) {
 		if(equipment == tounequip->index()) {
-			unlinkEntities(*target, *tounequip);
+			unlinkEntity(*tounequip);
 			equipment = EntityHandle();
 			arx_assert(!isEquippedByPlayer(tounequip));
 			target->bbox2D.min.x = 9999;

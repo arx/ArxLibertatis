@@ -362,7 +362,15 @@ public:
 			return Failed;
 		}
 		
-		unlinkEntities(*master, *slave);
+		if(slave->owner() == master) {
+			unlinkEntity(*slave);
+		}
+		
+		if(slave->show != SHOW_FLAG_ON_PLAYER &&
+		   slave->show != SHOW_FLAG_LINKED &&
+		   slave->show != SHOW_FLAG_IN_INVENTORY) {
+			slave->show = SHOW_FLAG_IN_SCENE;
+		}
 		
 		return Success;
 	}

@@ -113,6 +113,7 @@ public:
 			ioo->show = (io->show == SHOW_FLAG_IN_INVENTORY ? SHOW_FLAG_IN_SCENE : io->show);
 		}
 		
+		Entity * oldOwner = io->owner();
 		InventoryPos oldPos = locateInInventories(io);
 		bool wasDragged = (io == g_draggedEntity);
 		
@@ -141,7 +142,7 @@ public:
 		TREATZONE_AddIO(ioo);
 		
 		// Check that the init script didn't put the item anywhere
-		bool reInsert = !locateInInventories(ioo) && !isEquippedByPlayer(ioo);
+		bool reInsert = (!ioo->owner() || ioo->owner() == oldOwner) && !isEquippedByPlayer(ioo);
 		
 		if(reInsert) {
 			if(oldPos) {

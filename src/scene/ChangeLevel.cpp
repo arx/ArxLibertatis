@@ -103,6 +103,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 #include "scene/Light.h"
+#include "scene/LinkedObject.h"
 #include "scene/LoadLevel.h"
 #include "scene/Object.h"
 #include "scene/SaveFormat.h"
@@ -2221,13 +2222,14 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 					         << ": linked entity is in the inventory of " << invPos.container->idString();
 					continue;
 				}
+				unlinkEntity(*linked);
 				EERIE_LINKED & link = io->obj->linked.emplace_back();
 				link.lgroup = group;
 				link.lidx = vertex;
 				link.lidx2 = VertexId(ais->linked_data[i].lidx2);
 				link.io = linked;
 				link.obj = linked->obj;
-				linked->show = SHOW_FLAG_LINKED;
+				linked->setOwner(io);
 			}
 		}
 		

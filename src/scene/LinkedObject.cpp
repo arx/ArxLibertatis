@@ -61,39 +61,37 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
  */
 void EERIE_LINKEDOBJ_ReleaseData(EERIE_3DOBJ * obj) {
 	
-	if(!obj)
+	if(!obj) {
 		return;
+	}
 	
-	obj->linked.clear();
-}
-
-static void unlinkObjects(EERIE_3DOBJ & master, const EERIE_3DOBJ & slave) {
-	
-	for(size_t k = 0; k < master.linked.size(); k++) {
-		if(master.linked[k].lgroup && master.linked[k].obj == &slave) {
-			master.linked.erase(master.linked.begin() + k);
-			return;
+	for(EERIE_LINKED & link : obj->linked) {
+		if(Entity * slave = link.io) {
+			link.io = nullptr;
+			slave->updateOwner();
 		}
 	}
 	
+	obj->linked.clear();
+	
 }
 
-static bool linkObjects(EERIE_3DOBJ & master, std::string_view masterVertex,
+static void linkObjects(EERIE_3DOBJ & master, std::string_view masterVertex,
                         EERIE_3DOBJ & slave, std::string_view slaveVertex, Entity * slaveEntity) {
 	
 	VertexId masterVertexIndex = getNamedVertex(&master, masterVertex);
 	if(!masterVertexIndex) {
-		return false;
+		return;
 	}
 	
 	VertexGroupId masterVertexGroup = getGroupForVertex(&master, masterVertexIndex);
 	if(!masterVertexGroup) {
-		return false;
+		return;
 	}
 	
 	VertexId slaveVertexIndex = getNamedVertex(&slave, slaveVertex);
 	if(!slaveVertexIndex) {
-		return false;
+		return;
 	}
 	
 	EERIE_LINKED link;
@@ -105,7 +103,7 @@ static bool linkObjects(EERIE_3DOBJ & master, std::string_view masterVertex,
 	
 	master.linked.push_back(link);
 	
-	return true;
+	return;
 }
 
 #ifdef ARX_DEBUG
@@ -127,7 +125,12 @@ void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, const EERIE_3DOBJ
 	
 	arx_assert(!entityForObject(*tounlink));
 	
-	unlinkObjects(*obj, *tounlink);
+	for(size_t k = 0; k < obj->linked.size(); k++) {
+		if(obj->linked[k].obj == tounlink) {
+			obj->linked.erase(obj->linked.begin() + k);
+			return;
+		}
+	}
 	
 }
 
@@ -149,24 +152,47 @@ void linkEntities(Entity & master, std::string_view masterVertex,
 	
 	arx_assert(master.obj && slave.obj);
 	
+	unlinkEntity(slave);
+	
 	removeFromInventories(&slave);
-	unlinkObjects(*master.obj, *slave.obj);
-	if(linkObjects(*master.obj, masterVertex, *slave.obj, slaveVertex, &slave)) {
-		slave.show = (master == *entities.player()) ? SHOW_FLAG_ON_PLAYER : SHOW_FLAG_LINKED;
-	} else {
-		slave.show = SHOW_FLAG_IN_SCENE;
+	
+	linkObjects(*master.obj, masterVertex, *slave.obj, slaveVertex, &slave);
+	
+	slave.setOwner(&master);
+	
+}
+
+void unlinkEntity(Entity & slave) {
+	
+	if(!slave.owner() || !slave.owner()->obj) {
+		return;
+	}
+	
+	EERIE_3DOBJ * obj = slave.owner()->obj;
+	
+	for(size_t k = obj->linked.size(); k > 0; k--) {
+		if(obj->linked[k - 1].io == &slave) {
+			obj->linked.erase(obj->linked.begin() + (k - 1));
+			slave.updateOwner();
+			return;
+		}
 	}
 	
 }
 
-void unlinkEntities(Entity & master, Entity & slave) {
+bool isEntityLinked(Entity & slave) {
 	
-	arx_assert(master.obj && slave.obj);
+	if(!slave.owner() || !slave.owner()->obj) {
+		return false;
+	}
 	
-	removeFromInventories(&slave);
-	unlinkObjects(*master.obj, *slave.obj);
-	slave.show = SHOW_FLAG_IN_SCENE;
+	for(const EERIE_LINKED & link : slave.owner()->obj->linked) {
+		if(link.io == &slave) {
+			return true;
+		}
+	}
 	
+	return false;
 }
 
 void IO_UnlinkAllLinkedObjects(Entity * io) {
@@ -175,12 +201,14 @@ void IO_UnlinkAllLinkedObjects(Entity * io) {
 		return;
 	}
 	
-	for(size_t k = 0; k < io->obj->linked.size(); k++) {
+	while(!io->obj->linked.empty()) {
 		
-		Entity * linked = io->obj->linked[k].io;
-		if(!ValidIOAddress(linked)) {
+		if(!io->obj->linked.back().io) {
+			io->obj->linked.pop_back();
 			continue;
 		}
+		
+		Entity * linked = io->obj->linked.back().io;
 		
 		arx_assert(ValidIOAddress(linked));
 		
@@ -193,7 +221,7 @@ void IO_UnlinkAllLinkedObjects(Entity * io) {
 		linked->show = SHOW_FLAG_IN_SCENE;
 		linked->no_collide = io->index();
 		
-		Vec3f pos = io->obj->vertexWorldPositions[io->obj->linked[k].lidx].v;
+		Vec3f pos = io->obj->vertexWorldPositions[io->obj->linked.back().lidx].v;
 		
 		Vec3f vector = angleToVectorXZ(linked->angle.getYaw()) * 0.5f;
 		
@@ -203,6 +231,6 @@ void IO_UnlinkAllLinkedObjects(Entity * io) {
 		
 	}
 	
-	EERIE_LINKEDOBJ_ReleaseData(io->obj);
+	io->obj->linked.clear();
 	
 }

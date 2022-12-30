@@ -1147,7 +1147,7 @@ void SetWeapon_Back(Entity * io) {
 	Entity & weapon = *io->_npcdata->weapon;
 	
 	if(io->gameFlags & GFLAG_HIDEWEAPON) {
-		unlinkEntities(*io, weapon);
+		unlinkEntity(weapon);
 		weapon.show = SHOW_FLAG_LINKED;
 	} else if(io->obj->fastaccess.weapon_attach) {
 		linkEntities(*io, "weapon_attach", weapon, "primary_attach");
@@ -1162,7 +1162,6 @@ void Prepare_SetWeapon(Entity * io, const res::path & temp) {
 	arx_assert(io && io->obj && (io->ioflags & IO_NPC));
 	
 	if(io->_npcdata->weapon) {
-		unlinkEntities(*io, *io->_npcdata->weapon);
 		delete io->_npcdata->weapon;
 		io->_npcdata->weapon = nullptr;
 	}

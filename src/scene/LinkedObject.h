@@ -61,7 +61,10 @@ void EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink,
 
 void linkEntities(Entity & master, std::string_view masterVertex,
                   Entity & slave, std::string_view slaveVertex);
-void unlinkEntities(Entity & master, Entity & slave);
+
+void unlinkEntity(Entity & slave);
+
+bool isEntityLinked(Entity & slave);
 
 void IO_UnlinkAllLinkedObjects(Entity * io);
 

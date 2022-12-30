@@ -255,6 +255,7 @@ void Entity::setOwner(Entity * owner) {
 		
 		if(m_owner) {
 			removeFromInventories(this);
+			unlinkEntity(*this);
 		}
 		
 		m_owner = owner;
@@ -263,11 +264,22 @@ void Entity::setOwner(Entity * owner) {
 	
 	updateOwner();
 	
+	if(m_owner && g_draggedEntity == this) {
+		setDraggedEntity(nullptr);
+	}
+	
 }
 
 void Entity::updateOwner() {
 	
 	if(m_owner) {
+		
+		if(isEntityLinked(*this)) {
+			if(show != SHOW_FLAG_HIDDEN && show != SHOW_FLAG_MEGAHIDE) {
+				show = (m_owner == entities.player()) ? SHOW_FLAG_ON_PLAYER : SHOW_FLAG_LINKED;
+			}
+			return;
+		}
 		
 		if(locateInInventories(this)) {
 			show = SHOW_FLAG_IN_INVENTORY;
@@ -330,9 +342,6 @@ void Entity::cleanReferences() {
 	ignit_sound = audio::SourcedSample();
 	
 	for(Entity & parent : entities) {
-		if(parent.obj && obj) {
-			unlinkEntities(parent, *this);
-		}
 		if((parent.ioflags & IO_NPC) && parent._npcdata->weapon == this) {
 			parent._npcdata->weapon = nullptr;
 		}
@@ -355,11 +364,11 @@ void Entity::destroy() {
 	
 	if(obj) {
 		while(!obj->linked.empty()) {
-			if(obj->linked.back().lgroup && obj->linked.back().obj && obj->linked.back().io) {
-				Entity * linked = obj->linked.back().io;
-				arx_assert(ValidIOAddress(linked) && linked->obj);
-				unlinkEntities(*this, *linked);
-				linked->destroy();
+			if(obj->linked.back().io) {
+				arx_assert(ValidIOAddress(obj->linked.back().io));
+				obj->linked.back().io->destroy();
+			} else {
+				obj->linked.pop_back();
 			}
 		}
 	}
