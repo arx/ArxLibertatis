@@ -115,6 +115,7 @@ public:
 		
 		Entity * oldOwner = io->owner();
 		InventoryPos oldPos = locateInInventories(io);
+		bool oldWeapon = (oldOwner && (oldOwner->ioflags & IO_NPC) && oldOwner->_npcdata->weapon == io);
 		bool wasDragged = (io == g_draggedEntity);
 		
 		// Delay destruction of the object to avoid invalid references
@@ -145,6 +146,11 @@ public:
 		bool reInsert = (!ioo->owner() || ioo->owner() == oldOwner) && !isEquippedByPlayer(ioo);
 		
 		if(reInsert) {
+			if(oldWeapon && !oldOwner->_npcdata->weapon) {
+				oldOwner->_npcdata->weapon = ioo;
+				oldOwner->_npcdata->weapontype = ioo->type_flags;
+				ioo->setOwner(oldOwner);
+			}
 			if(oldPos) {
 				if(!insertIntoInventory(ioo, oldPos)) {
 					PutInFrontOfPlayer(ioo);
