@@ -66,28 +66,26 @@ struct InventoryPos {
 	
 	typedef unsigned short index_type;
 	
-	EntityHandle io;
-	index_type bag;
+	Entity * container;
 	index_type x;
 	index_type y;
+	index_type bag;
 	
 	InventoryPos()
-		: bag(0)
+		: container(nullptr)
 		, x(0)
 		, y(0)
+		, bag(0)
 	{ }
 	
-	InventoryPos(EntityHandle io_, index_type bag_, index_type x_, index_type y_)
-		: io(io_), bag(bag_), x(x_), y(y_)
-	{ }
-	
-	InventoryPos(EntityHandle io_, Vec3s pos)
-		: io(io_), bag(pos.z), x(pos.x), y(pos.y)
+	InventoryPos(Entity * container_, Vec3s pos)
+		: container(container_), x(pos.x), y(pos.y), bag(pos.z)
 	{ }
 	
 	//! \return true if this is a valid position
 	operator bool() const {
-		return (io != EntityHandle());
+		arx_assume(!container || (bag >= 0 && x >=0 && y >= 0));
+		return (container != nullptr);
 	}
 	
 	operator Vec3s() const {
@@ -134,7 +132,7 @@ class Inventory {
 		
 		typedef std::conditional_t<Mutable, Inventory, const Inventory> Base;
 		
-		const EntityHandle m_owner;
+		Entity * m_owner;
 		
 	public:
 		
@@ -241,7 +239,7 @@ public:
 	
 	void setBags(size_t newBagCount);
 	
-	[[nodiscard]] EntityHandle owner() const noexcept;
+	[[nodiscard]] Entity * owner() const noexcept { return &m_owner; }
 	
 	[[nodiscard]] Vec3s size() const noexcept {
 		arx_assume(m_size.x > 0 && m_size.y > 0 && m_bags > 0 && size_t(s16(m_bags)) == m_bags);

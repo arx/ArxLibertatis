@@ -539,7 +539,7 @@ void PlayerInventoryHud::dragEntity(Entity * io) {
 	arx_assert(io->ioflags & IO_ITEM);
 	
 	InventoryPos pos = locateInInventories(io);
-	arx_assert(pos.io == EntityHandle_Player);
+	arx_assert(pos.container == entities.player());
 	Vec2s anchor = Vec2s(g_playerInventoryHud.anchorPosition()) + Vec2s(m_slotSpacing * m_scale);
 	s16 itemPitch = s16(32.f * m_scale);
 	if(player.Interface & INTER_INVENTORYALL) {
@@ -593,7 +593,7 @@ void PlayerInventoryHud::setCurrentBag(short bag) {
 
 bool PlayerInventoryHud::isSlotVisible(InventoryPos pos) const noexcept {
 	
-	if(pos.io != EntityHandle_Player) {
+	if(pos.container != entities.player()) {
 		// Slot is not in the player inventory
 		return false;
 	}

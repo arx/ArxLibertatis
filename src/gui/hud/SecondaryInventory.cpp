@@ -368,7 +368,7 @@ void SecondaryInventoryHud::dragEntity(Entity * io) {
 	arx_assert(io->ioflags & IO_ITEM);
 	
 	InventoryPos pos = locateInInventories(io);
-	arx_assert(pos.io == m_container->index());
+	arx_assert(pos.container == m_container);
 	Vec2s anchor = Vec2s(2 * m_scale - m_fadePosition, 13 * m_scale);
 	s16 itemPitch = s16(32.f * m_scale);
 	Vec2f offset(anchor + Vec2s(pos.x, pos.y) * itemPitch - DANAEMouse);
@@ -586,5 +586,5 @@ void SecondaryInventoryHud::drawItemPrice(float scale) {
 }
 
 bool SecondaryInventoryHud::isSlotVisible(InventoryPos pos) {
-	return isVisible() && pos.io == m_container->index();
+	return isVisible() && pos.container == m_container;
 }

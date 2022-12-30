@@ -1303,7 +1303,7 @@ void ArxGame::manageKeyMouse() {
 					if(!g_draggedEntity) {
 						
 						bool bOk = true;
-						Entity * container = entities.get(locateInInventories(FlyingOverIO).io);
+						Entity * container = locateInInventories(FlyingOverIO).container;
 						if(container && (container->ioflags & IO_SHOP)) {
 							// Cannot use items in shop inventories
 							bOk = false;
@@ -1737,7 +1737,7 @@ void ArxGame::manageEditorControls() {
 		SendIOScriptEvent(entities.player(), FlyingOverIO, SM_CLICKED);
 		
 		bool bOk = true;
-		Entity * container = entities.get(locateInInventories(FlyingOverIO).io);
+		Entity * container = locateInInventories(FlyingOverIO).container;
 		if(container && (container->ioflags & IO_SHOP)) {
 			// Cannot shift click items in shop inventories
 			bOk = false;
@@ -1852,7 +1852,7 @@ void ArxGame::manageEditorControls() {
 		if(eeMouseDoubleClick1() && !COMBINE && FlyingOverIO && (FlyingOverIO->ioflags & IO_ITEM)) {
 			
 			bool accept_combine = true;
-			Entity * container = entities.get(locateInInventories(FlyingOverIO).io);
+			Entity * container = locateInInventories(FlyingOverIO).container;
 			if(container && (container->ioflags & IO_SHOP)) {
 				// Cannot combine items in shop inventories
 				accept_combine = false;

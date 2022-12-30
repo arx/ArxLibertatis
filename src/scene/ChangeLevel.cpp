@@ -379,7 +379,7 @@ static bool ARX_CHANGELEVEL_PushLevel(AreaId oldArea, AreaId newArea) {
 }
 
 static bool isInPlayerInventoryOrEquipment(const Entity & entity) {
-	return locateInInventories(&entity).io == EntityHandle_Player
+	return locateInInventories(&entity).container == entities.player()
 	       || &entity == player.torch
 	       || isEquippedByPlayer(&entity);
 }
@@ -1564,10 +1564,10 @@ static bool ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	
 	for(Vec3s slot : util::gridZYX(Vec3s(0), Vec3s(SAVED_INVENTORY_X, SAVED_INVENTORY_Y, SAVED_INVENTORY_BAGS))) {
 		Entity * item = ConvertToValidIO(asp->id_inventory[slot.z][slot.x][slot.y]);
-		if(!item || locateInInventories(item).io == EntityHandle_Player) {
+		if(!item || locateInInventories(item).container == entities.player()) {
 			continue;
 		}
-		if(!insertIntoInventoryAtNoEvent(item, InventoryPos(EntityHandle_Player, slot.z, slot.x, slot.y))) {
+		if(!insertIntoInventoryAtNoEvent(item, InventoryPos(entities.player(), slot))) {
 			LogWarning << "Could not load item " << item->idString() << " into player inventory";
 			PutInFrontOfPlayer(item);
 		} else {
@@ -2141,10 +2141,10 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 			
 			for(Vec2s slot : util::grid(Vec2s(0), Vec2s(aids->sizex, aids->sizey)))  {
 				Entity * item = ConvertToValidIO(aids->slot_io[slot.x][slot.y]);
-				if(!item || locateInInventories(item).io == io->index()) {
+				if(!item || locateInInventories(item).container == io) {
 					continue;
 				}
-				if(!insertIntoInventoryAtNoEvent(item, InventoryPos(io->index(), 0, slot.x, slot.y))) {
+				if(!insertIntoInventoryAtNoEvent(item, InventoryPos(io, Vec3s(slot, 0)))) {
 					LogWarning << "Could not load item " << item->idString() << " into inventory of " << io->idString();
 					PutInFrontOfPlayer(item);
 				} else {
@@ -2216,11 +2216,9 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 					continue;
 				}
 				if(InventoryPos invPos = locateInInventories(linked)) {
-					Entity * owner = entities.get(invPos.io);
-					arx_assert(owner);
 					LogError << "Could not load link from " << io->idString() << " to "
 					         << util::loadString(ais->linked_data[i].linked_id)
-					         << ": linked entity is in the inventory of " << owner->idString();
+					         << ": linked entity is in the inventory of " << invPos.container->idString();
 					continue;
 				}
 				EERIE_LINKED & link = io->obj->linked.emplace_back();

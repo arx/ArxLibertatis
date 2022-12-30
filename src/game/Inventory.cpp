@@ -112,10 +112,6 @@ void Inventory::setBags(size_t newBagCount) {
 	
 }
 
-EntityHandle Inventory::owner() const noexcept {
-	return m_owner.index();
-}
-
 Vec2s Inventory::getInventorySize(const Entity & item) noexcept {
 	return item.m_inventorySize;
 }
@@ -124,7 +120,7 @@ Vec2s Inventory::getInventorySize(const Entity & item) noexcept {
  * Declares an IO as entering into player Inventory
  * Sends appropriate INVENTORYIN Event to player AND concerned io.
  */
-static void ARX_INVENTORY_Declare_InventoryIn(Entity * io, EntityHandle container) {
+static void ARX_INVENTORY_Declare_InventoryIn(Entity * io, Entity * container) {
 	
 	arx_assert(io);
 	
@@ -138,8 +134,8 @@ static void ARX_INVENTORY_Declare_InventoryIn(Entity * io, EntityHandle containe
 		io->ignition = 0;
 	}
 	
-	SendIOScriptEvent(io, entities.get(container), SM_INVENTORYIN);
-	if(container == EntityHandle_Player) {
+	SendIOScriptEvent(io, container, SM_INVENTORYIN);
+	if(container == entities.player()) {
 		// Items only receive the event when they are put in the player inventory because scripts expect that
 		SendIOScriptEvent(entities.player(), io, SM_INVENTORYIN);
 	}
@@ -195,7 +191,8 @@ void PutInFrontOfPlayer(Entity * io) {
 }
 
 std::ostream & operator<<(std::ostream & strm, InventoryPos p) {
-	return strm << '(' << p.io.handleData() << ", " << p.bag << ", " << p.x << ", " << p.y << ')';
+	return strm << '(' << (p.container ? std::string_view(p.container->idString()) : "none")
+	            << ", " << p.bag << ", " << p.x << ", " << p.y << ')';
 }
 
 bool Inventory::insertGold(Entity * item) {
@@ -325,7 +322,7 @@ InventoryPos Inventory::insertImpl(Entity & item, InventoryPos pos) {
 	
 	arx_assert(item.ioflags & IO_ITEM);
 	
-	if(pos.io == owner() && insertIntoStackAt(item, pos)) {
+	if(pos.container == owner() && insertIntoStackAt(item, pos)) {
 		return pos;
 	}
 	
@@ -333,7 +330,7 @@ InventoryPos Inventory::insertImpl(Entity & item, InventoryPos pos) {
 		return newPos;
 	}
 	
-	if(pos.io == owner() && insertIntoNewSlotAt(item, pos)) {
+	if(pos.container == owner() && insertIntoNewSlotAt(item, pos)) {
 		return pos;
 	}
 	
@@ -445,7 +442,7 @@ bool Inventory::insertAtNoEvent(Entity * item, InventoryPos pos) {
 void Inventory::remove(Entity & item) {
 	
 	arx_assert(item.ioflags & IO_ITEM);
-	arx_assert(item.owner() && item.owner()->index() == owner());
+	arx_assert(item.owner() == owner());
 	
 	Vec3s pos = item._itemdata->m_inventoryPos;
 	arx_assert(pos.x + item.m_inventorySize.x <= width());
@@ -625,11 +622,9 @@ InventoryPos removeFromInventories(Entity * item) {
 		return { };
 	}
 	
-	Entity * container = entities.get(pos.io);
+	arx_assert(pos.container && pos.container->inventory);
 	
-	arx_assert(container && container->inventory);
-	
-	container->inventory->remove(*item);
+	pos.container->inventory->remove(*item);
 	
 	return pos;
 }
@@ -642,13 +637,13 @@ InventoryPos locateInInventories(const Entity * item) {
 	
 	arx_assume(item->owner());
 	
-	return { item->owner()->index(), item->_itemdata->m_inventoryPos };
+	return { item->owner(), item->_itemdata->m_inventoryPos };
 }
 
 bool insertIntoInventory(Entity * item, InventoryPos pos) {
 	
-	if(Entity * container = entities.get(pos.io); container && container->inventory) {
-		if(container->inventory->insert(item, pos)) {
+	if(pos.container && pos.container->inventory) {
+		if(pos.container->inventory->insert(item, pos)) {
 			return true;
 		}
 	}
@@ -662,7 +657,7 @@ bool insertIntoInventoryAt(Entity * item, Entity * container, InventoryPos::inde
 	arx_assert(container && container->inventory);
 	
 	InventoryPos fallback;
-	if(previous.io == container->index()) {
+	if(previous.container == container) {
 		fallback = previous;
 	}
 	
@@ -671,9 +666,9 @@ bool insertIntoInventoryAt(Entity * item, Entity * container, InventoryPos::inde
 
 bool insertIntoInventoryAtNoEvent(Entity * item, InventoryPos pos) {
 	
-	if(Entity * container = entities.get(pos.io)) {
-		arx_assert(container->inventory);
-		return container->inventory->insertAtNoEvent(item, pos);
+	if(pos.container) {
+		arx_assert(pos.container->inventory);
+		return pos.container->inventory->insertAtNoEvent(item, pos);
 	}
 	
 	return false;
@@ -706,11 +701,10 @@ Vec3f GetItemWorldPosition(const Entity * io) {
 		
 		InventoryPos pos = locateInInventories(io);
 		if(pos) {
-			if(pos.io == EntityHandle_Player) {
+			if(pos.container == entities.player()) {
 				return player.pos + Vec3f(0.f, 80.f, 0.f);
 			} else {
-				arx_assert(entities.get(pos.io) != nullptr);
-				return entities.get(pos.io)->pos;
+				return pos.container->pos;
 			}
 		}
 		
@@ -738,11 +732,10 @@ Vec3f GetItemWorldPositionSound(const Entity * io) {
 		
 		InventoryPos pos = locateInInventories(io);
 		if(pos) {
-			if(pos.io == EntityHandle_Player) {
+			if(pos.container == entities.player()) {
 				return ARX_PLAYER_FrontPos();
 			} else {
-				arx_assert(entities.get(pos.io) != nullptr);
-				return entities.get(pos.io)->pos;
+				return pos.container->pos;
 			}
 		}
 		
@@ -755,7 +748,7 @@ bool IsInPlayerInventory(Entity * io) {
 	// Dragged stacks are still considered to be in the player inventory because cooking scripts
 	// are not designed to handle them in the scene.
 	// Maybe this should also be the case for individual items being dragged but AF 1.21 did not do that.
-	return locateInInventories(io).io == EntityHandle_Player
+	return locateInInventories(io).container == entities.player()
 	       || (io && g_draggedEntity == io && (io->ioflags & IO_ITEM) && io->_itemdata->count > 1);
 }
 
