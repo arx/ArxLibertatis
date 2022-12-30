@@ -84,7 +84,7 @@ struct InventoryPos {
 	
 	//! \return true if this is a valid position
 	operator bool() const {
-		arx_assume(!container || (bag >= 0 && x >=0 && y >= 0));
+		arx_assume(!container || (bag >= 0 && x >= 0 && y >= 0));
 		return (container != nullptr);
 	}
 	
