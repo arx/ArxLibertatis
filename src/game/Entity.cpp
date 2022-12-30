@@ -256,6 +256,10 @@ void Entity::setOwner(Entity * owner) {
 		if(m_owner) {
 			removeFromInventories(this);
 			unlinkEntity(*this);
+			if(m_owner && (m_owner->ioflags & IO_NPC) && m_owner->_npcdata->weapon == this) {
+				m_owner->_npcdata->weapon = nullptr;
+				m_owner->_npcdata->weapontype = 0;
+			}
 		}
 		
 		m_owner = owner;
@@ -273,6 +277,13 @@ void Entity::setOwner(Entity * owner) {
 void Entity::updateOwner() {
 	
 	if(m_owner) {
+		
+		if((m_owner->ioflags & IO_NPC) && m_owner->_npcdata->weapon == this) {
+			if(show != SHOW_FLAG_HIDDEN && show != SHOW_FLAG_MEGAHIDE) {
+				show = (m_owner == entities.player()) ? SHOW_FLAG_ON_PLAYER : SHOW_FLAG_LINKED;
+			}
+			return;
+		}
 		
 		if(isEntityLinked(*this)) {
 			if(show != SHOW_FLAG_HIDDEN && show != SHOW_FLAG_MEGAHIDE) {
@@ -340,12 +351,6 @@ void Entity::cleanReferences() {
 	
 	ARX_SOUND_Stop(ignit_sound);
 	ignit_sound = audio::SourcedSample();
-	
-	for(Entity & parent : entities) {
-		if((parent.ioflags & IO_NPC) && parent._npcdata->weapon == this) {
-			parent._npcdata->weapon = nullptr;
-		}
-	}
 	
 }
 

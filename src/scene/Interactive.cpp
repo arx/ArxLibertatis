@@ -1148,7 +1148,6 @@ void SetWeapon_Back(Entity * io) {
 	
 	if(io->gameFlags & GFLAG_HIDEWEAPON) {
 		unlinkEntity(weapon);
-		weapon.show = SHOW_FLAG_LINKED;
 	} else if(io->obj->fastaccess.weapon_attach) {
 		linkEntities(*io, "weapon_attach", weapon, "primary_attach");
 	} else {
@@ -1161,19 +1160,16 @@ void Prepare_SetWeapon(Entity * io, const res::path & temp) {
 	
 	arx_assert(io && io->obj && (io->ioflags & IO_NPC));
 	
-	if(io->_npcdata->weapon) {
-		delete io->_npcdata->weapon;
-		io->_npcdata->weapon = nullptr;
-	}
+	delete io->_npcdata->weapon;
+	arx_assert(!io->_npcdata->weapon);
 	
 	res::path file = "graph/obj3d/interactive/items/weapons" / temp / temp;
 	Entity * ioo = io->_npcdata->weapon = AddItem(file);
 	if(ioo) {
 		SendInitScriptEvent(ioo);
 		io->_npcdata->weapontype = ioo->type_flags;
-		removeFromInventories(ioo);
-		ioo->show = SHOW_FLAG_LINKED;
 		ioo->scriptload = 2;
+		ioo->setOwner(io);
 		SetWeapon_Back(io);
 	}
 	
