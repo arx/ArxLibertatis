@@ -438,9 +438,9 @@ public:
 	 * If the count reaches zero or if the entity is not an item, call destroy().
 	 */
 	void destroyOne();
-
+	
 	bool isInvulnerable();
-
+	
 	/*!
 	 * Get the class path for this entity.
 	 *
