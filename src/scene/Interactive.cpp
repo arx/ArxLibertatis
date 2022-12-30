@@ -808,7 +808,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->physics.cyl.radius = io->original_radius;
 		io->physics.cyl.height = io->original_height;
 		io->fall = 0;
-		removeFromInventories(io);
+		io->setOwner(nullptr);
 		io->show = SHOW_FLAG_IN_SCENE;
 		io->targetinfo = EntityHandle(TARGET_NONE);
 		io->spellcast_data.castingspell = SPELL_NONE;
@@ -990,7 +990,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io) {
 	timer.start = g_gameTime.now();
 	timer.count = 1;
 	
-	removeFromInventories(io);
+	io->setOwner(nullptr);
 	io->show = SHOW_FLAG_TELEPORTING;
 	AddRandomSmoke(*io, 10);
 	ARX_PARTICLES_Add_Smoke(io->pos, 3, 20);

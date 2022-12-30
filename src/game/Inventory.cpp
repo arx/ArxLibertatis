@@ -165,12 +165,11 @@ void PutInFrontOfPlayer(Entity * io) {
 		}
 	}
 	
-	
 	if(g_draggedEntity == io) {
 		setDraggedEntity(nullptr);
 	}
 	
-	removeFromInventories(io);
+	io->setOwner(nullptr);
 	
 	io->angle = Anglef();
 	io->show = SHOW_FLAG_IN_SCENE;
@@ -298,8 +297,9 @@ bool Inventory::insertIntoNewSlotAt(Entity & item, Vec3s pos) {
 		slot.show = false;
 	}
 	set(pos).show = true;
-	item._itemdata->m_inventoryPos = { owner(), pos };
-	item.show = SHOW_FLAG_IN_INVENTORY;
+	item._itemdata->m_inventoryPos = pos;
+	
+	item.setOwner(&m_owner);
 	
 	return true;
 }
@@ -445,7 +445,7 @@ bool Inventory::insertAtNoEvent(Entity * item, InventoryPos pos) {
 void Inventory::remove(Entity & item) {
 	
 	arx_assert(item.ioflags & IO_ITEM);
-	arx_assert(item._itemdata->m_inventoryPos.io == owner());
+	arx_assert(item.owner() && item.owner()->index() == owner());
 	
 	Vec3s pos = item._itemdata->m_inventoryPos;
 	arx_assert(pos.x + item.m_inventorySize.x <= width());
@@ -465,7 +465,10 @@ void Inventory::remove(Entity & item) {
 		slot.entity = nullptr;
 	}
 	
-	item._itemdata->m_inventoryPos = { };
+	item._itemdata->m_inventoryPos = Vec3s(-1);
+	
+	item.updateOwner();
+	
 }
 
 namespace {
@@ -633,11 +636,13 @@ InventoryPos removeFromInventories(Entity * item) {
 
 InventoryPos locateInInventories(const Entity * item) {
 	
-	if(!item || !(item->ioflags & IO_ITEM)) {
+	if(!item || !(item->ioflags & IO_ITEM) || item->_itemdata->m_inventoryPos.z < 0) {
 		return { };
 	}
 	
-	return item->_itemdata->m_inventoryPos;
+	arx_assume(item->owner());
+	
+	return { item->owner()->index(), item->_itemdata->m_inventoryPos };
 }
 
 bool insertIntoInventory(Entity * item, InventoryPos pos) {

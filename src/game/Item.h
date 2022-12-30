@@ -123,7 +123,7 @@ struct IO_ITEMDATA {
 	char stealvalue;
 	short playerstacksize;
 	short LightValue;
-	InventoryPos m_inventoryPos;
+	Vec3s m_inventoryPos;
 	
 	IO_ITEMDATA()
 		: equipitem(0)
@@ -134,6 +134,7 @@ struct IO_ITEMDATA {
 		, stealvalue(0)
 		, playerstacksize(0)
 		, LightValue(0)
+		, m_inventoryPos(-1)
 	{ }
 	
 };

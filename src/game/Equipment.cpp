@@ -868,7 +868,7 @@ void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip) {
 		return;
 	}
 	
-	removeFromInventories(toequip);
+	toequip->setOwner(nullptr);
 	toequip->show = SHOW_FLAG_ON_PLAYER;
 	if(toequip == g_draggedEntity) {
 		setDraggedEntity(nullptr);

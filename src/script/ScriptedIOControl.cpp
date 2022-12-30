@@ -126,7 +126,8 @@ public:
 		} else if(ARX_INTERACTIVE_DestroyIOdelayed(io)) {
 			
 			spells.replaceCaster(io->index(), ioo->index());
-			removeFromInventories(io);
+			
+			io->setOwner(nullptr);
 			
 			// Prevent further script events as the object has been destroyed!
 			io->show = SHOW_FLAG_MEGAHIDE;
@@ -467,8 +468,8 @@ public:
 				t->show = SHOW_FLAG_HIDDEN;
 			}
 		} else if(t->show == SHOW_FLAG_MEGAHIDE || t->show == SHOW_FLAG_HIDDEN) {
-			arx_assert(!locateInInventories(t));
 			t->show = SHOW_FLAG_IN_SCENE;
+			t->updateOwner();
 			if((t->ioflags & IO_NPC) && t->_npcdata->lifePool.current <= 0.f) {
 				t->animlayer[0].cur_anim = t->anims[ANIM_DIE];
 				t->animlayer[1].cur_anim = nullptr;
@@ -574,7 +575,7 @@ public:
 			}
 			
 			if(!(io->ioflags & IO_NPC) || io->_npcdata->lifePool.current > 0) {
-				removeFromInventories(io);
+				io->setOwner(nullptr);
 				if(io->show != SHOW_FLAG_HIDDEN && io->show != SHOW_FLAG_MEGAHIDE) {
 					io->show = SHOW_FLAG_IN_SCENE;
 				}
@@ -592,7 +593,7 @@ public:
 				Vec3f pos = GetItemWorldPosition(io);
 				ARX_INTERACTIVE_Teleport(entities.player(), pos);
 			} else if(!(io->ioflags & IO_NPC) || io->_npcdata->lifePool.current > 0) {
-				removeFromInventories(io);
+				io->setOwner(nullptr);
 				if(io->show != SHOW_FLAG_HIDDEN && io->show != SHOW_FLAG_MEGAHIDE) {
 					io->show = SHOW_FLAG_IN_SCENE;
 				}
@@ -654,7 +655,7 @@ public:
 		
 		// Prevent further script events as the object has been destroyed!
 		if(destroyed) {
-			removeFromInventories(entity);
+			entity->setOwner(nullptr);
 			entity->show = SHOW_FLAG_MEGAHIDE;
 			entity->ioflags |= IO_FREEZESCRIPT;
 			if(entity == context.getEntity()) {

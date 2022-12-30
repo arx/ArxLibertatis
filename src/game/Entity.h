@@ -381,6 +381,10 @@ public:
 	Color3f special_color;
 	Color3f highlightColor;
 	
+	Entity * owner() const { return m_owner; }
+	void setOwner(Entity * owner);
+	void updateOwner();
+	
 	const EntityId & id() const { return m_id; }
 	
 	/*!
@@ -456,6 +460,8 @@ private:
 	
 	//! Remove any remaining references to this entity.
 	void cleanReferences();
+	
+	Entity * m_owner;
 	
 	size_t m_index; //!< index of this Entity in the EntityManager
 	

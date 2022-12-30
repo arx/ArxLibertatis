@@ -60,7 +60,8 @@ void setDraggedEntity(Entity * entity) {
 	}
 	
 	if(entity) {
-		g_draggedItemPreviousPosition = removeFromInventories(entity);
+		g_draggedItemPreviousPosition = locateInInventories(entity);
+		entity->setOwner(nullptr);
 		if(entity->obj && entity->show == SHOW_FLAG_IN_SCENE && (entity->gameFlags & GFLAG_ISINTREATZONE)
 		   && !(entity->gameFlags & (GFLAG_INVISIBILITY | GFLAG_MEGAHIDE))) {
 			EERIE_3D_BBOX bbox;

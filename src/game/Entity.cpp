@@ -142,6 +142,7 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	, spark_n_blood(0)
 	, special_color(Color3f::white)
 	, highlightColor(Color3f::black)
+	, m_owner(nullptr)
 	, m_index(size_t(-1))
 	, m_id(classPath, instance)
 	, m_idString(m_id.string())
@@ -248,6 +249,40 @@ res::path Entity::instancePath() const {
 	return m_classPath.parent() / idString();
 }
 
+void Entity::setOwner(Entity * owner) {
+	
+	if(m_owner != owner) {
+		
+		if(m_owner) {
+			removeFromInventories(this);
+		}
+		
+		m_owner = owner;
+		
+	}
+	
+	updateOwner();
+	
+}
+
+void Entity::updateOwner() {
+	
+	if(m_owner) {
+		
+		if(locateInInventories(this)) {
+			show = SHOW_FLAG_IN_INVENTORY;
+			return;
+		}
+		
+		if(show != SHOW_FLAG_HIDDEN && show != SHOW_FLAG_MEGAHIDE) {
+			show = SHOW_FLAG_IN_SCENE;
+		}
+		m_owner = nullptr;
+		
+	}
+	
+}
+
 void Entity::cleanReferences() {
 	
 	ARX_INTERACTIVE_DestroyIOdelayedRemove(this);
@@ -283,7 +318,7 @@ void Entity::cleanReferences() {
 	
 	ARX_INTERACTIVE_DestroyDynamicInfo(this);
 	
-	removeFromInventories(this);
+	setOwner(nullptr);
 	
 	ARX_SCRIPT_Timer_Clear_For_IO(this);
 	

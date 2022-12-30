@@ -108,7 +108,7 @@ class InventoryCommand : public Command {
 			for(auto slot : io->inventory->slots()) {
 				Entity * item = slot.entity;
 				if(item) {
-					removeFromInventories(item);
+					item->setOwner(nullptr);
 					// Delay destruction of the object to avoid invalid references
 					if(item->ioflags & IO_ITEM) {
 						item->_itemdata->count = 1;

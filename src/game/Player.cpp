@@ -282,7 +282,7 @@ void ARX_PLAYER_ClickedOnTorch(Entity * io) {
 		ARX_SOUND_PlaySFX(g_snd.TORCH_START);
 		player.torch_loop = ARX_SOUND_PlaySFX_loop(g_snd.TORCH_LOOP, nullptr, 1.f);
 		
-		removeFromInventories(io);
+		io->setOwner(nullptr);
 		io->show = SHOW_FLAG_ON_PLAYER;
 		player.torch = io;
 		
