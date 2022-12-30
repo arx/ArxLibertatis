@@ -2148,8 +2148,6 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 				if(!insertIntoInventoryAtNoEvent(item, InventoryPos(io, Vec3s(slot, 0)))) {
 					LogWarning << "Could not load item " << item->idString() << " into inventory of " << io->idString();
 					PutInFrontOfPlayer(item);
-				} else {
-					arx_assert(item->show == SHOW_FLAG_IN_INVENTORY);
 				}
 			}
 			
@@ -2216,7 +2214,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 					         << "[" << ais->linked_data[i].lidx2 << "]: vertex out of bounds";
 					continue;
 				}
-				if(InventoryPos invPos = locateInInventories(linked)) {
+				if(InventoryPos invPos = locateInInventories(linked); invPos && invPos.container != io) {
 					LogError << "Could not load link from " << io->idString() << " to "
 					         << util::loadString(ais->linked_data[i].linked_id)
 					         << ": linked entity is in the inventory of " << invPos.container->idString();

@@ -69,6 +69,7 @@ Other Fixes:
 * Fixed a crash when an equipped candle is destroyed (bug #1622)
 * Fixed a crash with negative (or zero with -i) intervals in the `timer` command
 * Fixed a crash when loading save files with linked items inside an inventory
+* Fixed linked entities being removed from NPC inventories even if linked to the owning NPC
 
 Technical Changes:
 

@@ -445,10 +445,11 @@ void Inventory::remove(Entity & item) {
 	arx_assert(item.owner() == owner());
 	
 	Vec3s pos = item._itemdata->m_inventoryPos;
+	arx_assert(pos.x >= 0 && pos.y >= 0 && pos.z >= 0);
 	arx_assert(pos.x + item.m_inventorySize.x <= width());
 	arx_assert(pos.y + item.m_inventorySize.y <= height());
 	arx_assert(get(pos).show == true);
-	arx_assert(item.show == SHOW_FLAG_IN_INVENTORY);
+	arx_assert(item.show == SHOW_FLAG_LINKED || item.show == SHOW_FLAG_IN_INVENTORY);
 	
 	LogDebug(" - " << '(' << m_owner.idString() << ", " << pos.z << ", " << pos.x << ", " << pos.y << ')'
 	         << " remove " << item.idString()

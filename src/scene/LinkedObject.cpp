@@ -154,8 +154,6 @@ void linkEntities(Entity & master, std::string_view masterVertex,
 	
 	unlinkEntity(slave);
 	
-	removeFromInventories(&slave);
-	
 	linkObjects(*master.obj, masterVertex, *slave.obj, slaveVertex, &slave);
 	
 	slave.setOwner(&master);
