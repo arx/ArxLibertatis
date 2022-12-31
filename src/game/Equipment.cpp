@@ -603,13 +603,17 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 	arx_assert(io_source);
 	arx_assert(io_weapon);
 	
+	if(!io_weapon->obj) {
+		return false;
+	}
+	
 	bool ret = false;
 	
 	EXCEPTIONS_LIST_Pos = 0;
-
+	
 	float drain_life = ARX_EQUIPMENT_GetSpecialValue(io_weapon, IO_SPECIAL_ELEM_DRAIN_LIFE);
 	float paralyse = ARX_EQUIPMENT_GetSpecialValue(io_weapon, IO_SPECIAL_ELEM_PARALYZE);
-
+	
 	for(const EERIE_ACTIONLIST & action : io_weapon->obj->actionlist) {
 		
 		float rad = GetHitValue(action.name);
@@ -629,6 +633,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 		if(CheckEverythingInSphere(sphere, io_source, entities.get(targ), sphereContent)) {
 			for(Entity * target : sphereContent) {
 				arx_assert(target);
+				arx_assert(target->obj);
 				{
 					
 					bool HIT_SPARK = false;

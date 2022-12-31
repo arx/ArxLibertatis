@@ -66,9 +66,10 @@ Other Fixes:
 
 * Added a workaround for broken ratman backflip in intro (bug #93)
 * Fixed a crash when dragging an entity without a 3D object (bug #1592)
+* Fixed a crash when using a weapon without a 3D object (bug #1286)
 * Fixed a crash when an equipped candle is destroyed (bug #1622)
 * Fixed a crash with negative (or zero with -i) intervals in the `timer` command
-* Fixed a crash when loading save files with linked items inside an inventory
+* Fixed a crash when loading save files with linked items inside an inventory (bug #1618)
 * Fixed linked entities being removed from NPC inventories even if linked to the owning NPC
 * Fixed the `replaceme` script command for NPC weapons not equipping the new weapon
 
