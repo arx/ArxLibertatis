@@ -246,49 +246,52 @@ void ARX_PLAYER_RectifyPosition() {
 
 void ARX_PLAYER_KillTorch() {
 	
-	ARX_SOUND_PlaySFX(g_snd.TORCH_END);
-	ARX_SOUND_Stop(player.torch_loop);
-	player.torch_loop = audio::SourcedSample();
+	if(Entity * torch = player.torch) {
+		ARX_SOUND_PlaySFX(g_snd.TORCH_END);
+		ARX_SOUND_Stop(player.torch_loop);
+		player.torch_loop = audio::SourcedSample();
+		lightHandleGet(torchLightHandle)->m_exists = false;
+		player.torch = nullptr;
+		torch->updateOwner();
+	}
 	
-	giveToPlayer(player.torch);
-	
-	player.torch = nullptr;
-	lightHandleGet(torchLightHandle)->m_exists = false;
 }
 
 void ARX_PLAYER_ClickedOnTorch(Entity * io) {
 	
-	if(!io)
-		return;
-
-	if(player.torch == io) {
-		ARX_PLAYER_KillTorch();
+	if(!io) {
 		return;
 	}
-
-	if(player.torch)
-		ARX_PLAYER_KillTorch();
-
+	
+	if(io->durability > 0 && (!player.torch || io != player.torch)) {
+		// Remove the torch from the player inventory (and other ownerships) when equipping it
+		// Do this early to make space for the unequipped old torch
+		io->setOwner(nullptr);
+	}
+	
+	if(Entity * oldTorch = player.torch) {
+		InventoryPos pos = locateInInventories(oldTorch);
+		oldTorch->setOwner(nullptr);
+		giveToPlayer(oldTorch, pos);
+		if(io == oldTorch) {
+			return;
+		}
+	}
+	
 	if(io->durability > 0) {
+		
 		if(io->ignition > 0) {
 			lightHandleDestroy(io->ignit_light);
-			
 			ARX_SOUND_Stop(io->ignit_sound);
 			io->ignit_sound = audio::SourcedSample();
-			
 			io->ignition = 0;
 		}
-
+		
 		ARX_SOUND_PlaySFX(g_snd.TORCH_START);
 		player.torch_loop = ARX_SOUND_PlaySFX_loop(g_snd.TORCH_LOOP, nullptr, 1.f);
 		
-		io->setOwner(nullptr);
-		io->show = SHOW_FLAG_ON_PLAYER;
 		player.torch = io;
-		
-		if(g_draggedEntity == io) {
-			setDraggedEntity(nullptr);
-		}
+		io->setOwner(entities.player());
 		
 	}
 	
@@ -302,13 +305,10 @@ static void ARX_PLAYER_ManageTorch() {
 		player.torch->durability -= g_framedelay * 0.0001f;
 		
 		if(player.torch->durability <= 0) {
-			ARX_SOUND_PlaySFX(g_snd.TORCH_END);
-			ARX_SOUND_Stop(player.torch_loop);
-			player.torch_loop = audio::SourcedSample();
-			
 			player.torch->destroy();
-			player.torch = nullptr;
-			lightHandleGet(torchLightHandle)->m_exists = false;
+			arx_assert(player.torch_loop == audio::SourcedSample());
+			arx_assert(lightHandleGet(torchLightHandle)->m_exists == false);
+			arx_assert(!player.torch);
 		}
 		
 	}
@@ -1588,7 +1588,10 @@ void ARX_PLAYER_InitPlayer() {
 	player.lifePool.current = player.m_lifeMaxWithoutMods = player.lifePool.max = 100.f;
 	player.manaPool.current = player.m_manaMaxWithoutMods = player.manaPool.max = 100.f;
 	player.falling = false;
-	player.torch = nullptr;
+	if(Entity * torch = player.torch) {
+		player.torch = nullptr;
+		torch->updateOwner();
+	}
 	player.gold = 0;
 	if(entities.player()) {
 		entities.player()->inventory->setBags(1);
@@ -2355,7 +2358,7 @@ void ARX_PLAYER_Start_New_Quest() {
 	SetEditMode();
 	
 	g_characterCreation.resetCheat();
-	player.torch = nullptr;
+	arx_assert(!player.torch);
 	svar.clear();
 	
 	ARX_CHANGELEVEL_StartNew();
@@ -2509,10 +2512,7 @@ void ARX_GAME_Reset() {
 	// Paths
 	ARX_PATH_ClearAllControled();
 	ARX_PATH_ClearAllUsePath();
-
-	// Player Torch
-	player.torch = nullptr;
-
+	
 	// Player Quests
 	ARX_PLAYER_Quest_Init();
 

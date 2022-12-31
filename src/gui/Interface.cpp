@@ -944,8 +944,10 @@ void ArxGame::managePlayerControls() {
 	}
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_TORCH)) {
-		if(player.torch) {
-			ARX_PLAYER_KillTorch();
+		if(Entity * torch = player.torch) {
+			InventoryPos pos = locateInInventories(torch);
+			torch->setOwner(nullptr);
+			giveToPlayer(torch, pos);
 		} else {
 			useInventoryItemWithLowestDurability("torch");
 		}

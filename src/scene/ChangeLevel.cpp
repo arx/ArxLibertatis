@@ -1617,6 +1617,9 @@ static bool ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	
 	// Restoring Player equipment...
 	player.torch = ConvertToValidIO(asp->curtorch);
+	if(player.torch) {
+		player.torch->setOwner(entities.player());
+	}
 	progressBarAdvance();
 	LoadLevelScreen();
 	

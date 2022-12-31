@@ -487,17 +487,10 @@ void CurrentTorchIconGui::updateInput() {
 			cursorSetInteraction();
 			
 			if(!g_draggedEntity && !PLAYER_MOUSELOOK_ON && DRAGGING) {
-				Entity * io = player.torch;
-				
-				ARX_SOUND_PlaySFX(g_snd.TORCH_END);
-				ARX_SOUND_Stop(player.torch_loop);
-				player.torch_loop = audio::SourcedSample();
-				
-				player.torch = nullptr;
-				lightHandleGet(torchLightHandle)->m_exists = false;
-				io->ignition = 1;
-				setDraggedEntity(io);
+				player.torch->ignition = 1;
+				setDraggedEntity(player.torch);
 				g_draggedIconOffset = m_rect.topLeft() - Vec2f(DANAEMouse);
+				arx_assert(!player.torch);
 			} else {
 				if(eeMouseDoubleClick1() && !COMBINE) {
 					COMBINE = player.torch;

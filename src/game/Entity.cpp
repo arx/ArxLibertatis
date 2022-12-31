@@ -260,6 +260,10 @@ void Entity::setOwner(Entity * owner) {
 				m_owner->_npcdata->weapon = nullptr;
 				m_owner->_npcdata->weapontype = 0;
 			}
+			if(player.torch == this) {
+				arx_assert(m_owner == entities.player());
+				ARX_PLAYER_KillTorch();
+			}
 		}
 		
 		m_owner = owner;
@@ -277,6 +281,12 @@ void Entity::setOwner(Entity * owner) {
 void Entity::updateOwner() {
 	
 	if(m_owner) {
+		
+		if(player.torch == this) {
+			arx_assert(m_owner == entities.player());
+			show = SHOW_FLAG_ON_PLAYER;
+			return;
+		}
 		
 		if((m_owner->ioflags & IO_NPC) && m_owner->_npcdata->weapon == this) {
 			if(show != SHOW_FLAG_HIDDEN && show != SHOW_FLAG_MEGAHIDE) {
@@ -328,10 +338,6 @@ void Entity::cleanReferences() {
 	
 	if(ioSteal == this) {
 		ioSteal = nullptr;
-	}
-	
-	if(player.torch == this) {
-		player.torch = nullptr;
 	}
 	
 	TREATZONE_RemoveIO(this);
