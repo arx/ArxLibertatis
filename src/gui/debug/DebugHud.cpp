@@ -275,7 +275,7 @@ void ShowInfoText() {
 			DebugBox entityBox = DebugBox(Vec2i(500, 10), "Entity " + io->idString());
 			entityBox.add("Pos", io->pos);
 			entityBox.add("Angle", io->angle);
-			entityBox.add("Room", static_cast<long>(io->room));
+			entityBox.add("Room", io->room ? static_cast<long>(io->room) : -1);
 			entityBox.add("Move", io->move);
 			entityBox.add("Flags", flagNames(EntityFlagNames, io->ioflags));
 			entityBox.add("GFlags", flagNames(GameFlagNames, io->gameFlags));
