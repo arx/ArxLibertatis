@@ -677,6 +677,14 @@ if(MSVC)
 	
 else(MSVC)
 	
+	add_cxxflag("-fmacro-prefix-map=${PROJECT_SOURCE_DIR}/=")
+	if(FLAG_FOUND)
+		add_cxxflag("-fmacro-prefix-map=${PROJECT_BINARY_DIR}/=build/")
+		if(FLAG_FOUND)
+			set(ARX_HAVE_RELATIVE_FILE 1)
+		endif()
+	endif()
+	
 	if(USE_STATIC_LIBS)
 		add_ldflag("-static-libstdc++")
 		add_ldflag("-static-libgcc")
