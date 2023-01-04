@@ -768,7 +768,7 @@ static bool ARX_CHANGELEVEL_Push_Player(AreaId area) {
 		}
 	}
 	
-	assert(SAVED_MAX_EQUIPED == player.equiped.size());
+	arx_assert(SAVED_MAX_EQUIPED == player.equiped.size());
 	for(size_t k = 0; k < player.equiped.size(); k++) {
 		if(Entity * item = entities.get(player.equiped[k])) {
 			storeIdString(asp->equiped[k], item);
@@ -779,14 +779,14 @@ static bool ARX_CHANGELEVEL_Push_Player(AreaId area) {
 	
 	for(std::string_view entry : g_playerQuestLogEntries) {
 		memset(dat + pos, 0, SAVED_QUEST_SLOT_SIZE);
-		assert(entry.length() < SAVED_QUEST_SLOT_SIZE);
+		arx_assert(entry.length() < SAVED_QUEST_SLOT_SIZE);
 		util::storeString(dat + pos, SAVED_QUEST_SLOT_SIZE, entry);
 		pos += SAVED_QUEST_SLOT_SIZE;
 	}
 	
 	for(std::string_view key : g_playerKeyring) {
 		memset(dat + pos, 0, SAVED_KEYRING_SLOT_SIZE);
-		assert(key.length() < SAVED_KEYRING_SLOT_SIZE);
+		arx_assert(key.length() < SAVED_KEYRING_SLOT_SIZE);
 		util::storeString(dat + pos, SAVED_KEYRING_SLOT_SIZE, key);
 		pos += SAVED_KEYRING_SLOT_SIZE;
 	}
@@ -1015,10 +1015,10 @@ static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 	if(io->usepath) {
 		ais.system_flags |= SYSTEM_FLAG_USEPATH;
 	}
-
+	
 	ais.physics = io->physics;
 	ais.spellcast_data = io->spellcast_data;
-	assert(SAVED_MAX_ANIM_LAYERS == io->animlayer.size());
+	arx_assert(SAVED_MAX_ANIM_LAYERS == io->animlayer.size());
 	std::copy(io->animlayer.begin(), io->animlayer.end(), ais.animlayer);
 	for(size_t k = 0; k < MAX_ANIM_LAYERS; k++) {
 		ais.animlayer[k].cur_anim = GetIOAnimIdx2(io, io->animlayer[k].cur_anim);
@@ -1135,7 +1135,7 @@ static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 			as->weapontype = io->_npcdata->weapontype;
 			as->xpvalue = io->_npcdata->xpvalue;
 			
-			assert(SAVED_MAX_STACKED_BEHAVIOR == io->_npcdata->stacked.size());
+			arx_assert(SAVED_MAX_STACKED_BEHAVIOR == io->_npcdata->stacked.size());
 			std::copy(io->_npcdata->stacked.begin(), io->_npcdata->stacked.end(), as->stacked);
 			
 			for (size_t i = 0; i < SAVED_MAX_STACKED_BEHAVIOR; i++) {
@@ -1544,11 +1544,11 @@ static bool ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	GLOBAL_MAGIC_MODE = (asp->Global_Magic_Mode != 0);
 	
 	g_miniMap.purgeTexContainer();
-	assert(SAVED_MAX_MINIMAPS == MAX_MINIMAP_LEVELS);
+	arx_assert(SAVED_MAX_MINIMAPS == MAX_MINIMAP_LEVELS);
 	g_miniMap.load(asp->minimap, SAVED_MAX_MINIMAPS);
 	
 	Entity & io = *entities.player();
-	assert(SAVED_MAX_ANIMS == MAX_ANIMS);
+	arx_assert(SAVED_MAX_ANIMS == MAX_ANIMS);
 	for(size_t i = 0; i < SAVED_MAX_ANIMS; i++) {
 		if(io.anims[i] != nullptr) {
 			ReleaseAnimFromIO(&io, i);
@@ -1558,8 +1558,8 @@ static bool ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 		}
 	}
 	
-	assert(entities.player()->inventory->bags() <= SAVED_INVENTORY_BAGS);
-	assert(Vec2s(entities.player()->inventory->size()) == Vec2s(SAVED_INVENTORY_X, SAVED_INVENTORY_Y));
+	arx_assert(entities.player()->inventory->bags() <= SAVED_INVENTORY_BAGS);
+	arx_assert(Vec2s(entities.player()->inventory->size()) == Vec2s(SAVED_INVENTORY_X, SAVED_INVENTORY_Y));
 	
 	g_draggedEntity = ConvertToValidIO(asp->draggedEntity);
 	
@@ -1623,7 +1623,7 @@ static bool ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	progressBarAdvance();
 	LoadLevelScreen();
 	
-	assert(SAVED_MAX_EQUIPED == player.equiped.size());
+	arx_assert(SAVED_MAX_EQUIPED == player.equiped.size());
 	for(size_t i = 0; i < SAVED_MAX_EQUIPED; i++) {
 		Entity * item = ConvertToValidIO(asp->equiped[i]);
 		player.equiped[i] = item ? item->index() : EntityHandle();
@@ -1889,7 +1889,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 			io->physics.cyl.origin = io->initpos;
 		}
 		
-		assert(SAVED_MAX_ANIM_LAYERS == io->animlayer.size());
+		arx_assert(SAVED_MAX_ANIM_LAYERS == io->animlayer.size());
 		std::copy(ais->animlayer, ais->animlayer + SAVED_MAX_ANIM_LAYERS, io->animlayer.begin());
 		
 		for(size_t k = 0; k < MAX_ANIM_LAYERS; k++) {
@@ -2038,7 +2038,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 				io->_npcdata->weapontype = ItemType::load(as->weapontype); // TODO save/load flags
 				io->_npcdata->xpvalue = as->xpvalue;
 				
-				assert(SAVED_MAX_STACKED_BEHAVIOR == io->_npcdata->stacked.size());
+				arx_assert(SAVED_MAX_STACKED_BEHAVIOR == io->_npcdata->stacked.size());
 				std::copy(as->stacked, as->stacked + SAVED_MAX_STACKED_BEHAVIOR, io->_npcdata->stacked.begin());
 				// TODO properly load stacked animations
 				
@@ -2602,7 +2602,7 @@ void ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 		return;
 	}
 	
-	assert(!CURRENT_GAME_FILE.empty());
+	arx_assert(!CURRENT_GAME_FILE.empty());
 	
 	// Copy SavePath to Current Game
 	if(!fs::copy_file(savefile, CURRENT_GAME_FILE)) {
