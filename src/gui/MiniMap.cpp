@@ -719,7 +719,7 @@ size_t MiniMap::mapMarkerCount() {
 
 MiniMap::MapMarkerData MiniMap::mapMarkerGet(size_t id) {
 	
-	assert(id < m_mapMarkers.size());
+	arx_assert(id < m_mapMarkers.size());
 	return m_mapMarkers[id];
 }
 
