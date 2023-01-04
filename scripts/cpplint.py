@@ -2887,6 +2887,10 @@ def CheckLanguage(filename, clean_lines, linenum, file_extension, include_state,
     error(filename, linenum, 'runtime/printf', 1,
           'sscanf can be ok, but is slow and can overflow buffers.')
 
+  if Search(r'\bassert\b', line):
+    error(filename, linenum, 'runtime/assert', 1,
+          'use arx_assert instead of assert.')
+
   # Check if some verboten operator overloading is going on
   # TODO(unknown): catch out-of-line unary operator&:
   #   class X {};
