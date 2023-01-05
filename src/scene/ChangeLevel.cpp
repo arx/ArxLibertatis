@@ -2068,7 +2068,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 						io->_npcdata->ex_rotate = new EERIE_EXTRA_ROTATE();
 					}
 					static_assert(SAVED_MAX_EXTRA_ROTATE <= MAX_EXTRA_ROTATE, "array size mismatch");
-					for(size_t i = 0; i < MAX_EXTRA_ROTATE; i++) {
+					for(size_t i = 0; i < SAVED_MAX_EXTRA_ROTATE; i++) {
 						if(!io->obj ||
 						   as->ex_rotate.group_number[i] < 0 ||
 						   size_t(as->ex_rotate.group_number[i]) >= io->obj->grouplist.size()) {
@@ -2079,6 +2079,10 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 							io->_npcdata->ex_rotate->group_number[i] = VertexGroupId(as->ex_rotate.group_number[i]);
 							io->_npcdata->ex_rotate->group_rotate[i] = as->ex_rotate.group_rotate[i];
 						}
+					}
+					for(size_t i = SAVED_MAX_EXTRA_ROTATE; i < MAX_EXTRA_ROTATE; i++) {
+						io->_npcdata->ex_rotate->group_number[i] = { };
+						io->_npcdata->ex_rotate->group_rotate[i] = { };
 					}
 				}
 				

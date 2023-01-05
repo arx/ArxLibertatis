@@ -768,11 +768,12 @@ struct SavedExtraRotate {
 	SavedExtraRotate & operator=(const EERIE_EXTRA_ROTATE & b) {
 		flags = 0;
 		static_assert(SAVED_MAX_EXTRA_ROTATE <= MAX_EXTRA_ROTATE, "array size mismatch");
-		std::transform(b.group_number.begin(), b.group_number.end(), group_number, [](VertexGroupId group) {
+		std::transform(b.group_number.begin(), b.group_number.begin() + SAVED_MAX_EXTRA_ROTATE, group_number,
+		               [](VertexGroupId group) {
 			// TODO this breaks when the object changes between saving and loading
 			return group ? s16(group) : s16(-1);
 		});
-		std::copy(b.group_rotate.begin(), b.group_rotate.end(), group_rotate);
+		std::copy(b.group_rotate.begin(), b.group_rotate.begin() + SAVED_MAX_EXTRA_ROTATE, group_rotate);
 		#ifdef ARX_DEBUG
 		for(size_t i = SAVED_MAX_EXTRA_ROTATE; i < MAX_EXTRA_ROTATE; i++) {
 			arx_assert(!b.group_number[i]);
