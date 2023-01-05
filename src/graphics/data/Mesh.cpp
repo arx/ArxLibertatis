@@ -748,6 +748,9 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			
 			const FAST_EERIEPOLY * ep = fts_read<FAST_EERIEPOLY>(data, end);
 			
+			if(ep->room >= fsh->nb_rooms + 1) {
+				throw std::runtime_error("face room index out of bounds");
+			}
 			polygon.room = ep->room < 0 ? RoomHandle() : RoomHandle(ep->room);
 			polygon.area = ep->area;
 			polygon.norm = ep->norm.toVec3();
