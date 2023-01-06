@@ -76,7 +76,7 @@ static bool WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 			// Going away from valid tiles
 			return false;
 		}
-		if(tile.y < 0 ? endTile.y < 0 : endTile.y >= g_tiles->m_size.x) {
+		if(tile.y < 0 ? endTile.y < 0 : endTile.y >= g_tiles->m_size.y) {
 			// Not going far enough to reach valid tiles
 			return false;
 		}
