@@ -43,7 +43,7 @@ jobs:
       run: brew update
 
     - name: Dependencies
-      run: brew install boost freetype sdl2 libepoxy qt5 cppunit glm openal-soft
+      run: HOMEBREW_NO_AUTO_UPDATE=1 brew install boost freetype sdl2 libepoxy qt5 cppunit glm openal-soft
 
     - name: Configure
       run: cmake -B ${{github.workspace}}/build -Werror=dev -Werror=deprecated -DCONTINUOUS_INTEGRATION=1 -DICON_TYPE=none -DOPENAL_LIBRARY=/usr/local/opt/openal-soft/lib/libopenal.dylib -DOPENAL_INCLUDE_DIR=/usr/local/opt/openal-soft/include/AL -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5
