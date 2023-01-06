@@ -70,6 +70,9 @@ static bool WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 		p1 += dir * (cellSide.x / dir.x * tilesToSkip);
 		dir = p2 - p1;
 		tile = Vec2i(glm::floor(p1 / cellSide));
+		// Fix up floating point precision issues when near a grid edge
+		arx_assert(tile.x >= -1 && tile.x <= g_tiles->m_size.x);
+		tile.x = glm::clamp(tile.x, s32(0), s32(g_tiles->m_size.x - 1));
 	}
 	if(arx_unlikely(tile.y < 0 || tile.y >= g_tiles->m_size.y)) {
 		if(d.y == 0 || d.y == (tile.y < 0 ? -1 : 1)) {
@@ -84,6 +87,20 @@ static bool WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 		p1 += dir * (cellSide.y / dir.y * tilesToSkip);
 		dir = p2 - p1;
 		tile = Vec2i(glm::floor(p1 / cellSide));
+		// Fix up floating point precision issues when near a grid edge
+		arx_assert(tile.y >= -1 && tile.y <= g_tiles->m_size.y);
+		tile.y = glm::clamp(tile.y, s32(0), s32(g_tiles->m_size.y - 1));
+		if(tile.x < 0 || tile.x >= g_tiles->m_size.x) {
+			/*
+			 * Moved from one out of bounds side to another - now in bounds for y but no longer in bounds for x
+			 *  _|_|_|   p2
+			 *  _|_|_|  /
+			 *  _|_|_| p1'
+			 *        /
+			 *   start
+			 */
+			return false;
+		}
 	}
 	arx_assert(tile.x >= 0 && tile.x < g_tiles->m_size.x);
 	arx_assert(tile.y >= 0 && tile.y < g_tiles->m_size.y);
