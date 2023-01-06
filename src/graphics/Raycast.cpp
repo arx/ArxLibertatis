@@ -57,7 +57,7 @@ static bool WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 	Vec2i endTile = Vec2i(glm::floor(p2 / cellSide));
 	
 	// Handle invalid start tiles
-	if(tile.x < 0 || tile.x >= g_tiles->m_size.x) {
+	if(arx_unlikely(tile.x < 0 || tile.x >= g_tiles->m_size.x)) {
 		if(d.x == 0 || d.x == (tile.x < 0 ? -1 : 1)) {
 			// Going away from valid tiles
 			return false;
@@ -71,7 +71,7 @@ static bool WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 		dir = p2 - p1;
 		tile = Vec2i(glm::floor(p1 / cellSide));
 	}
-	if(tile.y < 0 || tile.y >= g_tiles->m_size.y) {
+	if(arx_unlikely(tile.y < 0 || tile.y >= g_tiles->m_size.y)) {
 		if(d.y == 0 || d.y == (tile.y < 0 ? -1 : 1)) {
 			// Going away from valid tiles
 			return false;
