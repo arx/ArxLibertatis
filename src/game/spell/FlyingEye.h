@@ -23,8 +23,17 @@
 #include "graphics/BaseGraphicsTypes.h"
 #include "math/Angle.h"
 
+enum EyeStatus {
+	EYEBALL_INACTIVE = 0,
+	EYEBALL_ACTIVE,
+	EYEBALL_LAUNCHED,
+	EYEBALL_APPEAR,
+	EYEBALL_DISAPPEAR
+};
+
 struct EYEBALL_DEF {
 	
+	EyeStatus status;
 	long exist;
 	Vec3f pos;
 	Anglef angle;
@@ -33,6 +42,7 @@ struct EYEBALL_DEF {
 	
 	EYEBALL_DEF()
 		: exist(0)
+		, status (EYEBALL_INACTIVE)
 		, pos(0.f)
 		, size(0.f)
 		, floating(0.f)
