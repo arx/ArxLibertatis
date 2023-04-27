@@ -50,7 +50,7 @@ void FlyingEye_Release() {
 }
 
 void DrawMagicSightInterface() {
-	if(eyeball.exist == 1 || !Flying_Eye)
+	if(eyeball.status == EYEBALL_LAUNCHED || !Flying_Eye)
 		return;
 	
 	UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
@@ -61,9 +61,9 @@ void DrawMagicSightInterface() {
 		col = 1.f;
 	}
 
-	if(eyeball.exist < 0) {
+	if(eyeball.status == EYEBALL_DISAPPEAR) {
 		col = -eyeball.exist * (1.f / 100);
-	} else if(eyeball.exist > 2) {
+	} else if(eyeball.status == EYEBALL_APPEAR) {
 		col = 1.f - eyeball.size.x;
 	}
 
@@ -82,16 +82,19 @@ void DrawMagicSightInterface() {
 
 void ARXDRAW_DrawEyeBall() {
 	
-	if(eyeball.exist == 0 || !eyeballobj) {
+	if(eyeball.status == EYEBALL_INACTIVE || !eyeballobj) {
 		return;
 	}
 	
 	float d;
 	
-	if(eyeball.exist < 0) {
+	if(eyeball.status == EYEBALL_DISAPPEAR) {
 		d = -eyeball.exist * (1.0f / 100);
 		eyeball.exist++;
-	} else if(eyeball.exist > 2) {
+		if (eyeball.exist == 0) {
+			eyeball.status = EYEBALL_INACTIVE;
+		}
+	} else if(eyeball.status == EYEBALL_APPEAR) {
 		d = eyeball.exist * (1.0f / 100);
 	} else {
 		return;

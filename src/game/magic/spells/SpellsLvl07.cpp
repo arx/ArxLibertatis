@@ -51,7 +51,7 @@ FlyingEyeSpell::FlyingEyeSpell()
 
 bool FlyingEyeSpell::CanLaunch() {
 	
-	if(eyeball.exist) {
+	if(eyeball.status != EYEBALL_INACTIVE) {
 		return false;
 	}
 
@@ -79,6 +79,7 @@ void FlyingEyeSpell::Launch() {
 	m_hasDuration = false;
 	m_fManaCostPerSecond = 3.2f;
 	eyeball.exist = 1;
+	eyeball.status = EYEBALL_LAUNCHED;
 	
 	eyeball.pos = player.pos;
 	eyeball.pos += angleToVectorXZ(player.angle.getYaw()) * 200.f;
@@ -117,6 +118,7 @@ void FlyingEyeSpell::End() {
 	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_EYEBALL_OUT);
 	eyeball.exist = -100;
+	eyeball.status = EYEBALL_DISAPPEAR;
 	
 	for(long n = 0; n < 12; n++) {
 		PARTICLE_DEF * pd = createParticle(true);
@@ -181,10 +183,13 @@ void FlyingEyeSpell::Update() {
 	
 	if(m_lastupdate - m_timcreation <= 3s) {
 		eyeball.exist = long((m_lastupdate - m_timcreation) / 30ms);
+		if (eyeball.status == EYEBALL_LAUNCHED && eyeball.exist > 1) {
+			eyeball.status = EYEBALL_APPEAR;
+		}
 		eyeball.size = Vec3f(1.f - float(eyeball.exist) * 0.01f);
 		eyeball.angle.setYaw(eyeball.angle.getYaw() + toMsf(framediff3) * 0.6f);
 	} else {
-		eyeball.exist = 2;
+		eyeball.status = EYEBALL_ACTIVE;
 	}
 	
 	m_lastupdate = now;
