@@ -2555,8 +2555,9 @@ void ARX_GAME_Reset() {
 	RemoveQuakeFX();
 	player.m_improve = false;
 
-	if(eyeball.exist) {
+	if(eyeball.status != EYEBALL_INACTIVE) {
 		eyeball.exist = -100;
+		eyeball.status = EYEBALL_DISAPPEAR;
 	}
 	
 	entities.player()->ouch_time = 0;

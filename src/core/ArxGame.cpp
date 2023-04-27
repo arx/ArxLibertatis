@@ -1231,7 +1231,7 @@ void ArxGame::updateFirstPersonCamera() {
 	Vec3f targetPos = g_playerCamera.m_pos;
 	Anglef targetAngle = g_playerCamera.angle;
 	
-	if(eyeball.exist == 2) {
+	if(eyeball.status == EYEBALL_ACTIVE) {
 		
 		targetPos = eyeball.pos;
 		targetAngle = eyeball.angle;
@@ -1814,7 +1814,7 @@ void ArxGame::renderLevel() {
 		DrawImproveVisionInterface();
 	}
 
-	if(eyeball.exist != 0)
+	if(eyeball.status != EYEBALL_INACTIVE)
 		DrawMagicSightInterface();
 
 	if(player.m_paralysed) {
