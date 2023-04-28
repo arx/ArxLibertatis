@@ -111,9 +111,8 @@ void FlyingEyeSpell::End() {
 	}
 	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_EYEBALL_OUT);
-	eyeball.exist = -100;
-	eyeball.status = FlyingEye::EYEBALL_DISAPPEAR;
-	
+	eyeball.end();
+
 	for(long n = 0; n < 12; n++) {
 		PARTICLE_DEF * pd = createParticle(true);
 		if(!pd) {
