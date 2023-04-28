@@ -58,7 +58,7 @@ void FlyingEye::init() {
 	eyeballobj = loadObject("editor/obj3d/eyeball.teo");
 }
 
-void FlyingEye::FlyingEye_Release() {
+void FlyingEye::release() {
 	eyeballobj = { };
 }
 

@@ -903,7 +903,7 @@ static void ReleaseSystemObjects() {
 		arx_assert(entities.size() > 0 && entities.player() == nullptr);
 	}
 	
-	eyeball.FlyingEye_Release();
+	eyeball.release();
 	ReleaseSpellModels();
 	
 	cameraobj = { };

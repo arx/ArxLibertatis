@@ -46,7 +46,7 @@ public:
 	~FlyingEye();
 
 	void init();
-	void FlyingEye_Release();
+	void release();
 
 	void DrawMagicSightInterface();
 
