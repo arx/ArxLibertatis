@@ -48,7 +48,7 @@ public:
 	void init();
 	void release();
 
-	void DrawMagicSightInterface();
+	void drawMagicSightInterface();
 
 	void render();
 };
