@@ -31,25 +31,38 @@
 #include "graphics/data/TextureContainer.h"
 #include "graphics/data/Mesh.h"
 
-EYEBALL_DEF eyeball;
+FlyingEye eyeball;
 
 float MagicSightFader = 0.f;
 
 static TextureContainer * Flying_Eye = nullptr;
 static std::unique_ptr<EERIE_3DOBJ> eyeballobj; // EyeBall 3D Object
 
-void FlyingEye_Init() {
+FlyingEye::FlyingEye()
+	: exist(0)
+	, status(EYEBALL_INACTIVE)
+	, pos(0.f)
+	, size(0.f)
+	, floating(0.f)
+{
+
+}
+
+FlyingEye::~FlyingEye() {
+
+}
+
+void FlyingEye::FlyingEye_Init() {
 	
 	Flying_Eye = TextureContainer::LoadUI("graph/particles/flying_eye_fx");
 	eyeballobj = loadObject("editor/obj3d/eyeball.teo");
-	
 }
 
-void FlyingEye_Release() {
+void FlyingEye::FlyingEye_Release() {
 	eyeballobj = { };
 }
 
-void DrawMagicSightInterface() {
+void FlyingEye::DrawMagicSightInterface() {
 	if(eyeball.status == EYEBALL_LAUNCHED || !Flying_Eye)
 		return;
 	
@@ -80,7 +93,7 @@ void DrawMagicSightInterface() {
 	
 }
 
-void ARXDRAW_DrawEyeBall() {
+void FlyingEye::ARXDRAW_DrawEyeBall() {
 	
 	if(eyeball.status == EYEBALL_INACTIVE || !eyeballobj) {
 		return;
