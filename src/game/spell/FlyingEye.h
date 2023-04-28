@@ -50,6 +50,7 @@ public:
 
 	void launch();
 	void drawMagicSightInterface();
+	void end();
 
 	void render();
 };
