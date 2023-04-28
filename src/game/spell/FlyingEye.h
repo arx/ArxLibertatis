@@ -50,7 +50,7 @@ public:
 
 	void DrawMagicSightInterface();
 
-	void ARXDRAW_DrawEyeBall();
+	void render();
 };
 
 extern float MagicSightFader;
