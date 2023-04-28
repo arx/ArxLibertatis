@@ -22,7 +22,6 @@
 #include <memory>
 
 #include "core/Core.h"
-#include "core/GameTime.h"
 
 #include "game/Player.h"
 
@@ -30,33 +29,33 @@
 
 #include "graphics/Renderer.h"
 #include "graphics/Draw.h"
-#include "graphics/data/TextureContainer.h"
 #include "graphics/data/Mesh.h"
 
 FlyingEye eyeball;
 
 float MagicSightFader = 0.f;
 
-static TextureContainer * Flying_Eye = nullptr;
-static std::unique_ptr<EERIE_3DOBJ> eyeballobj; // EyeBall 3D Object
-
 FlyingEye::FlyingEye()
-	: exist(0)
-	, status(EYEBALL_INACTIVE)
-	, pos(0.f)
-	, size(0.f)
-	, floating(0.f)
+	: eyeTex(nullptr)
 {
-
+	reset();
 }
 
 FlyingEye::~FlyingEye() {
 
 }
 
+void FlyingEye::reset() {
+	exist = 0;
+	status = EYEBALL_INACTIVE;
+	pos = Vec3f(0.f);
+	size = Vec3f(0.f);
+	floating = 0.f;
+}
+
 void FlyingEye::init() {
 	
-	Flying_Eye = TextureContainer::LoadUI("graph/particles/flying_eye_fx");
+	eyeTex = TextureContainer::LoadUI("graph/particles/flying_eye_fx");
 	eyeballobj = loadObject("editor/obj3d/eyeball.teo");
 }
 
@@ -65,6 +64,9 @@ void FlyingEye::release() {
 }
 
 void FlyingEye::launch() {
+
+	m_timeCreation = g_gameTime.now();
+
 	exist = 1;
 	status = FlyingEye::EYEBALL_LAUNCHED;
 
@@ -75,8 +77,28 @@ void FlyingEye::launch() {
 	angle = player.angle;
 }
 
+void FlyingEye::update() {
+
+	GameDuration frameDiff = g_gameTime.lastFrameDuration();
+	GameDuration elapsed = g_gameTime.now() - frameDiff - m_timeCreation;
+
+	eyeball.floating = std::sin((elapsed) / 1s);
+	eyeball.floating *= 10.f;
+
+	if(elapsed <= 3s) {
+		eyeball.exist = long((elapsed) / 30ms);
+		if (eyeball.status == FlyingEye::EYEBALL_LAUNCHED && eyeball.exist > 1) {
+			eyeball.status = FlyingEye::EYEBALL_APPEAR;
+		}
+		eyeball.size = Vec3f(1.f - float(eyeball.exist) * 0.01f);
+		eyeball.angle.setYaw(eyeball.angle.getYaw() + toMsf(frameDiff) * 0.6f);
+	} else {
+		eyeball.status = FlyingEye::EYEBALL_ACTIVE;
+	}
+}
+
 void FlyingEye::drawMagicSightInterface() {
-	if(eyeball.status == EYEBALL_LAUNCHED || !Flying_Eye)
+	if(eyeball.status == EYEBALL_LAUNCHED || !eyeTex)
 		return;
 	
 	UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
@@ -93,7 +115,7 @@ void FlyingEye::drawMagicSightInterface() {
 		col = 1.f - eyeball.size.x;
 	}
 
-	EERIEDrawBitmap(Rectf(g_size), 0.0001f, Flying_Eye, Color::gray(col));
+	EERIEDrawBitmap(Rectf(g_size), 0.0001f, eyeTex, Color::gray(col));
 	
 	if(MagicSightFader > 0.f) {
 		col = MagicSightFader;
