@@ -93,7 +93,7 @@ void FlyingEye::DrawMagicSightInterface() {
 	
 }
 
-void FlyingEye::ARXDRAW_DrawEyeBall() {
+void FlyingEye::render() {
 	
 	if(eyeball.status == EYEBALL_INACTIVE || !eyeballobj) {
 		return;
