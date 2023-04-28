@@ -62,7 +62,7 @@ void FlyingEye::release() {
 	eyeballobj = { };
 }
 
-void FlyingEye::DrawMagicSightInterface() {
+void FlyingEye::drawMagicSightInterface() {
 	if(eyeball.status == EYEBALL_LAUNCHED || !Flying_Eye)
 		return;
 	
