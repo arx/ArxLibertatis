@@ -106,6 +106,11 @@ void FlyingEye::drawMagicSightInterface() {
 	
 }
 
+void FlyingEye::end() {
+	exist = -100;
+	status = FlyingEye::EYEBALL_DISAPPEAR;
+}
+
 void FlyingEye::render() {
 	
 	if(eyeball.status == EYEBALL_INACTIVE || !eyeballobj) {
