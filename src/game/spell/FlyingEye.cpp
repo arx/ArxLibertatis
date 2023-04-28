@@ -52,7 +52,7 @@ FlyingEye::~FlyingEye() {
 
 }
 
-void FlyingEye::FlyingEye_Init() {
+void FlyingEye::init() {
 	
 	Flying_Eye = TextureContainer::LoadUI("graph/particles/flying_eye_fx");
 	eyeballobj = loadObject("editor/obj3d/eyeball.teo");

@@ -804,7 +804,7 @@ bool ArxGame::initGame()
 	
 	drawDebugInitialize();
 
-	eyeball.FlyingEye_Init();
+	eyeball.init();
 	LoadSpellModels();
 	particleParametersInit();
 	
