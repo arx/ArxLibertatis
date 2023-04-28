@@ -804,7 +804,7 @@ bool ArxGame::initGame()
 	
 	drawDebugInitialize();
 
-	FlyingEye_Init();
+	eyeball.FlyingEye_Init();
 	LoadSpellModels();
 	particleParametersInit();
 	
@@ -903,7 +903,7 @@ static void ReleaseSystemObjects() {
 		arx_assert(entities.size() > 0 && entities.player() == nullptr);
 	}
 	
-	FlyingEye_Release();
+	eyeball.FlyingEye_Release();
 	ReleaseSpellModels();
 	
 	cameraobj = { };
@@ -1231,7 +1231,7 @@ void ArxGame::updateFirstPersonCamera() {
 	Vec3f targetPos = g_playerCamera.m_pos;
 	Anglef targetAngle = g_playerCamera.angle;
 	
-	if(eyeball.status == EYEBALL_ACTIVE) {
+	if(eyeball.status == FlyingEye::EYEBALL_ACTIVE) {
 		
 		targetPos = eyeball.pos;
 		targetAngle = eyeball.angle;
@@ -1814,8 +1814,8 @@ void ArxGame::renderLevel() {
 		DrawImproveVisionInterface();
 	}
 
-	if(eyeball.status != EYEBALL_INACTIVE)
-		DrawMagicSightInterface();
+	if(eyeball.status != FlyingEye::EYEBALL_INACTIVE)
+		eyeball.DrawMagicSightInterface();
 
 	if(player.m_paralysed) {
 		UseRenderState state(render2D().blendAdditive());

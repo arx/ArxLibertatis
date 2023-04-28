@@ -1618,7 +1618,7 @@ void ARX_SCENE_Render() {
 		PopAllTriangleListOpaque();
 	}
 	
-	ARXDRAW_DrawEyeBall();
+	eyeball.ARXDRAW_DrawEyeBall();
 	
 	PolyBoomDraw();
 	

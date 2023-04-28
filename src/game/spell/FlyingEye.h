@@ -23,41 +23,37 @@
 #include "graphics/BaseGraphicsTypes.h"
 #include "math/Angle.h"
 
-enum EyeStatus {
-	EYEBALL_INACTIVE = 0,
-	EYEBALL_ACTIVE,
-	EYEBALL_LAUNCHED,
-	EYEBALL_APPEAR,
-	EYEBALL_DISAPPEAR
-};
+class FlyingEye {
 
-struct EYEBALL_DEF {
-	
+public:
+
+	enum EyeStatus {
+		EYEBALL_INACTIVE = 0,
+		EYEBALL_ACTIVE,
+		EYEBALL_LAUNCHED,
+		EYEBALL_APPEAR,
+		EYEBALL_DISAPPEAR
+	};
+
 	EyeStatus status;
 	long exist;
 	Vec3f pos;
 	Anglef angle;
 	Vec3f size;
 	float floating;
-	
-	EYEBALL_DEF()
-		: exist(0)
-		, status (EYEBALL_INACTIVE)
-		, pos(0.f)
-		, size(0.f)
-		, floating(0.f)
-	{ }
-	
+
+	FlyingEye();
+	~FlyingEye();
+
+	void FlyingEye_Init();
+	void FlyingEye_Release();
+
+	void DrawMagicSightInterface();
+
+	void ARXDRAW_DrawEyeBall();
 };
 
 extern float MagicSightFader;
-extern EYEBALL_DEF eyeball;
-
-void FlyingEye_Init();
-void FlyingEye_Release();
-
-void DrawMagicSightInterface();
-
-void ARXDRAW_DrawEyeBall();
+extern FlyingEye eyeball;
 
 #endif // ARX_GAME_SPELL_FLYINGEYE_H
