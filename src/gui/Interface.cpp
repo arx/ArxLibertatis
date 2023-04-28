@@ -724,7 +724,7 @@ void ArxGame::managePlayerControls() {
 		long NOMOREMOVES = 0;
 		float FD = 1.f;
 		
-		if(eyeball.status == EYEBALL_ACTIVE) {
+		if(eyeball.status == FlyingEye::EYEBALL_ACTIVE) {
 			FD = 18.f;
 			Vec3f old = eyeball.pos;
 			
@@ -1237,7 +1237,7 @@ void ArxGame::managePlayerControls() {
 		}
 		
 		if(bRenderInCursorMode) {
-			if(eyeball.status != EYEBALL_INACTIVE) {
+			if(eyeball.status != FlyingEye::EYEBALL_INACTIVE) {
 				spells.endByCaster(EntityHandle_Player, SPELL_FLYING_EYE);
 			}
 		}
@@ -1567,7 +1567,7 @@ void ArxGame::manageKeyMouse() {
 		
 		if(PLAYER_MOUSELOOK_ON || bKeySpecialMove) {
 
-			if(eyeball.status == EYEBALL_ACTIVE) {
+			if(eyeball.status == FlyingEye::EYEBALL_ACTIVE) {
 				if(eyeball.angle.getPitch() < 70.f) {
 					if(eyeball.angle.getPitch() + rotation.y < 70.f)
 						eyeball.angle.setPitch(eyeball.angle.getPitch() + rotation.y);
