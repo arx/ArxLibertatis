@@ -24,6 +24,8 @@
 #include "core/Core.h"
 #include "core/GameTime.h"
 
+#include "game/Player.h"
+
 #include "scene/Object.h"
 
 #include "graphics/Renderer.h"
@@ -60,6 +62,17 @@ void FlyingEye::init() {
 
 void FlyingEye::release() {
 	eyeballobj = { };
+}
+
+void FlyingEye::launch() {
+	exist = 1;
+	status = FlyingEye::EYEBALL_LAUNCHED;
+
+	pos = player.pos;
+	pos += angleToVectorXZ(player.angle.getYaw()) * 200.f;
+	pos += Vec3f(0.f, 50.f, 0.f);
+
+	angle = player.angle;
 }
 
 void FlyingEye::drawMagicSightInterface() {

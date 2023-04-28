@@ -78,14 +78,8 @@ void FlyingEyeSpell::Launch() {
 	m_duration = 0;
 	m_hasDuration = false;
 	m_fManaCostPerSecond = 3.2f;
-	eyeball.exist = 1;
-	eyeball.status = FlyingEye::EYEBALL_LAUNCHED;
 	
-	eyeball.pos = player.pos;
-	eyeball.pos += angleToVectorXZ(player.angle.getYaw()) * 200.f;
-	eyeball.pos += Vec3f(0.f, 50.f, 0.f);
-	
-	eyeball.angle = player.angle;
+	eyeball.launch();
 	
 	for(size_t n = 0; n < 12; n++) {
 		PARTICLE_DEF * pd = createParticle(true);
