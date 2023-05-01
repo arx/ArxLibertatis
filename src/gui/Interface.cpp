@@ -1567,7 +1567,7 @@ void ArxGame::manageKeyMouse() {
 		
 		if(PLAYER_MOUSELOOK_ON || bKeySpecialMove) {
 
-			if(eyeball.status == FlyingEye::EYEBALL_ACTIVE) {
+			if(eyeball.isActive()) {
 				if(eyeball.angle.getPitch() < 70.f) {
 					if(eyeball.angle.getPitch() + rotation.y < 70.f)
 						eyeball.angle.setPitch(eyeball.angle.getPitch() + rotation.y);
