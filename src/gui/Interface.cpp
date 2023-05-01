@@ -724,7 +724,7 @@ void ArxGame::managePlayerControls() {
 		long NOMOREMOVES = 0;
 		float FD = 1.f;
 		
-		if(eyeball.status == FlyingEye::EYEBALL_ACTIVE) {
+		if(eyeball.isActive()) {
 			FD = 18.f;
 			Vec3f old = eyeball.pos;
 			

@@ -50,6 +50,8 @@ public:
 	void init();
 	void release();
 
+	bool isActive();
+
 	void reset();
 	void launch();
 	void update();
