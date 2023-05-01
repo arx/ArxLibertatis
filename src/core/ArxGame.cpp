@@ -1231,7 +1231,7 @@ void ArxGame::updateFirstPersonCamera() {
 	Vec3f targetPos = g_playerCamera.m_pos;
 	Anglef targetAngle = g_playerCamera.angle;
 	
-	if(eyeball.status == FlyingEye::EYEBALL_ACTIVE) {
+	if(eyeball.isActive()) {
 		
 		targetPos = eyeball.pos;
 		targetAngle = eyeball.angle;
