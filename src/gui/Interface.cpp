@@ -1237,9 +1237,7 @@ void ArxGame::managePlayerControls() {
 		}
 		
 		if(bRenderInCursorMode) {
-			if(eyeball.status != FlyingEye::EYEBALL_INACTIVE) {
-				spells.endByCaster(EntityHandle_Player, SPELL_FLYING_EYE);
-			}
+			spells.endByCaster(EntityHandle_Player, SPELL_FLYING_EYE);
 		}
 	}
 }

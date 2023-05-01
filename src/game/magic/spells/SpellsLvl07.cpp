@@ -51,7 +51,7 @@ FlyingEyeSpell::FlyingEyeSpell()
 
 bool FlyingEyeSpell::CanLaunch() {
 	
-	if(eyeball.status != FlyingEye::EYEBALL_INACTIVE) {
+	if(!eyeball.isInactive()) {
 		return false;
 	}
 
@@ -104,6 +104,10 @@ void FlyingEyeSpell::Launch() {
 }
 
 void FlyingEyeSpell::End() {
+
+	if (eyeball.status == FlyingEye::EYEBALL_INACTIVE) {
+		return;
+	}
 	
 	Entity * caster = entities.get(m_caster);
 	if(caster) {
