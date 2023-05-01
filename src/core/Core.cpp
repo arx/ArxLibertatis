@@ -339,8 +339,7 @@ void levelInit() {
 	
 	ARX_SPELLS_ResetRecognition();
 	
-	eyeball.exist = 0;
-	eyeball.status = FlyingEye::EYEBALL_INACTIVE;
+	eyeball.reset();
 	
 	resetDynLights();
 	
