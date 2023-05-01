@@ -102,7 +102,7 @@ void FlyingEye::update() {
 }
 
 void FlyingEye::drawMagicSightInterface() {
-	if(eyeball.status == EYEBALL_LAUNCHED || !eyeTex)
+	if(eyeball.status == EYEBALL_LAUNCHED || !eyeTex || eyeball.status == EYEBALL_INACTIVE)
 		return;
 	
 	UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
