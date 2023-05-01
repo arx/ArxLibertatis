@@ -1813,9 +1813,8 @@ void ArxGame::renderLevel() {
 	if(player.m_improve) {
 		DrawImproveVisionInterface();
 	}
-
-	if(eyeball.status != FlyingEye::EYEBALL_INACTIVE)
-		eyeball.drawMagicSightInterface();
+	
+	eyeball.drawMagicSightInterface();
 
 	if(player.m_paralysed) {
 		UseRenderState state(render2D().blendAdditive());
