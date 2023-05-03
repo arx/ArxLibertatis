@@ -63,7 +63,7 @@ public:
 
 private:
 	GameInstant m_timeCreation;
-	TextureContainer * eyeTex;
+	TextureContainer * m_eyeTex;
 	std::unique_ptr<EERIE_3DOBJ> eyeballobj; // EyeBall 3D Object
 };
 
