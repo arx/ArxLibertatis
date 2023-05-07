@@ -118,7 +118,7 @@ void FlyingEye::drawMagicSightInterface() {
 	}
 	
 	if(m_state == EYEBALL_DISAPPEAR) {
-		col = -m_progress * (1.f / 100);
+		col = m_progress * (1.f / 100);
 	} else if(m_state == EYEBALL_APPEAR) {
 		col = 1.f - m_size.x;
 	}
@@ -137,7 +137,6 @@ void FlyingEye::drawMagicSightInterface() {
 }
 
 void FlyingEye::end() {
-	m_progress = -100;
 	m_state = FlyingEye::EYEBALL_DISAPPEAR;
 }
 
@@ -150,8 +149,8 @@ void FlyingEye::render() {
 	float d;
 	
 	if(m_state == EYEBALL_DISAPPEAR) {
-		d = -m_progress * (1.0f / 100);
-		m_progress++;
+		d = m_progress * (1.0f / 100);
+		m_progress--;
 		if (m_progress == 0) {
 			m_state = EYEBALL_INACTIVE;
 		}
