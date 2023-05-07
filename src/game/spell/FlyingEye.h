@@ -41,7 +41,6 @@ public:
 	long m_progress;
 	Vec3f m_pos;
 	Anglef m_angle;
-	Vec3f m_size;
 
 	FlyingEye();
 	~FlyingEye();
@@ -65,6 +64,7 @@ private:
 	TextureContainer * m_eyeTex;
 	std::unique_ptr<EERIE_3DOBJ> m_eyeballobj; // EyeBall 3D Object
 	float m_floatY;
+	Vec3f m_size;
 };
 
 extern float MagicSightFader;
