@@ -142,23 +142,18 @@ void FlyingEye::end() {
 
 void FlyingEye::render() {
 	
-	if(m_state == EYEBALL_INACTIVE || !m_eyeballobj) {
+	if((m_state != EYEBALL_APPEAR && m_state != EYEBALL_DISAPPEAR) || !m_eyeballobj) {
 		return;
 	}
 	
-	float d;
-	
 	if(m_state == EYEBALL_DISAPPEAR) {
-		d = m_progress * (1.0f / 100);
 		m_progress--;
 		if (m_progress == 0) {
 			m_state = EYEBALL_INACTIVE;
 		}
-	} else if(m_state == EYEBALL_APPEAR) {
-		d = m_progress * (1.0f / 100);
-	} else {
-		return;
 	}
+	
+	float d = m_progress * (1.0f / 100);
 	
 	Anglef angle = m_angle;
 	angle.setYaw(MAKEANGLE(180.f - angle.getYaw()));
