@@ -38,7 +38,6 @@ public:
 	};
 
 	EyeStatus m_state;
-	long m_progress;
 	Vec3f m_pos;
 	Anglef m_angle;
 
@@ -65,6 +64,7 @@ private:
 	std::unique_ptr<EERIE_3DOBJ> m_eyeballobj; // EyeBall 3D Object
 	float m_floatZ;
 	Vec3f m_size;
+	long m_progress;
 };
 
 extern float MagicSightFader;
