@@ -41,7 +41,7 @@ public:
 	long m_progress;
 	Vec3f m_pos;
 	Anglef m_angle;
-	Vec3f size;
+	Vec3f m_size;
 	float floating;
 
 	FlyingEye();
