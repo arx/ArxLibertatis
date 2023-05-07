@@ -28,14 +28,6 @@
 class FlyingEye {
 
 public:
-
-	enum EyeStatus {
-		EYEBALL_INACTIVE = 0,
-		EYEBALL_ACTIVE,
-		EYEBALL_LAUNCHED,
-		EYEBALL_APPEAR,
-		EYEBALL_DISAPPEAR
-	};
 	
 	Vec3f m_pos;
 	Anglef m_angle;
@@ -58,6 +50,15 @@ public:
 	void render();
 
 private:
+	
+	enum EyeStatus {
+		EYEBALL_INACTIVE = 0,
+		EYEBALL_ACTIVE,
+		EYEBALL_LAUNCHED,
+		EYEBALL_APPEAR,
+		EYEBALL_DISAPPEAR
+	};
+	
 	GameInstant m_timeCreation;
 	TextureContainer* m_eyeTex;
 	std::unique_ptr<EERIE_3DOBJ> m_eyeballobj; // EyeBall 3D Object
