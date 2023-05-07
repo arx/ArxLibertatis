@@ -49,7 +49,7 @@ void FlyingEye::reset() {
 	m_progress = 0;
 	m_state = EYEBALL_INACTIVE;
 	m_pos = Vec3f(0.f);
-	size = Vec3f(0.f);
+	m_size = Vec3f(0.f);
 	floating = 0.f;
 }
 
@@ -98,7 +98,7 @@ void FlyingEye::update() {
 		if (eyeball.m_state == FlyingEye::EYEBALL_LAUNCHED && eyeball.m_progress > 1) {
 			eyeball.m_state = FlyingEye::EYEBALL_APPEAR;
 		}
-		eyeball.size = Vec3f(1.f - float(eyeball.m_progress) * 0.01f);
+		eyeball.m_size = Vec3f(1.f - float(eyeball.m_progress) * 0.01f);
 		eyeball.m_angle.setYaw(eyeball.m_angle.getYaw() + toMsf(frameDiff) * 0.6f);
 	} else {
 		eyeball.m_state = FlyingEye::EYEBALL_ACTIVE;
@@ -120,7 +120,7 @@ void FlyingEye::drawMagicSightInterface() {
 	if(eyeball.m_state == EYEBALL_DISAPPEAR) {
 		col = -eyeball.m_progress * (1.f / 100);
 	} else if(eyeball.m_state == EYEBALL_APPEAR) {
-		col = 1.f - eyeball.size.x;
+		col = 1.f - eyeball.m_size.x;
 	}
 
 	EERIEDrawBitmap(Rectf(g_size), 0.0001f, m_eyeTex, Color::gray(col));
