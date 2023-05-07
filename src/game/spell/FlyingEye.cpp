@@ -90,23 +90,23 @@ void FlyingEye::update() {
 	GameDuration frameDiff = g_gameTime.lastFrameDuration();
 	GameDuration elapsed = g_gameTime.now() - frameDiff - m_timeCreation;
 
-	eyeball.m_floatY = std::sin((elapsed) / 1s);
-	eyeball.m_floatY *= 10.f;
+	m_floatY = std::sin((elapsed) / 1s);
+	m_floatY *= 10.f;
 
 	if(elapsed <= 3s) {
-		eyeball.m_progress = long((elapsed) / 30ms);
-		if (eyeball.m_state == FlyingEye::EYEBALL_LAUNCHED && eyeball.m_progress > 1) {
-			eyeball.m_state = FlyingEye::EYEBALL_APPEAR;
+		m_progress = long((elapsed) / 30ms);
+		if(m_state == FlyingEye::EYEBALL_LAUNCHED && m_progress > 1) {
+			m_state = FlyingEye::EYEBALL_APPEAR;
 		}
-		eyeball.m_size = Vec3f(1.f - float(eyeball.m_progress) * 0.01f);
-		eyeball.m_angle.setYaw(eyeball.m_angle.getYaw() + toMsf(frameDiff) * 0.6f);
+		m_size = Vec3f(1.f - float(m_progress) * 0.01f);
+		m_angle.setYaw(m_angle.getYaw() + toMsf(frameDiff) * 0.6f);
 	} else {
-		eyeball.m_state = FlyingEye::EYEBALL_ACTIVE;
+		m_state = FlyingEye::EYEBALL_ACTIVE;
 	}
 }
 
 void FlyingEye::drawMagicSightInterface() {
-	if(eyeball.m_state == EYEBALL_LAUNCHED || !m_eyeTex || eyeball.m_state == EYEBALL_INACTIVE)
+	if(m_state == EYEBALL_LAUNCHED || !m_eyeTex || m_state == EYEBALL_INACTIVE)
 		return;
 	
 	UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
@@ -117,10 +117,10 @@ void FlyingEye::drawMagicSightInterface() {
 		col = 1.f;
 	}
 
-	if(eyeball.m_state == EYEBALL_DISAPPEAR) {
-		col = -eyeball.m_progress * (1.f / 100);
-	} else if(eyeball.m_state == EYEBALL_APPEAR) {
-		col = 1.f - eyeball.m_size.x;
+	if(m_state == EYEBALL_DISAPPEAR) {
+		col = -m_progress * (1.f / 100);
+	} else if(m_state == EYEBALL_APPEAR) {
+		col = 1.f - m_size.x;
 	}
 
 	EERIEDrawBitmap(Rectf(g_size), 0.0001f, m_eyeTex, Color::gray(col));
@@ -143,29 +143,29 @@ void FlyingEye::end() {
 
 void FlyingEye::render() {
 	
-	if(eyeball.m_state == EYEBALL_INACTIVE || !m_eyeballobj) {
+	if(m_state == EYEBALL_INACTIVE || !m_eyeballobj) {
 		return;
 	}
 	
 	float d;
 	
-	if(eyeball.m_state == EYEBALL_DISAPPEAR) {
-		d = -eyeball.m_progress * (1.0f / 100);
-		eyeball.m_progress++;
-		if (eyeball.m_progress == 0) {
-			eyeball.m_state = EYEBALL_INACTIVE;
+	if(m_state == EYEBALL_DISAPPEAR) {
+		d = -m_progress * (1.0f / 100);
+		m_progress++;
+		if(m_progress == 0) {
+			m_state = EYEBALL_INACTIVE;
 		}
-	} else if(eyeball.m_state == EYEBALL_APPEAR) {
-		d = eyeball.m_progress * (1.0f / 100);
+	} else if(m_state == EYEBALL_APPEAR) {
+		d = m_progress * (1.0f / 100);
 	} else {
 		return;
 	}
 	
-	Anglef angle = eyeball.m_angle;
+	Anglef angle = m_angle;
 	angle.setYaw(MAKEANGLE(180.f - angle.getYaw()));
 	
-	Vec3f pos = eyeball.m_pos;
-	pos.y += eyeball.m_floatY;
+	Vec3f pos = m_pos;
+	pos.y += m_floatY;
 	
 	Vec3f scale = Vec3f(d);
 	Color3f rgb = Color3f::gray(d);
