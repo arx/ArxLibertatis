@@ -39,7 +39,7 @@ public:
 
 	EyeStatus m_state;
 	long m_progress;
-	Vec3f pos;
+	Vec3f m_pos;
 	Anglef angle;
 	Vec3f size;
 	float floating;

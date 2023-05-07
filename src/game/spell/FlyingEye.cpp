@@ -48,7 +48,7 @@ FlyingEye::~FlyingEye() {
 void FlyingEye::reset() {
 	m_progress = 0;
 	m_state = EYEBALL_INACTIVE;
-	pos = Vec3f(0.f);
+	m_pos = Vec3f(0.f);
 	size = Vec3f(0.f);
 	floating = 0.f;
 }
@@ -78,9 +78,9 @@ void FlyingEye::launch() {
 	m_progress = 1;
 	m_state = FlyingEye::EYEBALL_LAUNCHED;
 
-	pos = player.pos;
-	pos += angleToVectorXZ(player.angle.getYaw()) * 200.f;
-	pos += Vec3f(0.f, 50.f, 0.f);
+	m_pos = player.pos;
+	m_pos += angleToVectorXZ(player.angle.getYaw()) * 200.f;
+	m_pos += Vec3f(0.f, 50.f, 0.f);
 
 	angle = player.angle;
 }
@@ -164,7 +164,7 @@ void FlyingEye::render() {
 	Anglef angle = eyeball.angle;
 	angle.setYaw(MAKEANGLE(180.f - angle.getYaw()));
 	
-	Vec3f pos = eyeball.pos;
+	Vec3f pos = eyeball.m_pos;
 	pos.y += eyeball.floating;
 	
 	Vec3f scale = Vec3f(d);
