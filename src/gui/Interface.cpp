@@ -730,13 +730,13 @@ void ArxGame::managePlayerControls() {
 			
 			// Checks WALK_FORWARD Key Status.
 			if(GInput->actionPressed(CONTROLS_CUST_WALKFORWARD)) {
-				eyeball.m_pos += angleToVectorXZ(eyeball.angle.getYaw()) * 20.f * FD * 0.033f;
+				eyeball.m_pos += angleToVectorXZ(eyeball.m_angle.getYaw()) * 20.f * FD * 0.033f;
 				NOMOREMOVES = 1;
 			}
 			
 			// Checks WALK_BACKWARD Key Status.
 			if(GInput->actionPressed(CONTROLS_CUST_WALKBACKWARD)) {
-				eyeball.m_pos += angleToVectorXZ_180offset(eyeball.angle.getYaw()) * 20.f * FD * 0.033f;
+				eyeball.m_pos += angleToVectorXZ_180offset(eyeball.m_angle.getYaw()) * 20.f * FD * 0.033f;
 				NOMOREMOVES = 1;
 			}
 			
@@ -744,7 +744,7 @@ void ArxGame::managePlayerControls() {
 			if((GInput->actionPressed(CONTROLS_CUST_STRAFELEFT)
 			    || (GInput->actionPressed(CONTROLS_CUST_STRAFE) && GInput->actionPressed(CONTROLS_CUST_TURNLEFT)))
 			   && !NOMOREMOVES) {
-				eyeball.m_pos += angleToVectorXZ(eyeball.angle.getYaw() + 90.f) * 10.f * FD * 0.033f;
+				eyeball.m_pos += angleToVectorXZ(eyeball.m_angle.getYaw() + 90.f) * 10.f * FD * 0.033f;
 				NOMOREMOVES = 1;
 			}
 			
@@ -752,7 +752,7 @@ void ArxGame::managePlayerControls() {
 			if((GInput->actionPressed(CONTROLS_CUST_STRAFERIGHT)
 			    || (GInput->actionPressed(CONTROLS_CUST_STRAFE) && GInput->actionPressed(CONTROLS_CUST_TURNRIGHT)))
 			   && !NOMOREMOVES) {
-				eyeball.m_pos += angleToVectorXZ(eyeball.angle.getYaw() - 90.f) * 10.f * FD * 0.033f;
+				eyeball.m_pos += angleToVectorXZ(eyeball.m_angle.getYaw() - 90.f) * 10.f * FD * 0.033f;
 				NOMOREMOVES = 1;
 			}
 			
@@ -1555,8 +1555,8 @@ void ArxGame::manageKeyMouse() {
 		}
 
 		if(GInput->actionPressed(CONTROLS_CUST_CENTERVIEW)) {
-			eyeball.angle.setPitch(0);
-			eyeball.angle.setRoll(0);
+			eyeball.m_angle.setPitch(0);
+			eyeball.m_angle.setRoll(0);
 			player.desiredangle.setPitch(0);
 			player.angle.setPitch(0);
 			player.desiredangle.setRoll(0);
@@ -1566,16 +1566,16 @@ void ArxGame::manageKeyMouse() {
 		if(PLAYER_MOUSELOOK_ON || bKeySpecialMove) {
 
 			if(eyeball.isActive()) {
-				if(eyeball.angle.getPitch() < 70.f) {
-					if(eyeball.angle.getPitch() + rotation.y < 70.f)
-						eyeball.angle.setPitch(eyeball.angle.getPitch() + rotation.y);
-				} else if(eyeball.angle.getPitch() > 300.f) {
-					if(eyeball.angle.getPitch() + rotation.y > 300.f)
-						eyeball.angle.setPitch(eyeball.angle.getPitch() + rotation.y);
+				if(eyeball.m_angle.getPitch() < 70.f) {
+					if(eyeball.m_angle.getPitch() + rotation.y < 70.f)
+						eyeball.m_angle.setPitch(eyeball.m_angle.getPitch() + rotation.y);
+				} else if(eyeball.m_angle.getPitch() > 300.f) {
+					if(eyeball.m_angle.getPitch() + rotation.y > 300.f)
+						eyeball.m_angle.setPitch(eyeball.m_angle.getPitch() + rotation.y);
 				}
 
-				eyeball.angle.setPitch(MAKEANGLE(eyeball.angle.getPitch()));
-				eyeball.angle.setYaw(MAKEANGLE(eyeball.angle.getYaw() - rotation.x));
+				eyeball.m_angle.setPitch(MAKEANGLE(eyeball.m_angle.getPitch()));
+				eyeball.m_angle.setYaw(MAKEANGLE(eyeball.m_angle.getYaw() - rotation.x));
 			} else if(ARXmenu.mode() != Mode_CharacterCreation) {
 
 				float iangle = player.angle.getPitch();
