@@ -726,17 +726,17 @@ void ArxGame::managePlayerControls() {
 		
 		if(eyeball.isActive()) {
 			FD = 18.f;
-			Vec3f old = eyeball.pos;
+			Vec3f old = eyeball.m_pos;
 			
 			// Checks WALK_FORWARD Key Status.
 			if(GInput->actionPressed(CONTROLS_CUST_WALKFORWARD)) {
-				eyeball.pos += angleToVectorXZ(eyeball.angle.getYaw()) * 20.f * FD * 0.033f;
+				eyeball.m_pos += angleToVectorXZ(eyeball.angle.getYaw()) * 20.f * FD * 0.033f;
 				NOMOREMOVES = 1;
 			}
 			
 			// Checks WALK_BACKWARD Key Status.
 			if(GInput->actionPressed(CONTROLS_CUST_WALKBACKWARD)) {
-				eyeball.pos += angleToVectorXZ_180offset(eyeball.angle.getYaw()) * 20.f * FD * 0.033f;
+				eyeball.m_pos += angleToVectorXZ_180offset(eyeball.angle.getYaw()) * 20.f * FD * 0.033f;
 				NOMOREMOVES = 1;
 			}
 			
@@ -744,7 +744,7 @@ void ArxGame::managePlayerControls() {
 			if((GInput->actionPressed(CONTROLS_CUST_STRAFELEFT)
 			    || (GInput->actionPressed(CONTROLS_CUST_STRAFE) && GInput->actionPressed(CONTROLS_CUST_TURNLEFT)))
 			   && !NOMOREMOVES) {
-				eyeball.pos += angleToVectorXZ(eyeball.angle.getYaw() + 90.f) * 10.f * FD * 0.033f;
+				eyeball.m_pos += angleToVectorXZ(eyeball.angle.getYaw() + 90.f) * 10.f * FD * 0.033f;
 				NOMOREMOVES = 1;
 			}
 			
@@ -752,13 +752,13 @@ void ArxGame::managePlayerControls() {
 			if((GInput->actionPressed(CONTROLS_CUST_STRAFERIGHT)
 			    || (GInput->actionPressed(CONTROLS_CUST_STRAFE) && GInput->actionPressed(CONTROLS_CUST_TURNRIGHT)))
 			   && !NOMOREMOVES) {
-				eyeball.pos += angleToVectorXZ(eyeball.angle.getYaw() - 90.f) * 10.f * FD * 0.033f;
+				eyeball.m_pos += angleToVectorXZ(eyeball.angle.getYaw() - 90.f) * 10.f * FD * 0.033f;
 				NOMOREMOVES = 1;
 			}
 			
 			IO_PHYSICS phys;
 			phys.cyl.height = -110.f;
-			phys.cyl.origin = eyeball.pos + Vec3f(0.f, 70.f, 0.f);
+			phys.cyl.origin = eyeball.m_pos + Vec3f(0.f, 70.f, 0.f);
 			phys.cyl.radius = 45.f;
 
 			Cylinder test = phys.cyl;
@@ -768,7 +768,7 @@ void ArxGame::managePlayerControls() {
 			
 			if(val > -40.f) {
 				if(val <= 70.f) {
-					eyeball.pos.y += val - 70.f;
+					eyeball.m_pos.y += val - 70.f;
 				}
 				if(!npc) {
 					MagicSightFader += g_platformTime.lastFrameDuration() / 200ms;
@@ -776,7 +776,7 @@ void ArxGame::managePlayerControls() {
 						MagicSightFader = 1.f;
 				}
 			} else {
-				eyeball.pos = old;
+				eyeball.m_pos = old;
 			}
 			
 		}
