@@ -36,8 +36,7 @@ public:
 		EYEBALL_APPEAR,
 		EYEBALL_DISAPPEAR
 	};
-
-	EyeStatus m_state;
+	
 	Vec3f m_pos;
 	Anglef m_angle;
 
@@ -65,6 +64,7 @@ private:
 	float m_floatZ;
 	Vec3f m_size;
 	long m_progress;
+	EyeStatus m_state;
 };
 
 extern float MagicSightFader;
