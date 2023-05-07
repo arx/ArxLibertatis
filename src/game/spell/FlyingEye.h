@@ -42,7 +42,7 @@ public:
 	Vec3f m_pos;
 	Anglef m_angle;
 	Vec3f m_size;
-	float floating;
+	float m_floatY;
 
 	FlyingEye();
 	~FlyingEye();
