@@ -56,11 +56,11 @@ void FlyingEye::reset() {
 void FlyingEye::init() {
 	
 	m_eyeTex = TextureContainer::LoadUI("graph/particles/flying_eye_fx");
-	eyeballobj = loadObject("editor/obj3d/eyeball.teo");
+	m_eyeballobj = loadObject("editor/obj3d/eyeball.teo");
 }
 
 void FlyingEye::release() {
-	eyeballobj = { };
+	m_eyeballobj = { };
 }
 
 bool FlyingEye::isActive() {
@@ -143,7 +143,7 @@ void FlyingEye::end() {
 
 void FlyingEye::render() {
 	
-	if(eyeball.status == EYEBALL_INACTIVE || !eyeballobj) {
+	if(eyeball.status == EYEBALL_INACTIVE || !m_eyeballobj) {
 		return;
 	}
 	
@@ -174,6 +174,6 @@ void FlyingEye::render() {
 	mat.setDepthTest(true);
 	mat.setBlendType(RenderMaterial::Additive);
 	
-	Draw3DObject(eyeballobj.get(), angle, pos, scale, rgb, mat);
+	Draw3DObject(m_eyeballobj.get(), angle, pos, scale, rgb, mat);
 	
 }

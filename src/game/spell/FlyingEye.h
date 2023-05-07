@@ -64,7 +64,7 @@ public:
 private:
 	GameInstant m_timeCreation;
 	TextureContainer * m_eyeTex;
-	std::unique_ptr<EERIE_3DOBJ> eyeballobj; // EyeBall 3D Object
+	std::unique_ptr<EERIE_3DOBJ> m_eyeballobj; // EyeBall 3D Object
 };
 
 extern float MagicSightFader;
