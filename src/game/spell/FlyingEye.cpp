@@ -50,7 +50,7 @@ void FlyingEye::reset() {
 	m_state = EYEBALL_INACTIVE;
 	m_pos = Vec3f(0.f);
 	m_size = Vec3f(0.f);
-	floating = 0.f;
+	m_floatZ = 0.f;
 }
 
 void FlyingEye::init() {
@@ -90,8 +90,8 @@ void FlyingEye::update() {
 	GameDuration frameDiff = g_gameTime.lastFrameDuration();
 	GameDuration elapsed = g_gameTime.now() - frameDiff - m_timeCreation;
 
-	eyeball.floating = std::sin((elapsed) / 1s);
-	eyeball.floating *= 10.f;
+	eyeball.m_floatZ = std::sin((elapsed) / 1s);
+	eyeball.m_floatZ *= 10.f;
 
 	if(elapsed <= 3s) {
 		eyeball.m_progress = long((elapsed) / 30ms);
@@ -165,7 +165,7 @@ void FlyingEye::render() {
 	angle.setYaw(MAKEANGLE(180.f - angle.getYaw()));
 	
 	Vec3f pos = eyeball.m_pos;
-	pos.y += eyeball.floating;
+	pos.y += eyeball.m_floatZ;
 	
 	Vec3f scale = Vec3f(d);
 	Color3f rgb = Color3f::gray(d);
