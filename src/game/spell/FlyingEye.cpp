@@ -46,7 +46,7 @@ FlyingEye::~FlyingEye() {
 }
 
 void FlyingEye::reset() {
-	exist = 0;
+	m_progress = 0;
 	m_state = EYEBALL_INACTIVE;
 	pos = Vec3f(0.f);
 	size = Vec3f(0.f);
@@ -75,7 +75,7 @@ void FlyingEye::launch() {
 
 	m_timeCreation = g_gameTime.now();
 
-	exist = 1;
+	m_progress = 1;
 	m_state = FlyingEye::EYEBALL_LAUNCHED;
 
 	pos = player.pos;
@@ -94,11 +94,11 @@ void FlyingEye::update() {
 	eyeball.floating *= 10.f;
 
 	if(elapsed <= 3s) {
-		eyeball.exist = long((elapsed) / 30ms);
-		if(eyeball.m_state == FlyingEye::EYEBALL_LAUNCHED && eyeball.exist > 1) {
+		eyeball.m_progress = long((elapsed) / 30ms);
+		if (eyeball.m_state == FlyingEye::EYEBALL_LAUNCHED && eyeball.m_progress > 1) {
 			eyeball.m_state = FlyingEye::EYEBALL_APPEAR;
 		}
-		eyeball.size = Vec3f(1.f - float(eyeball.exist) * 0.01f);
+		eyeball.size = Vec3f(1.f - float(eyeball.m_progress) * 0.01f);
 		eyeball.angle.setYaw(eyeball.angle.getYaw() + toMsf(frameDiff) * 0.6f);
 	} else {
 		eyeball.m_state = FlyingEye::EYEBALL_ACTIVE;
@@ -118,7 +118,7 @@ void FlyingEye::drawMagicSightInterface() {
 	}
 
 	if(eyeball.m_state == EYEBALL_DISAPPEAR) {
-		col = -eyeball.exist * (1.f / 100);
+		col = -eyeball.m_progress * (1.f / 100);
 	} else if(eyeball.m_state == EYEBALL_APPEAR) {
 		col = 1.f - eyeball.size.x;
 	}
@@ -137,7 +137,7 @@ void FlyingEye::drawMagicSightInterface() {
 }
 
 void FlyingEye::end() {
-	exist = -100;
+	m_progress = -100;
 	m_state = FlyingEye::EYEBALL_DISAPPEAR;
 }
 
@@ -150,13 +150,13 @@ void FlyingEye::render() {
 	float d;
 	
 	if(eyeball.m_state == EYEBALL_DISAPPEAR) {
-		d = -eyeball.exist * (1.0f / 100);
-		eyeball.exist++;
-		if (eyeball.exist == 0) {
+		d = -eyeball.m_progress * (1.0f / 100);
+		eyeball.m_progress++;
+		if (eyeball.m_progress == 0) {
 			eyeball.m_state = EYEBALL_INACTIVE;
 		}
 	} else if(eyeball.m_state == EYEBALL_APPEAR) {
-		d = eyeball.exist * (1.0f / 100);
+		d = eyeball.m_progress * (1.0f / 100);
 	} else {
 		return;
 	}

@@ -38,7 +38,7 @@ public:
 	};
 
 	EyeStatus m_state;
-	long exist;
+	long m_progress;
 	Vec3f pos;
 	Anglef angle;
 	Vec3f size;
