@@ -1233,7 +1233,7 @@ void ArxGame::updateFirstPersonCamera() {
 	
 	if(eyeball.isActive()) {
 		
-		targetPos = eyeball.pos;
+		targetPos = eyeball.m_pos;
 		targetAngle = eyeball.angle;
 		EXTERNALVIEW = true;
 		
