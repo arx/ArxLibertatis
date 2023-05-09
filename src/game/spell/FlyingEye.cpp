@@ -73,9 +73,8 @@ bool FlyingEye::isInactive() {
 void FlyingEye::launch() {
 
 	m_timeCreation = g_gameTime.now();
-
-	m_progress = 1;
-	m_state = FlyingEye::EYEBALL_LAUNCHED;
+	
+	m_state = FlyingEye::EYEBALL_APPEAR;
 
 	m_pos = player.pos;
 	m_pos += angleToVectorXZ(player.angle.getYaw()) * 200.f;
@@ -94,9 +93,6 @@ void FlyingEye::update() {
 
 	if(elapsed <= 3s) {
 		m_progress = long((elapsed) / 30ms);
-		if (m_state == FlyingEye::EYEBALL_LAUNCHED && m_progress > 1) {
-			m_state = FlyingEye::EYEBALL_APPEAR;
-		}
 		m_angle.setYaw(m_angle.getYaw() + toMsf(frameDiff) * 0.6f);
 	} else {
 		m_state = FlyingEye::EYEBALL_ACTIVE;
@@ -104,7 +100,7 @@ void FlyingEye::update() {
 }
 
 void FlyingEye::drawMagicSightInterface() {
-	if(m_state == EYEBALL_LAUNCHED || !m_eyeTex || m_state == EYEBALL_INACTIVE)
+	if(!m_eyeTex || m_state == EYEBALL_INACTIVE)
 		return;
 	
 	UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
