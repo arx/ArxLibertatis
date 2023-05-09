@@ -49,7 +49,6 @@ void FlyingEye::reset() {
 	m_progress = 0;
 	m_state = EYEBALL_INACTIVE;
 	m_pos = Vec3f(0.f);
-	m_size = Vec3f(0.f);
 	m_floatY = 0.f;
 }
 
@@ -98,7 +97,6 @@ void FlyingEye::update() {
 		if(m_state == FlyingEye::EYEBALL_LAUNCHED && m_progress > 1) {
 			m_state = FlyingEye::EYEBALL_APPEAR;
 		}
-		m_size = Vec3f(1.f - float(m_progress) * 0.01f);
 		m_angle.setYaw(m_angle.getYaw() + toMsf(frameDiff) * 0.6f);
 	} else {
 		m_state = FlyingEye::EYEBALL_ACTIVE;
