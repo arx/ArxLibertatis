@@ -90,29 +90,32 @@ void FlyingEye::update() {
 
 	m_floatZ = std::sin((elapsed) / 1s);
 	m_floatZ *= 10.f;
-
-	if(elapsed <= 3s) {
+	
+	if(m_state != EYEBALL_ACTIVE) {
 		m_progress = long((elapsed) / 30ms);
 		m_angle.setYaw(m_angle.getYaw() + toMsf(frameDiff) * 0.6f);
-	} else {
-		m_state = FlyingEye::EYEBALL_ACTIVE;
+		if (elapsed >= 3s)
+			m_state = FlyingEye::EYEBALL_ACTIVE;
 	}
 }
 
 void FlyingEye::drawMagicSightInterface() {
 	if(!m_eyeTex || m_state == EYEBALL_INACTIVE)
 		return;
-	
-	UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
-	
-	float col = 0.75f + PULSATE * (1.f / 20);
 
-	if(col > 1.f) {
-		col = 1.f;
-	}
-	
-	if(m_state == EYEBALL_DISAPPEAR || m_state == EYEBALL_APPEAR)
+	UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
+
+	float col;
+
+	if(m_state == EYEBALL_DISAPPEAR || m_state == EYEBALL_APPEAR){
 		col = m_progress * (1.f / 100);
+	} else {
+		col = 0.75f + PULSATE * (1.f / 20);
+		
+		if (col > 1.f) {
+			col = 1.f;
+		}
+	}
 
 	EERIEDrawBitmap(Rectf(g_size), 0.0001f, m_eyeTex, Color::gray(col));
 	
