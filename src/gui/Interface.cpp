@@ -1566,12 +1566,13 @@ void ArxGame::manageKeyMouse() {
 		if(PLAYER_MOUSELOOK_ON || bKeySpecialMove) {
 
 			if(eyeball.isActive()) {
-				if(eyeball.m_angle.getPitch() < 70.f) {
-					if(eyeball.m_angle.getPitch() + rotation.y < 70.f)
-						eyeball.m_angle.setPitch(eyeball.m_angle.getPitch() + rotation.y);
-				} else if(eyeball.m_angle.getPitch() > 300.f) {
-					if(eyeball.m_angle.getPitch() + rotation.y > 300.f)
-						eyeball.m_angle.setPitch(eyeball.m_angle.getPitch() + rotation.y);
+				float eyePitch = eyeball.m_angle.getPitch();
+				if(eyePitch < 70.f) {
+					if(eyePitch + rotation.y < 70.f)
+						eyeball.m_angle.setPitch(eyePitch + rotation.y);
+				} else if(eyePitch > 300.f) {
+					if(eyePitch + rotation.y > 300.f)
+						eyeball.m_angle.setPitch(eyePitch + rotation.y);
 				}
 
 				eyeball.m_angle.setPitch(MAKEANGLE(eyeball.m_angle.getPitch()));
