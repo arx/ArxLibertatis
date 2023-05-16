@@ -725,60 +725,57 @@ void ArxGame::managePlayerControls() {
 		float FD = 1.f;
 		
 		if(eyeball.isActive()) {
-			FD = 18.f;
-			Vec3f old = eyeball.m_pos;
-			
-			// Checks WALK_FORWARD Key Status.
-			if(GInput->actionPressed(CONTROLS_CUST_WALKFORWARD)) {
-				eyeball.m_pos += angleToVectorXZ(eyeball.m_angle.getYaw()) * 20.f * FD * 0.033f;
-				NOMOREMOVES = 1;
-			}
-			
-			// Checks WALK_BACKWARD Key Status.
-			if(GInput->actionPressed(CONTROLS_CUST_WALKBACKWARD)) {
-				eyeball.m_pos += angleToVectorXZ_180offset(eyeball.m_angle.getYaw()) * 20.f * FD * 0.033f;
-				NOMOREMOVES = 1;
-			}
-			
-			// Checks STRAFE_LEFT Key Status.
-			if((GInput->actionPressed(CONTROLS_CUST_STRAFELEFT)
-			    || (GInput->actionPressed(CONTROLS_CUST_STRAFE) && GInput->actionPressed(CONTROLS_CUST_TURNLEFT)))
-			   && !NOMOREMOVES) {
-				eyeball.m_pos += angleToVectorXZ(eyeball.m_angle.getYaw() + 90.f) * 10.f * FD * 0.033f;
-				NOMOREMOVES = 1;
-			}
-			
-			// Checks STRAFE_RIGHT Key Status.
-			if((GInput->actionPressed(CONTROLS_CUST_STRAFERIGHT)
-			    || (GInput->actionPressed(CONTROLS_CUST_STRAFE) && GInput->actionPressed(CONTROLS_CUST_TURNRIGHT)))
-			   && !NOMOREMOVES) {
-				eyeball.m_pos += angleToVectorXZ(eyeball.m_angle.getYaw() - 90.f) * 10.f * FD * 0.033f;
-				NOMOREMOVES = 1;
-			}
-			
+
 			IO_PHYSICS phys;
 			phys.cyl.height = -110.f;
 			phys.cyl.origin = eyeball.getPosition() + Vec3f(0.f, 70.f, 0.f);
 			phys.cyl.radius = 45.f;
 
 			Cylinder test = phys.cyl;
-			
+
 			bool npc = AttemptValidCylinderPos(test, nullptr, CFLAG_JUST_TEST | CFLAG_NPC);
 			float val = CheckAnythingInCylinder(phys.cyl, entities.player(), CFLAG_NO_NPC_COLLIDE | CFLAG_JUST_TEST);
-			
-			if(val > -40.f) {
-				if(val <= 70.f) {
+
+			if (val > -40.f) {
+				if (val <= 70.f) {
 					eyeball.m_pos.y += val - 70.f;
 				}
-				if(!npc) {
+				if (!npc) {
 					MagicSightFader += g_platformTime.lastFrameDuration() / 200ms;
-					if(MagicSightFader > 1.f)
+					if (MagicSightFader > 1.f)
 						MagicSightFader = 1.f;
 				}
-			} else {
-				eyeball.m_pos = old;
+
+				FD = 18.f;
+
+				// Checks WALK_FORWARD Key Status.
+				if (GInput->actionPressed(CONTROLS_CUST_WALKFORWARD)) {
+					eyeball.m_pos += angleToVectorXZ(eyeball.m_angle.getYaw()) * 20.f * FD * 0.033f;
+					NOMOREMOVES = 1;
+				}
+
+				// Checks WALK_BACKWARD Key Status.
+				if (GInput->actionPressed(CONTROLS_CUST_WALKBACKWARD)) {
+					eyeball.m_pos += angleToVectorXZ_180offset(eyeball.m_angle.getYaw()) * 20.f * FD * 0.033f;
+					NOMOREMOVES = 1;
+				}
+
+				// Checks STRAFE_LEFT Key Status.
+				if ((GInput->actionPressed(CONTROLS_CUST_STRAFELEFT)
+					|| (GInput->actionPressed(CONTROLS_CUST_STRAFE) && GInput->actionPressed(CONTROLS_CUST_TURNLEFT)))
+					&& !NOMOREMOVES) {
+					eyeball.m_pos += angleToVectorXZ(eyeball.m_angle.getYaw() + 90.f) * 10.f * FD * 0.033f;
+					NOMOREMOVES = 1;
+				}
+
+				// Checks STRAFE_RIGHT Key Status.
+				if ((GInput->actionPressed(CONTROLS_CUST_STRAFERIGHT)
+					|| (GInput->actionPressed(CONTROLS_CUST_STRAFE) && GInput->actionPressed(CONTROLS_CUST_TURNRIGHT)))
+					&& !NOMOREMOVES) {
+					eyeball.m_pos += angleToVectorXZ(eyeball.m_angle.getYaw() - 90.f) * 10.f * FD * 0.033f;
+					NOMOREMOVES = 1;
+				}
 			}
-			
 		}
 		
 		if(g_gameTime.isPaused()) {
