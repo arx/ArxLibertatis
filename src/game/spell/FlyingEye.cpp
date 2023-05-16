@@ -74,6 +74,10 @@ Vec3f FlyingEye::getPosition() const {
 	return m_pos;
 }
 
+void FlyingEye::move(Vec3f vec) {
+	m_pos += vec;
+}
+
 void FlyingEye::launch() {
 
 	m_timeCreation = g_gameTime.now();
