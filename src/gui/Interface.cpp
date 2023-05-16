@@ -768,7 +768,7 @@ void ArxGame::managePlayerControls() {
 			
 			if(val > -40.f) {
 				if(val <= 70.f) {
-					eyeball.m_pos.y += val - 70.f;
+					eyeball.move(Vec3f(0.f, val - 70.f, 0.f));
 				}
 				if(!npc) {
 					MagicSightFader += g_platformTime.lastFrameDuration() / 200ms;
