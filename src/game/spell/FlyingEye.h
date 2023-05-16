@@ -41,6 +41,8 @@ public:
 	bool isActive();
 	bool isInactive();
 
+	Vec3f getPosition() const;
+
 	void reset();
 	void launch();
 	void update();
