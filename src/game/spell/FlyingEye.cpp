@@ -70,6 +70,10 @@ bool FlyingEye::isInactive() {
 	return m_state == EYEBALL_INACTIVE;
 }
 
+Vec3f FlyingEye::getPosition() const {
+	return m_pos;
+}
+
 void FlyingEye::launch() {
 
 	m_timeCreation = g_gameTime.now();
