@@ -194,7 +194,7 @@ void FlyingEyeSpell::Update() {
 }
 
 Vec3f FlyingEyeSpell::getPosition() const {
-	return eyeball.m_pos;
+	return eyeball.getPosition();
 }
 
 FireFieldSpell::FireFieldSpell()
