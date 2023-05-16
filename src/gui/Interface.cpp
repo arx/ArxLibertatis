@@ -1578,9 +1578,7 @@ void ArxGame::manageKeyMouse() {
 
 				float iangle = player.angle.getPitch();
 
-				player.desiredangle.setPitch(player.angle.getPitch());
-				player.desiredangle.setPitch(player.desiredangle.getPitch() + rotation.y);
-				player.desiredangle.setPitch(MAKEANGLE(player.desiredangle.getPitch()));
+				player.desiredangle.setPitch(MAKEANGLE(player.angle.getPitch() + rotation.y));
 
 				if(player.desiredangle.getPitch() >= 74.9f && player.desiredangle.getPitch() <= 301.f) {
 					if(iangle < 75.f)
