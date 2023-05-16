@@ -744,7 +744,7 @@ void ArxGame::managePlayerControls() {
 			if((GInput->actionPressed(CONTROLS_CUST_STRAFELEFT)
 			    || (GInput->actionPressed(CONTROLS_CUST_STRAFE) && GInput->actionPressed(CONTROLS_CUST_TURNLEFT)))
 			   && !NOMOREMOVES) {
-				eyeball.m_pos += angleToVectorXZ(eyeball.m_angle.getYaw() + 90.f) * 10.f * FD * 0.033f;
+				eyeball.move(angleToVectorXZ(eyeball.m_angle.getYaw() + 90.f) * 10.f * FD * 0.033f);
 				NOMOREMOVES = 1;
 			}
 			
