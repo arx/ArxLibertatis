@@ -86,7 +86,7 @@ void FlyingEyeSpell::Launch() {
 		if(!pd) {
 			break;
 		}
-		pd->ov = eyeball.m_pos + arx::randomVec(-5.f, 5.f);
+		pd->ov = eyeball.getPosition() + arx::randomVec(-5.f, 5.f);
 		pd->move = arx::randomVec(-2.f, 2.f);
 		pd->size = 28.f;
 		pd->duration = Random::get(2000ms, 6000ms);
