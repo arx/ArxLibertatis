@@ -756,7 +756,7 @@ void ArxGame::managePlayerControls() {
 
 				// Checks WALK_BACKWARD Key Status.
 				if (GInput->actionPressed(CONTROLS_CUST_WALKBACKWARD)) {
-					eyeball.m_pos += angleToVectorXZ_180offset(eyeball.m_angle.getYaw()) * 20.f * FD * 0.033f;
+					eyeball.move(angleToVectorXZ_180offset(eyeball.m_angle.getYaw()) * 20.f * FD * 0.033f);
 					NOMOREMOVES = 1;
 				}
 
