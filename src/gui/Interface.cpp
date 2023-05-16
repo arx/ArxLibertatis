@@ -758,7 +758,7 @@ void ArxGame::managePlayerControls() {
 			
 			IO_PHYSICS phys;
 			phys.cyl.height = -110.f;
-			phys.cyl.origin = eyeball.m_pos + Vec3f(0.f, 70.f, 0.f);
+			phys.cyl.origin = eyeball.getPosition() + Vec3f(0.f, 70.f, 0.f);
 			phys.cyl.radius = 45.f;
 
 			Cylinder test = phys.cyl;
