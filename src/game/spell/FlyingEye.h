@@ -29,7 +29,6 @@ class FlyingEye {
 
 public:
 	
-	Vec3f m_pos;
 	Anglef m_angle;
 
 	FlyingEye();
@@ -70,6 +69,8 @@ private:
 	float m_floatY;
 	long m_progress;
 	EyeStatus m_state;
+
+	Vec3f m_pos;
 };
 
 extern float MagicSightFader;
