@@ -750,7 +750,7 @@ void ArxGame::managePlayerControls() {
 
 				// Checks WALK_FORWARD Key Status.
 				if (GInput->actionPressed(CONTROLS_CUST_WALKFORWARD)) {
-					eyeball.move(angleToVectorXZ(eyeball.m_angle.getYaw()) * 20.f * FD * 0.033f);
+					eyeball.move(angleToVectorXZ(eyeball.getAngle().getYaw()) * 20.f * FD * 0.033f);
 					NOMOREMOVES = 1;
 				}
 
