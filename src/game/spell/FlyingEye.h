@@ -44,6 +44,7 @@ public:
 	Vec3f getPosition() const;
 	Anglef getAngle() const;
 	void move(Vec3f vec);
+	void centerView();
 
 	void reset();
 	void launch();

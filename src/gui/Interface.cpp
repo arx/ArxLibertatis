@@ -1552,8 +1552,7 @@ void ArxGame::manageKeyMouse() {
 		}
 
 		if(GInput->actionPressed(CONTROLS_CUST_CENTERVIEW)) {
-			eyeball.m_angle.setPitch(0);
-			eyeball.m_angle.setRoll(0);
+			eyeball.centerView();
 			player.desiredangle.setPitch(0);
 			player.angle.setPitch(0);
 			player.desiredangle.setRoll(0);
@@ -1566,9 +1565,8 @@ void ArxGame::manageKeyMouse() {
 				float eyePitch = eyeball.getAngle().getPitch();
 				if(   ((eyePitch < 70.f)  && (eyePitch + rotation.y < 70.f))
 				   || ((eyePitch > 300.f) && (eyePitch + rotation.y > 300.f)))
-						eyePitch += rotation.y;
-
-				eyeball.m_angle.setPitch(MAKEANGLE(eyePitch));
+					eyeball.m_angle.setPitch(MAKEANGLE(eyePitch + rotation.y));
+				
 				eyeball.m_angle.setYaw(MAKEANGLE(eyeball.getAngle().getYaw() - rotation.x));
 			} else if(ARXmenu.mode() != Mode_CharacterCreation) {
 
