@@ -82,6 +82,11 @@ void FlyingEye::move(Vec3f vec) {
 	m_pos += vec;
 }
 
+void FlyingEye::centerView() {
+	m_angle.setPitch(0);
+	m_angle.setRoll(0);
+}
+
 void FlyingEye::launch() {
 
 	m_timeCreation = g_gameTime.now();
