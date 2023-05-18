@@ -764,7 +764,7 @@ void ArxGame::managePlayerControls() {
 				if ((GInput->actionPressed(CONTROLS_CUST_STRAFELEFT)
 					|| (GInput->actionPressed(CONTROLS_CUST_STRAFE) && GInput->actionPressed(CONTROLS_CUST_TURNLEFT)))
 					&& !NOMOREMOVES) {
-					eyeball.move(angleToVectorXZ(eyeball.m_angle.getYaw() + 90.f) * 10.f * FD * 0.033f);
+					eyeball.move(angleToVectorXZ(eyeball.getAngle().getYaw() + 90.f) * 10.f * FD * 0.033f);
 					NOMOREMOVES = 1;
 				}
 
@@ -772,7 +772,7 @@ void ArxGame::managePlayerControls() {
 				if ((GInput->actionPressed(CONTROLS_CUST_STRAFERIGHT)
 					|| (GInput->actionPressed(CONTROLS_CUST_STRAFE) && GInput->actionPressed(CONTROLS_CUST_TURNRIGHT)))
 					&& !NOMOREMOVES) {
-					eyeball.move(angleToVectorXZ(eyeball.m_angle.getYaw() - 90.f) * 10.f * FD * 0.033f);
+					eyeball.move(angleToVectorXZ(eyeball.getAngle().getYaw() - 90.f) * 10.f * FD * 0.033f);
 					NOMOREMOVES = 1;
 				}
 			}
@@ -1563,7 +1563,7 @@ void ArxGame::manageKeyMouse() {
 		if(PLAYER_MOUSELOOK_ON || bKeySpecialMove) {
 
 			if(eyeball.isActive()) {
-				float eyePitch = eyeball.m_angle.getPitch();
+				float eyePitch = eyeball.getAngle().getPitch();
 				if(   ((eyePitch < 70.f)  && (eyePitch + rotation.y < 70.f))
 				   || ((eyePitch > 300.f) && (eyePitch + rotation.y > 300.f)))
 						eyePitch += rotation.y;
