@@ -1555,8 +1555,7 @@ void ArxGame::manageKeyMouse() {
 		}
 
 		if(GInput->actionPressed(CONTROLS_CUST_CENTERVIEW)) {
-			eyeball.m_angle.setPitch(0);
-			eyeball.m_angle.setRoll(0);
+			eyeball.centerView();
 			player.desiredangle.setPitch(0);
 			player.angle.setPitch(0);
 			player.desiredangle.setRoll(0);
