@@ -1566,7 +1566,7 @@ void ArxGame::manageKeyMouse() {
 		if(PLAYER_MOUSELOOK_ON || bKeySpecialMove) {
 
 			if(eyeball.isActive()) {
-				float eyePitch = eyeball.m_angle.getPitch();
+				float eyePitch = eyeball.getAngle().getPitch();
 				if(   ((eyePitch < 70.f)  && (eyePitch + rotation.y < 70.f))
 				   || ((eyePitch > 300.f) && (eyePitch + rotation.y > 300.f)))
 					eyePitch += rotation.y;
