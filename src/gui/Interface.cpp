@@ -1565,9 +1565,9 @@ void ArxGame::manageKeyMouse() {
 				float eyePitch = eyeball.getAngle().getPitch();
 				if(   ((eyePitch < 70.f)  && (eyePitch + rotation.y < 70.f))
 				   || ((eyePitch > 300.f) && (eyePitch + rotation.y > 300.f)))
-					eyeball.m_angle.setPitch(MAKEANGLE(eyePitch + rotation.y));
+					eyeball.turn(Anglef(rotation.y, 0.f, 0.f));
 				
-				eyeball.m_angle.setYaw(MAKEANGLE(eyeball.getAngle().getYaw() - rotation.x));
+				eyeball.turn(Anglef(0.f, -rotation.x, 0.f));
 			} else if(ARXmenu.mode() != Mode_CharacterCreation) {
 
 				float iangle = player.angle.getPitch();

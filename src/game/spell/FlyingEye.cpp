@@ -82,6 +82,11 @@ void FlyingEye::move(Vec3f vec) {
 	m_pos += vec;
 }
 
+void FlyingEye::turn(Anglef angle) {
+	m_angle += angle;
+	m_angle.normalize();
+}
+
 void FlyingEye::centerView() {
 	m_angle.setPitch(0);
 	m_angle.setRoll(0);
