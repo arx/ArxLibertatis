@@ -74,6 +74,10 @@ Vec3f FlyingEye::getPosition() const {
 	return m_pos;
 }
 
+Anglef FlyingEye::getAngle() const {
+	return m_angle;
+}
+
 void FlyingEye::move(Vec3f vec) {
 	m_pos += vec;
 }
