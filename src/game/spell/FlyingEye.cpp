@@ -104,15 +104,19 @@ void FlyingEye::drawMagicSightInterface() {
 		return;
 	
 	UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
-	
-	float col = 0.75f + PULSATE * (1.f / 20);
 
-	if(col > 1.f) {
-		col = 1.f;
-	}
+	float col;
 
-	if(m_state == EYEBALL_DISAPPEAR || m_state == EYEBALL_APPEAR)
+	if(m_state == EYEBALL_DISAPPEAR || m_state == EYEBALL_APPEAR) {
+
 		col = m_progress * (1.f / 100);
+	} else {
+		col = 0.75f + PULSATE * (1.f / 20);
+		
+		if(col > 1.f) {
+			col = 1.f;
+		}
+	}
 
 	EERIEDrawBitmap(Rectf(g_size), 0.0001f, m_eyeTex, Color::gray(col));
 	
