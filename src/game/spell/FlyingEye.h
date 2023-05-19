@@ -57,6 +57,7 @@ public:
 
 private:
 	TextureContainer * Flying_Eye;
+	std::unique_ptr<EERIE_3DOBJ> eyeballobj; // EyeBall 3D Object
 };
 
 extern float MagicSightFader;

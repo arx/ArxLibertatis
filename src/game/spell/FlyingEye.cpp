@@ -36,8 +36,6 @@ FlyingEye eyeball;
 
 float MagicSightFader = 0.f;
 
-static std::unique_ptr<EERIE_3DOBJ> eyeballobj; // EyeBall 3D Object
-
 FlyingEye::FlyingEye()
 	: exist(0)
 	, status(EYEBALL_INACTIVE)
