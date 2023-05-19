@@ -21,6 +21,7 @@
 #define ARX_GAME_SPELL_FLYINGEYE_H
 
 #include "graphics/BaseGraphicsTypes.h"
+#include "graphics/data/TextureContainer.h"
 #include "math/Angle.h"
 
 class FlyingEye {
@@ -53,6 +54,9 @@ public:
 	void end();
 
 	void render();
+
+private:
+	TextureContainer * Flying_Eye;
 };
 
 extern float MagicSightFader;

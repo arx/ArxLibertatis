@@ -30,14 +30,12 @@
 
 #include "graphics/Renderer.h"
 #include "graphics/Draw.h"
-#include "graphics/data/TextureContainer.h"
 #include "graphics/data/Mesh.h"
 
 FlyingEye eyeball;
 
 float MagicSightFader = 0.f;
 
-static TextureContainer * Flying_Eye = nullptr;
 static std::unique_ptr<EERIE_3DOBJ> eyeballobj; // EyeBall 3D Object
 
 FlyingEye::FlyingEye()
@@ -46,6 +44,7 @@ FlyingEye::FlyingEye()
 	, pos(0.f)
 	, size(0.f)
 	, floating(0.f)
+	, Flying_Eye(nullptr)
 {
 
 }
