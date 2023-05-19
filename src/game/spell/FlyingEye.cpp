@@ -91,11 +91,11 @@ void FlyingEye::update() {
 	m_floatY = std::sin((elapsed) / 1s);
 	m_floatY *= 10.f;
 
-	if(elapsed <= 3s) {
+	if(m_state != EYEBALL_ACTIVE) {
 		m_progress = long((elapsed) / 30ms);
 		m_angle.setYaw(m_angle.getYaw() + toMsf(frameDiff) * 0.6f);
-	} else {
-		m_state = FlyingEye::EYEBALL_ACTIVE;
+		if(elapsed >= 3s)
+			m_state = FlyingEye::EYEBALL_ACTIVE;
 	}
 }
 
