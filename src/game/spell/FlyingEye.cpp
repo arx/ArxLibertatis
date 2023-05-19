@@ -37,18 +37,21 @@ FlyingEye eyeball;
 float MagicSightFader = 0.f;
 
 FlyingEye::FlyingEye()
-	: exist(0)
-	, status(EYEBALL_INACTIVE)
-	, pos(0.f)
-	, size(0.f)
-	, floating(0.f)
-	, eyeTex(nullptr)
+	: eyeTex(nullptr)
 {
-
+	reset();
 }
 
 FlyingEye::~FlyingEye() {
 
+}
+
+void FlyingEye::reset() {
+	exist = 0;
+	status = EYEBALL_INACTIVE;
+	pos = Vec3f(0.f);
+	size = Vec3f(0.f);
+	floating = 0.f;
 }
 
 void FlyingEye::init() {
