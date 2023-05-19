@@ -20,6 +20,7 @@
 #ifndef ARX_GAME_SPELL_FLYINGEYE_H
 #define ARX_GAME_SPELL_FLYINGEYE_H
 
+#include "core/GameTime.h"
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/data/TextureContainer.h"
 #include "math/Angle.h"
@@ -51,12 +52,14 @@ public:
 
 	void reset();
 	void launch();
+	void update();
 	void drawMagicSightInterface();
 	void end();
 
 	void render();
 
 private:
+	GameInstant m_timeCreation;
 	TextureContainer * eyeTex;
 	std::unique_ptr<EERIE_3DOBJ> eyeballobj; // EyeBall 3D Object
 };

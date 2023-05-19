@@ -168,22 +168,8 @@ static void FlyingEyeSpellUpdateHand(const Vec3f & pos, LightHandle & light, siz
 void FlyingEyeSpell::Update() {
 	
 	const GameInstant now = g_gameTime.now();
-	
-	const GameDuration framediff3 = now - m_lastupdate;
-	
-	eyeball.floating = std::sin((m_lastupdate - m_timcreation) / 1s);
-	eyeball.floating *= 10.f;
-	
-	if(m_lastupdate - m_timcreation <= 3s) {
-		eyeball.exist = long((m_lastupdate - m_timcreation) / 30ms);
-		if(eyeball.status == FlyingEye::EYEBALL_LAUNCHED && eyeball.exist > 1) {
-			eyeball.status = FlyingEye::EYEBALL_APPEAR;
-		}
-		eyeball.size = Vec3f(1.f - float(eyeball.exist) * 0.01f);
-		eyeball.angle.setYaw(eyeball.angle.getYaw() + toMsf(framediff3) * 0.6f);
-	} else {
-		eyeball.status = FlyingEye::EYEBALL_ACTIVE;
-	}
+
+	eyeball.update();
 	
 	m_lastupdate = now;
 	

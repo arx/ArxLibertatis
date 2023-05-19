@@ -22,7 +22,6 @@
 #include <memory>
 
 #include "core/Core.h"
-#include "core/GameTime.h"
 
 #include "game/Player.h"
 
@@ -65,6 +64,9 @@ void FlyingEye::release() {
 }
 
 void FlyingEye::launch() {
+
+	m_timeCreation = g_gameTime.now();
+
 	exist = 1;
 	status = FlyingEye::EYEBALL_LAUNCHED;
 
@@ -73,6 +75,26 @@ void FlyingEye::launch() {
 	pos += Vec3f(0.f, 50.f, 0.f);
 
 	angle = player.angle;
+}
+
+void FlyingEye::update() {
+	
+	GameDuration frameDiff = g_gameTime.lastFrameDuration();
+	GameDuration elapsed = g_gameTime.now() - frameDiff - m_timeCreation;
+
+	eyeball.floating = std::sin((elapsed) / 1s);
+	eyeball.floating *= 10.f;
+
+	if(elapsed <= 3s) {
+		eyeball.exist = long((elapsed) / 30ms);
+		if(eyeball.status == FlyingEye::EYEBALL_LAUNCHED && eyeball.exist > 1) {
+			eyeball.status = FlyingEye::EYEBALL_APPEAR;
+		}
+		eyeball.size = Vec3f(1.f - float(eyeball.exist) * 0.01f);
+		eyeball.angle.setYaw(eyeball.angle.getYaw() + toMsf(frameDiff) * 0.6f);
+	} else {
+		eyeball.status = FlyingEye::EYEBALL_ACTIVE;
+	}
 }
 
 void FlyingEye::drawMagicSightInterface() {
