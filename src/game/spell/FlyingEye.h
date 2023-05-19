@@ -37,7 +37,7 @@ public:
 		EYEBALL_DISAPPEAR
 	};
 
-	EyeStatus status;
+	EyeStatus m_state;
 	long exist;
 	Vec3f pos;
 	Anglef angle;
