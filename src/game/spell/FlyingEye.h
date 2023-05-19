@@ -49,6 +49,7 @@ public:
 	void init();
 	void release();
 
+	void reset();
 	void launch();
 	void drawMagicSightInterface();
 	void end();
