@@ -56,7 +56,7 @@ public:
 	void render();
 
 private:
-	TextureContainer * Flying_Eye;
+	TextureContainer * eyeTex;
 	std::unique_ptr<EERIE_3DOBJ> eyeballobj; // EyeBall 3D Object
 };
 

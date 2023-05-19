@@ -42,7 +42,7 @@ FlyingEye::FlyingEye()
 	, pos(0.f)
 	, size(0.f)
 	, floating(0.f)
-	, Flying_Eye(nullptr)
+	, eyeTex(nullptr)
 {
 
 }
@@ -53,7 +53,7 @@ FlyingEye::~FlyingEye() {
 
 void FlyingEye::init() {
 	
-	Flying_Eye = TextureContainer::LoadUI("graph/particles/flying_eye_fx");
+	eyeTex = TextureContainer::LoadUI("graph/particles/flying_eye_fx");
 	eyeballobj = loadObject("editor/obj3d/eyeball.teo");
 }
 
@@ -73,7 +73,7 @@ void FlyingEye::launch() {
 }
 
 void FlyingEye::drawMagicSightInterface() {
-	if(eyeball.status == EYEBALL_LAUNCHED || !Flying_Eye)
+	if(eyeball.status == EYEBALL_LAUNCHED || !eyeTex)
 		return;
 	
 	UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
@@ -90,7 +90,7 @@ void FlyingEye::drawMagicSightInterface() {
 		col = 1.f - eyeball.size.x;
 	}
 
-	EERIEDrawBitmap(Rectf(g_size), 0.0001f, Flying_Eye, Color::gray(col));
+	EERIEDrawBitmap(Rectf(g_size), 0.0001f, eyeTex, Color::gray(col));
 	
 	if(MagicSightFader > 0.f) {
 		col = MagicSightFader;
