@@ -2555,10 +2555,7 @@ void ARX_GAME_Reset() {
 	RemoveQuakeFX();
 	player.m_improve = false;
 
-	if(eyeball.status != FlyingEye::EYEBALL_INACTIVE) {
-		eyeball.exist = -100;
-		eyeball.status = FlyingEye::EYEBALL_DISAPPEAR;
-	}
+	eyeball.reset();
 	
 	entities.player()->ouch_time = 0;
 	entities.player()->invisibility = 0.f;
