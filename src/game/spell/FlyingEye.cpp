@@ -67,6 +67,10 @@ bool FlyingEye::isActive() {
 	return status == EYEBALL_ACTIVE;
 }
 
+bool FlyingEye::isInactive() {
+	return status == EYEBALL_INACTIVE;
+}
+
 void FlyingEye::launch() {
 
 	m_timeCreation = g_gameTime.now();
