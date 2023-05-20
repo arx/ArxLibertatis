@@ -51,6 +51,7 @@ public:
 	void release();
 
 	bool isActive();
+	bool isInactive();
 
 	void reset();
 	void launch();

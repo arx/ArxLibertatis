@@ -51,7 +51,7 @@ FlyingEyeSpell::FlyingEyeSpell()
 
 bool FlyingEyeSpell::CanLaunch() {
 	
-	if(eyeball.status != FlyingEye::EYEBALL_INACTIVE) {
+	if(!eyeball.isInactive()) {
 		return false;
 	}
 
