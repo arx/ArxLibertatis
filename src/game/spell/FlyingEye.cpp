@@ -117,11 +117,8 @@ void FlyingEye::drawMagicSightInterface() {
 		col = 1.f;
 	}
 
-	if(m_state == EYEBALL_DISAPPEAR) {
+	if(m_state == EYEBALL_DISAPPEAR || m_state == EYEBALL_APPEAR)
 		col = m_progress * (1.f / 100);
-	} else if(m_state == EYEBALL_APPEAR) {
-		col = 1.f - m_size.x;
-	}
 
 	EERIEDrawBitmap(Rectf(g_size), 0.0001f, m_eyeTex, Color::gray(col));
 	
