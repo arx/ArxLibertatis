@@ -142,7 +142,7 @@ void FlyingEye::end() {
 
 void FlyingEye::render() {
 	
-	if(m_state == EYEBALL_INACTIVE || !m_eyeballobj) {
+	if((m_state != EYEBALL_APPEAR && m_state != EYEBALL_DISAPPEAR) || !m_eyeballobj) {
 		return;
 	}
 	
