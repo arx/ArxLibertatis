@@ -113,6 +113,7 @@ void FlyingEye::update() {
 	m_floatY = std::sin((elapsed) / 1s);
 	m_floatY *= 10.f;
 
+	// the eyeball spins 5 times before becoming active (takes 3 seconds)
 	if(m_state != EYEBALL_ACTIVE) {
 		m_progress = long((elapsed) / 30ms);
 		m_angle.setYaw(m_angle.getYaw() + toMsf(frameDiff) * 0.6f);
