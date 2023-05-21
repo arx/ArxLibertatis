@@ -30,7 +30,6 @@ struct QUAKE_FX_STRUCT {
 	float frequency;
 	GameInstant start;
 	GameDuration duration;
-	bool sound;
 };
 
 QUAKE_FX_STRUCT QuakeFx;
@@ -43,7 +42,6 @@ void AddQuakeFX(float intensity, GameDuration duration, float period, bool sound
 		QuakeFx.duration += duration;
 		QuakeFx.frequency += period;
 		QuakeFx.frequency *= .5f;
-		QuakeFx.sound = QuakeFx.sound || sound;
 	} else {
 		QuakeFx.intensity = intensity;
 
@@ -51,7 +49,6 @@ void AddQuakeFX(float intensity, GameDuration duration, float period, bool sound
 
 		QuakeFx.duration = duration;
 		QuakeFx.frequency = period;
-		QuakeFx.sound = sound;
 	}
 
 	if(!sound) {
