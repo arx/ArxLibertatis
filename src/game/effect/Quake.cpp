@@ -72,8 +72,7 @@ void ManageQuakeFX(Camera * cam) {
 		GameDuration elapsed = g_gameTime.now() - QuakeFx.start;
 
 		if(elapsed >= QuakeFx.duration) {
-			QuakeFx.intensity = 0.f;
-			QuakeFx.active = false;
+			RemoveQuakeFX();
 			return;
 		}
 		
