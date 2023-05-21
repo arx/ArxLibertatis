@@ -30,13 +30,14 @@ struct QUAKE_FX_STRUCT {
 	float frequency;
 	GameInstant start;
 	GameDuration duration;
+	bool active;
 };
 
-QUAKE_FX_STRUCT QuakeFx = {0.f, 0.f, GameInstant(), GameDuration()};
+QUAKE_FX_STRUCT QuakeFx = {0.f, 0.f, GameInstant(), GameDuration(), false};
 
 void AddQuakeFX(float intensity, GameDuration duration, float period, bool sound) {
 
-	if(QuakeFx.intensity > 0.f) {
+	if(QuakeFx.active) {
 		QuakeFx.intensity += intensity;
 
 		QuakeFx.duration += duration;
@@ -49,6 +50,7 @@ void AddQuakeFX(float intensity, GameDuration duration, float period, bool sound
 
 		QuakeFx.duration = duration;
 		QuakeFx.frequency = period;
+		QuakeFx.active = true;
 	}
 
 	if(!sound) {
@@ -62,14 +64,16 @@ void AddQuakeFX(float intensity, GameDuration duration, float period, bool sound
 
 void RemoveQuakeFX() {
 	QuakeFx.intensity = 0.f;
+	QuakeFx.active = false;
 }
 
 void ManageQuakeFX(Camera * cam) {
-	if(QuakeFx.intensity > 0.f) {
+	if(QuakeFx.active) {
 		GameDuration elapsed = g_gameTime.now() - QuakeFx.start;
 
 		if(elapsed >= QuakeFx.duration) {
 			QuakeFx.intensity = 0.f;
+			QuakeFx.active = false;
 			return;
 		}
 		
