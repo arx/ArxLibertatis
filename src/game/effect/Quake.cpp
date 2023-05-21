@@ -69,9 +69,9 @@ void RemoveQuakeFX() {
 
 void ManageQuakeFX(Camera * cam) {
 	if(QuakeFx.intensity > 0.f) {
-		GameDuration tim = g_gameTime.now() - QuakeFx.start;
+		GameDuration elapsed = g_gameTime.now() - QuakeFx.start;
 
-		if(tim >= QuakeFx.duration) {
+		if(elapsed >= QuakeFx.duration) {
 			QuakeFx.intensity = 0.f;
 			return;
 		}
@@ -80,7 +80,7 @@ void ManageQuakeFX(Camera * cam) {
 			return;
 		}
 		
-		float itmod = 1.f - (tim / QuakeFx.duration);
+		float itmod = 1.f - (elapsed / QuakeFx.duration);
 		
 		float periodicity = 0;
 		if(QuakeFx.frequency > 0.f) {
