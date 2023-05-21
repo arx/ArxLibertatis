@@ -32,7 +32,7 @@ struct QUAKE_FX_STRUCT {
 	GameDuration duration;
 };
 
-QUAKE_FX_STRUCT QuakeFx;
+QUAKE_FX_STRUCT QuakeFx = {0.f, 0.f, GameInstant(), GameDuration()};
 
 void AddQuakeFX(float intensity, GameDuration duration, float period, bool sound) {
 
