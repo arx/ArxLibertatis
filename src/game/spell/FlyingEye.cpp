@@ -163,6 +163,10 @@ void FlyingEye::render() {
 		return;
 	}
 	
+	/* TODO This would normally be included in update() but as the FlyingEyeSpell
+	   doesn't call update() after the spell has ended it has to be in render()
+	   as it gets called from ARX_Scene_Render() even when the spell is not active
+	   */
 	if(m_state == EYEBALL_DISAPPEAR) {
 		m_progress--;
 		if(m_progress == 0) {
