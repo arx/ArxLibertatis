@@ -25,6 +25,8 @@
 #include "math/RandomVector.h"
 #include "scene/GameSound.h"
 
+#define QUAKE_ADJUST 0.4f //adjustment to make quakes look like the original in strength
+
 struct QUAKE_FX_STRUCT {
 	float intensity;
 	float frequency;
@@ -82,17 +84,12 @@ void ManageQuakeFX(Camera * cam) {
 		
 		float itmod = 1.f - (elapsed / QuakeFx.duration);
 		
-		float periodicity = 0;
-		if(QuakeFx.frequency > 0.f) {
-			periodicity = timeWaveSin(g_gameTime.now(), 200ms / QuakeFx.frequency * glm::pi<float>());
-		}
-		
-		float truepower = periodicity * QuakeFx.intensity * itmod * 0.01f;
+		float truepower = QuakeFx.intensity * itmod * 0.01f * QUAKE_ADJUST;
 		float halfpower = truepower * .5f;
 		
 		cam->m_pos += arx::randomVec(-halfpower, halfpower);
-		cam->angle.setPitch(cam->angle.getPitch() + Random::getf() * truepower - halfpower);
-		cam->angle.setYaw(cam->angle.getYaw() + Random::getf() * truepower - halfpower);
-		cam->angle.setRoll(cam->angle.getRoll() + Random::getf() * truepower - halfpower);
+		cam->angle.setPitch(cam->angle.getPitch() + Random::getf(-1.f, 1.f) * truepower - halfpower);
+		cam->angle.setYaw(cam->angle.getYaw() + Random::getf(-1.f, 1.f) * truepower - halfpower);
+		cam->angle.setRoll(cam->angle.getRoll() + Random::getf(-1.f, 1.f) * truepower - halfpower);
 	}
 }
