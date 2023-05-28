@@ -25,17 +25,18 @@
 #include "math/RandomVector.h"
 #include "scene/GameSound.h"
 
-#define QUAKE_ADJUST 0.4f //adjustment to make quakes look like the original in strength
-
 struct QUAKE_FX_STRUCT {
 	float intensity;
 	float frequency;
 	GameInstant start;
 	GameDuration duration;
 	bool active;
+	Anglef targetAngle;
+	Vec3f targetPos;
+	GameInstant lastChange;
 };
 
-QUAKE_FX_STRUCT QuakeFx = {0.f, 0.f, GameInstant(), GameDuration(), false};
+QUAKE_FX_STRUCT QuakeFx = {0.f, 0.f, GameInstant(), GameDuration(), false, Anglef(), Vec3f(), GameInstant()};
 
 void AddQuakeFX(float intensity, GameDuration duration, float period, bool sound) {
 
@@ -53,6 +54,7 @@ void AddQuakeFX(float intensity, GameDuration duration, float period, bool sound
 		QuakeFx.duration = duration;
 		QuakeFx.frequency = period;
 		QuakeFx.active = true;
+		QuakeFx.lastChange = 0;
 	}
 
 	if(!sound) {
@@ -82,14 +84,26 @@ void ManageQuakeFX(Camera * cam) {
 			return;
 		}
 		
+		// adjustment of frequency to linearity because the actual value is nonlinear, using a formula of x/(x + k)
+		// values chosen so a scripted earthquake with a frequency of 10 changes direction every ~10ms
+		float multiplier = 2 * (1.f - QuakeFx.frequency / (QuakeFx.frequency + 10.0f));
+		float updateInterval = QuakeFx.frequency * multiplier;
+		
 		float itmod = 1.f - (elapsed / QuakeFx.duration);
 		
-		float truepower = QuakeFx.intensity * itmod * 0.01f * QUAKE_ADJUST;
-		float halfpower = truepower * .5f;
+		float power = QuakeFx.intensity * itmod * 0.01f * 0.5f; // 0.5 to compensate for algorithm change
+
+		GameDuration timeFromLastUpdate = g_gameTime.now() - QuakeFx.lastChange;
+
+		if(toMsf(timeFromLastUpdate) >= updateInterval || QuakeFx.lastChange == 0) {
+			QuakeFx.targetAngle.setPitch(Random::getf(-1.f, 1.f) * power);
+			QuakeFx.targetAngle.setYaw(Random::getf(-1.f, 1.f) * power);
+			QuakeFx.targetAngle.setRoll(Random::getf(-1.f, 1.f) * power);
+			QuakeFx.targetPos = arx::randomVec(-power, power);
+			QuakeFx.lastChange = g_gameTime.now();
+		}
 		
-		cam->m_pos += arx::randomVec(-halfpower, halfpower);
-		cam->angle.setPitch(cam->angle.getPitch() + Random::getf(-1.f, 1.f) * truepower - halfpower);
-		cam->angle.setYaw(cam->angle.getYaw() + Random::getf(-1.f, 1.f) * truepower - halfpower);
-		cam->angle.setRoll(cam->angle.getRoll() + Random::getf(-1.f, 1.f) * truepower - halfpower);
+		cam->m_pos += QuakeFx.targetPos * glm::clamp(toMsf(timeFromLastUpdate) / updateInterval, 0.f, 1.f);
+		cam->angle += QuakeFx.targetAngle * glm::clamp(toMsf(timeFromLastUpdate) / updateInterval, 0.f, 1.f);
 	}
 }
