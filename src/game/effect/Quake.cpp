@@ -27,7 +27,7 @@
 
 struct QUAKE_FX_STRUCT {
 	float intensity;
-	float frequency;
+	float period;
 	GameInstant start;
 	GameDuration duration;
 	bool active;
@@ -46,13 +46,13 @@ void AddQuakeFX(float intensity, GameDuration duration, float period, bool sound
 	if(QuakeFx.active) {
 		QuakeFx.intensity += intensity;
 		QuakeFx.duration += duration;
-		QuakeFx.frequency += period;
-		QuakeFx.frequency *= .5f;
+		QuakeFx.period += period;
+		QuakeFx.period *= .5f;
 	} else {
 		QuakeFx.intensity = intensity;
 		QuakeFx.start = g_gameTime.now();
 		QuakeFx.duration = duration;
-		QuakeFx.frequency = period;
+		QuakeFx.period = period;
 		QuakeFx.active = true;
 		QuakeFx.lastChange = 0;
 	}
@@ -86,8 +86,8 @@ void ManageQuakeFX(Camera * cam) {
 		
 		// adjustment of frequency to linearity because the actual value is nonlinear, using a formula of x/(x + k)
 		// values chosen so a scripted earthquake with a frequency of 10 changes direction every ~10ms
-		float multiplier = 2 * (1.f - QuakeFx.frequency / (QuakeFx.frequency + 10.0f));
-		float updateInterval = QuakeFx.frequency * multiplier;
+		float multiplier = 2 * (1.f - QuakeFx.period / (QuakeFx.period + 10.0f));
+		float updateInterval = QuakeFx.period * multiplier;
 		
 		float itmod = 1.f - (elapsed / QuakeFx.duration);
 		
