@@ -40,6 +40,9 @@ QUAKE_FX_STRUCT QuakeFx = {0.f, 0.f, GameInstant(), GameDuration(), false, Angle
 
 void AddQuakeFX(float intensity, GameDuration duration, float period, bool sound) {
 
+	if(duration <= 0 && period <= 0)
+		return;
+
 	if(QuakeFx.active) {
 		QuakeFx.intensity += intensity;
 
