@@ -45,15 +45,12 @@ void AddQuakeFX(float intensity, GameDuration duration, float period, bool sound
 
 	if(QuakeFx.active) {
 		QuakeFx.intensity += intensity;
-
 		QuakeFx.duration += duration;
 		QuakeFx.frequency += period;
 		QuakeFx.frequency *= .5f;
 	} else {
 		QuakeFx.intensity = intensity;
-
 		QuakeFx.start = g_gameTime.now();
-
 		QuakeFx.duration = duration;
 		QuakeFx.frequency = period;
 		QuakeFx.active = true;
