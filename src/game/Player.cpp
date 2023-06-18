@@ -2579,9 +2579,6 @@ void ARX_GAME_Reset() {
 	g_cameraEntity = nullptr;
 	CHANGE_LEVEL_ICON = NoChangeLevel;
 	
-	// Kill Script Loaded IO
-	CleanScriptLoadedIO();
-	
 	ClearTileLights();
 }
 
