@@ -383,6 +383,9 @@ void Entity::destroy() {
 			}
 		}
 	}
+	if((ioflags & IO_NPC) && _npcdata->weapon) {
+		_npcdata->weapon->destroy();
+	}
 	
 	// TODO should we also destroy inventory items
 	// currently they remain orphaned with state SHOW_FLAG_IN_INVENTORY
