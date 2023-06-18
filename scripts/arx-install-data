@@ -430,7 +430,7 @@ list_append download_reqs 'wget'
 list_append download_reqs 'curl'
 list_append download_reqs 'fetch' 'FreeBSD'
 
-printf '%s %s\n' "${white}Welome to the ${green}Arx Fatalis${white} ${patch_ver} data" \
+printf '%s %s\n' "${white}Welome to the ${green}Arx Fatalis${white} 1.21/1.22 data" \
      "install script for UNIX-like systems!${reset}"
 
 patchfile=''      # Main patch file
@@ -2587,6 +2587,8 @@ extract_source_exe() {
 	sourcedir_exe="$sourcedir/exe"
 	create_dir "$sourcedir_exe" 'exe work'
 	
+	recurse=1
+	
 	cd "$sourcedir_exe" || die
 	case "$(basename "$1")" in
 		arx_demo_english.exe)
@@ -2595,11 +2597,14 @@ extract_source_exe() {
 			extract "$1" ace rar ms_cab installshield innosetup ;; # German demo
 		arx_jpn_*.exe)
 			extract "$1" ms_cab installshield innosetup rar ace ;; # Japanese demo
+		setup_arx_fatalis*.exe)
+			recurse=0 # Ignore DirectX .cab files in 1.22 GOG.com installers
+			extract "$1" innosetup ms_cab installshield rar ace ;; # GOG.com setup
 		*)
 			extract "$1" innosetup ms_cab installshield rar ace ;; # GOG.com setup
 	esac
 	
-	extract_source_dir "$sourcedir_exe"
+	[ $recurse = 1 ] && extract_source_dir "$sourcedir_exe"
 	
 }
 
