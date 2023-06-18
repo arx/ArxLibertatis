@@ -140,6 +140,12 @@ public:
 		
 		DebugScript("");
 		
+		for(size_t bag = 1; bag < entities.player()->inventory->bags(); bag++) {
+			for(auto slot : entities.player()->inventory->slotsInBag(bag)) {
+				PutInFrontOfPlayer(slot.entity);
+			}
+		}
+		
 		ARX_PLAYER_MakeFreshHero();
 		
 		return Success;
