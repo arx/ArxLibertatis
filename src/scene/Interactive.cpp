@@ -219,6 +219,21 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io) {
 	
 	IO_UnlinkAllLinkedObjects(io);
 	
+	if((io->ioflags & IO_NPC) && io->_npcdata->weapon) {
+		Entity * weapon = io->_npcdata->weapon;
+		arx_assert(ValidIOAddress(weapon));
+		if(locateInInventories(weapon)) {
+			io->_npcdata->weapon = nullptr;
+			// Owner hasn't changed
+		} else {
+			weapon->setOwner(nullptr);
+			weapon->show = SHOW_FLAG_IN_SCENE;
+			weapon->ioflags |= IO_NO_NPC_COLLIDE;
+			weapon->pos = weapon->obj->vertexWorldPositions[weapon->obj->origin].v;
+			// TODO old broken code suggested that physics sim might be enabled here
+		}
+	}
+	
 }
 
 void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, bool hide1st) {

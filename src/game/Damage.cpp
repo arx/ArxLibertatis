@@ -680,15 +680,6 @@ void ARX_DAMAGES_ForceDeath(Entity & io_dead, Entity * io_killer) {
 	
 	if(io_dead.ioflags & IO_NPC) {
 		io_dead._npcdata->lifePool.current = 0;
-		if(io_dead._npcdata->weapon) {
-			Entity * ioo = io_dead._npcdata->weapon;
-			arx_assert(ValidIOAddress(ioo));
-			ioo->setOwner(nullptr);
-			ioo->show = SHOW_FLAG_IN_SCENE;
-			ioo->ioflags |= IO_NO_NPC_COLLIDE;
-			ioo->pos = ioo->obj->vertexWorldPositions[ioo->obj->origin].v;
-			// TODO old broken code suggested that physics sim might be enabled here
-		}
 	}
 	
 }
