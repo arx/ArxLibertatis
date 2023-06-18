@@ -763,6 +763,8 @@ RoomHandle ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, RoomPositionMode
 	
 	if(result) {
 		
+		arx_assert(size_t(result) < g_rooms->rooms.size());
+		
 		RoomHandle nearest;
 		float nearest_dist = 99999.f;
 		
@@ -789,6 +791,7 @@ RoomHandle ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, RoomPositionMode
 		}
 		
 		if(nearest) {
+			arx_assert(size_t(nearest) < g_rooms->rooms.size());
 			result = nearest;
 		}
 		
