@@ -726,17 +726,17 @@ void ArxGame::managePlayerControls() {
 		
 		if(eyeball.isActive()) {
 			FD = 18.f;
-			Vec3f old = eyeball.m_pos;
+			Vec3f move = Vec3f();
 			
 			// Checks WALK_FORWARD Key Status.
 			if(GInput->actionPressed(CONTROLS_CUST_WALKFORWARD)) {
-				eyeball.move(angleToVectorXZ(eyeball.getAngle().getYaw()) * 20.f * FD * 0.033f);
+				move += angleToVectorXZ(eyeball.getAngle().getYaw()) * 20.f * FD * 0.033f;
 				NOMOREMOVES = 1;
 			}
 			
 			// Checks WALK_BACKWARD Key Status.
 			if(GInput->actionPressed(CONTROLS_CUST_WALKBACKWARD)) {
-				eyeball.move(angleToVectorXZ_180offset(eyeball.getAngle().getYaw()) * 20.f * FD * 0.033f);
+				move += angleToVectorXZ_180offset(eyeball.getAngle().getYaw()) * 20.f * FD * 0.033f;
 				NOMOREMOVES = 1;
 			}
 			
@@ -744,7 +744,7 @@ void ArxGame::managePlayerControls() {
 			if((GInput->actionPressed(CONTROLS_CUST_STRAFELEFT)
 			    || (GInput->actionPressed(CONTROLS_CUST_STRAFE) && GInput->actionPressed(CONTROLS_CUST_TURNLEFT)))
 			   && !NOMOREMOVES) {
-				eyeball.move(angleToVectorXZ(eyeball.getAngle().getYaw() + 90.f) * 10.f * FD * 0.033f);
+				move += angleToVectorXZ(eyeball.getAngle().getYaw() + 90.f) * 10.f * FD * 0.033f;
 				NOMOREMOVES = 1;
 			}
 			
@@ -752,13 +752,13 @@ void ArxGame::managePlayerControls() {
 			if((GInput->actionPressed(CONTROLS_CUST_STRAFERIGHT)
 			    || (GInput->actionPressed(CONTROLS_CUST_STRAFE) && GInput->actionPressed(CONTROLS_CUST_TURNRIGHT)))
 			   && !NOMOREMOVES) {
-				eyeball.move(angleToVectorXZ(eyeball.getAngle().getYaw() - 90.f) * 10.f * FD * 0.033f);
+				move += angleToVectorXZ(eyeball.getAngle().getYaw() - 90.f) * 10.f * FD * 0.033f;
 				NOMOREMOVES = 1;
 			}
 			
 			IO_PHYSICS phys;
 			phys.cyl.height = -110.f;
-			phys.cyl.origin = eyeball.getPosition() + Vec3f(0.f, 70.f, 0.f);
+			phys.cyl.origin = eyeball.getPosition() + move + Vec3f(0.f, 70.f, 0.f);
 			phys.cyl.radius = 45.f;
 
 			Cylinder test = phys.cyl;
@@ -775,10 +775,8 @@ void ArxGame::managePlayerControls() {
 					if(MagicSightFader > 1.f)
 						MagicSightFader = 1.f;
 				}
-			} else {
-				eyeball.m_pos = old;
+				eyeball.move(move);
 			}
-			
 		}
 		
 		if(g_gameTime.isPaused()) {
