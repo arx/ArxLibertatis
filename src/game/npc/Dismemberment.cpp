@@ -203,7 +203,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, VertexSelectionId num) {
 	
 	EERIE_COLLISION_Cylinder_Create(io);
 	EERIE_PHYSICS_BOX_Create(nouvo);
-	if(!nouvo->pbox){
+	if(!nouvo->pbox) {
 		delete nouvo;
 		return;
 	}
