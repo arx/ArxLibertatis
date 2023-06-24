@@ -30,28 +30,27 @@ class FlyingEye {
 public:
 	
 	FlyingEye();
-	~FlyingEye();
-
+	
 	void init();
 	void release();
-
+	
 	bool isActive();
 	bool isInactive();
-
+	
 	Vec3f getPosition() const;
 	Anglef getAngle() const;
 	void move(Vec3f vec);
 	void turn(Anglef angle);
 	void centerView();
-
+	
 	void reset();
 	void launch();
 	void update();
 	void drawMagicSightInterface();
 	void end();
-
+	
 	void render();
-
+	
 private:
 	
 	enum EyeStatus {

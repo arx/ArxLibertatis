@@ -41,10 +41,6 @@ FlyingEye::FlyingEye()
 	reset();
 }
 
-FlyingEye::~FlyingEye() {
-
-}
-
 void FlyingEye::reset() {
 	m_progress = 0;
 	m_state = EYEBALL_INACTIVE;
