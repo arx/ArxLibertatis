@@ -233,7 +233,7 @@ static void ApplySPArm() {
 	ARX_SPSound();
 	
 	res::path cls;
-	switch (sp_arm) {
+	switch(sp_arm) {
 		case 0: cls = "graph/obj3d/interactive/items/armor/helmet_plate_cm/helmet_plate_cm"; break;
 		case 1: cls = "graph/obj3d/interactive/items/armor/legging_plate_cm/legging_plate_cm"; break;
 		case 2: cls = "graph/obj3d/interactive/items/armor/chest_plate_cm/chest_plate_cm"; break;
@@ -253,7 +253,7 @@ static void ApplySPArm() {
 		
 		ARX_SPSound();
 		
-		switch (sp_arm) {
+		switch(sp_arm) {
 			case 0: DisplayCheatText("------ZoliChapo------"); break;
 			case 1: DisplayCheatText("-----TiteBottine-----"); break;
 			case 2: DisplayCheatText("-----Roooo-La-La-----"); break;
@@ -313,7 +313,7 @@ static void ApplySPMax() {
 	MakeCoolFx(player.pos);
 	sp_max = ~sp_max;
 	
-	if (sp_max) {
+	if(sp_max) {
 		ARX_SPSound();
 		DisplayCheatText("!!!_FaNt0mAc1e_!!!");
 		
