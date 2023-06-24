@@ -64,7 +64,7 @@ class Entity;
 
 struct InventoryPos {
 	
-	typedef unsigned short index_type;
+	typedef s16 index_type;
 	
 	Entity * container;
 	index_type x;
