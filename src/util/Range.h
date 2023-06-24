@@ -82,7 +82,7 @@ public:
 	
 	struct Sentinel { };
 	
-	TransformIterator(Base && base, End end, Transform transform) noexcept
+	TransformIterator(Base base, End end, Transform transform) noexcept
 		: m_base(base)
 		, m_end(end)
 		, m_transform(transform)
@@ -664,7 +664,7 @@ auto unordered_remove_if(Range & range, Predicate predicate) {
 }
 
 template <typename Range, typename It>
-auto unordered_erase(Range & range, It && it) {
+auto unordered_erase(Range & range, It it) {
 	
 	if(it + 1 != range.end()) {
 		*it = std::move(*(range.end() - 1));
