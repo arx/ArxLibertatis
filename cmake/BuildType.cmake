@@ -87,10 +87,12 @@ if(MSVC)
 		
 		# Disable RTTI
 		add_definitions(/GR-) # No RTTI
-		foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE)
-			string(REGEX REPLACE "/GR( |$)" "" ${flag_var} "${${flag_var}}")
-			set(${flag_var} "${${flag_var}} /GR-")
-		endforeach(flag_var)
+		if(CMAKE_VERSION VERSION_LESS 3.20)
+			foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE)
+				string(REGEX REPLACE "/GR( |$)" "" ${flag_var} "${${flag_var}}")
+				set(${flag_var} "${${flag_var}} /GR-")
+			endforeach(flag_var)
+		endif()
 		list(APPEND enable_rtti /GR)
 		
 	endif()
