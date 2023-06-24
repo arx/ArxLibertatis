@@ -93,7 +93,7 @@ private:
 
 template <class IntType>
 IntType Random::get(IntType min, IntType max) {
-	static_assert(std::is_integral<IntType>::value, "get must be called with ints");
+	static_assert(std::is_integral_v<IntType>, "get must be called with ints");
 	return std::uniform_int_distribution<IntType>(min, max)(*rng);
 }
 
@@ -112,7 +112,7 @@ inline unsigned int Random::getu(unsigned int min, unsigned int max) {
 
 template <class RealType>
 RealType Random::getf(RealType min, RealType max) {
-	static_assert(std::is_floating_point<RealType>::value, "getf must be called with floats");
+	static_assert(std::is_floating_point_v<RealType>, "getf must be called with floats");
 	return std::uniform_real_distribution<RealType>(min, max)(*rng);
 }
 
