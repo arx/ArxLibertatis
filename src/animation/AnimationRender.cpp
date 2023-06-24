@@ -1159,7 +1159,7 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 	ftr *= scale;
 
 	float temp;
-	if (io == entities.player()) {
+	if(io == entities.player()) {
 		temp = MAKEANGLE(180.f - player.angle.getYaw());
 	} else {
 		temp = MAKEANGLE(180.f - io->angle.getYaw());
