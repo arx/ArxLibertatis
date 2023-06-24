@@ -178,8 +178,10 @@ std::vector<std::string> g_playerQuestLogEntries;
 bool ARX_PLAYER_IsInFightMode() {
 	arx_assert(entities.player());
 	
-	if (player.Interface & INTER_COMBATMODE) return true;
-
+	if(player.Interface & INTER_COMBATMODE) {
+		return true;
+	}
+	
 	const AnimLayer & layer1 = entities.player()->animlayer[1];
 	
 	if(layer1.cur_anim) {
@@ -1079,7 +1081,7 @@ void ARX_PLAYER_Restore_Skin() {
 /*!
  * \brief Load Mesh & anims for hero
  */
-void ARX_PLAYER_LoadHeroAnimsAndMesh(){
+void ARX_PLAYER_LoadHeroAnimsAndMesh() {
 	
 	hero = loadObject("graph/obj3d/interactive/npc/human_base/human_base.teo", false).release();
 	PLAYER_SKIN_TC = TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero_head");
@@ -1650,14 +1652,14 @@ void ARX_PLAYER_Frame_Update()
 
 	if(io && io->_npcdata->ex_rotate) {
 		EERIE_EXTRA_ROTATE * extraRotation = io->_npcdata->ex_rotate;
-
+		
 		float v = player.angle.getPitch();
-
-		if(v > 160)
+		if(v > 160) {
 			v = -(360 - v);
-
+		}
+		
 		if(player.Interface & INTER_COMBATMODE) {
-			if (ARX_EQUIPMENT_GetPlayerWeaponType() == WEAPON_BOW) {
+			if(ARX_EQUIPMENT_GetPlayerWeaponType() == WEAPON_BOW) {
 				extraRotation->group_rotate[0] = Anglef(); // Head
 				extraRotation->group_rotate[1] = Anglef(); // Neck
 				extraRotation->group_rotate[2] = Anglef(); // Chest
@@ -1770,8 +1772,8 @@ static bool Valid_Jump_Pos() {
 	return (tmp <= 50.f);
 }
 
-static void setPlayerPositionColor(){
-
+static void setPlayerPositionColor() {
+	
 	float grnd_color = GetColorz(Vec3f(player.pos.x, player.pos.y + 90, player.pos.z)) - 15.f;
 	if(CURRENT_PLAYER_COLOR < grnd_color) {
 		CURRENT_PLAYER_COLOR += g_framedelay * (1.0f / 8);
@@ -1781,6 +1783,7 @@ static void setPlayerPositionColor(){
 		CURRENT_PLAYER_COLOR -= g_framedelay * (1.0f / 4);
 		CURRENT_PLAYER_COLOR = std::max(CURRENT_PLAYER_COLOR, grnd_color);
 	}
+	
 }
 
 static void PlayerMovementIterate(float DeltaTime) {
