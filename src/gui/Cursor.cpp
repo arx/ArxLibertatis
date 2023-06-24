@@ -150,18 +150,15 @@ static bool SelectSpellTargetCursorRender() {
 		
 		TextureContainer * surf;
 		
-		if(FlyingOverIO
-			&& (((LOOKING_FOR_SPELL_TARGET & 1) && (FlyingOverIO->ioflags & IO_NPC))
-			||  ((LOOKING_FOR_SPELL_TARGET & 2) && (FlyingOverIO->ioflags & IO_ITEM)))
-		){
+		if(FlyingOverIO &&
+		   (((LOOKING_FOR_SPELL_TARGET & 1) && (FlyingOverIO->ioflags & IO_NPC)) ||
+		    ((LOOKING_FOR_SPELL_TARGET & 2) && (FlyingOverIO->ioflags & IO_ITEM)))) {
 			surf = cursorTargetOn;
-			
 			if(eeMouseUp1()) {
 				ARX_SPELLS_LaunchSpellTarget(FlyingOverIO);
 			}
 		} else {
 			surf = cursorTargetOff;
-			
 			if(GInput->actionPressed(CONTROLS_CUST_MAGICMODE)) {
 				ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE, &player.pos);
 				ARX_SPELLS_CancelSpellTarget();
