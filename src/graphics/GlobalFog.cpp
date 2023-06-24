@@ -96,12 +96,12 @@ void ARX_GLOBALMODS_Apply() {
 	GLOBAL_MODS & current = g_currentFogParameters;
 	GLOBAL_MODS & desired = g_desiredFogParameters;
 	
-	if (desired.flags & GMOD_ZCLIP) {
+	if(desired.flags & GMOD_ZCLIP) {
 		current.zclip = Approach(current.zclip, desired.zclip, baseinc * 2);
 	} else { // return to default...
 		desired.zclip = current.zclip = Approach(current.zclip, DEFAULT_ZCLIP, baseinc * 2);
 	}
-
+	
 	// Now goes for RGB mods
 	if(desired.flags & GMOD_DCOLOR) {
 		current.depthcolor.r = Approach(current.depthcolor.r, desired.depthcolor.r, incdiv1000);
