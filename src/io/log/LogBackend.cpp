@@ -46,7 +46,7 @@ void logger::Backend::format(std::ostream & os, const Source & file,
 		os << std::left << std::setfill(' ') << std::setw(alignment - length);
 	}
 	
-	os << line << "  " << str << std::endl;
+	os << line << "  " << str << '\n';
 	
 	os.flags(flags);
 }
