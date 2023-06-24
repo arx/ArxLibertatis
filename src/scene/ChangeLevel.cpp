@@ -702,41 +702,43 @@ static bool ARX_CHANGELEVEL_Push_Player(AreaId area) {
 	asp->maxmana = player.m_manaMaxWithoutMods;
 	
 	asp->misc_flags = 0;
-
-	if (player.onfirmground)
+	
+	if(player.onfirmground) {
 		asp->misc_flags |= 1;
-
-	if (WILLRETURNTOCOMBATMODE)
+	}
+	
+	if(WILLRETURNTOCOMBATMODE) {
 		asp->misc_flags |= 2;
-
+	}
+	
 	asp->physics = player.physics;
 	asp->poison = player.poison;
 	asp->hunger = player.hunger;
-
+	
 	asp->sp_flags = 0;
-
-	if (sp_arm == 1)
+	
+	if(sp_arm == 1) {
 		asp->sp_flags |= SP_ARM1;
-
-	if (sp_arm == 2)
+	}
+	if(sp_arm == 2) {
 		asp->sp_flags |= SP_ARM2;
-
-	if (sp_arm == 3)
+	}
+	if(sp_arm == 3) {
 		asp->sp_flags |= SP_ARM3;
-
-	if (sp_max)
+	}
+	if(sp_max) {
 		asp->sp_flags |= SP_MAX;
-
-	if (cur_mr == 3)
+	}
+	if(cur_mr == 3) {
 		asp->sp_flags |= SP_MR;
-
-	if (cur_rf == 3)
+	}
+	if(cur_rf == 3) {
 		asp->sp_flags |= SP_RF;
-
-	if (sp_wep)
+	}
+	if(sp_wep) {
 		asp->sp_flags |= SP_WEP;
-
-
+	}
+	
 	asp->pos = player.pos;
 	asp->Attribute_Redistribute = player.Attribute_Redistribute;
 	asp->Skill_Redistribute = player.Skill_Redistribute;
@@ -967,7 +969,7 @@ static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 	// Save Animations
 	for(size_t i = 0; i < MAX_ANIMS; i++) {
 		memset(&ais.anims[i], 0, 256);
-		if (io->anims[i] != nullptr) {
+		if(io->anims[i]) {
 			util::storeString(ais.anims[i], io->anims[i]->path.string());
 		}
 	}
@@ -1138,7 +1140,7 @@ static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 			arx_assert(SAVED_MAX_STACKED_BEHAVIOR == io->_npcdata->stacked.size());
 			std::copy(io->_npcdata->stacked.begin(), io->_npcdata->stacked.end(), as->stacked);
 			
-			for (size_t i = 0; i < SAVED_MAX_STACKED_BEHAVIOR; i++) {
+			for(size_t i = 0; i < SAVED_MAX_STACKED_BEHAVIOR; i++) {
 				EntityHandle target = (io->_npcdata->stacked[i].exist) ? io->_npcdata->stacked[i].target : EntityHandle();
 				storeTargetString(as->stackedtarget[i], target);
 			}
@@ -1998,7 +2000,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 			return io;
 		}
 		
-		switch (ais->savesystem_type) {
+		switch(ais->savesystem_type) {
 			
 			case TYPE_NPC: {
 				
