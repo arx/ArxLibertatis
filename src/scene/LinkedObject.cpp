@@ -103,7 +103,6 @@ static void linkObjects(EERIE_3DOBJ & master, std::string_view masterVertex,
 	
 	master.linked.push_back(link);
 	
-	return;
 }
 
 #ifdef ARX_DEBUG
