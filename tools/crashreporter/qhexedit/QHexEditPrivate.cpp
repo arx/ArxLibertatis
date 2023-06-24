@@ -524,7 +524,7 @@ void QHexEditPrivate::paintEvent(QPaintEvent * event) {
 	
 	// Paint address area
 	if(_addressArea) {
-		for (int lineIdx = firstLineIdx, yPos = yPosStart; lineIdx < lastLineIdx; lineIdx += BYTES_PER_LINE, yPos += _charHeight) {
+		for(int lineIdx = firstLineIdx, yPos = yPosStart; lineIdx < lastLineIdx; lineIdx += BYTES_PER_LINE, yPos += _charHeight) {
 			QString address = QString("%1")
 			                  .arg(lineIdx + _xData.addressOffset(), _xData.realAddressNumbers(), 16, QChar('0'));
 			painter.drawText(_xPosAdr, yPos, address);
