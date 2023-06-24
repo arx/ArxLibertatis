@@ -1085,9 +1085,9 @@ void TryToCastSpell(Entity * io, SpellType spellType, long level, EntityHandle t
 	
 	io->gameFlags &= ~GFLAG_INVISIBILITY;
 	
-	if (((io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM)
-	     && (io->spellcast_data.spell_flags & SPELLCAST_FLAG_NODRAW))
-	    || (io->spellcast_data.spell_flags & SPELLCAST_FLAG_PRECAST)) {
+	if(((io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM) &&
+		  (io->spellcast_data.spell_flags & SPELLCAST_FLAG_NODRAW)) ||
+		 (io->spellcast_data.spell_flags & SPELLCAST_FLAG_PRECAST)) {
 		
 		ARX_SPELLS_Launch(io->spellcast_data.castingspell,
 		                  *io,
