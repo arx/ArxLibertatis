@@ -520,7 +520,7 @@ void Credits::render() {
 	
 	for(; it != m_lines.begin(); --it, --m_firstVisibleLine) {
 		float yy = (it - 1)->sPos.y + m_scrollPosition;
-		if (yy <= -m_lineHeight) {
+		if(yy <= -m_lineHeight) {
 			break;
 		}
 	}
