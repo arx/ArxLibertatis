@@ -36,6 +36,7 @@ namespace CppUnit {
 	
 	template <>
 	struct assertion_traits<glm::quat> {
+		
 		static bool equal(const glm::quat & v, const glm::quat & other) {
 			
 			glm::vec4 a = glm::vec4(v.w, v.x, v.y, v.z);
@@ -48,19 +49,20 @@ namespace CppUnit {
 		
 		static std::string toString(const glm::quat quat) {
 			std::ostringstream ost;
-			ost << std::endl << std::fixed << std::setprecision(4);
-			
+			ost << '\n' << std::fixed << std::setprecision(4);
 			ost << "glm::quat(";
 			ost << quat.w << ", ";
 			ost << quat.x << ", ";
 			ost << quat.y << ", ";
-			ost << quat.z << ")" << std::endl;
+			ost << quat.z << ")\n";
 			return ost.str();
 		}
+		
 	};
 	
 	template <>
 	struct assertion_traits<Vec2s> {
+		
 		static bool equal(const Vec2s & v, const Vec2s & other) {
 			return glm::all(glm::equal(v, other));
 		}
@@ -73,10 +75,12 @@ namespace CppUnit {
 			ost << v.y << ")";
 			return ost.str();
 		}
+		
 	};
 	
 	template <>
 	struct assertion_traits<Vec2i> {
+		
 		static bool equal(const Vec2i & v, const Vec2i & other) {
 			return glm::all(glm::equal(v, other));
 		}
@@ -87,10 +91,12 @@ namespace CppUnit {
 			ost << "Vec2i(" << v.x << ", " << v.y << ")";
 			return ost.str();
 		}
+		
 	};
 	
 	template <>
 	struct assertion_traits<Vec3f> {
+		
 		static bool equal(const Vec3f & v, const Vec3f & other) {
 			return glm::all(glm::epsilonEqual(v, other, 0.001f));
 		}
@@ -104,10 +110,12 @@ namespace CppUnit {
 			ost << v.z << ")";
 			return ost.str();
 		}
+		
 	};
 	
 	template <>
 	struct assertion_traits<Vec4f> {
+		
 		static bool equal(const Vec4f & v, const Vec4f & other) {
 			return glm::all(glm::epsilonEqual(v, other, 0.001f));
 		}
@@ -122,10 +130,12 @@ namespace CppUnit {
 			ost << v.w << ")";
 			return ost.str();
 		}
+		
 	};
 	
 	template <>
 	struct assertion_traits<glm::mat4x4> {
+		
 		static bool equal(const glm::mat4x4 & mat, const glm::mat4x4 & other) {
 			
 			for(int i = 0; i < 4; i++) {
@@ -138,22 +148,24 @@ namespace CppUnit {
 		
 		static std::string toString(const glm::mat4x4 &m) {
 			OStringStream ost;
-			ost << std::endl << std::fixed << std::setprecision(5);
+			ost << '\n' << std::fixed << std::setprecision(5);
 			
 			for(int i = 0; i < 4; i++) {
 				for(int u = 0; u < 4; u++) {
 					// Print columns as rows !
 					ost << std::setw(14) << glm::column(m, i)[u];
 				}
-				ost << std::endl;
+				ost << '\n';
 			}
 			
 			return ost.str();
 		}
+		
 	};
 	
 	template <>
 	struct assertion_traits<Color> {
+		
 		static bool equal(const Color & col, const Color & other) {
 			return col.r == other.r && col.g == other.g && col.b == other.b && col.a == other.a;
 		}
@@ -166,6 +178,7 @@ namespace CppUnit {
 			ost << std::setw(3) << int(col.a) << "a";
 			return ost.str();
 		}
+		
 	};
 	
 } // namespace CppUnit
