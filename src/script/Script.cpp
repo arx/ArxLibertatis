@@ -1466,9 +1466,9 @@ float GETVarValueFloat(const SCRIPT_VARIABLES & svf, std::string_view name) {
 	return tsv ? tsv->fval : 0.f;
 }
 
-std::string GETVarValueText(const SCRIPT_VARIABLES & svf, std::string_view name) {
+std::string_view GETVarValueText(const SCRIPT_VARIABLES & svf, std::string_view name) {
 	const SCRIPT_VAR * tsv = GetVarAddress(svf, name);
-	return tsv ? tsv->text : "";
+	return tsv ? std::string_view(tsv->text) : "";
 }
 
 SCRIPT_VAR * SETVarValueLong(SCRIPT_VARIABLES & svf, std::string_view name, long val) {

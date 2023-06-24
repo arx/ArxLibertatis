@@ -515,7 +515,7 @@ SCRIPT_VAR * SETVarValueFloat(SCRIPT_VARIABLES & svf, std::string_view name, flo
 // Use to get the value of a script variable
 long GETVarValueLong(const SCRIPT_VARIABLES & svf, std::string_view name);
 float GETVarValueFloat(const SCRIPT_VARIABLES & svf, std::string_view name);
-std::string GETVarValueText(const SCRIPT_VARIABLES & svf, std::string_view name);
+std::string_view GETVarValueText(const SCRIPT_VARIABLES & svf, std::string_view name);
 const SCRIPT_VAR * GetVarAddress(const SCRIPT_VARIABLES & svf, std::string_view name);
 
 ValueType getSystemVar(const script::Context & context, std::string_view name, std::string & txtcontent, float * fcontent, long * lcontent);
