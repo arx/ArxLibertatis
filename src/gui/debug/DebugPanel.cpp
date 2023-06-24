@@ -85,7 +85,7 @@ void DebugBox::calcSizes() {
 	for(const Row & row : m_elements) {
 		colums.resize(std::max(colums.size(), row.fields.size()));
 		int i = 0;
-		for(std::string_view field : row.fields){
+		for(std::string_view field : row.fields) {
 			colums[i].width = std::max(colums[i].width, int(field.size()));
 			
 			if(!first) {
