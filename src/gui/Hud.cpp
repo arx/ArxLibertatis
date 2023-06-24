@@ -1183,7 +1183,7 @@ void DamagedEquipmentGui::update() {
 		m_colors[i] = Color::black;
 		
 		long eq = -1;
-		switch (i) {
+		switch(i) {
 			case 0: eq = EQUIP_SLOT_WEAPON; break;
 			case 1: eq = EQUIP_SLOT_SHIELD; break;
 			case 2: eq = EQUIP_SLOT_HELMET; break;
