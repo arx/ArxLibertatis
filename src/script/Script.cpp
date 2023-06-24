@@ -368,7 +368,7 @@ void ARX_SCRIPT_AllowInterScriptExec() {
 	for(long n = 0; n < heartbeat_count; n++) {
 		
 		EntityHandle i = EntityHandle(ppos++);
-		if(i.handleData() >= long(entities.size())){
+		if(i.handleData() >= long(entities.size())) {
 			ppos = 0;
 			return;
 		}
@@ -1457,47 +1457,34 @@ const SCRIPT_VAR * GetVarAddress(const SCRIPT_VARIABLES & svf, std::string_view 
 }
 
 long GETVarValueLong(const SCRIPT_VARIABLES & svf, std::string_view name) {
-	
 	const SCRIPT_VAR * tsv = GetVarAddress(svf, name);
-
-	if (tsv == nullptr) return 0;
-
-	return tsv->ival;
+	return tsv ? tsv->ival : 0;
 }
 
 float GETVarValueFloat(const SCRIPT_VARIABLES & svf, std::string_view name) {
-	
 	const SCRIPT_VAR * tsv = GetVarAddress(svf, name);
-
-	if (tsv == nullptr) return 0;
-
-	return tsv->fval;
+	return tsv ? tsv->fval : 0.f;
 }
 
 std::string GETVarValueText(const SCRIPT_VARIABLES & svf, std::string_view name) {
-	
 	const SCRIPT_VAR * tsv = GetVarAddress(svf, name);
-	
-	if (!tsv) return "";
-
-	return tsv->text;
+	return tsv ? tsv->text : "";
 }
 
 SCRIPT_VAR * SETVarValueLong(SCRIPT_VARIABLES & svf, std::string_view name, long val) {
 	
 	SCRIPT_VAR * tsv = GetVarAddress(svf, name);
 	
-	if (!tsv)
-	{
+	if(!tsv) {
 		tsv = GetFreeVarSlot(svf);
-
-		if (!tsv)
+		if(!tsv) {
 			return nullptr;
-
+		}
 		tsv->name = name;
 	}
-
+	
 	tsv->ival = val;
+	
 	return tsv;
 }
 
@@ -1505,17 +1492,16 @@ SCRIPT_VAR * SETVarValueFloat(SCRIPT_VARIABLES & svf, std::string_view name, flo
 	
 	SCRIPT_VAR * tsv = GetVarAddress(svf, name);
 	
-	if (!tsv)
-	{
+	if(!tsv) {
 		tsv = GetFreeVarSlot(svf);
-
-		if (!tsv)
+		if(!tsv) {
 			return nullptr;
-
+		}
 		tsv->name = name;
 	}
-
+	
 	tsv->fval = val;
+	
 	return tsv;
 }
 
@@ -1655,8 +1641,10 @@ ScriptResult SendIOScriptEvent(Entity * sender, Entity * entity, const ScriptEve
 
 ScriptResult SendInitScriptEvent(Entity * io) {
 	
-	if (!io) return REFUSE;
-
+	if(!io) {
+		return REFUSE;
+	}
+	
 	EntityHandle num = io->index();
 	
 	if(entities[num] && entities[num]->script.valid) {
