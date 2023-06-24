@@ -510,7 +510,7 @@ void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path) {
 		return;
 	}
 	
-	if(!(tw & (TWEAK_HEAD | TWEAK_TORSO | TWEAK_LEGS))){
+	if(!(tw & (TWEAK_HEAD | TWEAK_TORSO | TWEAK_LEGS))) {
 		return;
 	}
 	
