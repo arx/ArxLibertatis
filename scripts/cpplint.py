@@ -2041,6 +2041,11 @@ def CheckSpacing(filename, clean_lines, linenum, error):
     error(filename, linenum, 'whitespace/parens', 5,
           'Extra space before ( in %s' % match.group(1))
 
+  match = Search(r'\)\{', line)
+  if match:
+    error(filename, linenum, 'whitespace/parens', 5,
+          'Missing space between ) and {')
+
   # For if/for/while/switch, the left and right parens should be
   # consistent about how many spaces are inside the parens, and
   # there should either be zero or one spaces inside the parens.
