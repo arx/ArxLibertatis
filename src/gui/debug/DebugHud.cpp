@@ -144,7 +144,7 @@ const FlagName<AnimUseType> AnimUseFlagNames[] = {
 };
 
 static const char * entityVisilibityToString(EntityShowState value) {
-	switch (value) {
+	switch(value) {
 		case SHOW_FLAG_IN_SCENE:     return "IN_SCENE";
 		case SHOW_FLAG_LINKED:       return "LINKED";
 		case SHOW_FLAG_IN_INVENTORY: return "IN_INVENTORY";
