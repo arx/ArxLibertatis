@@ -1318,7 +1318,7 @@ void doSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, Spell *
 		
 		// TODO damage is scaled multiple times if there are multiple NPCs in the sphere
 		if(entity.ioflags & IO_NPC) {
-			switch (flags) {
+			switch(flags) {
 				case DAMAGE_AREA:
 					dmg = dmg * (sphere.radius + 30 - mindist) * rad;
 					break;
@@ -1363,16 +1363,21 @@ void doSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, Spell *
 	
 }
 
-void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent)
-{
-	if(!io)
+void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent) {
+	
+	if(!io) {
 		return;
-
-	if (io->durability <= 0) return;
-
-	if (io->durability == io->max_durability) return;
-
-	if (percent >= 100.f) {
+	}
+	
+	if(io->durability <= 0) {
+		return;
+	}
+	
+	if(io->durability == io->max_durability) {
+		return;
+	}
+	
+	if(percent >= 100.f) {
 		io->durability = io->max_durability;
 	} else {
 		
@@ -1380,7 +1385,7 @@ void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent)
 		float to_restore = (io->max_durability - io->durability) * ratio;
 		float v = Random::getf(0.f, 100.f) - percent;
 		
-		if (v <= 0.f) {
+		if(v <= 0.f) {
 			float mloss = 1.f;
 
 			if(io->ioflags & IO_ITEM) {
