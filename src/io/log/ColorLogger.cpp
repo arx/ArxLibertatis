@@ -65,7 +65,7 @@ void ColorConsole::log(const Source & file, int line, Logger::LogLevel level, st
 		(*os) << std::left << std::setfill(' ') << std::setw(alignment - length);
 	}
 	
-	(*os) << line << " " << c << str << e << std::endl;
+	(*os) << line << " " << c << str << e << '\n';
 	
 	os->flags(flags);
 }
