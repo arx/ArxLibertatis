@@ -61,12 +61,16 @@ bool CylinderInCylinder(const Cylinder & cyl1, const Cylinder & cyl2) {
 	float m1 = cyl1.origin.y;
 	float m2 = cyl2.origin.y + cyl2.height;
 	
-	if (m2 > m1) return false;
+	if(m2 > m1) {
+		return false;
+	}
 	
 	m1 = cyl1.origin.y + cyl1.height;
 	m2 = cyl2.origin.y;
 	
-	if (m1 > m2) return false;
+	if(m1 > m2) {
+		return false;
+	}
 	
 	m1 = cyl1.radius + cyl2.radius;
 	
@@ -74,44 +78,46 @@ bool CylinderInCylinder(const Cylinder & cyl1, const Cylinder & cyl2) {
 }
 
 // Sort of...
-bool SphereInCylinder(const Cylinder & cyl1, const Sphere & s)
-{
+bool SphereInCylinder(const Cylinder & cyl1, const Sphere & s) {
+	
 	float m1 = std::max(cyl1.origin.y, cyl1.origin.y + cyl1.height);
 	float m2 = s.origin.y - s.radius;
-
-	if (m2 > m1) return false;
-
+	
+	if(m2 > m1) {
+		return false;
+	}
+	
 	m1 = std::min(cyl1.origin.y, cyl1.origin.y + cyl1.height);
 	m2 = s.origin.y + s.radius;
-
-	if (m1 > m2) return false;
+	
+	if(m1 > m2) {
+		return false;
+	}
 	
 	return !fartherThan(getXZ(cyl1.origin), getXZ(s.origin), cyl1.radius + s.radius);
 }
 
-glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float ratio)
-{
+glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float ratio) {
+	
 	float fCosTheta = from.x * to.x + from.y * to.y + from.z * to.z + from.w * to.w;
-
-	if (fCosTheta < 0.0f)
-	{
+	
+	if(fCosTheta < 0.f) {
 		fCosTheta = -fCosTheta;
 		to.x = -to.x;
 		to.y = -to.y;
 		to.z = -to.z;
 		to.w = -to.w;
 	}
-
+	
 	float fBeta = 1.f - ratio;
-
-	if (1.0f - fCosTheta > 0.001f)
-	{
+	
+	if(1.f - fCosTheta > 0.001f) {
 		float fTheta = glm::acos(fCosTheta);
 		float t = 1 / std::sin(fTheta);
 		fBeta = std::sin(fTheta * fBeta) * t;
 		ratio = std::sin(fTheta * ratio) * t;
 	}
-
+	
 	return glm::quat(
 		fBeta * from.w + ratio * to.w,
 		fBeta * from.x + ratio * to.x,
