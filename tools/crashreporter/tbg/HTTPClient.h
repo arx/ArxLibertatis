@@ -132,7 +132,7 @@ public:
 	Response(int status, std::string && data, std::string && url)
 		: m_status(status)
 		, m_data(std::move(data))
-		, m_url(url)
+		, m_url(std::move(url))
 	{ }
 	
 	//! HTTP status code returned by the server or \c 0 if there was an error
