@@ -456,7 +456,7 @@ static bool showDialog(DialogType type, const std::string & message,
 	}
 	#endif
 	
-	std::cerr << "Failed to show a dialog: " << title << ": " << message << std::endl;
+	std::cerr << "Failed to show a dialog: " << title << ": " << message << '\n';
 	return true;
 }
 
