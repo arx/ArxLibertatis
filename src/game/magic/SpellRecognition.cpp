@@ -343,7 +343,7 @@ int RuneRecognitionAlt::arx2angle(char dir) {
 	}
 }
 
-void RuneRecognitionAlt::setFailedSeq(){
+void RuneRecognitionAlt::setFailedSeq() {
 	LAST_FAILED_SEQUENCE.clear();
 	int lastDir = -1;
 	for(int direction : m_dirs) {
@@ -357,7 +357,7 @@ void RuneRecognitionAlt::setFailedSeq(){
 /*! Compare the input directions (m_dirs) with each rune pattern
  *  Returns an index to patternData, -1 if no match is found
  */
-int RuneRecognitionAlt::findMatchingPattern(){
+int RuneRecognitionAlt::findMatchingPattern() {
 	int index = -1;
 	int min = std::numeric_limits<int>::max();
 	for(size_t rune = 0; rune < s_patternCount; rune++) {
@@ -708,50 +708,40 @@ void ARX_SPELLS_Analyse() {
 			}
 		}
 	}
-
+	
 	SpellMoves.clear();
 	
-	if ( cdir > 0 )
-	{
-
-		for (long i = 0 ; i < cdir ; i++ )
-		{
-			switch ( dirs[i] )
-			{
+	if(cdir > 0) {
+		for(long i = 0; i < cdir ; i++) {
+			switch(dirs[i]) {
 				case AUP:
 					SpellMoves += "8";
 					break;
-
 				case ADOWN:
 					SpellMoves += "2";
 					break;
-
 				case ALEFT:
 					SpellMoves += "4";
 					break;
-
 				case ARIGHT:
 					SpellMoves += "6";
 					break;
-
 				case AUPRIGHT:
 					SpellMoves += "9";
 					break;
-
 				case ADOWNRIGHT:
 					SpellMoves += "3";
 					break;
-
 				case AUPLEFT:
 					SpellMoves += "7";
 					break;
-
 				case ADOWNLEFT:
 					SpellMoves += "1";
 					break;
 			}
 		}
 	}
+	
 }
 
 static void handleRuneDetection(Rune rune) {
