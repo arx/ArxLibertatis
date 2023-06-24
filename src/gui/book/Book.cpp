@@ -166,9 +166,9 @@ PlayerBook::PlayerBook()
 { }
 
 bool PlayerBook::canOpenPage(ARX_INTERFACE_BOOK_MODE page) const {
-	switch (page) {
-		case BOOKMODE_SPELLS:  return !!player.rune_flags;
-		default:               return true;
+	switch(page) {
+		case BOOKMODE_SPELLS: return !!player.rune_flags;
+		default:              return true;
 	}
 }
 
@@ -600,8 +600,9 @@ void StatsPage::manageStats()
 		UNICODE_ARXDrawTextCenter(hFontInBook, bookPos + Vec2f(413, 10) * scale, ss.str(), Color::black);
 	}
 	
-	if (MouseInBookRect(bookPos + Vec2f(366, 10) * scale, Vec2f(87, 20) * scale))
+	if(MouseInBookRect(bookPos + Vec2f(366, 10) * scale, Vec2f(87, 20) * scale)) {
 		FLYING_OVER = WND_XP;
+	}
 	
 	{
 		Vec2f attribAreaSize = Vec2f(32, 45) * scale;
@@ -647,7 +648,7 @@ void StatsPage::manageStats()
 	
 	if(player.Skill_Redistribute != 0 || ARXmenu.mode() == Mode_CharacterCreation) {
 		
-		if (CheckSkillClick(bookPos + Vec2f(293, 113) * scale, &player.m_skill.stealth, g_bookResouces.ic_stealth, player.m_skillOld.stealth)) {
+		if(CheckSkillClick(bookPos + Vec2f(293, 113) * scale, &player.m_skill.stealth, g_bookResouces.ic_stealth, player.m_skillOld.stealth)) {
 			FLYING_OVER = BOOK_STEALTH;
 			cursorSetRedistribute(player.Skill_Redistribute);
 		}
@@ -1026,7 +1027,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 	Vec2f bookPos = g_bookRect.topLeft();
 	
 	Rect rec;
-	if (ARXmenu.mode() == Mode_CharacterCreation) {
+	if(ARXmenu.mode() == Mode_CharacterCreation) {
 		
 		rec = Rect(Vec2i(bookPos + Vec2f(23.f, 5.f) * scale),
 		           Vec2i(bookPos + Vec2f(233.f, 236.f) * scale));
