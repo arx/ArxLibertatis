@@ -157,6 +157,9 @@ struct SCRIPT_VAR {
 	float fval = 0.f;
 	std::string text;
 	
+	SCRIPT_VAR() noexcept = default;
+	SCRIPT_VAR(std::string_view variableName) : name(variableName) { }
+	
 };
 
 bool isLocalVariable(std::string_view name);
