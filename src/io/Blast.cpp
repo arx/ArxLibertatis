@@ -94,7 +94,9 @@ static int bits(state * s, int need) {
 	while(s->bitcnt < need) {
 		if(s->left == 0) {
 			s->left = s->infun(s->inhow, &(s->in));
-			if (s->left == 0) throw blast_truncated_error(); /* out of input */
+			if(s->left == 0) {
+				throw blast_truncated_error(); /* out of input */
+			}
 		}
 		val |= int(*(s->in)++) << s->bitcnt; /* load eight bits */
 		s->left--;
@@ -160,7 +162,7 @@ static int decode(state * s, huffman * h) {
 	next = h->count + 1;
 	while(true) {
 		while(left--) {
-			code |= (bitbuf & 1) ^ 1;   /* invert code */
+			code |= (bitbuf & 1) ^ 1; /* invert code */
 			bitbuf >>= 1;
 			count = *next++;
 			if(code < first + count) { /* if length len, return symbol */
@@ -168,23 +170,29 @@ static int decode(state * s, huffman * h) {
 				s->bitcnt = (s->bitcnt - len) & 7;
 				return h->symbol[index + (code - first)];
 			}
-			index += count;             /* else update for next length */
+			index += count; /* else update for next length */
 			first += count;
 			first <<= 1;
 			code <<= 1;
 			len++;
 		}
 		left = (MAXBITS + 1) - len;
-		if(left == 0) break;
+		if(left == 0) {
+			break;
+		}
 		if(s->left == 0) {
 			s->left = s->infun(s->inhow, &(s->in));
-			if (s->left == 0) throw blast_truncated_error(); /* out of input */
+			if(s->left == 0) {
+				throw blast_truncated_error(); /* out of input */
+			}
 		}
 		bitbuf = *(s->in)++;
 		s->left--;
-		if (left > 8) left = 8;
+		if(left > 8) {
+			left = 8;
+		}
 	}
-	return -9;                          /* ran out of codes */
+	return -9; /* ran out of codes */
 }
 
 /*
@@ -240,7 +248,9 @@ static int construct(huffman * h, const unsigned char * rep, int n) {
 	for(len = 1; len <= MAXBITS; len++) {
 		left <<= 1;                     /* one more bit, double codes left */
 		left -= h->count[len];          /* deduct count from possible codes */
-		if(left < 0) return left;      /* over-subscribed--return negative */
+		if(left < 0) {
+			return left; /* over-subscribed--return negative */
+		}
 	}                                   /* left > 0 means incomplete */
 	
 	/* generate offsets into symbol table for each length for sorting */
@@ -347,9 +357,13 @@ static BlastResult blastDecompress(state * s) {
 	
 	/* read header */
 	lit = bits(s, 8);
-	if (lit > 1) return BLAST_INVALID_LITERAL_FLAG;
+	if(lit > 1) {
+		return BLAST_INVALID_LITERAL_FLAG;
+	}
 	dict = bits(s, 8);
-	if (dict < 4 || dict > 6) return BLAST_INVALID_DIC_SIZE;
+	if(dict < 4 || dict > 6) {
+		return BLAST_INVALID_DIC_SIZE;
+	}
 	
 	/* decode literals and length/distance pairs */
 	do {
@@ -357,7 +371,9 @@ static BlastResult blastDecompress(state * s) {
 			/* get length */
 			symbol = decode(s, &lencode);
 			len = base[symbol] + bits(s, extra[symbol]);
-			if (len == 519) break;              /* end code */
+			if(len == 519) {
+				break; /* end code */
+			}
 			
 			/* get distance */
 			symbol = len == 2 ? 2 : dict;
@@ -378,14 +394,18 @@ static BlastResult blastDecompress(state * s) {
 					copy = dist;
 				}
 				copy -= s->next;
-				if (copy > len) copy = len;
+				if(copy > len) {
+					copy = len;
+				}
 				len -= copy;
 				s->next += copy;
 				do {
 					*to++ = *from++;
 				} while(--copy);
 				if(s->next == MAXWIN) {
-					if(s->outfun(s->outhow, s->out, s->next)) return BLAST_OUTPUT_ERROR;
+					if(s->outfun(s->outhow, s->out, s->next)) {
+						return BLAST_OUTPUT_ERROR;
+					}
 					s->next = 0;
 					s->first = 0;
 				}
@@ -396,7 +416,9 @@ static BlastResult blastDecompress(state * s) {
 			symbol = lit ? decode(s, &litcode) : bits(s, 8);
 			s->out[s->next++] = symbol;
 			if(s->next == MAXWIN) {
-				if(s->outfun(s->outhow, s->out, s->next)) return BLAST_OUTPUT_ERROR;
+				if(s->outfun(s->outhow, s->out, s->next)) {
+					return BLAST_OUTPUT_ERROR;
+				}
 				s->next = 0;
 				s->first = 0;
 			}
