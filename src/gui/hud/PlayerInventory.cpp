@@ -71,7 +71,7 @@ Vec2f PlayerInventoryHud::anchorPosition() {
 	g_size.height() - (101 * m_scale) + (m_inventoryY * m_scale));
 }
 
-void PlayerInventoryHud::updateRect(){
+void PlayerInventoryHud::updateRect() {
 	
 	Vec2f anchorPos = anchorPosition();
 	Vec2f bagSize = m_bagSize * m_scale;
