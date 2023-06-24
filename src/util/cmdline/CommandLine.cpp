@@ -34,7 +34,7 @@ static void showCommandLineHelp(const util::cmdline::interpreter<std::string> & 
 	os << "Usage: " << (command.empty() ? "arx" : command.c_str()) << " [options]\n\n";
 	
 	os << arx_name << " Options:\n";
-	os << options << std::endl;
+	os << options << '\n';
 	
 }
 
