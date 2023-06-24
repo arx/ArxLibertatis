@@ -158,7 +158,7 @@ struct SCRIPT_VAR {
 	std::string text;
 	
 	SCRIPT_VAR() noexcept = default;
-	SCRIPT_VAR(std::string_view variableName) : name(variableName) { }
+	explicit SCRIPT_VAR(std::string_view variableName) : name(variableName) { }
 	
 };
 
