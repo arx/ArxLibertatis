@@ -99,10 +99,14 @@ import getopt
 import math  # for log
 import os
 import re
-import sre_compile
 import string
 import sys
 import unicodedata
+
+try:
+    import re._compiler as sre_compile
+except ImportError:  # Python < 3.11
+    import sre_compile
 
 EXTENSIONS = ['c', 'cc', 'cpp', 'cxx', 'c++',
               'h', 'hpp', 'hxx', 'h++']
@@ -732,7 +736,7 @@ class FileInfo:
     If we have a real absolute path name here we can try to do something smart:
     detecting the root of the checkout and truncating /path/to/checkout from
     the name so that we get header guards that don't include things like
-    "C:\Documents and Settings\..." or "/home/username/..." in them and thus
+    "C:\\Documents and Settings\\..." or "/home/username/..." in them and thus
     people on different computers who have checked the source out to different
     locations won't see bogus errors.
     """
@@ -1380,7 +1384,7 @@ def CheckForNonStandardConstructs(filename, clean_lines, linenum,
   - put storage class first (e.g. "static const" instead of "const static").
   - "%lld" instead of %qd" in printf-type functions.
   - "%1$d" is non-standard in printf-type functions.
-  - "\%" is an undefined character escape sequence.
+  - "\\%" is an undefined character escape sequence.
   - text after #endif is not allowed.
   - invalid inner-style forward declaration.
   - >? and <? operators, and their >?= and <?= cousins.
@@ -1467,7 +1471,7 @@ def CheckForNonStandardConstructs(filename, clean_lines, linenum,
   # };
   class_decl_match = Match(
       r'\s*(template\s*<[\w\s<>,:]*>\s*)?'
-      '(class|struct)\s+([A-Z_]+\s+)*(\w+(::\w+)*)', line)
+      r'(class|struct)\s+([A-Z_]+\s+)*(\w+(::\w+)*)', line)
   if class_decl_match:
     classinfo_stack.append(_ClassInfo(
         class_decl_match.group(4), clean_lines, linenum))
@@ -2662,7 +2666,7 @@ def _GetTextInside(text, start_pattern):
   (, [, or {, and the matching close-punctuation symbol. This properly nested
   occurrences of the punctuations, so for the text like
     printf(a(), b(c()));
-  a call to _GetTextInside(text, r'printf\(') will return 'a(), b(c())'.
+  a call to _GetTextInside(text, r'printf\\(') will return 'a(), b(c())'.
   start_pattern must match string having an open punctuation symbol at the end.
 
   Args:
