@@ -40,7 +40,7 @@ public:
 		
 		m_buffer = m_save.load(m_fileName);
 		if(m_buffer.empty()) {
-			std::cerr << m_fileName << " not found" << std::endl;
+			std::cerr << m_fileName << " not found\n";
 			return false;
 		}
 		
@@ -48,7 +48,7 @@ public:
 		size_t pos = sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA);
 		
 		if(m_pld->version != ARX_GAMESAVE_VERSION) {
-			std::cout << "bad version: " << m_pld->version << std::endl;
+			std::cout << "bad version: " << m_pld->version << '\n';
 			return false;
 		}
 		
@@ -89,22 +89,22 @@ int main_rename(SaveBlock & save, const std::vector<std::string> & args) {
 	}
 	
 	if(!save.open(true)) {
-		std::cerr << "failed to open savefile" << std::endl;
+		std::cerr << "failed to open savefile\n";
 		return 2;
 	}
 	
 	MappedPld pld(save);
 	
 	if(!pld.load()) {
-		std::cerr << "failed to load pld data" << std::endl;
+		std::cerr << "failed to load pld data\n";
 		return 3;
 	}
 	
 	std::string_view oldName = pld.getName();
 	std::string_view newName = args[0];
 	
-	std::cout << "Old Name: \"" << oldName << '"' << std::endl;
-	std::cout << "New Name: \"" << newName << '"' << std::endl;
+	std::cout << "Old Name: \"" << oldName << "\"\n";
+	std::cout << "New Name: \"" << newName << "\"\n";
 	
 	pld.setName(newName);
 	pld.save();
