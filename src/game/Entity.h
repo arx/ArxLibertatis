@@ -381,11 +381,11 @@ public:
 	Color3f special_color;
 	Color3f highlightColor;
 	
-	Entity * owner() const { return m_owner; }
+	[[nodiscard]] Entity * owner() const noexcept { return m_owner; }
 	void setOwner(Entity * owner);
 	void updateOwner();
 	
-	const EntityId & id() const { return m_id; }
+	[[nodiscard]] const EntityId & id() const noexcept { return m_id; }
 	
 	/*!
 	 * Get the class name for this entity
