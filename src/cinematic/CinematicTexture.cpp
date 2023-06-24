@@ -178,9 +178,11 @@ bool CinematicGrid::AllocGrille(Vec2i nb, Vec2f t, Vec2f d, int scale) {
 
 			while(oldnbxx--) {
 				nb.x = scale;
-
-				if (!oldnbxx) nb.x = 1;
-
+				
+				if(!oldnbxx) {
+					nb.x = 1;
+				}
+				
 				while(nb.x--) {
 					m_vertexs.emplace_back(depxx, dep.y);
 					depxx += dxx;
