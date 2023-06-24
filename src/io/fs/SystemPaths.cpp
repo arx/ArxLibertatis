@@ -362,7 +362,7 @@ ExitStatus SystemPaths::init(const InitParams & initParams) {
 		                " - --config-dir (-c) command-line parameter\n",
 		                " - --data-dir (-d) command-line parameters\n"
 		                " only without --no-data-dir (-n): \n");
-		std::cout << std::endl;
+		std::cout << '\n';
 		return ExitSuccess;
 	} else if(m_userDir.empty() || m_configDir.empty()) {
 		LogCritical << "Could not select user or config directory.";
