@@ -25,8 +25,9 @@
  * For available variables see cmake/VersionString.cmake.
  */
 
-#if ${VERSION_COUNT} != 6 && ${VERSION_COUNT} != 7
-#error "Configure error - the VERSION file should specify 5 or 6 non-empty lines!"
+#define ARX_VERSION_LINE_COUNT ${VERSION_COUNT}
+#if ARX_VERSION_LINE_COUNT != 6 && ARX_VERSION_LINE_COUNT != 7
+#error "Configure error - the VERSION file should specify 6 or 7 non-empty lines!"
 #endif
 
 const std::string arx_name = "${VERSION_0_NAME}";
