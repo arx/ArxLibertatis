@@ -1055,6 +1055,7 @@ static void RenderWater() {
 		}
 		
 		for(int j = 0; j < iNbVertex; ++j) {
+			
 			pVertex->p = ep->v[j].p;
 			pVertex->color = Color::gray(0.314f).toRGBA();
 			
@@ -1067,19 +1068,22 @@ static void RenderWater() {
 			}
 			pVertex++;
 			
-			if(j == 2){
+			if(j == 2) {
 				*indices++ = iNbIndice++;
 				*indices++ = iNbIndice++;
 				*indices++ = iNbIndice++;
 				dynamicVertices.nbindices += 3;
 			}
+			
 		}
+		
 		if(iNbVertex == 4) {
 			*indices++ = iNbIndice++;
 			*indices++ = iNbIndice - 2;
 			*indices++ = iNbIndice - 3;
 			dynamicVertices.nbindices += 3;
 		}
+		
 	}
 	
 	dynamicVertices.unlock();
