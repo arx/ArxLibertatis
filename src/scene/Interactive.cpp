@@ -958,7 +958,7 @@ Entity * CloneIOItem(Entity * src) {
 bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target) {
 	
 	Cylinder phys;
-	if (io && io != entities.player()) {
+	if(io && io != entities.player()) {
 		phys.height = io->original_height * io->scale;
 		phys.radius = io->original_radius * io->scale;
 	} else {
@@ -1712,15 +1712,14 @@ extern long LOOKING_FOR_SPELL_TARGET;
 Entity * InterClick(const Vec2s & pos) {
 	
 	float dist_Threshold;
-
-	if (LOOKING_FOR_SPELL_TARGET)
+	
+	if(LOOKING_FOR_SPELL_TARGET) {
 		dist_Threshold = 550.f;
-	else
+	} else {
 		dist_Threshold = 360.f;
-
-	Entity * io = GetFirstInterAtPos(pos);
-
-	if(io) {
+	}
+	
+	if(Entity * io = GetFirstInterAtPos(pos)) {
 		if(io->ioflags & IO_NPC) {
 			if(closerThan(player.pos, io->pos, dist_Threshold)) {
 				return io;
@@ -1731,7 +1730,7 @@ Entity * InterClick(const Vec2s & pos) {
 			return io;
 		}
 	}
-
+	
 	return nullptr;
 }
 
