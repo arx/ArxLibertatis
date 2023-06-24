@@ -528,7 +528,7 @@ audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool & tooFar,
 	}
 	
 	audio::SampleHandle sample_id = audio::createSample(sample_path / name);
-	if (sample_id == audio::SampleHandle()) {
+	if(sample_id == audio::SampleHandle()) {
 		return audio::SourcedSample();
 	}
 	
@@ -541,7 +541,7 @@ audio::SourcedSample ARX_SOUND_PlayScript(const res::path & name, bool & tooFar,
 	if(io) {
 		channel.position = GetItemWorldPositionSound(io);
 		if(loop != ARX_SOUND_PLAY_LOOPED) {
-			if (g_camera && fartherThan(g_camera->m_pos, channel.position, ARX_SOUND_REFUSE_DISTANCE)) {
+			if(g_camera && fartherThan(g_camera->m_pos, channel.position, ARX_SOUND_REFUSE_DISTANCE)) {
 				// TODO the sample will never be freed!
 				tooFar = true;
 				return audio::SourcedSample();
@@ -723,18 +723,20 @@ bool ARX_SOUND_PlayScriptAmbiance(const res::path & name, SoundLoopMode loop, fl
 
 bool ARX_SOUND_PlayZoneAmbiance(const res::path & name, SoundLoopMode loop, float volume) {
 	
-	if (!g_soundInitialized) return true;
-
+	if(!g_soundInitialized) {
+		return true;
+	}
+	
 	if(name == "none") {
 		audio::ambianceStop(g_zoneAmbiance, AMBIANCE_FADE_TIME);
 		g_zoneAmbiance = AmbianceId();
 		return true;
 	}
-
+	
 	res::path temp = res::path(name).set_ext("amb");
-
+	
 	AmbianceId ambiance_id = audio::getAmbiance(temp);
-
+	
 	if(ambiance_id == AmbianceId()) {
 		ambiance_id = audio::createAmbiance(temp, audio::PLAYING_AMBIANCE_ZONE);
 		if(ambiance_id == AmbianceId()) {
@@ -743,15 +745,15 @@ bool ARX_SOUND_PlayZoneAmbiance(const res::path & name, SoundLoopMode loop, floa
 	} else if(ambiance_id == g_zoneAmbiance) {
 		return true;
 	}
-
+	
 	audio::Channel channel(ARX_SOUND_MixerGameAmbiance);
 	channel.flags = FLAG_VOLUME | FLAG_AUTOFREE;
 	channel.volume = volume;
-
+	
 	audio::ambianceStop(g_zoneAmbiance, AMBIANCE_FADE_TIME);
 	g_zoneAmbiance = ambiance_id;
 	audio::ambiancePlay(g_zoneAmbiance, channel, loop == ARX_SOUND_PLAY_LOOPED, AMBIANCE_FADE_TIME);
-
+	
 	return true;
 }
 
