@@ -101,7 +101,8 @@ void ArxProfiler::openFile() {
 		return;
 	}
 	
-	while(filePos < fileData.size()){
+	while(filePos < fileData.size()) {
+		
 		SavedProfilerChunkHeader chunk;
 		readStruct(chunk, fileData, filePos);
 		
@@ -156,6 +157,7 @@ void ArxProfiler::openFile() {
 				
 			}
 		}
+		
 	}
 	
 	view->setData(&m_threads);
