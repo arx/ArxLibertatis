@@ -72,7 +72,7 @@ void bindBuffer(GLuint buffer) {
 }
 
 void unbindBuffer(GLuint buffer) {
-	if (buffer == glBoundBuffer) {
+	if(buffer == glBoundBuffer) {
 		bindBuffer(GL_NONE);
 	}
 }
