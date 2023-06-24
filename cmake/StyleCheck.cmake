@@ -1,5 +1,13 @@
 
-find_package(PythonInterp)
+if(NOT CMAKE_VERSION VERSION_LESS 3.12)
+	find_package(Python COMPONENTS Interpreter)
+else()
+	find_package(PythonInterp)
+	if(PYTHONINTERP_FOUND)
+		set(Python_Interpreter_FOUND ON)
+		set(Python_EXECUTABLE ${PYTHON_EXECUTABLE})
+	endif()
+endif()
 
 set(STYLE_FILTER)
 
@@ -70,7 +78,7 @@ set(STYLE_CHECK_SCRIPT "${PROJECT_SOURCE_DIR}/scripts/cpplint.py")
 # - SOURCES_LIST a complete list of source and include files to check
 function(add_style_check_target TARGET_NAME SOURCES_LIST PROJECT)
 	
-	if(NOT PYTHONINTERP_FOUND)
+	if(NOT Python_Interpreter_FOUND)
 		return()
 	endif()
 	
@@ -80,7 +88,7 @@ function(add_style_check_target TARGET_NAME SOURCES_LIST PROJECT)
 	add_custom_target(${TARGET_NAME}
 		COMMAND "${CMAKE_COMMAND}" -E chdir
 			"${PROJECT_SOURCE_DIR}"
-			"${PYTHON_EXECUTABLE}"
+			"${Python_EXECUTABLE}"
 			"${STYLE_CHECK_SCRIPT}"
 			"--filter=${STYLE_FILTER}"
 			"--project=${PROJECT}"

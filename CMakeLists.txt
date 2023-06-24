@@ -612,8 +612,6 @@ if(BUILD_DOCS)
 	find_package(Doxygen ${OPTIONAL_DEPENDENCY})
 endif()
 
-find_package(PythonInterp)
-
 # Check for consistent configuration between SDL and libepoxy/GLEW
 if(ARX_HAVE_SDL AND ARX_HAVE_OPENGL AND NOT WIN32 AND NOT APPLE AND NOT HAIKU)
 	set(old_CMAKE_REQUIRED_INCLUDES)
