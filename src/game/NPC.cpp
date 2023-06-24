@@ -215,12 +215,13 @@ static void CheckHit(Entity * source, float ratioaim) {
 	
 }
 
-void ARX_NPC_Kill_Spell_Launch(Entity * io)
-{
-	if(!io)
-		return;
+void ARX_NPC_Kill_Spell_Launch(Entity * io) {
 	
-	if (io->flarecount) {
+	if(!io) {
+		return;
+	}
+	
+	if(io->flarecount) {
 		MagicFlareReleaseEntity(io);
 	}
 	
@@ -230,8 +231,9 @@ void ARX_NPC_Kill_Spell_Launch(Entity * io)
 //! Releases Pathfinder info from an NPC
 static void ARX_NPC_ReleasePathFindInfo(Entity * io) {
 	
-	if(!io || !(io->ioflags & IO_NPC))
+	if(!io || !(io->ioflags & IO_NPC)) {
 		return;
+	}
 	
 	// Releases data & resets vars
 	delete[] io->_npcdata->pathfind.list;
@@ -353,7 +355,7 @@ void ARX_NPC_Behaviour_Stack(Entity * io) {
 		if(behavior.exist == 0) {
 			behavior.behavior = io->_npcdata->behavior;
 			behavior.behavior_param = io->_npcdata->behavior_param;
-			if (io->_npcdata->pathfind.listnb > 0) {
+			if(io->_npcdata->pathfind.listnb > 0) {
 				behavior.target = io->_npcdata->pathfind.truetarget;
 			} else {
 				behavior.target = io->targetinfo;
@@ -549,9 +551,8 @@ static bool ARX_NPC_LaunchPathfind_End(Entity * io, EntityHandle target, const V
 		if((io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) ||
 		   closerThan(io->pos, g_anchors[from].pos, 200.f)) {
 			
-			if (!(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
-			        && !(io->_npcdata->behavior & BEHAVIOUR_FLEE))
-			{
+			if(!(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) &&
+			   !(io->_npcdata->behavior & BEHAVIOUR_FLEE)) {
 				if(closerThan(g_anchors[from].pos, g_anchors[to].pos, 200.f)) {
 					return false;
 				}
@@ -559,7 +560,7 @@ static bool ARX_NPC_LaunchPathfind_End(Entity * io, EntityHandle target, const V
 					return ARX_NPC_LaunchPathfind_Cleanup(io);
 				}
 			}
-
+			
 			if(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
 				io->_npcdata->pathfind.truetarget = EntityHandle(TARGET_NONE);
 			}
@@ -567,7 +568,7 @@ static bool ARX_NPC_LaunchPathfind_End(Entity * io, EntityHandle target, const V
 			io->_npcdata->pathfind.listnb = -1;
 			io->_npcdata->pathfind.listpos = 0;
 			io->_npcdata->pathfind.pathwait = 1;
-
+			
 			delete[] io->_npcdata->pathfind.list;
 			io->_npcdata->pathfind.list = nullptr;
 			
@@ -637,9 +638,10 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 		io->_npcdata->pathfind.pathwait = 0;
 		return false; // cannot pathfind self...
 	}
-
-	if (old_target != target)
+	
+	if(old_target != target) {
 		io->_npcdata->reachedtarget = 0;
+	}
 	
 	Vec3f pos2 = io->pos;
 	if(io->_npcdata->behavior & BEHAVIOUR_GO_HOME) {
@@ -1218,18 +1220,21 @@ static void ARX_NPC_Manage_NON_Fight(Entity * io) {
 //! NPC IS in fight mode and close to target...
 static void ARX_NPC_Manage_Fight(Entity * io) {
 	
-	if(!(io->ioflags & IO_NPC))
+	if(!(io->ioflags & IO_NPC)) {
 		return;
+	}
 	
 	Entity * ioo = io->_npcdata->weapon;
 	
-	if (ioo)
+	if(ioo) {
 		io->_npcdata->weapontype = ioo->type_flags;
-	else
+	} else {
 		io->_npcdata->weapontype = 0;
+	}
 	
-	if(io->_npcdata->weapontype != 0 && io->_npcdata->weaponinhand != 1)
+	if(io->_npcdata->weapontype != 0 && io->_npcdata->weaponinhand != 1) {
 		return;
+	}
 	
 	const AnimLayer & layer1 = io->animlayer[1];
 	
