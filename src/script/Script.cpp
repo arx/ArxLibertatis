@@ -1428,12 +1428,6 @@ void CloneLocalVars(Entity * ioo, Entity * io) {
 	ioo->m_variables = io->m_variables;
 }
 
-static SCRIPT_VAR * GetFreeVarSlot(SCRIPT_VARIABLES & _svff) {
-	_svff.resize(_svff.size() + 1);
-	SCRIPT_VAR * v = &_svff.back();
-	return v;
-}
-
 static SCRIPT_VAR * GetVarAddress(SCRIPT_VARIABLES & svf, std::string_view name) {
 	
 	for(SCRIPT_VAR & var : svf) {
@@ -1456,6 +1450,15 @@ const SCRIPT_VAR * GetVarAddress(const SCRIPT_VARIABLES & svf, std::string_view 
 	return nullptr;
 }
 
+static SCRIPT_VAR * getOrCreateScriptVariable(SCRIPT_VARIABLES & svf, std::string_view name) {
+	
+	if(SCRIPT_VAR * existing = GetVarAddress(svf, name)) {
+		return existing;
+	}
+	
+	return &svf.emplace_back(name);
+}
+
 long GETVarValueLong(const SCRIPT_VARIABLES & svf, std::string_view name) {
 	const SCRIPT_VAR * tsv = GetVarAddress(svf, name);
 	return tsv ? tsv->ival : 0;
@@ -1472,52 +1475,20 @@ std::string_view GETVarValueText(const SCRIPT_VARIABLES & svf, std::string_view 
 }
 
 SCRIPT_VAR * SETVarValueLong(SCRIPT_VARIABLES & svf, std::string_view name, long val) {
-	
-	SCRIPT_VAR * tsv = GetVarAddress(svf, name);
-	
-	if(!tsv) {
-		tsv = GetFreeVarSlot(svf);
-		if(!tsv) {
-			return nullptr;
-		}
-		tsv->name = name;
-	}
-	
+	SCRIPT_VAR * tsv = getOrCreateScriptVariable(svf, name);
 	tsv->ival = val;
-	
 	return tsv;
 }
 
 SCRIPT_VAR * SETVarValueFloat(SCRIPT_VARIABLES & svf, std::string_view name, float val) {
-	
-	SCRIPT_VAR * tsv = GetVarAddress(svf, name);
-	
-	if(!tsv) {
-		tsv = GetFreeVarSlot(svf);
-		if(!tsv) {
-			return nullptr;
-		}
-		tsv->name = name;
-	}
-	
+	SCRIPT_VAR * tsv = getOrCreateScriptVariable(svf, name);
 	tsv->fval = val;
-	
 	return tsv;
 }
 
 SCRIPT_VAR * SETVarValueText(SCRIPT_VARIABLES & svf, std::string_view name, std::string && val) {
-	
-	SCRIPT_VAR * tsv = GetVarAddress(svf, name);
-	if(!tsv) {
-		tsv = GetFreeVarSlot(svf);
-		if(!tsv) {
-			return nullptr;
-		}
-		tsv->name = name;
-	}
-	
+	SCRIPT_VAR * tsv = getOrCreateScriptVariable(svf, name);
 	tsv->text = std::move(val);
-	
 	return tsv;
 }
 
