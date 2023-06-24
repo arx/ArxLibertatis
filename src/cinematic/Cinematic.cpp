@@ -300,10 +300,11 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	switch(fx & CinematicFxPreMask) {
 		case FX_DREAM:
 			
-			if ((m_nextFx & CinematicFxPreMask) == FX_DREAM)
+			if((m_nextFx & CinematicFxPreMask) == FX_DREAM) {
 				FX_DreamPrecalc(tb, 15.f, (g_fpsCounter.FPS > 1.f) ? GetTrackFPS() / g_fpsCounter.FPS : 0.f);
-			else
+			} else {
 				FX_DreamPrecalc(tb, 15.f * a, (g_fpsCounter.FPS > 1.f) ? GetTrackFPS() / g_fpsCounter.FPS : 0.f);
+			}
 			
 			break;
 		default:
