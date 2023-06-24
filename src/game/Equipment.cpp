@@ -760,9 +760,11 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						ParticleSparkSpawnContinous(pos, nb);
 						spawnAudibleSound(pos, *io_source);
 						target->spark_n_blood = SP_SPARKING;
-
-						if (!(target->ioflags & IO_NPC))
+						
+						if(!(target->ioflags & IO_NPC)) {
 							HIT_SPARK = true;
+						}
+						
 					}
 
 					if(HIT_SPARK) {
