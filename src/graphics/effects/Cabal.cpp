@@ -100,7 +100,7 @@ Vec3f CabalFx::update(Vec3f casterPos) {
 	float Es = timeWaveSin(g_gameTime.now() + timeOffset, 1600ms * glm::pi<float>());
 	
 	EERIE_LIGHT * light = lightHandleGet(m_lightHandle);
-	if (light) {
+	if(light) {
 		light->pos.x = cabalpos.x;
 		light->pos.y = refpos;
 		light->pos.z = cabalpos.z;
