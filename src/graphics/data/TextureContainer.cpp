@@ -267,18 +267,17 @@ TextureContainer * TextureContainer::Find(const res::path & strTextureName) {
 	return nullptr;
 }
 
-void TextureContainer::DeleteAll(TCFlags flag)
-{
+void TextureContainer::DeleteAll(TCFlags flag) {
+	
 	TextureContainer * pCurrentTexture = g_ptcTextureList;
 	TextureContainer * pNextTexture = nullptr;
-
-	while (pCurrentTexture)
-	{
+	
+	while(pCurrentTexture) {
 		pNextTexture = pCurrentTexture->m_pNext;
-
-		if (pCurrentTexture->systemflags & flag)
+		if(pCurrentTexture->systemflags & flag) {
 			delete pCurrentTexture;
-
+		}
 		pCurrentTexture = pNextTexture;
 	}
+	
 }
