@@ -244,7 +244,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, VertexSelectionId num) {
 
 
 
-static DismembermentFlag GetCutFlag(std::string_view str) {
+static DismembermentFlags GetCutFlag(std::string_view str) {
 	
 	if(str == "cut_head") {
 		return FLAG_CUT_HEAD;
@@ -265,7 +265,7 @@ static DismembermentFlag GetCutFlag(std::string_view str) {
 		return FLAG_CUT_RLEG;
 	}
 	
-	return DismembermentFlag(0);
+	return { };
 }
 
 static VertexSelectionId GetCutSelection(Entity * io, DismembermentFlag flag) {
@@ -312,22 +312,16 @@ static void ReComputeCutFlags(Entity * io) {
 	}
 }
 
-static bool IsAlreadyCut(Entity * io, DismembermentFlag fl) {
+static bool IsAlreadyCut(Entity * io, DismembermentFlags fl) {
 	
-	if(io->_npcdata->cuts & fl)
+	if(io->_npcdata->cuts & fl) {
 		return true;
-
-	if(io->_npcdata->cuts & FLAG_CUT_TORSO) {
-		if(fl == FLAG_CUT_HEAD)
-			return true;
-
-		if(fl == FLAG_CUT_LARM)
-			return true;
-
-		if(fl == FLAG_CUT_RARM)
-			return true;
 	}
-
+	
+	if((io->_npcdata->cuts & FLAG_CUT_TORSO) && (fl & (FLAG_CUT_HEAD | FLAG_CUT_LARM | FLAG_CUT_RARM))) {
+		return true;
+	}
+	
 	return false;
 }
 
@@ -428,7 +422,7 @@ void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos) {
 	
 	bool hid = false;
 	if(mindistSqr < square(60)) { // can only cut a close part...
-		DismembermentFlag fl = GetCutFlag(target->obj->selections[numsel].name);
+		DismembermentFlags fl = GetCutFlag(target->obj->selections[numsel].name);
 		if(fl && !(target->_npcdata->cuts & fl)) {
 			target->_npcdata->cuts |= fl;
 			hid = applyCuts(*target);
