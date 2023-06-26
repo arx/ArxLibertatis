@@ -65,8 +65,6 @@ short uw_mode = 0;
 
 static short uw_mode_pos = 0;
 
-long sp_max = 0;
-
 static std::string sp_max_ch;
 
 void CheatDrawText() {
@@ -120,7 +118,6 @@ void CheatReset() {
 	cur_arm = 0;
 	cur_sm = 0;
 	sp_wep = 0;
-	sp_max = 0;
 	cur_mx = 0;
 	cur_pom = 0;
 	cur_rf = 0;
@@ -303,7 +300,6 @@ static void ApplySPuw() {
 
 static void ApplySPMax() {
 	MakeCoolFx(player.pos);
-	sp_max = 1;
 	
 	ARX_SPSound();
 	DisplayCheatText("!!!_FaNt0mAc1e_!!!");

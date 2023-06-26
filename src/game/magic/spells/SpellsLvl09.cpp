@@ -180,7 +180,7 @@ void SummonCreatureSpell::Update() {
 					tokeep = 0;
 					cls = "graph/obj3d/interactive/npc/y_mx/y_mx";
 				}
-			} else if(Random::getf() > 0.997f || (sp_max && Random::getf() > 0.8f)
+			} else if(Random::getf() > 0.997f || (curr_mx == 3 && Random::getf() > 0.8f)
 			   || (cur_mr >= 3 && Random::getf() > 0.3f)) {
 				tokeep = 0;
 				cls = "graph/obj3d/interactive/npc/y_mx/y_mx";

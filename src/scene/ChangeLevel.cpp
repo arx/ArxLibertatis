@@ -726,7 +726,7 @@ static bool ARX_CHANGELEVEL_Push_Player(AreaId area) {
 	if(sp_arm == 3) {
 		asp->sp_flags |= SP_ARM3;
 	}
-	if(sp_max) {
+	if(curr_mx == 3) {
 		asp->sp_flags |= SP_MAX;
 	}
 	if(cur_mr == 3) {
@@ -1508,10 +1508,8 @@ static bool ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	
 	if(asp->sp_flags & SP_MAX) {
 		cur_mx = 3;
-		sp_max = 1;
 	} else {
 		cur_mx = 0;
-		sp_max = 0;
 	}
 	
 	cur_mr = (asp->sp_flags & SP_MR) ? 3 : 0;

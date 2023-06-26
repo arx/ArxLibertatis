@@ -877,7 +877,7 @@ void ManageCombatModeAnimations() {
 				
 				float aimratio = player.m_strikeAimRatio;
 				
-				if(sp_max && poisonous < 3.f)
+				if(curr_mx == 3 && poisonous < 3.f)
 					poisonous = 3.f;
 				
 				if(!arrowobj || arrowobj->vertexlist.size() < 2) {
@@ -914,7 +914,7 @@ void ManageCombatModeAnimations() {
 				ARX_THROWN_OBJECT_Throw(EntityHandle_Player, pos, vect, gravity, arrowobj.get(), attach, quat,
 				                        damages, poisonous);
 				
-				if(sp_max) {
+				if(curr_mx == 3) {
 					for(int i = -2; i <= 2; i++) {
 						if(i != 0) {
 							Vec3f vect2 = VRotateY(vect, 4.f * float(i));
