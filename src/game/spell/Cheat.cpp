@@ -309,35 +309,22 @@ static void ApplySPuw() {
 }
 
 static void ApplySPMax() {
-	
 	MakeCoolFx(player.pos);
-	sp_max = ~sp_max;
+	sp_max = 1;
 	
-	if(sp_max) {
-		ARX_SPSound();
-		DisplayCheatText("!!!_FaNt0mAc1e_!!!");
-		
-		player.skin = 4;
-		
-		ARX_EQUIPMENT_RecreatePlayerMesh();
-		
-		ARX_PLAYER_Rune_Add_All();
-		notification_add("!!!!!!! FanTomAciE !!!!!!!");
-		player.Attribute_Redistribute += 10;
-		player.Skill_Redistribute += 50;
-		player.level = std::max(player.level, short(10));
-		player.xp = GetXPforLevel(10);
-	} else {
-		TextureContainer * tcm;
-		tcm = TextureContainer::Load("graph/obj3d/textures/npc_human_cm_hero_head");
-		if(tcm) {
-			delete tcm;
-			player.heads[0] = TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero_head");
-			player.heads[1] = TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero2_head");
-			player.heads[2] = TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero3_head");
-			ARX_EQUIPMENT_RecreatePlayerMesh();
-		}
-	}
+	ARX_SPSound();
+	DisplayCheatText("!!!_FaNt0mAc1e_!!!");
+	
+	player.skin = 4;
+	
+	ARX_EQUIPMENT_RecreatePlayerMesh();
+	
+	ARX_PLAYER_Rune_Add_All();
+	notification_add("!!!!!!! FanTomAciE !!!!!!!");
+	player.Attribute_Redistribute += 10;
+	player.Skill_Redistribute += 50;
+	player.level = std::max(player.level, short(10));
+	player.xp = GetXPforLevel(10);
 }
 
 static void ApplyConsole() {
