@@ -184,7 +184,8 @@ static void ApplySPWep() {
 		Entity * ioo = AddItem(cls);
 		if(ioo) {
 			sp_wep = 1;
-			MakeCoolFx(player.pos, true);
+			MakeCoolFx(player.pos);
+			MakeCoolFx(player.pos);
 			ioo->scriptload = 1;
 			SendInitScriptEvent(ioo);
 			
@@ -212,7 +213,8 @@ static void ApplySPBow() {
 	Entity * ioo = AddItem(cls);
 	if(ioo) {
 		
-		MakeCoolFx(player.pos, true);
+		MakeCoolFx(player.pos);
+		MakeCoolFx(player.pos);
 		
 		ioo->scriptload = 1;
 		SendInitScriptEvent(ioo);
@@ -239,7 +241,8 @@ static void ApplySPArm() {
 	if(ioo) {
 		
 		sp_wep = 1;
-		MakeCoolFx(player.pos, true);
+		MakeCoolFx(player.pos);
+		MakeCoolFx(player.pos);
 		ioo->scriptload = 1;
 		SendInitScriptEvent(ioo);
 		

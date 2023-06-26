@@ -335,17 +335,14 @@ void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle sourc
 }
 
 
-void MakeCoolFx(const Vec3f & pos, bool reduceParticles) {
+void MakeCoolFx(const Vec3f & pos) {
 	spawnFireHitParticle(pos, 1);
 	PolyBoomAddScorch(pos);
-	if (reduceParticles) {
-		spawnFireHitParticle(pos, 1);
-		PolyBoomAddScorch(pos);
-	}
 }
 
 void MakePlayerAppearsFX(const Entity & io) {
-	MakeCoolFx(io.pos, true);
+	MakeCoolFx(io.pos);
+	MakeCoolFx(io.pos);
 	AddRandomSmoke(io, 30);
 	ARX_PARTICLES_Add_Smoke(io.pos, 1 | 2, 20); // flag 1 = randomize pos
 }
