@@ -60,8 +60,6 @@ extern long cur_mega;
 extern long sp_wep;
 extern short uw_mode;
 
-extern long sp_max;
-
 void CheatDrawText();
 
 void CheatReset();

@@ -167,7 +167,7 @@ void MagicMissileSpell::Launch() {
 	GameDuration lMax = 0;
 	
 	size_t number;
-	if(sp_max || cur_rf == 3) {
+	if(cur_mx == 3 || cur_rf == 3) {
 		number = size_t(m_level);
 	} else {
 		number = glm::clamp<size_t>(size_t(m_level + 1) / 2, 1, 5);

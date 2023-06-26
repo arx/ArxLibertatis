@@ -477,7 +477,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		
 		player.Full_AimTime = 100ms;
 	}
-	if(sp_max) {
+	if(cur_mx == 3) {
 		PlayerAttribute attributeMod;
 		attributeMod.strength = 5;
 		attributeMod.mind = 5;
@@ -1236,7 +1236,7 @@ void ARX_PLAYER_Manage_Visual() {
 	
 	Entity * io = entities.player();
 	
-	if(!BLOCK_PLAYER_CONTROLS && sp_max) {
+	if(!BLOCK_PLAYER_CONTROLS && cur_mx == 3) {
 		io->halo.color = Color3f::red;
 		io->halo.flags |= HALO_ACTIVE;
 		io->halo.radius = 20.f;
