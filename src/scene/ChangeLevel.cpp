@@ -726,7 +726,7 @@ static bool ARX_CHANGELEVEL_Push_Player(AreaId area) {
 	if(sp_arm == 3) {
 		asp->sp_flags |= SP_ARM3;
 	}
-	if(curr_mx == 3) {
+	if(cur_mx == 3) {
 		asp->sp_flags |= SP_MAX;
 	}
 	if(cur_mr == 3) {

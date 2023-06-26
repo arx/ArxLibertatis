@@ -830,7 +830,7 @@ bool ARX_SPELLS_Launch(SpellType typ, Entity & source, SpellcastFlags flags, lon
 		flags |= SPELLCAST_FLAG_NOCHECKCANCAST | SPELLCAST_FLAG_NOMANA;
 	}
 	
-	if(curr_mx == 3) {
+	if(cur_mx == 3) {
 		level = std::max(level, 15l);
 	}
 	
