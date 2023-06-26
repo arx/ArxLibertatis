@@ -335,7 +335,7 @@ void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle sourc
 }
 
 
-void MakeCoolFx(const Vec3f & pos, bool reduceParticles = false) {
+void MakeCoolFx(const Vec3f & pos, bool reduceParticles) {
 	spawnFireHitParticle(pos, 1);
 	PolyBoomAddScorch(pos);
 	if (reduceParticles) {
