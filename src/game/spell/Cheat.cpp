@@ -188,7 +188,6 @@ static void ApplySPWep() {
 		if(ioo) {
 			sp_wep = 1;
 			MakeCoolFx(player.pos);
-			MakeCoolFx(player.pos);
 			ioo->scriptload = 1;
 			SendInitScriptEvent(ioo);
 			
@@ -217,7 +216,6 @@ static void ApplySPBow() {
 	if(ioo) {
 		
 		MakeCoolFx(player.pos);
-		MakeCoolFx(player.pos);
 		
 		ioo->scriptload = 1;
 		SendInitScriptEvent(ioo);
@@ -244,7 +242,6 @@ static void ApplySPArm() {
 	if(ioo) {
 		
 		sp_wep = 1;
-		MakeCoolFx(player.pos);
 		MakeCoolFx(player.pos);
 		ioo->scriptload = 1;
 		SendInitScriptEvent(ioo);
