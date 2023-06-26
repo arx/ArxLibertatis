@@ -281,17 +281,13 @@ static void ApplyPasswall() {
 }
 
 static void ApplySPRf() {
-	if(cur_rf == 3) {
-		ARX_SPSound();
-		DisplayCheatText("!!! RaFMode !!!");
-	}
+	ARX_SPSound();
+	DisplayCheatText("!!! RaFMode !!!");
 }
 
 static void ApplyCurMr() {
-	if(cur_mr == 3) {
-		ARX_SPSound();
-		DisplayCheatText("!!! Marianna !!!");
-	}
+	ARX_SPSound();
+	DisplayCheatText("!!! Marianna !!!");
 }
 
 static void ApplySPuw() {
