@@ -137,7 +137,7 @@ void AddRandomSmoke(const Entity & io, long amount);
 void ManageTorch();
 
 void MakePlayerAppearsFX(const Entity & io);
-void MakeCoolFx(const Vec3f & pos);
+void MakeCoolFx(const Vec3f & pos, bool reduceParticles = false);
 
 PARTICLE_DEF * createParticle(bool allocateWhilePaused = false);
 long getParticleCount();
