@@ -60,7 +60,6 @@ static long cur_console = 0;
 
 long cur_mega = 0;
 static PlatformInstant sp_max_start = 0;
-long sp_wep = 0;
 short uw_mode = 0;
 
 static short uw_mode_pos = 0;
@@ -117,7 +116,6 @@ void CheatReset() {
 	sp_arm = 0;
 	cur_arm = 0;
 	cur_sm = 0;
-	sp_wep = 0;
 	cur_mx = 0;
 	cur_pom = 0;
 	cur_rf = 0;
@@ -179,29 +177,22 @@ static void EERIE_OBJECT_SetBHMode() {
 }
 
 static void ApplySPWep() {
+	ARX_SPSound();
 	
-	if(!sp_wep) {
+	res::path cls = "graph/obj3d/interactive/items/weapons/sword_mx/sword_mx";
+	Entity * ioo = AddItem(cls);
+	if(ioo) {
+		MakeCoolFx(player.pos);
+		MakeCoolFx(player.pos);
+		ioo->scriptload = 1;
+		SendInitScriptEvent(ioo);
+		
+		giveToPlayer(ioo);
 		
 		ARX_SPSound();
-		
-		res::path cls = "graph/obj3d/interactive/items/weapons/sword_mx/sword_mx";
-		Entity * ioo = AddItem(cls);
-		if(ioo) {
-			sp_wep = 1;
-			MakeCoolFx(player.pos);
-			MakeCoolFx(player.pos);
-			ioo->scriptload = 1;
-			SendInitScriptEvent(ioo);
-			
-			giveToPlayer(ioo);
-			
-			ARX_SPSound();
-			DisplayCheatText("!!!_Grosbillite_!!!");
-		}
+		DisplayCheatText("!!!_Grosbillite_!!!");
 	}
 }
-
-
 
 static void ApplyCurSOS() {
 	ARX_SPSound();
