@@ -131,32 +131,36 @@ void CheatDetectionReset() {
 	cur_mega = 0;
 	passwall = 0;
 	
-	if(cur_mr != 3) {
+	if(cur_mr != CHEAT_ENABLED) {
 		cur_mr = 0;
 	}
 	
-	if(cur_mx != 3) {
+	if(cur_mx != CHEAT_ENABLED) {
 		cur_mx = 0;
 	}
 	
-	if(cur_rf != 3) {
+	if(cur_rf != CHEAT_ENABLED) {
 		cur_rf = 0;
 	}
 	
-	if(cur_pom != 3) {
+	if(cur_pom != CHEAT_ENABLED) {
 		cur_pom = 0;
 	}
 	
-	if(cur_pnux < 3) {
+	if(cur_pnux != CHEAT_ENABLED) {
 		cur_pnux = 0;
 	}
 	
-	if(cur_sm < 3) {
+	if(cur_sm != CHEAT_ENABLED) {
 		cur_sm = 0;
 	}
 	
 	cur_bh = 0;
-	cur_sos = 0;
+	
+	if (cur_sos != CHEAT_ENABLED) {
+		cur_sos = 0;
+	}
+
 	cur_console = 0;
 	
 }
@@ -329,7 +333,7 @@ static TextureContainer * Mr_tc = nullptr;
 
 void CheckMr() {
 	
-	if(cur_mr == 3) {
+	if(cur_mr == CHEAT_ENABLED) {
 		if(GRenderer && Mr_tc) {
 			Vec2f pos = Vec2f(g_size.topRight()) + Vec2f(-128.f * g_sizeRatio.x, 0.f);
 			Vec2f size = Vec2f(128.f, 128.f) * g_sizeRatio;
@@ -433,7 +437,7 @@ void handleCheatRuneDetection(CheatRune rune) {
 			}
 			
 			if(cur_sos == 2) {
-				cur_sos = 0;
+				cur_sos = CHEAT_ENABLED;
 				ApplyCurSOS();
 			}
 			break;
@@ -462,7 +466,7 @@ void handleCheatRuneDetection(CheatRune rune) {
 		}
 		case CheatRune_M: {
 			if(cur_sm == 2) {
-				cur_sm++;
+				cur_sm = CHEAT_ENABLED;
 				ApplySPBow();
 			}
 			
@@ -475,7 +479,7 @@ void handleCheatRuneDetection(CheatRune rune) {
 			}
 			
 			if(cur_pom == 2) {
-				cur_pom++;
+				cur_pom = CHEAT_ENABLED;
 				ApplySPWep();
 			}
 			break;
@@ -503,7 +507,7 @@ void handleCheatRuneDetection(CheatRune rune) {
 		}
 		case CheatRune_X: {
 			if(cur_mx == 2) {
-				cur_mx = 3;
+				cur_mx = CHEAT_ENABLED;
 				ApplySPMax();
 			}
 			break;
@@ -514,7 +518,7 @@ void handleCheatRuneDetection(CheatRune rune) {
 			}
 			
 			if(cur_pnux == 3) {
-				cur_pnux++;
+				cur_pnux = CHEAT_ENABLED;
 				ApplyCurPNux();
 			}
 			break;
@@ -531,7 +535,7 @@ void handleCheatRuneDetection(CheatRune rune) {
 		}
 		case CheatRune_R: {
 			if(cur_mr == 2) {
-				cur_mr = 3;
+				cur_mr = CHEAT_ENABLED;
 				MakeCoolFx(player.pos);
 				ApplyCurMr();
 			}
@@ -543,7 +547,7 @@ void handleCheatRuneDetection(CheatRune rune) {
 		}
 		case CheatRune_F: {
 			if(cur_rf == 2) {
-				cur_rf = 3;
+				cur_rf = CHEAT_ENABLED;
 				MakeCoolFx(player.pos);
 				ApplySPRf();
 			}

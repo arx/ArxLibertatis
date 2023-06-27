@@ -826,11 +826,11 @@ static std::unique_ptr<Spell> createSpellInstance(SpellType type) {
 bool ARX_SPELLS_Launch(SpellType typ, Entity & source, SpellcastFlags flags, long level,
                        Entity * target, GameDuration duration) {
 	
-	if(cur_rf == 3) {
+	if(cur_rf == CHEAT_ENABLED) {
 		flags |= SPELLCAST_FLAG_NOCHECKCANCAST | SPELLCAST_FLAG_NOMANA;
 	}
 	
-	if(cur_mx == 3) {
+	if(cur_mx == CHEAT_ENABLED) {
 		level = std::max(level, 15l);
 	}
 	
@@ -969,7 +969,7 @@ bool ARX_SPELLS_Launch(SpellType typ, Entity & source, SpellcastFlags flags, lon
 		spellLevel = static_cast<float>(level);
 	}
 	
-	if(cur_rf == 3) {
+	if(cur_rf == CHEAT_ENABLED) {
 		spellLevel += 2;
 	}
 	

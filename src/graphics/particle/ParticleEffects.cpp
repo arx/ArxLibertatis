@@ -420,7 +420,7 @@ void ManageTorch() {
 		el->duration = 0;
 		el->extras = 0;
 		
-	} else if(cur_mr == 3) {
+	} else if(cur_mr == CHEAT_ENABLED) {
 		
 		el->pos = player.pos;
 		el->intensity = 1.8f;

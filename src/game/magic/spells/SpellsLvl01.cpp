@@ -162,12 +162,12 @@ void MagicMissileSpell::Launch() {
 		}
 	}
 	
-	m_mrCheat = (m_caster == EntityHandle_Player && cur_mr == 3);
+	m_mrCheat = (m_caster == EntityHandle_Player && cur_mr == CHEAT_ENABLED);
 	
 	GameDuration lMax = 0;
 	
 	size_t number;
-	if(cur_mx == 3 || cur_rf == 3) {
+	if(cur_mx == CHEAT_ENABLED || cur_rf == CHEAT_ENABLED) {
 		number = size_t(m_level);
 	} else {
 		number = glm::clamp<size_t>(size_t(m_level + 1) / 2, 1, 5);
