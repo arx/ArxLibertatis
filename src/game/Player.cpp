@@ -447,7 +447,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	}
 	
 	// Calculate for modifiers from cheats
-	if(cur_mr == 3) {
+	if(cur_mr == CHEAT_ENABLED) {
 		PlayerAttribute attributeMod;
 		attributeMod.strength = 1;
 		attributeMod.mind = 10;
@@ -477,7 +477,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		
 		player.Full_AimTime = 100ms;
 	}
-	if(cur_mx == 3) {
+	if(cur_mx == CHEAT_ENABLED) {
 		PlayerAttribute attributeMod;
 		attributeMod.strength = 5;
 		attributeMod.mind = 5;
@@ -535,7 +535,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		miscMod.armorClass = float(Random::get(0, 20));
 		player.m_miscMod.add(miscMod);
 	}
-	if(cur_rf == 3) {
+	if(cur_rf == CHEAT_ENABLED) {
 		PlayerAttribute attributeMod;
 		attributeMod.mind = 10;
 		player.m_attributeMod.add(attributeMod);
@@ -1236,7 +1236,7 @@ void ARX_PLAYER_Manage_Visual() {
 	
 	Entity * io = entities.player();
 	
-	if(!BLOCK_PLAYER_CONTROLS && cur_mx == 3) {
+	if(!BLOCK_PLAYER_CONTROLS && cur_mx == CHEAT_ENABLED) {
 		io->halo.color = Color3f::red;
 		io->halo.flags |= HALO_ACTIVE;
 		io->halo.radius = 20.f;
@@ -1244,7 +1244,7 @@ void ARX_PLAYER_Manage_Visual() {
 		player.manaPool.current = std::min(player.manaPool.current + g_framedelay * 0.1f, player.manaPool.max);
 	}
 	
-	if(cur_mr == 3) {
+	if(cur_mr == CHEAT_ENABLED) {
 		player.lifePool.current = std::min(player.lifePool.current + g_framedelay * 0.05f, player.lifePool.max);
 		player.manaPool.current = std::min(player.manaPool.current + g_framedelay * 0.05f, player.manaPool.max);
 	}

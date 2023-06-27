@@ -726,13 +726,13 @@ static bool ARX_CHANGELEVEL_Push_Player(AreaId area) {
 	if(sp_arm == 3) {
 		asp->sp_flags |= SP_ARM3;
 	}
-	if(cur_mx == 3) {
+	if(cur_mx == CHEAT_ENABLED) {
 		asp->sp_flags |= SP_MAX;
 	}
-	if(cur_mr == 3) {
+	if(cur_mr == CHEAT_ENABLED) {
 		asp->sp_flags |= SP_MR;
 	}
-	if(cur_rf == 3) {
+	if(cur_rf == CHEAT_ENABLED) {
 		asp->sp_flags |= SP_RF;
 	}
 	if(sp_wep) {
@@ -1506,12 +1506,12 @@ static bool ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 		sp_arm = 0;
 	}
 	
-	cur_mx = (asp->sp_flags & SP_MAX) ? 3 : 0;
-	cur_mr = (asp->sp_flags & SP_MR) ? 3 : 0;
-	cur_rf = (asp->sp_flags & SP_RF) ? 3 : 0;
+	cur_mx = (asp->sp_flags & SP_MAX) ? CHEAT_ENABLED : 0;
+	cur_mr = (asp->sp_flags & SP_MR) ? CHEAT_ENABLED : 0;
+	cur_rf = (asp->sp_flags & SP_RF) ? CHEAT_ENABLED : 0;
 	
 	if(asp->sp_flags & SP_WEP) {
-		cur_pom = 3;
+		cur_pom = CHEAT_ENABLED;
 		sp_wep = 1;
 	} else {
 		cur_pom = 0;

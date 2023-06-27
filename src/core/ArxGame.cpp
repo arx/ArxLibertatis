@@ -1632,10 +1632,10 @@ void ArxGame::updateLevel() {
 			float speedModifier = 0.f;
 			
 			if(entity == *entities.player()) {
-				if(cur_mr == 3) {
+				if(cur_mr == CHEAT_ENABLED) {
 					speedModifier += 0.5f;
 				}
-				if(cur_rf == 3) {
+				if(cur_rf == CHEAT_ENABLED) {
 					speedModifier += 1.5f;
 				}
 			}
