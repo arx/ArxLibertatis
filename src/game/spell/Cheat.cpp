@@ -155,7 +155,7 @@ void CheatDetectionReset() {
 	
 	cur_bh = 0;
 	
-	if (cur_sos != CHEAT_ENABLED) {
+	if(cur_sos != CHEAT_ENABLED) {
 		cur_sos = 0;
 	}
 
