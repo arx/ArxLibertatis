@@ -87,7 +87,9 @@ enum SavePlayerFlag {
 	SP_ARM2 = 1 << 6,
 	SP_ARM3 = 1 << 7,
 	SP_SP   = 1 << 8,
-	SP_SP2  = 1 << 9
+	SP_SP2  = 1 << 9,
+	SP_SAM  = 1 << 10,
+	SP_SOS  = 1 << 11,
 };
 
 enum VariableType {

@@ -738,6 +738,12 @@ static bool ARX_CHANGELEVEL_Push_Player(AreaId area) {
 	if(cur_pom == CHEAT_ENABLED) {
 		asp->sp_flags |= SP_WEP;
 	}
+	if(cur_sm == CHEAT_ENABLED) {
+		asp->sp_flags |= SP_SAM;
+	}
+	if(cur_sos == CHEAT_ENABLED) {
+		asp->sp_flags |= SP_SOS;
+	}
 	
 	asp->pos = player.pos;
 	asp->Attribute_Redistribute = player.Attribute_Redistribute;
@@ -1510,6 +1516,8 @@ static bool ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 	cur_mr = (asp->sp_flags & SP_MR) ? CHEAT_ENABLED : 0;
 	cur_rf = (asp->sp_flags & SP_RF) ? CHEAT_ENABLED : 0;
 	cur_pom = (asp->sp_flags & SP_WEP) ? CHEAT_ENABLED : 0;
+	cur_sm = (asp->sp_flags & SP_SAM) ? CHEAT_ENABLED : 0;
+	cur_sos = (asp->sp_flags & SP_SOS) ? CHEAT_ENABLED : 0;
 	
 	player.Attribute_Redistribute = glm::clamp(asp->Attribute_Redistribute, s16(0), s16(std::numeric_limits<unsigned char>::max()));
 	player.Skill_Redistribute = glm::clamp(asp->Skill_Redistribute, s16(0), s16(std::numeric_limits<unsigned char>::max()));

@@ -50,12 +50,12 @@ static long cur_pnux = 0;
 long cur_pom = 0;
 long cur_rf = 0;
 long cur_mr = 0;
-static long cur_sm = 0;
+long cur_sm = 0;
 static long cur_bh = 0;
 
 long sp_arm = 0;
 static long cur_arm = 0;
-static long cur_sos = 0;
+long cur_sos = 0;
 static long cur_console = 0;
 
 long cur_mega = 0;

@@ -54,8 +54,10 @@ extern long cur_mx;
 extern long cur_pom;
 extern long cur_rf;
 extern long cur_mr;
+extern long cur_sm;
 
 extern long sp_arm;
+extern long cur_sos;
 
 extern long cur_mega;
 extern short uw_mode;
