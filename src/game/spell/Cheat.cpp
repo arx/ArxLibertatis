@@ -244,7 +244,6 @@ static void ApplySPArm() {
 	Entity * ioo = AddItem(cls);
 	if(ioo) {
 		
-		sp_wep = 1;
 		MakeCoolFx(player.pos);
 		MakeCoolFx(player.pos);
 		ioo->scriptload = 1;
