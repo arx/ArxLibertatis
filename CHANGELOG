@@ -5,6 +5,8 @@ Gameplay:
 
 * Fixed lightning strike damage depending on framerate
 * Fixed fireplace damage depending on framerate
+* Fixed being able to cast the SAM (Lord Inut's bow) cheat multiple times in a single playthough by saving/loading
+* Casting the Ylside (MX) armor cheat no longer disables the POM (Lord Inut's sword) cheat
 
 Graphics:
 
@@ -72,6 +74,8 @@ Other Fixes:
 * Fixed a crash when loading save files with linked items inside an inventory (bug #1618)
 * Fixed linked entities being removed from NPC inventories even if linked to the owning NPC
 * Fixed the `replaceme` script command for NPC weapons not equipping the new weapon
+* Fixed the PNUX cheat progress not being reset when exiting magic mode if the player has drawn 3 out of 4 cheat runes
+* Fixed being able to cast the SOS (reveal map) cheat multiple times per playthough even though it is idempotent
 
 Technical Changes:
 
