@@ -147,9 +147,7 @@ void CheatDetectionReset() {
 		cur_pom = 0;
 	}
 	
-	if(cur_pnux != CHEAT_ENABLED) {
-		cur_pnux = 0;
-	}
+	cur_pnux = 0;
 	
 	if(cur_sm != CHEAT_ENABLED) {
 		cur_sm = 0;
@@ -267,7 +265,6 @@ static void ApplyCurPNux() {
 	
 	// TODO Create a post-processing effect for that cheat... see original source...
 	
-	cur_pnux = 0;
 }
 
 static void ApplyPasswall() {
@@ -510,7 +507,7 @@ void handleCheatRuneDetection(CheatRune rune) {
 			}
 			
 			if(cur_pnux == 3) {
-				cur_pnux = CHEAT_ENABLED;
+				cur_pnux = 0;
 				ApplyCurPNux();
 			}
 			break;
