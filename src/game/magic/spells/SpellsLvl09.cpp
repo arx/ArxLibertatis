@@ -181,11 +181,11 @@ void SummonCreatureSpell::Update() {
 					cls = "graph/obj3d/interactive/npc/y_mx/y_mx";
 				}
 			} else if(Random::getf() > 0.997f || (cur_mx == CHEAT_ENABLED && Random::getf() > 0.8f)
-			   || (cur_mr >= CHEAT_ENABLED && Random::getf() > 0.3f)) {
+			   || (cur_mr == CHEAT_ENABLED && Random::getf() > 0.3f)) {
 				tokeep = 0;
 				cls = "graph/obj3d/interactive/npc/y_mx/y_mx";
 			} else if(Random::getf() > 0.997f || (cur_rf == CHEAT_ENABLED && Random::getf() > 0.8f)
-			   || (cur_mr >= CHEAT_ENABLED && Random::getf() > 0.3f)) {
+			   || (cur_mr == CHEAT_ENABLED && Random::getf() > 0.3f)) {
 				tokeep = -1;
 				cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base";
 			} else if(m_level >= 9) {
