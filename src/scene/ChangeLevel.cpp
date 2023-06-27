@@ -1506,12 +1506,7 @@ static bool ARX_CHANGELEVEL_Pop_Player(std::string_view target, float angle) {
 		sp_arm = 0;
 	}
 	
-	if(asp->sp_flags & SP_MAX) {
-		cur_mx = 3;
-	} else {
-		cur_mx = 0;
-	}
-	
+	cur_mx = (asp->sp_flags & SP_MAX) ? 3 : 0;
 	cur_mr = (asp->sp_flags & SP_MR) ? 3 : 0;
 	cur_rf = (asp->sp_flags & SP_RF) ? 3 : 0;
 	
