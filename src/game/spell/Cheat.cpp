@@ -122,7 +122,9 @@ void CheatReset() {
 	cur_pom = 0;
 	cur_rf = 0;
 	cur_mr = 0;
+	cur_sos = 0;
 	cur_console = 0;
+	
 }
 
 void CheatDetectionReset() {
