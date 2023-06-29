@@ -1087,27 +1087,16 @@ void StatsPage::RenderBookPlayerCharacter() {
 	Anglef ePlayerAngle;
 	Vec3f pos;
 	if(ARXmenu.mode() == Mode_CharacterCreation) {
-		
-		switch(player.skin) {
-			case 0:
-				ePlayerAngle.setYaw(-25.f);
-				break;
-			case 1:
-				ePlayerAngle.setYaw(-10.f);
-				break;
-			case 2:
-				ePlayerAngle.setYaw(20.f);
-				break;
-			case 3:
-				ePlayerAngle.setYaw(35.f);
-				break;
-		}
-		
+		// depending on the current value of player.skin we rotate the player clockwise on the left side of the book
+		// starting from -25 degrees until +45 degrees. Steps are divided equally.
+		constexpr float ANGLE_OF_FIRST_FACE = -25.f;
+		constexpr float ANGLE_BETWEEN_FIRST_AND_LAST_FACE = 70.f;
+		constexpr float ANGLE_FOR_ONE_FACE = ANGLE_BETWEEN_FIRST_AND_LAST_FACE / NUMBER_OF_PLAYER_SKINS;
+		ePlayerAngle.setYaw(ANGLE_OF_FIRST_FACE + player.skin * ANGLE_FOR_ONE_FACE);
+
 		pos = Vec3f(8, 162, 75);
 		eLight1.pos.z = -90.f;
-		
 	} else {
-		
 		ePlayerAngle.setYaw(-20.f);
 		pos = Vec3f(20.f, 96.f, 260.f);
 		
@@ -1116,7 +1105,6 @@ void StatsPage::RenderBookPlayerCharacter() {
 	
 	bool ti = player.m_improve;
 	player.m_improve = false;
-	
 	
 	float invisibility = entities.player()->invisibility;
 	

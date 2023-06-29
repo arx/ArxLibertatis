@@ -179,7 +179,7 @@ void CharacterCreation::render() {
 			m_cheatSkinButtonClickCount++;
 			ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
 			player.skin++;
-			if(player.skin > 3) {
+			if(player.skin >= MAX_CHEAT_PLAYER_SKIN) {
 				player.skin = 0;
 			}
 			ARX_PLAYER_Restore_Skin();
@@ -204,13 +204,13 @@ void CharacterCreation::render() {
 				m_cheatSkinButtonClickCount = -2;
 			} else if(m_cheatSkinButtonClickCount == -1) {
 				ARX_PLAYER_MakeSpHero();
-				player.skin = 4;
+				player.skin = MAX_CHEAT_PLAYER_SKIN;
 				ARX_PLAYER_Restore_Skin();
 				m_cheatSkinButtonClickCount = 0;
 				SP_HEAD = 1;
 			} else {
 				if(SP_HEAD) {
-					player.skin = 4;
+					player.skin = MAX_CHEAT_PLAYER_SKIN;
 					ARX_PLAYER_Restore_Skin();
 					SP_HEAD = 0;
 				}
