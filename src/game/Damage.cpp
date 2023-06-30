@@ -1379,42 +1379,44 @@ void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent) {
 	
 	if(percent >= 100.f) {
 		io->durability = io->max_durability;
-	} else {
+		return;
+	}
 		
-		float ratio = percent * 0.01f;
-		float to_restore = (io->max_durability - io->durability) * ratio;
-		float v = Random::getf(0.f, 100.f) - percent;
-		
-		if(v <= 0.f) {
-			float mloss = 1.f;
+	float ratio = percent * 0.01f;
+	float to_restore = (io->max_durability - io->durability) * ratio;
+	float v = Random::getf(0.f, 100.f) - percent;
+	
+	if(v <= 0.f) {
+		float mloss = 1.f;
 
-			if(io->ioflags & IO_ITEM) {
-				io->_itemdata->price -= util::to<long>(float(io->_itemdata->price) / io->max_durability);
-			}
-
-			io->max_durability -= mloss;
-		} else {
-			
-			if(v > 50.f) {
-				v = 50.f;
-			}
-			v *= 0.01f;
-			
-			float mloss = io->max_durability * v;
-			if(io->ioflags & IO_ITEM) {
-				io->_itemdata->price -= static_cast<long>(float(io->_itemdata->price) * v);
-			}
-
-			io->max_durability -= mloss;
+		if(io->ioflags & IO_ITEM) {
+			io->_itemdata->price -= util::to<long>(float(io->_itemdata->price) / io->max_durability);
 		}
 
-		io->durability += to_restore;
+		io->max_durability -= mloss;
+	} else {
+		
+		if(v > 50.f) {
+			v = 50.f;
+		}
+		v *= 0.01f;
+		
+		float mloss = io->max_durability * v;
+		if(io->ioflags & IO_ITEM) {
+			io->_itemdata->price -= static_cast<long>(float(io->_itemdata->price) * v);
+		}
 
-		if(io->durability > io->max_durability)
-			io->durability = io->max_durability;
+		io->max_durability -= mloss;
+	}
 
-		if(io->max_durability <= 0.f)
-			ARX_DAMAGES_DurabilityLoss(io, 100);
+	io->durability += to_restore;
+
+	if(io->durability > io->max_durability) {
+		io->durability = io->max_durability;
+	}
+
+	if(io->max_durability <= 0.f) {
+		ARX_DAMAGES_DurabilityLoss(io, 100);
 	}
 
 }
