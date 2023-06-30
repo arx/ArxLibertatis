@@ -910,8 +910,9 @@ static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 	util::storeString(ais.locname, io->locname);
 	ais.gameFlags = io->gameFlags;
 	
-	if(io == entities.player())
+	if(io == entities.player()) {
 		ais.gameFlags &= ~GFLAG_INVISIBILITY;
+	}
 	
 	ais.material = io->material;
 	ais.level = ais.truelevel = s16(area);

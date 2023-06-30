@@ -249,11 +249,11 @@ void PlayerInventoryHud::drawBag(size_t bag, Vec2f i) {
 		
 		Color overlayColor = Color::black;
 		
-		if(io == FlyingOverIO)
+		if(io == FlyingOverIO) {
 			overlayColor = Color::white;
-		else if(io->ioflags & IO_CAN_COMBINE)
+		} else if(io->ioflags & IO_CAN_COMBINE) {
 			overlayColor = Color::gray(glm::abs(glm::cos(glm::radians(fDecPulse))));
-		
+		}
 		
 		if(overlayColor != Color::black) {
 			UseRenderState state(render2D().blendAdditive());
@@ -428,8 +428,9 @@ bool PlayerInventoryHud::containsPos(const Vec2s & pos) {
 			Vec2s t = pos - iPos;
 			t.y -= iY;
 			
-			if(InPlayerInventoryBag(t))
+			if(InPlayerInventoryBag(t)) {
 				return true;
+			}
 			
 			float fRatio = (121 * m_scale);
 			

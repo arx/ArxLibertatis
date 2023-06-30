@@ -257,14 +257,16 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity & io) {
 
 	if((io.ioflags & IO_NPC) && io._npcdata->poisonned > 0.f) {
 		poisonpercent = io._npcdata->poisonned * 0.05f;
-		if(poisonpercent > 1.f)
+		if(poisonpercent > 1.f) {
 			poisonpercent = 1.f;
+		}
 	}
 
 	if((io.ioflags & IO_ITEM) && io.poisonous > 0.f && io.poisonous_count) {
 		poisonpercent = io.poisonous * (1.0f / 20);
-		if(poisonpercent > 1.f)
+		if(poisonpercent > 1.f) {
 			poisonpercent = 1.f;
+		}
 	}
 
 	if((io.ioflags & IO_FIX) && io._fixdata->trapvalue > -1) {
@@ -353,8 +355,9 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity & io) {
 							io.sfx_flag &= ~SFX_TYPE_YLSIDE_DEATH;
 							Spell * spell = spells.getSpellOnTarget(io.index(), SPELL_INCINERATE);
 
-							if(!spell)
+							if(!spell) {
 								spell = spells.getSpellOnTarget(io.index(), SPELL_MASS_INCINERATE);
+							}
 
 							if(spell) {
 								spells.endSpell(spell);
@@ -657,10 +660,11 @@ void DrawEERIEInter_Render(EERIE_3DOBJ * eobj, const TransformInfo & t, Entity *
 
 	Vec3f tv = t.pos;
 
-	if(io && (io->ioflags & IO_ITEM))
+	if(io && (io->ioflags & IO_ITEM)) {
 		tv.y -= 60.f;
-	else
+	} else {
 		tv.y -= 90.f;
+	}
 	
 	bool useFaceNormal = io && (io->ioflags & IO_ANGULAR);
 	
@@ -756,12 +760,14 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 ) {
 	ARX_PROFILE_FUNC();
 	
-	if(!eobj)
+	if(!eobj) {
 		return;
+	}
 
 	// Avoids To treat an object that isn't Visible
-	if(!forceDraw && io && io != entities.player() && !Cedric_IO_Visible(t.pos))
+	if(!forceDraw && io && io != entities.player() && !Cedric_IO_Visible(t.pos)) {
 		return;
+	}
 
 	DrawEERIEInter_ModelTransform(eobj, t);
 	if(io) {
@@ -773,8 +779,9 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 		io->bbox2D = UpdateBbox2d(*eobj);
 	}
 
-	if(!forceDraw && ARX_SCENE_PORTAL_ClipIO(io, t.pos))
+	if(!forceDraw && ARX_SCENE_PORTAL_ClipIO(io, t.pos)) {
 		return;
+	}
 
 	DrawEERIEInter_Render(eobj, t, io, invisibility);
 }
@@ -1151,8 +1158,9 @@ static Vec3f CalcTranslation(AnimLayer & layer) {
 
 static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 
-	if(!io)
+	if(!io) {
 		return;
+	}
 	
 	arx_assert(isallfinite(ftr));
 	
@@ -1429,22 +1437,25 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
 	if(io) {
 		float speedfactor = io->basespeed + io->speed_modif;
 
-		if(speedfactor < 0)
+		if(speedfactor < 0) {
 			speedfactor = 0;
+		}
 
 		AnimationDuration tim = time * speedfactor;
 
-		if(tim <= 0)
+		if(tim <= 0) {
 			time = 0;
-		else
+		} else {
 			time = tim;
+		}
 	}
 
 	if(time > 0) {
 		for(size_t count = 0; count < MAX_ANIM_LAYERS; count++) {
 			AnimLayer & layer = animlayer[count];
-			if(layer.cur_anim)
+			if(layer.cur_anim) {
 				PrepareAnim(layer, time, io);
+			}
 		}
 	}
 	
@@ -1481,8 +1492,9 @@ void EERIEDrawAnimQuatRender(EERIE_3DOBJ * eobj, const Vec3f & pos, Entity * io,
 	
 	ARX_PROFILE_FUNC();
 	
-	if(io && io != entities.player() && !Cedric_IO_Visible(io->pos))
+	if(io && io != entities.player() && !Cedric_IO_Visible(io->pos)) {
 		return;
+	}
 	
 	bool isFightingNpc = io && (io->ioflags & IO_NPC) && (io->_npcdata->behavior & BEHAVIOUR_FIGHT)
 	                     && closerThan(io->pos, player.pos, 240.f);

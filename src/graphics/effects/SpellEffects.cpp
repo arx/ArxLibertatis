@@ -60,8 +60,9 @@ CSpellFx::CSpellFx()
 void CSpellFx::SetDuration(GameDuration duration) {
 	m_duration = duration;
 
-	if(m_duration <= 0)
+	if(m_duration <= 0) {
 		m_duration = 100ms;
+	}
 	
 	m_elapsed = 0;
 }

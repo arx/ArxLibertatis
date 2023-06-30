@@ -88,11 +88,13 @@ std::unique_ptr<CinematicBitmap> CreateCinematicBitmap(const res::path & path, i
 	Vec2i size = Vec2i(cinematicImage.getWidth(), cinematicImage.getHeight());
 	Vec2i nb = size / cinMaxSize;
 	
-	if(size.x % cinMaxSize.x)
+	if(size.x % cinMaxSize.x) {
 		nb.x++;
+	}
 
-	if(size.y % cinMaxSize.y)
+	if(size.y % cinMaxSize.y) {
 		nb.y++;
+	}
 	
 	bi->m_size = size;
 	bi->m_count = nb;
@@ -102,13 +104,7 @@ std::unique_ptr<CinematicBitmap> CreateCinematicBitmap(const res::path & path, i
 	int h = bi->m_size.y;
 
 	while(nb.y) {
-
-		int h2;
-
-		if((h - cinMaxSize.y) < 0)
-			h2 = h;
-		else
-			h2 = cinMaxSize.y;
+		int h2 = (h - cinMaxSize.y) < 0 ? h : cinMaxSize.y;
 
 		int w = bi->m_size.x;
 		int nbxx = nb.x;
@@ -167,8 +163,9 @@ bool CinematicGrid::AllocGrille(Vec2i nb, Vec2f t, Vec2f d, int scale) {
 	while(oldnb.y--) {
 		nb.y = scale;
 
-		if(!oldnb.y)
+		if(!oldnb.y) {
 			nb.y = 1;
+		}
 
 		while(nb.y--) {
 			float olddxx = oldd.x;

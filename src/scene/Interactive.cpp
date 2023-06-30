@@ -720,16 +720,15 @@ void ARX_INTERACTIVE_ClearAllDynData() {
 }
 
 static void RestoreIOInitPos(Entity * io) {
-	if(!io)
+	if(!io) {
 		return;
-
-	{
-		ARX_INTERACTIVE_Teleport(io, io->initpos);
-		io->pos = io->lastpos = io->initpos;
-		io->move = Vec3f(0.f);
-		io->lastmove = Vec3f(0.f);
-		io->angle = io->initangle;
 	}
+
+	ARX_INTERACTIVE_Teleport(io, io->initpos);
+	io->pos = io->lastpos = io->initpos;
+	io->move = Vec3f(0.f);
+	io->lastmove = Vec3f(0.f);
+	io->angle = io->initangle;
 }
 
 void ARX_HALO_SetToNative(Entity * io) {
@@ -740,159 +739,159 @@ void ARX_HALO_SetToNative(Entity * io) {
 
 void RestoreInitialIOStatusOfIO(Entity * io)
 {
-	if(!io)
+	if(!io) {
 		return;
-
-	{
-		ARX_INTERACTIVE_ClearIODynData_II(io);
-
-		io->shop_multiply = 1.f;
-
-		ARX_INTERACTIVE_HideGore(io, false);
-
-		io->halo_native.color = Color3f(0.2f, 0.5f, 1.f);
-		io->halo_native.radius = 45.f;
-		io->halo_native.flags = 0;
-
-		ARX_HALO_SetToNative(io);
-
-		io->forcedmove = Vec3f(0.f);
-		io->ioflags &= ~IO_NO_COLLISIONS;
-		io->ioflags &= ~IO_INVERTED;
-		io->lastspeechflag = 2;
-	
-		io->no_collide = { };
-
-		MagicFlareReleaseEntity(io);
-
-		io->flarecount = 0;
-		io->inzone = nullptr;
-		io->speed_modif = 0.f;
-		io->basespeed = 1.f;
-		io->sfx_flag = 0;
-		io->max_durability = io->durability = 100;
-		io->gameFlags &= ~GFLAG_INVISIBILITY;
-		io->gameFlags &= ~GFLAG_MEGAHIDE;
-		io->gameFlags &= ~GFLAG_NOGORE;
-		io->gameFlags &= ~GFLAG_ISINTREATZONE;
-		io->gameFlags &= ~GFLAG_PLATFORM;
-		io->gameFlags &= ~GFLAG_ELEVATOR;
-		io->gameFlags &= ~GFLAG_HIDEWEAPON;
-		io->gameFlags &= ~GFLAG_NOCOMPUTATION;
-		io->gameFlags &= ~GFLAG_DOOR;
-		io->gameFlags &= ~GFLAG_GOREEXPLODE;
-		io->invisibility = 0.f;
-		io->rubber = BASE_RUBBER;
-		io->scale = 1.f;
-		io->move = Vec3f(0.f);
-		io->type_flags = 0;
-		io->m_sound = { };
-		io->soundtime = 0;
-		io->soundcount = 0;
-		io->material = MATERIAL_STONE;
-		io->collide_door_time = 0;
-		io->ouch_time = 0;
-		io->dmg_sum = 0;
-		io->ignition = 0.f;
-		io->ignit_light = { };
-		io->ignit_sound = { };
-		
-		if(io->obj && io->obj->pbox) {
-			io->obj->pbox->active = 0;
-		}
-		
-		io->room = { };
-		io->requestRoomUpdate = true;
-		RestoreIOInitPos(io);
-		ARX_INTERACTIVE_Teleport(io, io->initpos);
-		io->animBlend.lastanimtime = GameInstant(0) + 1ms;
-		io->secretvalue = -1;
-		
-		io->poisonous = 0;
-		io->poisonous_count = 0;
-
-		for(size_t count = 0; count < MAX_ANIM_LAYERS; count++) {
-			io->animlayer[count] = AnimLayer();
-		}
-
-		if(io->obj && io->obj->pbox) {
-			io->obj->pbox->storedtiming = 0;
-		}
-		
-		io->physics.cyl.origin = io->pos;
-		io->physics.cyl.radius = io->original_radius;
-		io->physics.cyl.height = io->original_height;
-		io->fall = 0;
-		io->setOwner(nullptr);
-		io->show = SHOW_FLAG_IN_SCENE;
-		io->targetinfo = EntityHandle(TARGET_NONE);
-		io->spellcast_data.castingspell = SPELL_NONE;
-		io->spark_n_blood = 0;
-
-		if(io->ioflags & IO_NPC) {
-			io->_npcdata->climb_count = 0;
-			io->_npcdata->vvpos = -99999.f;
-			io->_npcdata->SPLAT_DAMAGES = 0;
-			io->_npcdata->speakpitch = 1.f;
-			io->_npcdata->behavior = BEHAVIOUR_NONE;
-			io->_npcdata->cut = 0;
-			io->_npcdata->cuts = 0;
-			io->_npcdata->poisonned = 0.f;
-			io->_npcdata->blood_color = Color::red;
-			io->_npcdata->stare_factor = 1.f;
-
-			io->_npcdata->weapon = nullptr;
-			io->_npcdata->weaponinhand = 0;
-			io->_npcdata->weapontype = 0;
-			io->_npcdata->weaponinhand = 0;
-			io->_npcdata->fightdecision = 0;
-			io->_npcdata->walk_start_time = 0;
-
-			io->_npcdata->reachedtarget = 0;
-			io->_npcdata->lifePool.max = 20.f;
-			io->_npcdata->lifePool.current = io->_npcdata->lifePool.max;
-			io->_npcdata->manaPool.max = 10.f;
-			io->_npcdata->manaPool.current = io->_npcdata->manaPool.max;
-			io->_npcdata->critical = 5.f;
-			io->infracolor = Color3f(1.f, 0.f, 0.2f);
-			io->_npcdata->detect = 0;
-			io->_npcdata->movemode = WALKMODE;
-			io->_npcdata->reach = 20.f;
-			io->_npcdata->armor_class = 0;
-			io->_npcdata->absorb = 0;
-			io->_npcdata->damages = 20;
-			io->_npcdata->tohit = 50;
-			io->_npcdata->aimtime = 0;
-			io->_npcdata->aiming_start = 0;
-			io->_npcdata->npcflags = 0;
-			io->_npcdata->backstab_skill = 0;
-			io->_npcdata->fDetect = -1;
-			io->_npcdata->summoner = EntityHandle();
-		}
-		
-		if(io->ioflags & IO_ITEM) {
-			io->collision = COLLIDE_WITH_PLAYER;
-			io->_itemdata->count = 1;
-			io->_itemdata->maxcount = 1;
-			io->_itemdata->food_value = 0;
-			io->_itemdata->playerstacksize = 1;
-			io->_itemdata->stealvalue = -1;
-			io->_itemdata->LightValue = -1;
-		} else {
-			io->collision = 0;
-		}
-		
-		if(io->ioflags & IO_FIX) {
-			io->_fixdata->trapvalue = -1;
-		}
-		
 	}
+
+	ARX_INTERACTIVE_ClearIODynData_II(io);
+
+	io->shop_multiply = 1.f;
+
+	ARX_INTERACTIVE_HideGore(io, false);
+
+	io->halo_native.color = Color3f(0.2f, 0.5f, 1.f);
+	io->halo_native.radius = 45.f;
+	io->halo_native.flags = 0;
+
+	ARX_HALO_SetToNative(io);
+
+	io->forcedmove = Vec3f(0.f);
+	io->ioflags &= ~IO_NO_COLLISIONS;
+	io->ioflags &= ~IO_INVERTED;
+	io->lastspeechflag = 2;
+
+	io->no_collide = { };
+
+	MagicFlareReleaseEntity(io);
+
+	io->flarecount = 0;
+	io->inzone = nullptr;
+	io->speed_modif = 0.f;
+	io->basespeed = 1.f;
+	io->sfx_flag = 0;
+	io->max_durability = io->durability = 100;
+	io->gameFlags &= ~GFLAG_INVISIBILITY;
+	io->gameFlags &= ~GFLAG_MEGAHIDE;
+	io->gameFlags &= ~GFLAG_NOGORE;
+	io->gameFlags &= ~GFLAG_ISINTREATZONE;
+	io->gameFlags &= ~GFLAG_PLATFORM;
+	io->gameFlags &= ~GFLAG_ELEVATOR;
+	io->gameFlags &= ~GFLAG_HIDEWEAPON;
+	io->gameFlags &= ~GFLAG_NOCOMPUTATION;
+	io->gameFlags &= ~GFLAG_DOOR;
+	io->gameFlags &= ~GFLAG_GOREEXPLODE;
+	io->invisibility = 0.f;
+	io->rubber = BASE_RUBBER;
+	io->scale = 1.f;
+	io->move = Vec3f(0.f);
+	io->type_flags = 0;
+	io->m_sound = { };
+	io->soundtime = 0;
+	io->soundcount = 0;
+	io->material = MATERIAL_STONE;
+	io->collide_door_time = 0;
+	io->ouch_time = 0;
+	io->dmg_sum = 0;
+	io->ignition = 0.f;
+	io->ignit_light = { };
+	io->ignit_sound = { };
+	
+	if(io->obj && io->obj->pbox) {
+		io->obj->pbox->active = 0;
+	}
+	
+	io->room = { };
+	io->requestRoomUpdate = true;
+	RestoreIOInitPos(io);
+	ARX_INTERACTIVE_Teleport(io, io->initpos);
+	io->animBlend.lastanimtime = GameInstant(0) + 1ms;
+	io->secretvalue = -1;
+	
+	io->poisonous = 0;
+	io->poisonous_count = 0;
+
+	for(size_t count = 0; count < MAX_ANIM_LAYERS; count++) {
+		io->animlayer[count] = AnimLayer();
+	}
+
+	if(io->obj && io->obj->pbox) {
+		io->obj->pbox->storedtiming = 0;
+	}
+	
+	io->physics.cyl.origin = io->pos;
+	io->physics.cyl.radius = io->original_radius;
+	io->physics.cyl.height = io->original_height;
+	io->fall = 0;
+	io->setOwner(nullptr);
+	io->show = SHOW_FLAG_IN_SCENE;
+	io->targetinfo = EntityHandle(TARGET_NONE);
+	io->spellcast_data.castingspell = SPELL_NONE;
+	io->spark_n_blood = 0;
+
+	if(io->ioflags & IO_NPC) {
+		io->_npcdata->climb_count = 0;
+		io->_npcdata->vvpos = -99999.f;
+		io->_npcdata->SPLAT_DAMAGES = 0;
+		io->_npcdata->speakpitch = 1.f;
+		io->_npcdata->behavior = BEHAVIOUR_NONE;
+		io->_npcdata->cut = 0;
+		io->_npcdata->cuts = 0;
+		io->_npcdata->poisonned = 0.f;
+		io->_npcdata->blood_color = Color::red;
+		io->_npcdata->stare_factor = 1.f;
+
+		io->_npcdata->weapon = nullptr;
+		io->_npcdata->weaponinhand = 0;
+		io->_npcdata->weapontype = 0;
+		io->_npcdata->weaponinhand = 0;
+		io->_npcdata->fightdecision = 0;
+		io->_npcdata->walk_start_time = 0;
+
+		io->_npcdata->reachedtarget = 0;
+		io->_npcdata->lifePool.max = 20.f;
+		io->_npcdata->lifePool.current = io->_npcdata->lifePool.max;
+		io->_npcdata->manaPool.max = 10.f;
+		io->_npcdata->manaPool.current = io->_npcdata->manaPool.max;
+		io->_npcdata->critical = 5.f;
+		io->infracolor = Color3f(1.f, 0.f, 0.2f);
+		io->_npcdata->detect = 0;
+		io->_npcdata->movemode = WALKMODE;
+		io->_npcdata->reach = 20.f;
+		io->_npcdata->armor_class = 0;
+		io->_npcdata->absorb = 0;
+		io->_npcdata->damages = 20;
+		io->_npcdata->tohit = 50;
+		io->_npcdata->aimtime = 0;
+		io->_npcdata->aiming_start = 0;
+		io->_npcdata->npcflags = 0;
+		io->_npcdata->backstab_skill = 0;
+		io->_npcdata->fDetect = -1;
+		io->_npcdata->summoner = EntityHandle();
+	}
+	
+	if(io->ioflags & IO_ITEM) {
+		io->collision = COLLIDE_WITH_PLAYER;
+		io->_itemdata->count = 1;
+		io->_itemdata->maxcount = 1;
+		io->_itemdata->food_value = 0;
+		io->_itemdata->playerstacksize = 1;
+		io->_itemdata->stealvalue = -1;
+		io->_itemdata->LightValue = -1;
+	} else {
+		io->collision = 0;
+	}
+	
+	if(io->ioflags & IO_FIX) {
+		io->_fixdata->trapvalue = -1;
+	}
+
 }
 
 void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1) {
 	
-	if(!io || s1.empty())
+	if(!io || s1.empty()) {
 		return;
+	}
 	
 	res::path icontochange = io->classPath().parent() / s1;
 	
@@ -1019,8 +1018,9 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io) {
 
 void ResetVVPos(Entity * io)
 {
-	if(io && (io->ioflags & IO_NPC))
+	if(io && (io->ioflags & IO_NPC)) {
 		io->_npcdata->vvpos = io->pos.y;
+	}
 }
 
 void ComputeVVPos(Entity * io) {
@@ -1078,8 +1078,9 @@ void ComputeVVPos(Entity * io) {
 
 void ARX_INTERACTIVE_Teleport(Entity * io, const Vec3f & target, bool flag) {
 	
-	if(!io)
+	if(!io) {
 		return;
+	}
 	
 	arx_assert(isallfinite(target));
 	
@@ -1551,10 +1552,11 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	io->_itemdata->food_value = 0;
 	io->_itemdata->LightValue = -1;
 
-	if(io->ioflags & IO_GOLD)
+	if(io->ioflags & IO_GOLD) {
 		io->_itemdata->price = 1;
-	else
+	} else {
 		io->_itemdata->price = 10;
+	}
 
 	io->_itemdata->playerstacksize = 1;
 

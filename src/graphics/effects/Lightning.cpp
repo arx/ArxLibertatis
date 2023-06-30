@@ -294,8 +294,9 @@ void CLightning::Update(ShortGameDuration timeDelta) {
 
 void CLightning::Render()
 {
-	if(m_elapsed >= m_duration)
+	if(m_elapsed >= m_duration) {
 		return;
+	}
 	
 	if(m_iTTL <= 0) {
 		fTotoro = 0;

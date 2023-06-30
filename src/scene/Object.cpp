@@ -138,8 +138,9 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * object) {
 
 void MakeUserFlag(TextureContainer * tc) {
 	
-	if(!tc)
+	if(!tc) {
 		return;
+	}
 	
 	std::string_view tex = tc->m_texName.string();
 	

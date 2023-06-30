@@ -313,8 +313,9 @@ void levelInit() {
 	
 	g_particleManager.Clear();
 	
-	if(GMOD_RESET)
+	if(GMOD_RESET) {
 		ARX_GLOBALMODS_Reset();
+	}
 
 	GMOD_RESET = true;
 	
@@ -355,8 +356,9 @@ void levelInit() {
 	
 	if(LOAD_N_ERASE) {
 		
-		if(!DONT_ERASE_PLAYER)
+		if(!DONT_ERASE_PLAYER) {
 			ARX_PLAYER_InitPlayer();
+		}
 
 		g_hudRoot.playerInterfaceFader.resetSlid();
 
@@ -448,8 +450,9 @@ void ManageNONCombatModeAnimations() {
 	
 	AnimLayer & layer3 = io->animlayer[3];
 	
-	if(player.m_currentMovement & (PLAYER_LEAN_LEFT | PLAYER_LEAN_RIGHT))
+	if(player.m_currentMovement & (PLAYER_LEAN_LEFT | PLAYER_LEAN_RIGHT)) {
 		return;
+	}
 	
 	if(entities.get(player.equiped[EQUIP_SLOT_SHIELD]) && !BLOCK_PLAYER_CONTROLS) {
 		if(layer3.cur_anim == nullptr || (layer3.cur_anim != io->anims[ANIM_SHIELD_CYCLE]
@@ -742,8 +745,9 @@ void ManageCombatModeAnimations() {
 			if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE_CYCLE]) {
 				player.m_bowAimRatio += bowZoomFromDuration(toMsf(g_platformTime.lastFrameDuration()));
 				
-				if(player.m_bowAimRatio > 1.f)
+				if(player.m_bowAimRatio > 1.f) {
 					player.m_bowAimRatio = 1.f;
+				}
 			} else {
 				player.m_bowAimRotation = Anglef();
 			}
@@ -863,8 +867,9 @@ void ManageCombatModeAnimations() {
 					if(quiver->poisonous_count > 0) {
 						quiver->poisonous_count--;
 						
-						if(quiver->poisonous_count <= 0)
+						if(quiver->poisonous_count <= 0) {
 							quiver->poisonous = 0;
+						}
 					}
 					
 					ARX_DAMAGES_DurabilityLoss(quiver, 1.f);
@@ -877,8 +882,9 @@ void ManageCombatModeAnimations() {
 				
 				float aimratio = player.m_strikeAimRatio;
 				
-				if(cur_mx == CHEAT_ENABLED && poisonous < 3.f)
+				if(cur_mx == CHEAT_ENABLED && poisonous < 3.f) {
 					poisonous = 3.f;
+				}
 				
 				if(!arrowobj || arrowobj->vertexlist.size() < 2) {
 					break;
@@ -928,8 +934,9 @@ void ManageCombatModeAnimations() {
 			} else if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE]) {
 				player.m_bowAimRatio -= bowZoomFromDuration(toMsf(g_platformTime.lastFrameDuration()));
 				
-				if(player.m_bowAimRatio < 0)
+				if(player.m_bowAimRatio < 0) {
 					player.m_bowAimRatio = 0;
+				}
 				
 				if(layer1.flags & EA_ANIMEND) {
 					player.m_bowAimRatio = 0;

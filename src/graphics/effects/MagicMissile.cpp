@@ -137,8 +137,9 @@ void CMagicMissile::Render() {
 	mat.setDepthTest(true);
 	mat.setBlendType(RenderMaterial::Additive);
 	
-	if(tex_mm)
+	if(tex_mm) {
 		mat.setTexture(tex_mm);
+	}
 	
 	if(bMove) {
 		fTrail = (m_elapsed / m_duration) * (iBezierPrecision + 2) * 5;
@@ -155,8 +156,9 @@ void CMagicMissile::Render() {
 		const Vec3f v4 = pathways[std::min(5, i + 2)];
 		
 		for(int toto = 1; toto < iBezierPrecision; toto++) {
-			if(fTrail < i * iBezierPrecision + toto)
+			if(fTrail < i * iBezierPrecision + toto) {
 				break;
+			}
 
 			float t = toto * (1.0f / iBezierPrecision);
 			
@@ -197,14 +199,17 @@ void CMagicMissile::Render() {
 	stiteangle.setPitch(0);
 	stiteangle.setRoll(-(glm::degrees(bubu1)));
 
-	if(av.x < 0)
+	if(av.x < 0) {
 		stiteangle.setRoll(stiteangle.getRoll() - 90);
+	}
 
-	if(av.x > 0)
+	if(av.x > 0) {
 		stiteangle.setRoll(stiteangle.getRoll() + 90);
+	}
 
-	if(stiteangle.getRoll() < 0)
+	if(stiteangle.getRoll() < 0) {
 		stiteangle.setRoll(stiteangle.getRoll() + 360.0f);
+	}
 	
 	Draw3DObject(smissile.get(), stiteangle, eCurPos, Vec3f(1.f), m_projectileColor, mat);
 	

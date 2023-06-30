@@ -376,8 +376,9 @@ void LevelUpIconGui::update(const Rectf & parent) {
 }
 
 void LevelUpIconGui::updateInput() {
-	if(!m_visible)
+	if(!m_visible) {
 		return;
+	}
 	
 	m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
 	
@@ -391,8 +392,9 @@ void LevelUpIconGui::updateInput() {
 }
 
 void LevelUpIconGui::draw() {
-	if(!m_visible)
+	if(!m_visible) {
 		return;
+	}
 	
 	HudIconBase::draw();
 }
@@ -565,8 +567,9 @@ void ChangeLevelIconGui::update(const Rectf & parent) {
 
 void ChangeLevelIconGui::draw() {
 	
-	if(!isVisible())
+	if(!isVisible()) {
 		return;
+	}
 	
 	EERIEDrawBitmap(m_rect, 0.0001f, m_tex, Color::gray(m_intensity));
 	
@@ -988,16 +991,15 @@ void PrecastSpellsGui::draw() {
 
 void ActiveSpellsGui::ActiveSpellIconSlot::updateInput(const Vec2f & mousePos) {
 	
-	if(!m_abortable)
+	if(!m_abortable) {
 		return;
+	}
 	
 	if(m_rect.contains(mousePos)) {
 		cursorSetInteraction();
 		
-		if(eeMouseUp1()) {
-			if(spells[spellIndex]->m_type >= 0) {
-				notification_add(std::string(spellicons[spells[spellIndex]->m_type].name));
-			}
+		if(eeMouseUp1() && spells[spellIndex]->m_type >= 0) {
+			notification_add(std::string(spellicons[spells[spellIndex]->m_type].name));
 		}
 		
 		if(eeMouseDoubleClick1()) {
@@ -1009,8 +1011,9 @@ void ActiveSpellsGui::ActiveSpellIconSlot::updateInput(const Vec2f & mousePos) {
 
 void ActiveSpellsGui::ActiveSpellIconSlot::draw() const {
 	
-	if(!m_flicker)
+	if(!m_flicker) {
 		return;
+	}
 	
 	EERIEDrawBitmap(m_rect, 0.01f, m_tc, m_color);
 	

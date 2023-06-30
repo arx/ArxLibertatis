@@ -304,8 +304,7 @@ static void drawDebugPathFinding() {
 		for(long j = 1; j < pathfind.listnb; j++) {
 			long k0 = pathfind.list[j - 1];
 			long k1 = pathfind.list[j];
-			if(k0 >= 0 && size_t(k0) < g_anchors.size()
-			   && k1 >= 0 && size_t(k1) < g_anchors.size()) {
+			if(k0 >= 0 && size_t(k0) < g_anchors.size() && k1 >= 0 && size_t(k1) < g_anchors.size()) {
 				const ANCHOR_DATA & n0 = g_anchors[k0], & n1 = g_anchors[k1];
 				Color color0 = (j     <= pathfind.listpos) ? Color::yellow : Color::red;
 				Color color1 = (j + 1 <= pathfind.listpos) ? Color::yellow : Color::red;

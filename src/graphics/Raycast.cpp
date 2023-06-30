@@ -136,15 +136,17 @@ static bool WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 		
 		if(tx <= ty) {
 			// tx smallest, step in x
-			if(tile.x == endTile.x)
+			if(tile.x == endTile.x) {
 				break;
+			}
 			
 			tx += delta.x;
 			tile.x += d.x;
 		} else {
 			// ty smallest, step in y
-			if(tile.y == endTile.y)
+			if(tile.y == endTile.y) {
 				break;
+			}
 			
 			ty += delta.y;
 			tile.y += d.y;

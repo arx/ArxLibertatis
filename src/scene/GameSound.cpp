@@ -404,10 +404,11 @@ audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar,
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND;
 
 	if(io) {
-		if((io == entities.player() && !EXTERNALVIEW))
+		if((io == entities.player() && !EXTERNALVIEW)) {
 			channel.position = ARX_SOUND_IOFrontPos(io);
-		else
+		} else {
 			channel.position = io->pos;
+		}
 
 		if(g_camera && fartherThan(g_camera->m_pos, io->pos, ARX_SOUND_REFUSE_DISTANCE)) {
 			if(tooFar) {
@@ -431,19 +432,23 @@ audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar,
 
 void ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float power, const Vec3f & position, Entity * source) {
 	
-	if(!g_soundInitialized)
+	if(!g_soundInitialized) {
 		return;
+	}
 
-	if(mat1 == MATERIAL_NONE || mat2 == MATERIAL_NONE)
+	if(mat1 == MATERIAL_NONE || mat2 == MATERIAL_NONE) {
 		return;
+	}
 
-	if(mat1 == MATERIAL_WATER || mat2 == MATERIAL_WATER)
+	if(mat1 == MATERIAL_WATER || mat2 == MATERIAL_WATER) {
 		ARX_PARTICLES_SpawnWaterSplash(position);
+	}
 
 	audio::SampleHandle sample_id = g_soundMaterials[mat1][mat2];
 
-	if(sample_id == audio::SampleHandle())
+	if(sample_id == audio::SampleHandle()) {
 		return;
+	}
 
 	audio::Channel channel(ARX_SOUND_MixerGameSample);
 	channel.flags = FLAG_VOLUME | FLAG_PITCH | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
@@ -454,8 +459,9 @@ void ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float p
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND * presence;
 	
-	if(g_camera && fartherThan(g_camera->m_pos, position, ARX_SOUND_REFUSE_DISTANCE))
+	if(g_camera && fartherThan(g_camera->m_pos, position, ARX_SOUND_REFUSE_DISTANCE)) {
 		return;
+	}
 	
 	// Launch 'ON HEAR' script event
 	if(source) {
@@ -472,14 +478,17 @@ void ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float p
 void ARX_SOUND_PlayCollision(std::string_view name1, std::string_view name2, float volume, float power,
                              const Vec3f & position, Entity * source) {
 	
-	if(!g_soundInitialized)
+	if(!g_soundInitialized) {
 		return;
+	}
 	
-	if(name1.empty() || name2.empty())
+	if(name1.empty() || name2.empty()) {
 		return;
+	}
 	
-	if(name2 == "water")
+	if(name2 == "water") {
 		ARX_PARTICLES_SpawnWaterSplash(position);
+	}
 	
 	CollisionMaps::iterator mi = collisionMaps.find(name1);
 	if(mi == collisionMaps.end()) {
@@ -510,8 +519,9 @@ void ARX_SOUND_PlayCollision(std::string_view name1, std::string_view name2, flo
 		spawnAudibleSound(position, *source, power, presence);
 	}
 	
-	if(g_camera && fartherThan(g_camera->m_pos, position, ARX_SOUND_REFUSE_DISTANCE))
+	if(g_camera && fartherThan(g_camera->m_pos, position, ARX_SOUND_REFUSE_DISTANCE)) {
 		return;
+	}
 	
 	channel.position = position;
 	channel.pitch = Random::getf(0.975f, 1.475f);

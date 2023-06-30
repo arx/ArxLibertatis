@@ -139,8 +139,9 @@ void createObjFireParticles(const EERIE_3DOBJ * obj, int particlePositions, int 
 			it = Random::getIterator(obj->facelist);
 			arx_assert(it != obj->facelist.end());
 			
-			if(it->facetype & POLY_HIDE)
+			if(it->facetype & POLY_HIDE) {
 				continue;
+			}
 			
 			notok = -1;
 		}

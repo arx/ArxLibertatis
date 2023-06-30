@@ -69,8 +69,9 @@ static float LastTime;
 
 bool FX_Blur(Cinematic * c, CinematicBitmap * tb, Camera & camera) {
 	
-	if(c->numbitmap < 0 || !tb)
+	if(c->numbitmap < 0 || !tb) {
 		return false;
+	}
 
 	if(TotOldPos == NBOLDPOS) {
 		TotOldPos--;
@@ -113,11 +114,13 @@ bool FX_Blur(Cinematic * c, CinematicBitmap * tb, Camera & camera) {
 
 bool FX_FlashBlanc(Vec2f size, float speed, Color color, float fps, float currfps) {
 	
-	if(FlashAlpha < 0.f)
+	if(FlashAlpha < 0.f) {
 		return false;
+	}
 	
-	if(FlashAlpha == 0.f)
+	if(FlashAlpha == 0.f) {
 		FlashAlpha = 1.f;
+	}
 	
 	UseRenderState state(render2D().blendAdditive());
 	GRenderer->ResetTexture(0);

@@ -257,10 +257,11 @@ void ARX_INTERFACE_RenderCursor(bool flag) {
 	}
 	
 	if(COMBINE || COMBINEGOLD) {
-		if(SpecialCursor == CURSOR_INTERACTION_ON)
+		if(SpecialCursor == CURSOR_INTERACTION_ON) {
 			SpecialCursor = CURSOR_COMBINEON;
-		else
+		} else {
 			SpecialCursor = CURSOR_COMBINEOFF;
+		}
 	}
 	
 	if(FlyingOverIO && config.input.autoReadyWeapon == AutoReadyWeaponNearEnemies && isEnemy(FlyingOverIO)) {
@@ -296,18 +297,20 @@ void ARX_INTERFACE_RenderCursor(bool flag) {
 				
 				TextureContainer * tc;
 				
-				if(COMBINEGOLD)
+				if(COMBINEGOLD) {
 					tc = GoldCoinsTC[5];
-				else
+				} else {
 					tc = COMBINE->m_icon;
+				}
 				
 				Vec2f size(tc->m_size.x, tc->m_size.y);
 				size *= iconScale;
 				
 				TextureContainer * haloTc = nullptr;
 				
-				if(COMBINE && NeedHalo(COMBINE))
+				if(COMBINE && NeedHalo(COMBINE)) {
 					haloTc = tc->getHalo();
+				}
 				
 				if(haloTc) {
 					Color3f haloColor = COMBINE->halo.color;
@@ -467,8 +470,9 @@ void ARX_INTERFACE_RenderCursor(bool flag) {
 					if(g_dragStatus == EntityDragStatus_Throw || g_dragStatus == EntityDragStatus_Invalid) {
 						TextureContainer * tcc =  cursorMovable;
 						
-						if(g_dragStatus == EntityDragStatus_Throw)
+						if(g_dragStatus == EntityDragStatus_Throw) {
 							tcc = cursorThrowObject;
+						}
 						
 						if(tcc && tcc != tc) { // to avoid movable double red cross...
 							Vec2f size = Vec2f(tcc->m_size) * cursorScale;

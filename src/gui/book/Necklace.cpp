@@ -153,8 +153,9 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf rect, f
 	bookcam.cdepth = 2200.f;
 	
 	for(size_t i = 0; i < RUNE_COUNT; i++) {
-		if(!gui::necklace.runes[i])
+		if(!gui::necklace.runes[i]) {
 			continue;
+		}
 		
 		if(!player.hasRune(Rune(i))) {
 			continue;

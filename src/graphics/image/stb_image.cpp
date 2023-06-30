@@ -3386,14 +3386,17 @@ static int pic_test(stbi *s)
 {
    int i;
 
-   if(!pic_is4(s, "\x53\x80\xF6\x34"))
+   if(!pic_is4(s, "\x53\x80\xF6\x34")) {
       return 0;
+   }
 
-   for(i = 0; i < 84; ++i)
+   for(i = 0; i < 84; ++i) {
       get8(s);
+   }
 
-   if(!pic_is4(s, "PICT"))
+   if(!pic_is4(s, "PICT")) {
       return 0;
+   }
 
    return 1;
 }
@@ -3468,9 +3471,11 @@ static stbi_uc * pic_load2(stbi * s, int width, int height, int * comp, stbi_uc 
             case 0: {//uncompressed
                int x;
 
-               for(x = 0; x < width; ++x, dest += 4)
-                  if(!pic_readval(s, packet->channel, dest))
+               for(x = 0; x < width; ++x, dest += 4) {
+                  if(!pic_readval(s, packet->channel, dest)) {
                      return 0;
+                  }
+               }
                break;
             }
 
@@ -3505,25 +3510,33 @@ static stbi_uc * pic_load2(stbi * s, int width, int height, int * comp, stbi_uc 
                   if (count >= 128) { // Repeated
                      stbi_uc value[4];
 
-                     if (count==128)
+                     if (count==128) {
                         count = get16(s);
-                     else
+                     } else {
                         count -= 127;
-                     if (count > left)
+                     }
+                     if (count > left) {
                         return stbi_error_puc("bad file", "scanline overrun");
+                     }
 
-                     if(!pic_readval(s, packet->channel, value))
+                     if(!pic_readval(s, packet->channel, value)) {
                         return 0;
+                     }
 
-                     for(i = 0; i < count; ++i, dest += 4)
+                     for(i = 0; i < count; ++i, dest += 4) {
                         pic_copyval(packet->channel, dest, value);
+                     }
                   } else { // Raw
                      ++count;
-                     if(count > left) return stbi_error_puc("bad file", "scanline overrun");
+                     if(count > left) {
+                        return stbi_error_puc("bad file", "scanline overrun");
+                     }
 
-                     for(i = 0; i < count; ++i, dest += 4)
-                        if(!pic_readval(s, packet->channel, dest))
+                     for(i = 0; i < count; ++i, dest += 4) {
+                        if(!pic_readval(s, packet->channel, dest)) {
                            return 0;
+                        }
+                     }
                   }
                   left-=count;
                }
@@ -4014,17 +4027,24 @@ static float *hdr_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 
 
    // Check identifier
-   if(strcmp(hdr_gettoken(s, buffer), "#?RADIANCE") != 0)
+   if(strcmp(hdr_gettoken(s, buffer), "#?RADIANCE") != 0) {
       return stbi_error_pf("not HDR", "Corrupt HDR image");
+   }
    
    // Parse header
    for(;;) {
       token = hdr_gettoken(s, buffer);
-      if (token[0] == 0) break;
-      if (strcmp(token, "FORMAT=32-bit_rle_rgbe") == 0) valid = 1;
+      if (token[0] == 0) {
+         break;
+      }
+      if (strcmp(token, "FORMAT=32-bit_rle_rgbe") == 0) {
+         valid = 1;
+      }
    }
 
-   if (!valid)    return stbi_error_pf("unsupported format", "Unsupported HDR format");
+   if (!valid) {
+      return stbi_error_pf("unsupported format", "Unsupported HDR format");
+   }
 
    // Parse width and height
    // can't use sscanf() if we're not using stdio!

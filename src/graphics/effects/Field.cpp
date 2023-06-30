@@ -162,8 +162,9 @@ void CCreateField::Update(ShortGameDuration timeDelta) {
 
 void CCreateField::Render()
 {
-	if(!VisibleSphere(Sphere(eSrc - Vec3f(0.f, 120.f, 0.f), 400.f)))
+	if(!VisibleSphere(Sphere(eSrc - Vec3f(0.f, 120.f, 0.f), 400.f))) {
 		return;
+	}
 	
 	//-------------------------------------------------------------------------
 	// rendu

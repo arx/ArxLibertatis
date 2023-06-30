@@ -49,8 +49,9 @@ void Halo_AddVertices(TexturedVertex (&inVerts)[4]) {
 
 void Halo_Render() {
 	
-	if(HALOCUR[0] == 0 && HALOCUR[1] == 0)
+	if(HALOCUR[0] == 0 && HALOCUR[1] == 0) {
 		return;
+	}
 	
 	GRenderer->ResetTexture(0);
 	

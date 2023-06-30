@@ -55,11 +55,13 @@ void AddQuakeFX(float intensity, GameDuration duration, float period, bool sound
 	}
 
 	if(!sound) {
-		if(QuakeFx.duration > 1500ms)
+		if(QuakeFx.duration > 1500ms) {
 			QuakeFx.duration = 1500ms;
+		}
 
-		if(QuakeFx.intensity > 220)
+		if(QuakeFx.intensity > 220) {
 			QuakeFx.intensity = 220;
+		}
 	}
 }
 

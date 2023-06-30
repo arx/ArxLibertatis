@@ -353,12 +353,14 @@ void ARX_INTERFACE_HALO_Render(Color3f color, long _lHaloType, TextureContainer 
 //-----------------------------------------------------------------------------
 bool NeedHalo(Entity * io)
 {
-	if(!io || !(io->ioflags & IO_ITEM))
+	if(!io || !(io->ioflags & IO_ITEM)) {
 		return false;
+	}
 
 	if(io->halo.flags & HALO_ACTIVE) {
-		if(io->m_icon)
+		(io->m_icon) {
 			io->m_icon->getHalo();
+		}
 
 		return true;
 	}
@@ -369,11 +371,13 @@ bool NeedHalo(Entity * io)
 
 void InventoryOpenClose(unsigned long t) {
 	
-	if(t == 1 && (player.Interface & INTER_INVENTORY))
+	if(t == 1 && (player.Interface & INTER_INVENTORY)) {
 		return;
+	}
 
-	if(t == 2 && !(player.Interface & INTER_INVENTORY))
+	if(t == 2 && !(player.Interface & INTER_INVENTORY)) {
 		return;
+	}
 
 	ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));
 
@@ -389,8 +393,9 @@ void InventoryOpenClose(unsigned long t) {
 		player.Interface |= INTER_INVENTORY;
 		g_playerInventoryHud.resetPos();
 
-		if(TRUE_PLAYER_MOUSELOOK_ON)
+		if(TRUE_PLAYER_MOUSELOOK_ON) {
 			WILLRETURNTOFREELOOK = true;
+		}
 	}
 	
 	if((player.Interface & INTER_INVENTORYALL) || TRUE_PLAYER_MOUSELOOK_ON) {
@@ -594,11 +599,13 @@ void ARX_INTERFACE_setCombatMode(ARX_INTERFACE_COMBAT_MODE i) {
 	arx_assert(entities.player());
 	arx_assert(arrowobj);
 	
-	if(i >= 1 && (player.Interface & INTER_COMBATMODE))
+	if(i >= 1 && (player.Interface & INTER_COMBATMODE)) {
 		return;
+	}
 
-	if(i == COMBAT_MODE_OFF && !(player.Interface & INTER_COMBATMODE))
+	if(i == COMBAT_MODE_OFF && !(player.Interface & INTER_COMBATMODE)) {
 		return;
+	}
 
 	if(player.Interface & INTER_COMBATMODE) {
 		
@@ -772,8 +779,9 @@ void ArxGame::managePlayerControls() {
 				}
 				if(!npc) {
 					MagicSightFader += g_platformTime.lastFrameDuration() / 200ms;
-					if(MagicSightFader > 1.f)
+					if(MagicSightFader > 1.f) {
 						MagicSightFader = 1.f;
+					}
 				}
 				eyeball.move(move);
 			}
@@ -902,12 +910,14 @@ void ArxGame::managePlayerControls() {
 	// Can only lean outside of combat mode
 	if(!(player.Interface & INTER_COMBATMODE)) {
 		// Checks LEAN_LEFT Key Status.
-		if(GInput->actionPressed(CONTROLS_CUST_LEANLEFT))
+		if(GInput->actionPressed(CONTROLS_CUST_LEANLEFT)) {
 			player.m_currentMovement |= PLAYER_LEAN_LEFT;
+		}
 
 		// Checks LEAN_RIGHT Key Status.
-		if(GInput->actionPressed(CONTROLS_CUST_LEANRIGHT))
+		if(GInput->actionPressed(CONTROLS_CUST_LEANRIGHT)) {
 			player.m_currentMovement |= PLAYER_LEAN_RIGHT;
+		}
 	}
 	
 	// Checks JUMP Key Status.
@@ -1093,8 +1103,9 @@ void ArxGame::managePlayerControls() {
 					} else {
 						TRUE_PLAYER_MOUSELOOK_ON = false;
 
-						if(player.Interface & INTER_COMBATMODE)
+						if(player.Interface & INTER_COMBATMODE) {
 							ARX_INTERFACE_setCombatMode(COMBAT_MODE_OFF);
+						}
 					}
 				}
 			}
@@ -1122,8 +1133,9 @@ void ArxGame::managePlayerControls() {
 	}
 	
 	// Checks BOOK Key Status.
-	if(GInput->actionNowPressed(CONTROLS_CUST_BOOK))
+	if(GInput->actionNowPressed(CONTROLS_CUST_BOOK)) {
 		g_playerBook.toggle();
+	}
 
 	// Check For Combat Mode ON/OFF
 	if(   eeMousePressed1()
@@ -1291,9 +1303,7 @@ void ArxGame::manageKeyMouse() {
 		   && !g_cursorOverBook
 		   && eMouseState != MOUSE_IN_NOTE
 		) {
-			if(   eeMouseUp2()
-			   && STARTED_ACTION_ON_IO == pIO
-			) {
+			if(eeMouseUp2() && STARTED_ACTION_ON_IO == pIO) {
 				if(pIO->ioflags & IO_ITEM) {
 					FlyingOverIO = pIO;
 					COMBINE = nullptr;
@@ -1313,23 +1323,27 @@ void ArxGame::manageKeyMouse() {
 						
 						switch(type) {
 						case WEAPON_DAGGER:
-							if(layer1.cur_anim == io->anims[ANIM_DAGGER_UNREADY_PART_1])
+							if(layer1.cur_anim == io->anims[ANIM_DAGGER_UNREADY_PART_1]) {
 								bOk = false;
+							}
 						
 							break;
 						case WEAPON_1H:
-							if(layer1.cur_anim == io->anims[ANIM_1H_UNREADY_PART_1])
+							if(layer1.cur_anim == io->anims[ANIM_1H_UNREADY_PART_1]) {
 								bOk = false;
+							}
 						
 							break;
 						case WEAPON_2H:
-							if(layer1.cur_anim == io->anims[ANIM_2H_UNREADY_PART_1])
+							if(layer1.cur_anim == io->anims[ANIM_2H_UNREADY_PART_1]) {
 								bOk = false;
+							}
 						
 							break;
 						case WEAPON_BOW:
-							if(layer1.cur_anim == io->anims[ANIM_MISSILE_UNREADY_PART_1])
+							if(layer1.cur_anim == io->anims[ANIM_MISSILE_UNREADY_PART_1]) {
 								bOk = false;
+							}
 						
 							break;
 						default:
@@ -1369,8 +1383,9 @@ void ArxGame::manageKeyMouse() {
 		
 		PLAYER_MOUSELOOK_ON = TRUE_PLAYER_MOUSELOOK_ON;
 		
-		if(player.doingmagic == 2 && config.input.mouseLookToggle)
+		if(player.doingmagic == 2 && config.input.mouseLookToggle) {
 			PLAYER_MOUSELOOK_ON = false;
+		}
 	}
 
 	if(ARXmenu.mode() != Mode_InGame) {
@@ -1576,17 +1591,20 @@ void ArxGame::manageKeyMouse() {
 				player.desiredangle.setPitch(MAKEANGLE(iangle + rotation.y));
 
 				if(player.desiredangle.getPitch() >= 74.9f && player.desiredangle.getPitch() <= 301.f) {
-					if(iangle < 75.f)
+					if(iangle < 75.f) {
 						player.desiredangle.setPitch(74.9f);
-					else
+					} else {
 						player.desiredangle.setPitch(301.f);
+					}
 				}
 
-				if(glm::abs(rotation.y) > 2.f)
+				if(glm::abs(rotation.y) > 2.f) {
 					entities.player()->animBlend.lastanimtime = 0;
+				}
 
-				if(rotation.x != 0.f)
+				if(rotation.x != 0.f) {
 					player.m_currentMovement |= PLAYER_ROTATE;
+				}
 				
 				PLAYER_ROTATION = std::chrono::microseconds(s64(rotation.x * 5.f * 1000.f));
 				
@@ -1720,10 +1738,7 @@ void ArxGame::manageEditorControls() {
 	g_secondaryInventoryHud.updateInputButtons();
 	
 	// Single Click On Object
-	if(   eeMouseUp1()
-	   && FlyingOverIO
-	   && !g_draggedEntity
-	) {
+	if(eeMouseUp1() && FlyingOverIO && !g_draggedEntity) {
 		
 		SendIOScriptEvent(entities.player(), FlyingOverIO, SM_CLICKED);
 		
@@ -1763,8 +1778,9 @@ void ArxGame::manageEditorControls() {
 		if(COMBINE && COMBINE != player.torch) {
 			Vec3f pos = GetItemWorldPosition(COMBINE);
 			
-			if(fartherThan(pos, player.pos, 300.f))
+			if(fartherThan(pos, player.pos, 300.f)) {
 				COMBINE = nullptr;
+			}
 		}
 		
 		if(eeMouseDown1() && (COMBINE || COMBINEGOLD)) {
@@ -1927,10 +1943,11 @@ void ArxGame::manageEditorControls() {
 			if(io) {
 				LastSelectedIONum = io->index();
 			} else {
-				if(LastSelectedIONum == EntityHandle())
+				if(LastSelectedIONum == EntityHandle()) {
 					LastSelectedIONum = EntityHandle_Player;
-				else
+				} else {
 					LastSelectedIONum = EntityHandle();
+				}
 			}
 		}
 	}

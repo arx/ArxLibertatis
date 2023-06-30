@@ -131,8 +131,9 @@ void CPoisonProjectile::Update(ShortGameDuration timeDelta) {
 
 void CPoisonProjectile::Render() {
 	
-	if(m_elapsed >= m_duration)
+	if(m_elapsed >= m_duration) {
 		return;
+	}
 	
 	int n = BEZIERPrecision;
 	float delta = 1.0f / n;

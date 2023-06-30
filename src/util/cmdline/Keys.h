@@ -70,8 +70,9 @@ public:
 	}
 	
 	key_type & operator()(const value_type & v) {
-		if(!v.empty())
+		if(!v.empty()) {
 			super_t::push_back(v);
+		}
 		return *this;
 	}
 	

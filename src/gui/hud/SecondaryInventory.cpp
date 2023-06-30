@@ -499,11 +499,13 @@ void SecondaryInventoryHud::updateFader() {
 		
 		float frameDelay = g_platformTime.lastFrameDuration() / 3ms;
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2 || m_fadeDirection == Fade_left) {
-			if(m_fadePosition > -160)
+			if(m_fadePosition > -160) {
 				m_fadePosition -= frameDelay * m_scale;
+			}
 		} else {
-			if(m_fadePosition < 0)
+			if(m_fadePosition < 0) {
 				m_fadePosition += float(m_fadeDirection) * frameDelay * m_scale;
+			}
 		}
 		
 		if(m_fadePosition <= -160) {

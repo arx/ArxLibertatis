@@ -67,8 +67,9 @@ CinematicTrack::CinematicTrack(int endframe_, float fps_) noexcept
 
 void AllocTrack(int ef, float fps) {
 	
-	if(CKTrack)
+	if(CKTrack) {
 		return;
+	}
 	
 	CKTrack = new CinematicTrack(ef, fps);
 }
@@ -278,8 +279,7 @@ static void updateFadeOut(Cinematic * c, CinematicKeyframe * current, float a,
 		return;
 	}
 	
-	if(float(g_size.width()) / g_size.height()
-	   <= 4.f / 3.f + 10 * std::numeric_limits<float>::epsilon()) {
+	if(float(g_size.width()) / g_size.height() <= 4.f / 3.f + 10 * std::numeric_limits<float>::epsilon()) {
 		// No need to fade anything for narrow screens.
 		c->fadegrille = c->fadeprev = c->fadenext = CinematicFadeOut(0.f);
 		c->m_nextFadegrille = CinematicFadeOut(0.f);
@@ -444,8 +444,9 @@ void GereTrack(Cinematic * c, PlatformDuration frameDuration, bool resized, bool
 			interpolateLight(alight, light, c);
 			break;
 		case INTERP_BEZIER: {
-			if(play)
+			if(play) {
 				c->m_light = current->light;
+			}
 			
 			CinematicKeyframe * ksuivsuiv = (next == &CKTrack->key.back()) ? next : next + 1;
 			CinematicKeyframe * kprec = (current == &CKTrack->key.front()) ? current : current - 1;
@@ -504,8 +505,9 @@ void GereTrack(Cinematic * c, PlatformDuration frameDuration, bool resized, bool
 
 void PlayTrack(Cinematic * c)
 {
-	if(!CKTrack || !CKTrack->pause)
+	if(!CKTrack || !CKTrack->pause) {
 		return;
+	}
 
 	CKTrack->pause = false;
 	c->flTime = 0;

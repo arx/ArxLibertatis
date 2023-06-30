@@ -53,13 +53,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 void EERIE_COLLISION_Cylinder_Create(Entity * io)
 {
-	if(!io)
+	if(!io) {
 		return;
+	}
 
 	EERIE_3DOBJ * obj = io->obj;
 
-	if(!obj)
+	if(!obj) {
 		return;
+	}
 
 	if(obj->vertexlist.empty()) {
 		io->physics.cyl.height = 0.f;
@@ -95,8 +97,9 @@ void EERIE_COLLISION_Cylinder_Create(Entity * io)
 	
 	io->original_height = glm::clamp(io->original_height, -165.f, -40.f);
 	
-	if(io->original_radius > 40.f)
+	if(io->original_radius > 40.f) {
 		io->original_radius = 40.f;
+	}
 
 	io->physics.cyl.radius = io->original_radius * io->scale;
 	io->physics.cyl.height = io->original_height * io->scale;

@@ -580,8 +580,7 @@ bool OpenALSource::updateCulling() {
 	
 	arx_assert(status == Playing);
 	
-	if(!(m_channel.flags & FLAG_POSITION) || !(m_channel.flags & FLAG_FALLOFF)
-	   || !alIsSource(m_source)) {
+	if(!(m_channel.flags & FLAG_POSITION) || !(m_channel.flags & FLAG_FALLOFF) || !alIsSource(m_source)) {
 		return false;
 	}
 	

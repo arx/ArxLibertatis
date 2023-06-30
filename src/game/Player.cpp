@@ -879,10 +879,11 @@ long GetXPforLevel(short level)
 	};
 
 	long xpNeeded;
-	if(level < short(std::size(XP_FOR_LEVEL)))
+	if(level < short(std::size(XP_FOR_LEVEL))) {
 		xpNeeded = XP_FOR_LEVEL[level];
-	else
+	} else {
 		xpNeeded = level * 60000;
+	}
 	return xpNeeded;
 }
 
@@ -961,14 +962,16 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta) {
 
 			player.hunger -= inc_hunger * .5f;
 
-			if(player.hunger < -10.f)
+			if(player.hunger < -10.f) {
 				player.hunger = -10.f;
+			}
 
 			if(!BLOCK_PLAYER_CONTROLS) {
-				if(player.hunger < 0.f)
+				if(player.hunger < 0.f) {
 					player.lifePool.current -= inc * 0.5f;
-				else
+				} else {
 					player.lifePool.current += inc;
+				}
 			}
 			
 			// Natural MANA recovery
@@ -980,28 +983,28 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta) {
 		player.lifePool.current = std::min(player.lifePool.current, player.lifePool.max);
 		
 		// Now Checks Poison Progression
-		if(!BLOCK_PLAYER_CONTROLS)
-			if(player.poison > 0.f) {
-				float cp = player.poison * Framedelay * 0.00025f;
-				float faster = 10.f - player.poison;
-				if(faster < 0.f) {
-					faster = 0.f;
-				}
-				if(Random::getf(0.f, 100.f) > player.m_miscFull.resistPoison + faster) {
-					float dmg = cp * (1.0f / 3);
-					if(player.lifePool.current - dmg <= 0.f) {
-						damagePlayer(dmg, DAMAGE_TYPE_POISON);
-					} else {
-						player.lifePool.current -= dmg;
-					}
-					player.poison -= cp * 0.1f;
-				} else {
-					player.poison -= cp;
-				}
+		if(!BLOCK_PLAYER_CONTROLS && player.poison > 0.f) {
+			float cp = player.poison * Framedelay * 0.00025f;
+			float faster = 10.f - player.poison;
+			if(faster < 0.f) {
+				faster = 0.f;
 			}
+			if(Random::getf(0.f, 100.f) > player.m_miscFull.resistPoison + faster) {
+				float dmg = cp * (1.0f / 3);
+				if(player.lifePool.current - dmg <= 0.f) {
+					damagePlayer(dmg, DAMAGE_TYPE_POISON);
+				} else {
+					player.lifePool.current -= dmg;
+				}
+				player.poison -= cp * 0.1f;
+			} else {
+				player.poison -= cp;
+			}
+		}
 
-		if(player.poison < 0.1f)
+		if(player.poison < 0.1f) {
 			player.poison = 0.f;
+		}
 	}
 }
 TextureContainer * PLAYER_SKIN_TC = nullptr;
@@ -1062,20 +1065,24 @@ void ARX_PLAYER_Restore_Skin() {
 	
 	// TODO maybe it would be better to replace the textures in the player object instead of replacing the texture data for all objects that use these textures
 
-	if(PLAYER_SKIN_TC && !tx.empty())
+	if(PLAYER_SKIN_TC && !tx.empty()) {
 		PLAYER_SKIN_TC->LoadFile(tx);
+	}
 
 	tmpTC = TextureContainer::Find("graph/obj3d/textures/npc_human_chainmail_hero_head");
-	if(tmpTC && !tx2.empty())
+	if(tmpTC && !tx2.empty()) {
 		tmpTC->LoadFile(tx2);
+	}
 
 	tmpTC = TextureContainer::Find("graph/obj3d/textures/npc_human_chainmail_mithril_hero_head");
-	if(tmpTC && !tx3.empty())
+	if(tmpTC && !tx3.empty()) {
 		tmpTC->LoadFile(tx3);
+	}
 
 	tmpTC = TextureContainer::Find("graph/obj3d/textures/npc_human_leather_hero_head");
-	if(tmpTC && !tx4.empty())
+	if(tmpTC && !tx4.empty()) {
 		tmpTC->LoadFile(tx4);
+	}
 }
 
 /*!
@@ -1185,11 +1192,13 @@ static void ARX_PLAYER_Manage_Visual_End(ANIM_HANDLE * request0_anim, ANIM_HANDL
 		layer0.cur_anim = request0_anim;
 		layer0.flags = EA_STATICANIM;
 		
-		if(request0_loop)
+		if(request0_loop) {
 			layer0.flags |= EA_LOOP;
+		}
 		
-		if(request0_stopend)
+		if(request0_stopend) {
 			layer0.flags |= EA_STOPEND;
+		}
 		
 		if(request0_anim == io->anims[ANIM_U_TURN_LEFT]
 		   || request0_anim == io->anims[ANIM_U_TURN_RIGHT]
@@ -1337,15 +1346,17 @@ void ARX_PLAYER_Manage_Visual() {
 	   && LASTPLAYERA < 180.f
 	) {
 		if(PLAYER_ROTATION < 0) {
-			if(player.Interface & INTER_COMBATMODE)
+			if(player.Interface & INTER_COMBATMODE) {
 				request0_anim = alist[ANIM_U_TURN_LEFT_FIGHT];
-			else
+			} else {
 				request0_anim = alist[ANIM_U_TURN_LEFT];
+			}
 		} else {
-			if(player.Interface & INTER_COMBATMODE)
+			if(player.Interface & INTER_COMBATMODE) {
 				request0_anim = alist[ANIM_U_TURN_RIGHT_FIGHT];
-			else
+			} else {
 				request0_anim = alist[ANIM_U_TURN_RIGHT];
+			}
 		}
 		
 		request0_loop = true;
@@ -1355,8 +1366,7 @@ void ARX_PLAYER_Manage_Visual() {
 			if(layer0.ctime < 0) {
 				layer0.ctime = 0;
 			}
-		} else if(layer0.cur_anim == alist[ANIM_U_TURN_RIGHT]
-		          || layer0.cur_anim == alist[ANIM_U_TURN_RIGHT_FIGHT]) {
+		} else if(layer0.cur_anim == alist[ANIM_U_TURN_RIGHT] || layer0.cur_anim == alist[ANIM_U_TURN_RIGHT_FIGHT]) {
 			layer0.ctime += PLAYER_ROTATION;
 			if(layer0.ctime < 0) {
 				layer0.ctime = 0;
@@ -1374,62 +1384,71 @@ void ARX_PLAYER_Manage_Visual() {
 		tmove &= ~PLAYER_MOVE_STRAFE_RIGHT;
 	}
 	
-	if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_LEFT)
+	if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_LEFT) {
 		tmove &= ~PLAYER_MOVE_STRAFE_RIGHT;
+	}
 	
-	if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_RIGHT)
+	if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_RIGHT) {
 		tmove &= ~PLAYER_MOVE_STRAFE_LEFT;
+	}
 	
-	if(MOVE_PRECEDENCE == PLAYER_MOVE_WALK_FORWARD)
+	if(MOVE_PRECEDENCE == PLAYER_MOVE_WALK_FORWARD) {
 		tmove &= ~PLAYER_MOVE_WALK_BACKWARD;
+	}
 	
-	if(player.m_currentMovement & PLAYER_MOVE_WALK_FORWARD)
+	if(player.m_currentMovement & PLAYER_MOVE_WALK_FORWARD) {
 		tmove = PLAYER_MOVE_WALK_FORWARD;
+	}
 	
 	if(tmove & PLAYER_MOVE_STRAFE_LEFT) {
-		if(player.Interface & INTER_COMBATMODE)
+		if(player.Interface & INTER_COMBATMODE) {
 			request0_anim = alist[ANIM_FIGHT_STRAFE_LEFT];
-		else if(player.m_currentMovement & PLAYER_MOVE_STEALTH)
+		} else if(player.m_currentMovement & PLAYER_MOVE_STEALTH) {
 			request0_anim = alist[ANIM_STRAFE_LEFT];
-		else
+		} else {
 			request0_anim = alist[ANIM_STRAFE_RUN_LEFT];
+		}
 	}
 	
 	if(tmove & PLAYER_MOVE_STRAFE_RIGHT) {
-		if(player.Interface & INTER_COMBATMODE)
+		if(player.Interface & INTER_COMBATMODE) {
 			request0_anim = alist[ANIM_FIGHT_STRAFE_RIGHT];
-		else if(player.m_currentMovement & PLAYER_MOVE_STEALTH)
+		} else if(player.m_currentMovement & PLAYER_MOVE_STEALTH) {
 			request0_anim = alist[ANIM_STRAFE_RIGHT];
-		else
+		} else {
 			request0_anim = alist[ANIM_STRAFE_RUN_RIGHT];
+		}
 	}
 	
 	if(tmove & PLAYER_MOVE_WALK_BACKWARD) {
-		if(player.Interface & INTER_COMBATMODE)
+		if(player.Interface & INTER_COMBATMODE) {
 			request0_anim = alist[ANIM_FIGHT_WALK_BACKWARD];
-		else if(player.m_currentMovement & PLAYER_MOVE_STEALTH)
+		} else if(player.m_currentMovement & PLAYER_MOVE_STEALTH) {
 			request0_anim = alist[ANIM_WALK_BACKWARD];
-		else if(player.m_currentMovement & PLAYER_CROUCH)
+		} else if(player.m_currentMovement & PLAYER_CROUCH) {
 			request0_anim = alist[ANIM_WALK_BACKWARD];
-		else
+		} else {
 			request0_anim = alist[ANIM_RUN_BACKWARD];
+		}
 	}
 	
 	if(tmove & PLAYER_MOVE_WALK_FORWARD) {
-		if(player.Interface & INTER_COMBATMODE)
+		if(player.Interface & INTER_COMBATMODE) {
 			request0_anim = alist[ANIM_FIGHT_WALK_FORWARD];
-		else if(player.m_currentMovement & PLAYER_MOVE_STEALTH)
+		} else if(player.m_currentMovement & PLAYER_MOVE_STEALTH) {
 			request0_anim = alist[ANIM_WALK];
-		else
+		} else {
 			request0_anim = alist[ANIM_RUN];
+		}
 	}
 	}
 	
 	if(!request0_anim) {
-		if(EXTERNALVIEW)
+		if(EXTERNALVIEW) {
 			request0_anim = alist[ANIM_WAIT];
-		else
+		} else {
 			request0_anim = alist[ANIM_WAIT_SHORT];
+		}
 		
 		request0_loop = true;
 	}
@@ -1545,8 +1564,7 @@ void ARX_PLAYER_Manage_Visual() {
 			}
 			case JumpDescending: { // Post-synch
 				LAST_JUMP_ENDTIME = g_platformTime.frameStart();
-				if((layer0.cur_anim == alist[ANIM_JUMP_END] && (layer0.flags & EA_ANIMEND))
-				   || player.onfirmground) {
+				if((layer0.cur_anim == alist[ANIM_JUMP_END] && (layer0.flags & EA_ANIMEND)) || player.onfirmground) {
 					player.jumpphase = JumpEnd;
 					request0_anim = alist[ANIM_JUMP_END_PART2];
 				} else {
@@ -1691,8 +1709,9 @@ void ARX_PLAYER_Frame_Update()
 	player.TRAP_DETECT = player.m_skillFull.mecanism;
 	player.TRAP_SECRET = player.m_skillFull.intuition;
 
-	if(spells.getSpellOnTarget(EntityHandle_Player, SPELL_DETECT_TRAP))
+	if(spells.getSpellOnTarget(EntityHandle_Player, SPELL_DETECT_TRAP)) {
 		player.TRAP_DETECT = 100.f;
+	}
 
 	ARX_PLAYER_ManageTorch();
 }
@@ -1793,8 +1812,7 @@ static void PlayerMovementIterate(float DeltaTime) {
 	if(USE_PLAYERCOLLISIONS) {
 		// A jump is requested so let's go !
 		if(REQUEST_JUMP != 0) {
-			if((player.m_currentMovement & PLAYER_CROUCH)
-			   || player.physics.cyl.height > player.baseHeight()) {
+			if((player.m_currentMovement & PLAYER_CROUCH) || player.physics.cyl.height > player.baseHeight()) {
 				float old = player.physics.cyl.height;
 				player.physics.cyl.height = player.baseHeight();
 				player.physics.cyl.origin = player.basePosition();
@@ -2237,14 +2255,16 @@ void ARX_PLAYER_Manage_Movement() {
 	ARX_PROFILE_FUNC();
 	
 	// Is our player able to move ?
-	if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS || !entities.player())
+	if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS || !entities.player()) {
 		return;
+	}
 
 	// Compute current player speedfactor
 	float speedfactor = entities.player()->basespeed + entities.player()->speed_modif;
 
-	if(speedfactor < 0)
+	if(speedfactor < 0) {
 		speedfactor = 0;
+	}
 
 	// Compute time things
 	const float FIXED_TIMESTEP = 25.f;
@@ -2280,8 +2300,9 @@ void ARX_PLAYER_Manage_Movement() {
  * \brief Manage Player Death Visual
  */
 void ARX_PLAYER_Manage_Death() {
-	if(player.DeadTime <= 2s)
+	if(player.DeadTime <= 2s) {
 		return;
+	}
 
 	player.m_paralysed = false;
 	float ratio = (player.DeadTime - 2s) / 5s;
@@ -2404,10 +2425,11 @@ void ARX_PLAYER_Rune_Add_All() {
 
 void ARX_PLAYER_Invulnerability(long flag) {
 
-	if(flag)
+	if(flag) {
 		player.playerflags |= PLAYERFLAGS_INVULNERABILITY;
-	else
+	} else {
 		player.playerflags &= ~PLAYERFLAGS_INVULNERABILITY;
+	}
 }
 
 void ARX_GAME_Reset() {

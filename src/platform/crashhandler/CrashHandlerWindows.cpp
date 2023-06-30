@@ -146,8 +146,9 @@ void CrashHandlerWindows::unregisterCrashHandlers() {
 	signal(SIGINT, m_pPreviousCrashHandlers->m_SIGINTHandler);
 	signal(SIGTERM, m_pPreviousCrashHandlers->m_SIGTERMHandler);
 	
-	if(!m_pPreviousCrashHandlers->m_threadExceptionHandlers.empty())
+	if(!m_pPreviousCrashHandlers->m_threadExceptionHandlers.empty()) {
 		LogWarning << "Some threads crash handlers are still registered.";
+	}
 	
 	delete m_pPreviousCrashHandlers;
 	m_pPreviousCrashHandlers = 0;

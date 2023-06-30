@@ -295,8 +295,9 @@ ScriptResult SendMsgToAllIO(Entity * sender, const ScriptEventName & event,
 
 void ARX_SCRIPT_ResetObject(Entity * io, bool init) {
 	
-	if(!io)
+	if(!io) {
 		return;
+	}
 	
 	io->m_disabledEvents = 0;
 	
@@ -868,8 +869,9 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 				*lcontent = 0;
 				if(context.getEntity()) {
 					Vec3f pos = GetItemWorldPosition(context.getEntity());
-					if(pos == context.getEntity()->initpos)
+					if(pos == context.getEntity()->initpos) {
 						*lcontent = 1;
+					}
 				}
 				return TYPE_LONG;
 			}
@@ -1753,8 +1755,9 @@ static bool Manage_Specific_RAT_Timer(SCR_TIMER * st) {
 	} else {
 		st->count++;
 		st->interval = st->interval / 2;
-		if(st->interval < 100ms)
+		if(st->interval < 100ms) {
 			st->interval = 100ms;
+		}
 		
 		return true;
 	}
@@ -1877,8 +1880,9 @@ Entity * ARX_SCRIPT_Get_IO_Max_Events_Sent() {
 
 void ManageCasseDArme(Entity * io) {
 	
-	if(!(io->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW)))
+	if(!(io->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW))) {
 		return;
+	}
 	
 	Entity * pObjMin = nullptr;
 	Entity * pObjMax = nullptr;
@@ -1891,10 +1895,7 @@ void ManageCasseDArme(Entity * io) {
 		   && (bagEntity->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW))
 		) {
 			
-			if(   (io->ioflags & IO_ITEM)
-			   && (bagEntity->ioflags & IO_ITEM)
-			   && bagEntity->_itemdata->equipitem
-			) {
+			if((io->ioflags & IO_ITEM) && (bagEntity->ioflags & IO_ITEM) && bagEntity->_itemdata->equipitem) {
 				if(bagEntity->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value == io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
 					pIOChangeWeapon = bagEntity;
 					lChangeWeapon = 2;

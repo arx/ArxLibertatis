@@ -515,10 +515,11 @@ void ARX_SPELLS_ManageMagic() {
 						g_LastFlarePosition = pos;
 					}
 					
-					if(Random::getf() > 0.6f)
+					if(Random::getf() > 0.6f) {
 						AddFlare(pos, 1.f, -1);
-					else
+					} else {
 						AddFlare(pos, 1.f, 3);
+					}
 					
 					g_LastFlareTime = now - std::min(now - g_LastFlareTime - interval, interval);
 				}
@@ -584,8 +585,9 @@ void ARX_SPELLS_ManageMagic() {
 
 		if(!config.input.useAltRuneRecognition) {
 			ARX_SPELLS_Analyse();
-			if(!SpellMoves.empty())
+			if(!SpellMoves.empty()) {
 				ARX_SPELLS_AnalyseSYMBOL();
+			}
 		} else {
 			ARX_SPELLS_Analyse_Alt();
 		}
@@ -1048,8 +1050,9 @@ void ARX_SPELLS_Update() {
 
 void TryToCastSpell(Entity * io, SpellType spellType, long level, EntityHandle target, SpellcastFlags flags, GameDuration duration)
 {
-	if(!io || io->spellcast_data.castingspell != SPELL_NONE)
+	if(!io || io->spellcast_data.castingspell != SPELL_NONE) {
 		return;
+	}
 	
 	if(!(flags & SPELLCAST_FLAG_NOMANA) && (io->ioflags & IO_NPC) && io->_npcdata->manaPool.current <= 0.f) {
 		return;
@@ -1058,11 +1061,13 @@ void TryToCastSpell(Entity * io, SpellType spellType, long level, EntityHandle t
 	unsigned long i(0);
 
 	for(; i < SPELL_TYPES_COUNT; i++)
-		if(spellicons[i].spellid == spellType)
+		if(spellicons[i].spellid == spellType) {
 			break;
+		}
 
-	if(i >= SPELL_TYPES_COUNT)
+	if(i >= SPELL_TYPES_COUNT) {
 		return; // not an existing spell...
+	}
 
 	for(unsigned long j(0); j < 4; j++)
 		io->spellcast_data.symb[j] = RUNE_NONE;

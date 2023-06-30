@@ -239,19 +239,21 @@ void ScreenFxBloodSplash::render() {
 		duration = 0;
 	} else if(Blood_Pos > 1.f) {
 		
-		if(player.poison > 1.f)
+		if(player.poison > 1.f) {
 			color = Color::rgb(Blood_Pos - 1.f, 1.f, Blood_Pos - 1.f);
-		else
+		} else {
 			color = Color::rgb(1.f, Blood_Pos - 1.f, Blood_Pos - 1.f);
+		}
 		
 		UseRenderState state(render2D().blend(BlendZero, BlendSrcColor));
 		EERIEDrawBitmap(Rectf(g_size), 0.00009f, nullptr, color);
 	} else if(Blood_Pos > 0.f) {
 		
-		if(player.poison > 1.f)
+		if(player.poison > 1.f) {
 			color = Color::rgb(1.f - Blood_Pos, 1.f, 1.f - Blood_Pos);
-		else
+		} else {
 			color = Color::rgb(1.f, 1.f - Blood_Pos, 1.f - Blood_Pos);
+		}
 		
 		UseRenderState state(render2D().blend(BlendZero, BlendSrcColor));
 		EERIEDrawBitmap(Rectf(g_size), 0.00009f, nullptr, color);
@@ -445,8 +447,9 @@ float damagePlayer(float dmg, DamageType type, Entity * source) {
 				if(Random::getf(0.f, 100.f) > player.m_miscFull.resistPoison) {
 					player.poison += pio->poisonous;
 				}
-				if(pio->poisonous_count != -1)
+				if(pio->poisonous_count != -1) {
 					pio->poisonous_count--;
+				}
 			}
 		}
 		
@@ -542,12 +545,14 @@ static void restoreMana(Entity & entity, float dmg) {
 
 static float ARX_DAMAGES_DrainMana(Entity * io, float dmg) {
 	
-	if(!io || !(io->ioflags & IO_NPC))
+	if(!io || !(io->ioflags & IO_NPC)) {
 		return 0;
+	}
 
 	if(io == entities.player()) {
-		if(player.playerflags & PLAYERFLAGS_NO_MANA_DRAIN)
+		if(player.playerflags & PLAYERFLAGS_NO_MANA_DRAIN) {
 			return 0;
+		}
 
 		if(player.manaPool.current >= dmg) {
 			player.manaPool.current -= dmg;
@@ -1462,22 +1467,30 @@ void ARX_DAMAGES_DamagePlayerEquipment(float damages) {
 
 float ARX_DAMAGES_ComputeRepairPrice(const Entity * torepair, const Entity * blacksmith)
 {
-	if(!torepair || !blacksmith) return -1.f;
+	if(!torepair || !blacksmith) {
+		return -1.f;
+	}
 
-	if(!(torepair->ioflags & IO_ITEM)) return -1.f;
+	if(!(torepair->ioflags & IO_ITEM)) {
+		return -1.f;
+	}
 
-	if(torepair->max_durability <= 0.f) return -1.f;
+	if(torepair->max_durability <= 0.f) {
+		return -1.f;
+	}
 
 	if(torepair->durability == torepair->max_durability) return -1.f;
 
 	float ratio = (torepair->max_durability - torepair->durability) / torepair->max_durability;
 	float price = float(torepair->_itemdata->price) * ratio;
 
-	if(blacksmith->shop_multiply != 0.f)
+	if(blacksmith->shop_multiply != 0.f) {
 		price *= blacksmith->shop_multiply;
+	}
 
-	if(price > 0.f && price < 1.f)
+	if(price > 0.f && price < 1.f) {
 		price = 1.f;
+	}
 
 	return price;
 }

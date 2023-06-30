@@ -922,8 +922,9 @@ long EXITING = 0;
 
 void ArxGame::shutdown() {
 	
-	if(m_gameInitialized)
+	if(m_gameInitialized) {
 		shutdownGame();
+	}
 	
 	Application::shutdown();
 	
@@ -1186,10 +1187,7 @@ void ArxGame::doFrame() {
 		ARX_QuickLoad();
 	}
 	
-	if(cinematicIsStopped()
-	   && !cinematicBorder.isActive()
-	   && !BLOCK_PLAYER_CONTROLS
-	) {
+	if(cinematicIsStopped() && !cinematicBorder.isActive() && !BLOCK_PLAYER_CONTROLS) {
 		
 		if(GInput->actionNowPressed(CONTROLS_CUST_QUICKSAVE) && ARXmenu.mode() == Mode_InGame) {
 			g_hudRoot.quickSaveIconGui.show();
@@ -1535,15 +1533,17 @@ void ArxGame::updateInput() {
 		
 		EERIEMouseButton = 0;
 		
-		if(GInput->getMouseButtonRepeat(Mouse::Button_0))
+		if(GInput->getMouseButtonRepeat(Mouse::Button_0)) {
 			EERIEMouseButton |= 1;
-		else
+		} else {
 			EERIEMouseButton &= ~1;
+		}
 		
-		if(GInput->getMouseButtonRepeat(Mouse::Button_1))
+		if(GInput->getMouseButtonRepeat(Mouse::Button_1)) {
 			EERIEMouseButton |= 2;
-		else
+		} else {
 			EERIEMouseButton &= ~2;
+		}
 	}
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_TOGGLE_FULLSCREEN)) {
@@ -1563,8 +1563,9 @@ void ArxGame::updateInput() {
 
 		g_debugInfo = static_cast<InfoPanels>(g_debugInfo + 1);
 
-		if(g_debugInfo == InfoPanelEnumSize)
+		if(g_debugInfo == InfoPanelEnumSize) {
 			g_debugInfo = InfoPanelNone;
+		}
 	}
 	
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F10)) {
@@ -1672,11 +1673,13 @@ void ArxGame::updateLevel() {
 			                        true);
 		}
 		
-		if((player.Interface & INTER_COMBATMODE) && entities.player()->animlayer[1].cur_anim)
+		if((player.Interface & INTER_COMBATMODE) && entities.player()->animlayer[1].cur_anim) {
 			ManageCombatModeAnimations();
+		}
 
-		if(entities.player()->animlayer[1].cur_anim)
+		if(entities.player()->animlayer[1].cur_anim) {
 			ManageCombatModeAnimationsEND();
+		}
 	}
 
 	updateFirstPersonCamera();
@@ -1879,8 +1882,9 @@ void ArxGame::renderLevel() {
 	
 	CheatDrawText();
 
-	if(FADEDIR)
+	if(FADEDIR) {
 		ManageFade();
+	}
 	
 	GRenderer->SetScissor(Rect());
 	

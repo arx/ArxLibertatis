@@ -489,10 +489,12 @@ void MiniMap::drawBackground(MapLevel level, Rect boundaries, Vec2f start, float
 			int iOffset = 0;
 			int jOffset = 0;
 			
-			if(vert == 1 || vert == 2)
+			if(vert == 1 || vert == 2) {
 				iOffset = 1;
-			if(vert == 2 || vert == 3)
+			}
+			if(vert == 2 || vert == 3) {
 				jOffset = 1;
+			}
 			
 			if(tile.x + iOffset < 0 || tile.x + iOffset >= int(MINIMAP_MAX_X)
 			   || tile.y + jOffset < 0 || tile.y + jOffset >= int(MINIMAP_MAX_Z)) {
@@ -665,8 +667,9 @@ void MiniMap::save(SavedMiniMap * toSave, size_t size) {
 void MiniMap::mapMarkerInit(size_t reserveSize) {
 	m_mapMarkers.clear();
 	
-	if(reserveSize > 0)
+	if(reserveSize > 0) {
 		m_mapMarkers.reserve(reserveSize);
+	}
 }
 
 int MiniMap::mapMarkerGetID(std::string_view name) {

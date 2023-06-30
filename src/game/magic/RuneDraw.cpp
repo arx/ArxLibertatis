@@ -123,13 +123,15 @@ void ARX_SPELLS_UpdateBookSymbolDraw(const Rect & rect) {
 		
 	AnimationDuration timePerComponent = sd->duration * (1.0f / float(nbcomponents));
 
-	if(timePerComponent <= 0)
+	if(timePerComponent <= 0) {
 		timePerComponent = 1ms;
+	}
 
 	AnimationDuration timeRemaining = elapsed;
 	
-	if(timeRemaining > sd->duration)
+	if(timeRemaining > sd->duration) {
 		timeRemaining = sd->duration;
+	}
 	
 	// Keep size ratios among runes
 	Vec2f rectToSymbolsRatio = Vec2f(rect.size()) / (Vec2f(lMaxSymbolDrawSize));

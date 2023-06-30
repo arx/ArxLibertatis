@@ -163,10 +163,11 @@ void CRiseDead::RenderFissure() {
 	for(int i = 0; i <= std::min(end, m_visibleNotches); i++) {
 		
 		float ff;
-		if(i <= end * 0.5f)
+		if(i <= end * 0.5f) {
 			ff = i / (end * 0.5f);
-		else
+		} else {
 			ff = 1.0f - ((i - (end + 1) * 0.5f) / (end * 0.5f));
+		}
 
 		float fTempCos = ff * fBetaRadCos;
 		float fTempSin = ff * fBetaRadSin;
@@ -513,10 +514,11 @@ void CSummonCreature::RenderFissure() {
 	for(int i = 0; i <= std::min(end, m_visibleNotches); i++) {
 		
 		float ff;
-		if(i <= end * 0.5f)
+		if(i <= end * 0.5f) {
 			ff = i / (end * 0.5f);
-		else
+		} else {
 			ff = 1.0f - ((i - (end + 1) * 0.5f) / (end * 0.5f));
+		}
 
 		float fTempCos = ff * fBetaRadCos;
 		float fTempSin = ff * fBetaRadSin;

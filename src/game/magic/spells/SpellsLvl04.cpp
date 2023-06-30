@@ -91,10 +91,11 @@ void BlessSpell::Update() {
 	if(target) {
 		m_pos = target->pos;
 		
-		if(m_target == EntityHandle_Player)
+		if(m_target == EntityHandle_Player) {
 			m_yaw = player.angle.getYaw();
-		else
+		} else {
 			m_yaw = target->angle.getYaw();
+		}
 	}
 	
 	m_scale = (m_level + 10) * 6.f;
@@ -366,8 +367,9 @@ void TelekinesisSpell::Launch() {
 
 void TelekinesisSpell::End() {
 	
-	if(m_caster == EntityHandle_Player)
+	if(m_caster == EntityHandle_Player) {
 		player.m_telekinesis = false;
+	}
 	
 	Entity * caster = entities.get(m_caster);
 	if(caster) {
@@ -419,10 +421,11 @@ void CurseSpell::Update() {
 	if(targetIo) {
 		target = targetIo->pos;
 
-		if(m_target == EntityHandle_Player)
+		if(m_target == EntityHandle_Player) {
 			target.y -= 200.f;
-		else
+		} else {
 			target.y += targetIo->physics.cyl.height - 30.f;
+		}
 	}
 	m_pos = target;
 	

@@ -110,8 +110,9 @@ void ColorMod::updateFromEntity(Entity * io, bool inBook) {
 	
 	// Ambient light
 	ambientColor = defaultAmbient * 255.f;
-	if(io && (io->ioflags & (IO_NPC | IO_ITEM)))
+	if(io && (io->ioflags & (IO_NPC | IO_ITEM))) {
 		ambientColor = Color3f::gray(NPC_ITEMS_AMBIENT_VALUE_255);
+	}
 }
 
 void RecalcLight(EERIE_LIGHT * el) {
@@ -377,8 +378,9 @@ static void Insertllight(std::array<EERIE_LIGHT *, llightsSize> & llights,
                          const Vec3f & pos,
                          bool forPlayerColor
 ) {
-	if(!el)
+	if(!el) {
 		return;
+	}
 	
 	float dist = glm::distance(el->pos, pos);
 	
@@ -507,10 +509,11 @@ float GetColorz(const Vec3f & pos) {
 			} else {
 				float p = ((light.fallend - dd) * light.falldiffmul);
 				
-				if(p <= 0.f)
+				if(p <= 0.f) {
 					dc = 0.f;
-				else
+				} else {
 					dc = p * light.intensity * GLOBAL_LIGHT_FACTOR;
+				}
 			}
 			
 			dc *= 0.4f * 255.f;
@@ -580,10 +583,11 @@ ColorRGBA ApplyLight(ShaderLight lights[], size_t lightsCount, const Vec3f & pos
 			} else {
 				float p = ((light.fallend - distance) * light.falldiffmul);
 				
-				if(p <= 0.f)
+				if(p <= 0.f) {
 					cosangle = 0.f;
-				else
+				} else {
 					cosangle *= p * (light.intensity * GLOBAL_LIGHT_FACTOR);
+				}
 			}
 			
 			cosangle *= materialDiffuse;

@@ -159,8 +159,9 @@ template <typename StringType, typename TypeCast>
 void interpreter<StringType, TypeCast>::do_add(const function_type & handler,
                                                const op_name_t & key) {
 	
-	if(key.empty())
+	if(key.empty()) {
 		return;
+	}
 	
 	typename op_name_t::const_iterator it;
 	for(it = key.begin(); it != key.end(); ++it) {

@@ -219,8 +219,9 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 			
 			count++;
 			
-			if(count >= entities.size())
+			if(count >= entities.size()) {
 				count = 1;
+			}
 		}
 	}
 

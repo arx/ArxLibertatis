@@ -98,8 +98,9 @@ void MagicFlareReleaseEntity(const Entity * entity) {
 
 long MagicFlareCountNonFlagged() {
 	
-	if(!g_magicFlaresCount)
+	if(!g_magicFlaresCount) {
 		return 0;
+	}
 	
 	long count = 0;
 	for(size_t i = 0; i < g_magicFlaresMax; i++) {
@@ -149,8 +150,9 @@ static short g_magicFlareCurrentColor = 0;
 void MagicFlareChangeColor() {
 	g_magicFlareCurrentColor++;
 
-	if(g_magicFlareCurrentColor > 2)
+	if(g_magicFlareCurrentColor > 2) {
 		g_magicFlareCurrentColor = 0;
+	}
 }
 
 void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw) {
@@ -337,8 +339,9 @@ void FlareLine(Vec2f tmpPos0, Vec2f tmpPos1, Entity * io) {
 
 void ARX_MAGICAL_FLARES_Update() {
 
-	if(!g_magicFlaresCount)
+	if(!g_magicFlaresCount) {
 		return;
+	}
 
 	shinum++;
 	if(shinum >= 10) {

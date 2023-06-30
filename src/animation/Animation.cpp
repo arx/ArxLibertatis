@@ -196,8 +196,9 @@ void EERIE_ANIMMANAGER_PurgeUnused() {
 
 void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim) {
 
-	if(!anim)
+	if(!anim) {
 		return;
+	}
 
 	anim->locks--;
 	if(anim->locks < 0) {
@@ -555,18 +556,21 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 	
 	arx_assert(layer.cur_anim);
 	
-	if(layer.flags & EA_PAUSED)
+	if(layer.flags & EA_PAUSED) {
 		time = 0;
+	}
 
-	if(io && (io->ioflags & IO_FREEZESCRIPT))
+	if(io && (io->ioflags & IO_FREEZESCRIPT)) {
 		time = 0;
+	}
 	
 	if(layer.altidx_cur >= layer.cur_anim->anims.size()) {
 		layer.altidx_cur = 0;
 	}
 	
-	if(!(layer.flags & EA_EXCONTROL))
+	if(!(layer.flags & EA_EXCONTROL)) {
 		layer.ctime += time;
+	}
 
 	layer.flags &= ~EA_ANIMEND;
 
@@ -586,8 +590,9 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 		              || (layer.cur_anim == io->anims[ANIM_RUN2])
 		              || (layer.cur_anim == io->anims[ANIM_RUN3])))) {
 			layer.ctime = layer.ctime.value() % animTime.value();
-			if(io)
+			if(io) {
 				FinishAnim(io, layer.cur_anim);
+			}
 		} else {
 			layer.flags |= EA_ANIMEND;
 			layer.ctime = layer.currentAltAnim()->anim_time;
@@ -596,10 +601,11 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 	}
 	
 	AnimationDuration tim;
-	if(layer.flags & EA_REVERSE)
+	if(layer.flags & EA_REVERSE) {
 		tim = animTime - layer.ctime;
-	else
+	} else {
 		tim = layer.ctime;
+	}
 	
 	const EERIE_ANIM & anim = *layer.currentAltAnim();
 	
@@ -610,8 +616,9 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 		AnimationDuration tcf = anim.frames[i - 1].time;
 		AnimationDuration tnf = anim.frames[i].time;
 
-		if(tcf == tnf)
+		if(tcf == tnf) {
 			return;
+		}
 
 		if((tim < tnf && tim >= tcf) || (i == anim.frames.size() - 1 && tim == tnf)) {
 			const size_t fr = i - 1;

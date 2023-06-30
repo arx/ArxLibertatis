@@ -113,14 +113,16 @@ void FlyingEye::update() {
 	if(m_state != EYEBALL_ACTIVE) {
 		m_progress = long((elapsed) / 30ms);
 		m_angle.setYaw(m_angle.getYaw() + toMsf(frameDiff) * 0.6f);
-		if(elapsed >= 3s)
+		if(elapsed >= 3s) {
 			m_state = FlyingEye::EYEBALL_ACTIVE;
+		}
 	}
 }
 
 void FlyingEye::drawMagicSightInterface() {
-	if(!m_eyeTex || m_state == EYEBALL_INACTIVE)
+	if(!m_eyeTex || m_state == EYEBALL_INACTIVE) {
 		return;
+	}
 	
 	UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
 

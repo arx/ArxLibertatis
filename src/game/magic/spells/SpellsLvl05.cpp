@@ -217,8 +217,9 @@ void LevitateSpell::End() {
 	
 	m_targets.clear();
 	
-	if(m_target == EntityHandle_Player)
+	if(m_target == EntityHandle_Player) {
 		player.levitate = false;
+	}
 }
 
 void LevitateSpell::Update() {
@@ -327,8 +328,9 @@ void CurePoisonSpell::Update() {
 	
 	m_pos = entities[m_target]->pos;
 	
-	if(m_target == EntityHandle_Player)
+	if(m_target == EntityHandle_Player) {
 		m_pos.y += 200;
+	}
 	
 	GameDuration ff = m_duration - m_elapsed;
 	

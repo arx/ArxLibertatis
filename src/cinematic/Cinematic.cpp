@@ -320,12 +320,11 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	
 	int alpha = int(a * 255.f);
 	
-	if(force ^ 1)
+	if(force ^ 1) {
 		alpha = 255;
+	}
 	
 	col.a = alpha;
-	
-	
 	
 	static const float SPEEDINTENSITYRND = 60.f / 1000.f;
 	float FDIFF = toMsf(frameDuration);
@@ -391,8 +390,9 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 			l = &lightt;
 		}
 		
-		if(tb->grid.m_nbvertexs)
+		if(tb->grid.m_nbvertexs) {
 			DrawGrille(tb, col, fx, l, m_nextPosgrille, m_nextAngzgrille, m_nextFadegrille);
+		}
 		
 	}
 	

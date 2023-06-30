@@ -60,16 +60,19 @@ void fadeRequestStart(FadeType type, const PlatformDuration duration) {
 void ManageFade() {
 	
 	PlatformDuration elapsed = g_platformTime.frameStart() - FADESTART;
-	if(elapsed < 0)
+	if(elapsed < 0) {
 		return;
+	}
 
 	float Visibility = elapsed / FADEDURATION;
 
-	if(FADEDIR > 0)
+	if(FADEDIR > 0) {
 		Visibility = 1.f - Visibility;
+	}
 
-	if(Visibility > 1.f)
+	if(Visibility > 1.f) {
 		Visibility = 1.f;
+	}
 
 	if(Visibility < 0.f) {
 		FADEDIR = 0;

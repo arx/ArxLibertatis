@@ -77,14 +77,16 @@ void EERIEDrawFill2DRectDegrad(Vec2f a, Vec2f b, float z, Color cold, Color cole
 
 void drawLineSphere(const Sphere & sphere, Color color) {
 
-	if(sphere.radius <= 0)
+	if(sphere.radius <= 0) {
 		return;
+	}
 
 	static const size_t sections = 64;
 
 	size_t rings = size_t(sphere.radius / 10);
-	if(rings < 7)
+	if(rings < 7) {
 		rings = 7;
+	}
 
 	std::vector<TexturedVertex> vertices;
 

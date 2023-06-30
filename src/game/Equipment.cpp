@@ -215,14 +215,16 @@ static void applyTweak(EquipmentSlot equip, TweakType tw, std::string_view selec
 
 void ARX_EQUIPMENT_RecreatePlayerMesh() {
 	
-	if(EXITING)
+	if(EXITING) {
 		return;
+	}
 	
 	arx_assert(entities.player());
 	Entity * io = entities.player();
 	
-	if(io->obj != hero)
+	if(io->obj != hero) {
 		delete io->obj;
+	}
 	
 	io->obj = loadObject("graph/obj3d/interactive/npc/human_base/human_base.teo", false).release();
 	
@@ -238,8 +240,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 				} else {
 					linkEntities(*entities.player(), "weapon_attach", *toequip, "primary_attach");
 				}
-			} else if((toequip->type_flags & OBJECT_TYPE_SHIELD)
-			          && entities.get(player.equiped[EQUIP_SLOT_SHIELD])) {
+			} else if((toequip->type_flags & OBJECT_TYPE_SHIELD) && entities.get(player.equiped[EQUIP_SLOT_SHIELD])) {
 				linkEntities(*entities.player(), "shield_attach", *toequip, "shield_attach");
 			}
 		}
@@ -470,8 +471,9 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		
 		if(io_target->_npcdata->npcflags & NPCFLAG_BACKSTAB) {
 			if(Random::getf(0.f, 100.f) <= player.m_skillFull.stealth * 0.5f) {
-				if(SendIOScriptEvent(io_source, io_source, SM_BACKSTAB) != REFUSE)
+				if(SendIOScriptEvent(io_source, io_source, SM_BACKSTAB) != REFUSE) {
 					backstab = 1.5f;
+				}
 			}
 		}
 		
@@ -497,8 +499,9 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		}
 		
 		if(Random::getf(0.f, 100.f) <= io_source->_npcdata->backstab_skill) {
-			if(SendIOScriptEvent(io_source, io_source, SM_BACKSTAB) != REFUSE)
+			if(SendIOScriptEvent(io_source, io_source, SM_BACKSTAB) != REFUSE) {
 				backstab = 1.5f;
+			}
 		}
 		
 	}
@@ -583,8 +586,9 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 
 static float ARX_EQUIPMENT_GetSpecialValue(Entity * io, long val) {
 	
-	if(!io || !(io->ioflags & IO_ITEM) || !io->_itemdata->equipitem)
+	if(!io || !(io->ioflags & IO_ITEM) || !io->_itemdata->equipitem) {
 		return -1;
+	}
 
 	for(long i = IO_EQUIPITEM_ELEMENT_SPECIAL_1; i <= IO_EQUIPITEM_ELEMENT_SPECIAL_4; i++) {
 		if(io->_itemdata->equipitem->elements[i].special == val) {
@@ -720,42 +724,49 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						
 						ARX_PARTICLES_Spawn_Blood2(pos, dmgs, color, target);
 					} else if(!(target->ioflags & IO_NPC) && dmgs > 0.f) {
-						if(target->ioflags & IO_ITEM)
+						if(target->ioflags & IO_ITEM) {
 							ParticleSparkSpawnContinous(pos, Random::getu(0, 3));
-						else
+						} else {
 							ParticleSparkSpawnContinous(pos, Random::getu(0, 30));
+						}
 						
 						spawnAudibleSound(pos, *io_source);
 						
-						if(io_source == entities.player())
+						if(io_source == entities.player()) {
 							HIT_SPARK = true;
+						}
 					} else if(target->ioflags & IO_NPC) {
 						unsigned int nb;
 
-						if(target->spark_n_blood == SP_SPARKING)
+						if(target->spark_n_blood == SP_SPARKING) {
 							nb = Random::getu(0, 3);
-						else
+						} else {
 							nb = 30;
+						}
 
-						if(target->ioflags & IO_ITEM)
+						if(target->ioflags & IO_ITEM) {
 							nb = 1;
+						}
 
 						ParticleSparkSpawnContinous(pos, nb);
 						spawnAudibleSound(pos, *io_source);
 						target->spark_n_blood = SP_SPARKING;
 
-						if(!(target->ioflags & IO_NPC))
+						if(!(target->ioflags & IO_NPC)) {
 							HIT_SPARK = true;
+						}
 					} else if((target->ioflags & IO_FIX) || (target->ioflags & IO_ITEM)) {
 						unsigned int nb;
 
-						if(target->spark_n_blood == SP_SPARKING)
+						if(target->spark_n_blood == SP_SPARKING) {
 							nb = Random::getu(0, 3);
-						else
+						} else {
 							nb = 30;
+						}
 
-						if(target->ioflags & IO_ITEM)
+						if(target->ioflags & IO_ITEM) {
 							nb = 1;
+						}
 
 						ParticleSparkSpawnContinous(pos, nb);
 						spawnAudibleSound(pos, *io_source);
@@ -1020,8 +1031,9 @@ void ARX_EQUIPMENT_Init()
 //! \brief Removes All special equipement properties
 void ARX_EQUIPMENT_Remove_All_Special(Entity * io)
 {
-	if(!io || !(io->ioflags & IO_ITEM))
+	if(!io || !(io->ioflags & IO_ITEM)) {
 		return;
+	}
 
 	io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_SPECIAL_1].special = IO_SPECIAL_ELEM_NONE;
 	io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_SPECIAL_2].special = IO_SPECIAL_ELEM_NONE;

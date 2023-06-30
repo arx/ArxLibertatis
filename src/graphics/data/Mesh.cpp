@@ -142,8 +142,9 @@ static bool RayIn3DPolyNoCull(const Vec3f & start, const Vec3f & end, const EERI
 bool RayCollidingPoly(const Vec3f & orgn, const Vec3f & dest, const EERIEPOLY & ep, Vec3f * hit)
 {
 	if(IntersectLinePlane(orgn, dest, ep, hit)) {
-		if(RayIn3DPolyNoCull(orgn, dest, ep))
+		if(RayIn3DPolyNoCull(orgn, dest, ep)) {
 			return true;
+		}
 	}
 
 	return false;

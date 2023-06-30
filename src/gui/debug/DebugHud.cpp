@@ -201,8 +201,9 @@ void ShowInfoText() {
 	
 	ep = CheckInPoly(player.pos + Vec3f(0.f, -10.f, 0.f));
 	float slope = 0.f;
-	if(ep)
+	if(ep) {
 		slope = ep->norm.y;
+	}
 	
 	long zap = IsAnyPolyThere(player.pos.x, player.pos.z);
 	

@@ -302,8 +302,9 @@ static VertexSelectionId GetCutSelection(Entity * io, DismembermentFlag flag) {
 
 static void ReComputeCutFlags(Entity * io) {
 	
-	if(!io || !(io->ioflags & IO_NPC))
+	if(!io || !(io->ioflags & IO_NPC)) {
 		return;
+	}
 
 	if(io->_npcdata->cuts & FLAG_CUT_TORSO) {
 		io->_npcdata->cuts &= ~FLAG_CUT_HEAD;

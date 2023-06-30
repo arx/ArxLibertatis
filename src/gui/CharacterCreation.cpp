@@ -196,8 +196,9 @@ void CharacterCreation::render() {
 	// Button DONE
 	
 	if(doneButton.contains(Vec2f(DANAEMouse))) {
-		if(DONE)
+		if(DONE) {
 			cursorSetInteraction();
+		}
 		
 		if(DONE && eeMouseUp1()) {
 			if(m_cheatSkinButtonClickCount == 8 && m_cheatQuickGenButtonClickCount == 10) {

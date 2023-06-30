@@ -206,8 +206,7 @@ std::string SaveBlock::File::loadData(std::istream & handle, std::string_view na
 				buffer[i] = char(~u8(buffer[i]));
 			}
 			std::string uncompressed = blast(buffer, uncompressedSize);
-			if(uncompressedSize != size_t(-1)
-			   && uncompressed.size() != uncompressedSize) {
+			if(uncompressedSize != size_t(-1) && uncompressed.size() != uncompressedSize) {
 				LogError << "Error decompressing imploded " << name;
 			}
 			return uncompressed;

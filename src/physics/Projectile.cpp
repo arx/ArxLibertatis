@@ -137,9 +137,8 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	
 	if(source == EntityHandle_Player) {
 		Entity * tio = entities.get(player.equiped[EQUIP_SLOT_WEAPON]);
-		if(tio) {
-			if(tio->ioflags & IO_FIERY)
-				projectile.flags |= ATO_FIERY;
+		if(tio && (tio->ioflags & IO_FIERY)) {
+			projectile.flags |= ATO_FIERY;
 		}
 	}
 	
@@ -154,8 +153,9 @@ static float ARX_THROWN_ComputeDamages(const Projectile & projectile, Entity & t
 	const float distance_limit = 1000.f;
 	if(distance < distance_limit * 2.f) {
 		distance_modifier = distance / distance_limit;
-		if(distance_modifier < 0.5f)
+		if(distance_modifier < 0.5f) {
 			distance_modifier = 0.5f;
+		}
 	} else {
 		distance_modifier = 2.f;
 	}

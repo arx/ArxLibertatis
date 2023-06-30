@@ -110,8 +110,9 @@ bool Image::load(const char * data, size_t size, const char * file) {
 	// 2bpp TGAs needs to be converted!
 	const stbi::stbi_uc * raw = reinterpret_cast<const stbi::stbi_uc *>(data);
 	int ret = stbi::stbi_info_from_memory(raw, int(size), &width, &height, &bpp, &fmt);
-	if(ret && fmt == stbi::STBI_tga && bpp == 2)
+	if(ret && fmt == stbi::STBI_tga && bpp == 2) {
 		req_bpp = 3;
+	}
 	
 	unsigned char * pixels = stbi::stbi_load_from_memory(raw, int(size), &width, &height, &bpp, req_bpp);
 	if(!pixels) {

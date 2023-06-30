@@ -106,8 +106,9 @@ void SpeedSpell::End() {
 
 void SpeedSpell::Update() {
 	
-	if(m_caster == EntityHandle_Player)
+	if(m_caster == EntityHandle_Player) {
 		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+	}
 	
 	for(SpeedTrail & trail : m_trails) {
 		Vec3f pos = entities[m_target]->obj->vertexWorldPositions[trail.vertexIndex].v;
