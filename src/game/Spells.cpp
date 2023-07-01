@@ -457,9 +457,9 @@ void ARX_SPELLS_ManageMagic() {
 	) {
 		return;
 	}
-
+	
 	snip++;
-
+	
 	if(   !(player.m_currentMovement & PLAYER_CROUCH)
 	   && !BLOCK_PLAYER_CONTROLS
 	   && GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
@@ -467,18 +467,18 @@ void ARX_SPELLS_ManageMagic() {
 	) {
 		if(player.Interface & INTER_COMBATMODE) {
 			WILLRETURNTOCOMBATMODE = true;
-
+			
 			ARX_INTERFACE_setCombatMode(COMBAT_MODE_OFF);
-
+			
 			ResetAnim(io->animlayer[1]);
 			io->animlayer[1].flags &= ~EA_LOOP;
 		}
-
+		
 		if(TRUE_PLAYER_MOUSELOOK_ON) {
 			WILLRETURNTOFREELOOK = true;
 			TRUE_PLAYER_MOUSELOOK_ON = false;
 		}
-
+		
 		if(player.doingmagic != 2) {
 			player.doingmagic = 2;
 			if(io->anims[ANIM_CAST_START]) {
@@ -562,27 +562,27 @@ void ARX_SPELLS_ManageMagic() {
 		}
 		
 		ARX_FLARES_broken = 1;
-
+		
 		if(WILLRETURNTOCOMBATMODE) {
 			player.Interface |= INTER_COMBATMODE;
 			player.Interface |= INTER_NO_STRIKE;
-
+			
 			ARX_EQUIPMENT_LaunchPlayerReadyWeapon();
 			player.doingmagic = 0;
 			WILLRETURNTOCOMBATMODE = false;
-
+			
 			TRUE_PLAYER_MOUSELOOK_ON = true;
 			bRenderInCursorMode = false;
 		}
-
+		
 		if(WILLRETURNTOFREELOOK) {
 			TRUE_PLAYER_MOUSELOOK_ON = true;
 			WILLRETURNTOFREELOOK = false;
 		}
-
+		
 		ARX_SPELLS_ResetRecognition();
 	} else if(ARX_FLARES_broken == 2) {
-
+		
 		if(!config.input.useAltRuneRecognition) {
 			ARX_SPELLS_Analyse();
 			if(!SpellMoves.empty()) {
@@ -591,7 +591,7 @@ void ARX_SPELLS_ManageMagic() {
 		} else {
 			ARX_SPELLS_Analyse_Alt();
 		}
-	
+		
 		ARX_FLARES_broken = 1;
 	}
 }
@@ -618,7 +618,7 @@ static bool CanPayMana(Spell * spell, float cost) {
 			return true;
 		}
 	}
-
+	
 	return false;
 }
 
@@ -1059,19 +1059,21 @@ void TryToCastSpell(Entity * io, SpellType spellType, long level, EntityHandle t
 	}
 	
 	unsigned long i(0);
-
-	for(; i < SPELL_TYPES_COUNT; i++)
+	
+	for(; i < SPELL_TYPES_COUNT; i++) {
 		if(spellicons[i].spellid == spellType) {
 			break;
 		}
-
+	}
+		
 	if(i >= SPELL_TYPES_COUNT) {
 		return; // not an existing spell...
 	}
-
-	for(unsigned long j(0); j < 4; j++)
+	
+	for(unsigned long j(0); j < 4; j++) {
 		io->spellcast_data.symb[j] = RUNE_NONE;
-
+	}
+	
 	// checks for symbol drawing...
 	if(!flags.has(SPELLCAST_FLAG_NOANIM) && io->ioflags.has(IO_NPC)) {
 		changeAnimation(io, 1, io->anims[ANIM_CAST_START]);

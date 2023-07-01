@@ -63,17 +63,17 @@ void ManageFade() {
 	if(elapsed < 0) {
 		return;
 	}
-
+	
 	float Visibility = elapsed / FADEDURATION;
-
+	
 	if(FADEDIR > 0) {
 		Visibility = 1.f - Visibility;
 	}
-
+	
 	if(Visibility > 1.f) {
 		Visibility = 1.f;
 	}
-
+	
 	if(Visibility < 0.f) {
 		FADEDIR = 0;
 		return;

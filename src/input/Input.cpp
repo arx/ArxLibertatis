@@ -321,7 +321,7 @@ bool ARX_INPUT_Init(Window * window) {
 		delete GInput;
 		GInput = nullptr;
 	}
-
+	
 	return ret;
 }
 
@@ -366,7 +366,7 @@ bool Input::init(Window * window) {
 void Input::reset() {
 	
 	m_mouseMovement = Vec2f(0.f);
-
+	
 	for(size_t i = 0; i < Mouse::ButtonCount; i++) {
 		iMouseTime[i][0] = 0;
 		iMouseTime[i][1] = 0;
@@ -433,24 +433,24 @@ void Input::setMousePosAbs(const Vec2s & mousePos) {
 }
 
 void Input::update(float time) {
-
+	
 	backend->update();
-
+	
 	bool keyJustPressed = false;
 	iKeyId = -1;
 	int modifier = 0;
-
+	
 	for(int i = 0; i < Keyboard::KeyCount; i++) {
 		if(isKeyPressed(i)) {
 			
 			if(Keyboard::isModifier(i)) {
 				modifier = i;
 			}
-
+			
 			if(keysStates[i] < 2) {
 				keysStates[i]++;
 			}
-
+			
 			if(!keyJustPressed) {
 				if(keysStates[i] == 1) {
 					iKeyId = i;
@@ -748,19 +748,19 @@ void Input::setInvertMouseY(bool invert) {
 
 bool Input::isKeyPressed(int keyId) const {
 	arx_assert(keyId >= Keyboard::KeyBase && keyId < Keyboard::KeyMax);
-
+	
 	return backend->isKeyboardKeyPressed(keyId);
 }
 
 bool Input::isKeyPressedNowPressed(int keyId) const {
 	arx_assert(keyId >= Keyboard::KeyBase && keyId < Keyboard::KeyMax);
-
+	
 	return backend->isKeyboardKeyPressed(keyId) && (keysStates[keyId] == 1);
 }
 
 bool Input::isKeyPressedNowUnPressed(int keyId) const {
 	arx_assert(keyId >= Keyboard::KeyBase && keyId < Keyboard::KeyMax);
-
+	
 	return !backend->isKeyboardKeyPressed(keyId) && (keysStates[keyId] == 1);
 }
 
@@ -774,28 +774,28 @@ void Input::stopTextInput() {
 
 bool Input::getMouseButton(int buttonId) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
-
+	
 	int buttonIdx = buttonId - Mouse::ButtonBase;
 	return bMouseButton[buttonIdx] && !bOldMouseButton[buttonIdx];
 }
 
 bool Input::getMouseButtonRepeat(int buttonId) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
-
+	
 	int buttonIdx = buttonId - Mouse::ButtonBase;
 	return bMouseButton[buttonIdx];
 }
 
 bool Input::getMouseButtonNowPressed(int buttonId) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
-
+	
 	int buttonIdx = buttonId - Mouse::ButtonBase;
 	return bMouseButton[buttonIdx] && !bOldMouseButton[buttonIdx];
 }
 
 bool Input::getMouseButtonNowUnPressed(int buttonId) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
-
+	
 	int buttonIdx = buttonId - Mouse::ButtonBase;
 	return !bMouseButton[buttonIdx] && bOldMouseButton[buttonIdx];
 }

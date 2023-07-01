@@ -65,7 +65,7 @@ void cinematicDestroy() {
 }
 
 void cinematicPrepare(std::string_view name, bool preload) {
-
+	
 	WILL_LAUNCH_CINE = name;
 	CINE_PRELOAD = preload;
 }
@@ -88,12 +88,12 @@ void cinematicKill() {
 static Vec3f g_originalCameraPosition;
 
 void cinematicLaunchWaiting() {
-
+	
 	// A cinematic is waiting to be played...
 	if(WILL_LAUNCH_CINE.empty()) {
 		return;
 	}
-
+	
 	LogDebug("LaunchWaitingCine " << CINE_PRELOAD);
 	
 	if(g_camera) {
@@ -101,15 +101,15 @@ void cinematicLaunchWaiting() {
 	}
 	
 	cinematicKill();
-
+	
 	res::path cinematic = res::path("graph/interface/illustrations") / WILL_LAUNCH_CINE;
-
+	
 	if(g_resources->getFile(cinematic)) {
-
+		
 		ControlCinematique->OneTimeSceneReInit();
-
+		
 		if(loadCinematic(ControlCinematique, cinematic)) {
-
+			
 			if(CINE_PRELOAD) {
 				LogDebug("only preloaded cinematic");
 				PLAY_LOADED_CINEMATIC = Cinematic_Stopped;
@@ -117,16 +117,16 @@ void cinematicLaunchWaiting() {
 				LogDebug("starting cinematic");
 				cinematicRequestStart();
 			}
-
+			
 			LAST_LAUNCHED_CINE = WILL_LAUNCH_CINE;
 		} else {
 			LogWarning << "Error loading cinematic " << cinematic;
 		}
-
+		
 	} else {
 		LogWarning << "Could not find cinematic " << cinematic;
 	}
-
+	
 	WILL_LAUNCH_CINE.clear();
 }
 
@@ -155,19 +155,19 @@ void cinematicEnd() {
 
 // Manages Currently playing 2D cinematic
 void cinematicRender() {
-
+	
 	PlatformDuration diff = g_platformTime.lastFrameDuration();
-
+	
 	if(PLAY_LOADED_CINEMATIC == Cinematic_StartRequested) {
 		LogDebug("really starting cinematic now");
 		diff = 0;
 		PLAY_LOADED_CINEMATIC = Cinematic_Started;
 	}
-
+	
 	PlayTrack(ControlCinematique);
-
+	
 	ControlCinematique->Render(diff);
-
+	
 	// end the animation
 	if(!ControlCinematique->m_key) {
 		cinematicEnd();

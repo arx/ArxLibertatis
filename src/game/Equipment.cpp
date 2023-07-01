@@ -373,7 +373,7 @@ void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon() {
 	
 	ANIM_HANDLE * anim;
 	WeaponType type = ARX_EQUIPMENT_GetPlayerWeaponType();
-
+	
 	switch(type) {
 		case WEAPON_DAGGER:
 			anim = io->anims[ANIM_DAGGER_UNREADY_PART_1];
@@ -392,7 +392,7 @@ void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon() {
 			anim = io->anims[ANIM_BARE_UNREADY];
 			break;
 	}
-
+	
 	changeAnimation(io, 1, anim);
 }
 
@@ -507,7 +507,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	}
 	
 	float absorb;
-
+	
 	if(io_target == entities.player()) {
 		ac = player.m_miscFull.armorClass;
 		absorb = player.m_skillFull.defense * 0.5f;
@@ -589,13 +589,13 @@ static float ARX_EQUIPMENT_GetSpecialValue(Entity * io, long val) {
 	if(!io || !(io->ioflags & IO_ITEM) || !io->_itemdata->equipitem) {
 		return -1;
 	}
-
+	
 	for(long i = IO_EQUIPITEM_ELEMENT_SPECIAL_1; i <= IO_EQUIPITEM_ELEMENT_SPECIAL_4; i++) {
 		if(io->_itemdata->equipitem->elements[i].special == val) {
 			return io->_itemdata->equipitem->elements[i].value;
 		}
 	}
-
+	
 	return -1;
 }
 
@@ -676,7 +676,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							ret = true;
 							target->spark_n_blood = 0;
 							target->_npcdata->SPLAT_TOT_NB = 0;
-
+							
 							if(drain_life > 0.f) {
 								float life_gain = std::min(dmgs, drain_life);
 								life_gain = std::min(life_gain, target->_npcdata->lifePool.current);
@@ -685,7 +685,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 									healCharacter(*io_source, life_gain);
 								}
 							}
-
+							
 							if(paralyse > 0.f) {
 								GameDuration ptime = std::chrono::duration<float, std::milli>(std::min(dmgs * 1000.f, paralyse));
 								ARX_SPELLS_Launch(SPELL_PARALYSE,
@@ -696,7 +696,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 								                  ptime);
 							}
 						}
-
+						
 						if(io_source == entities.player()) {
 							ARX_DAMAGES_DurabilityCheck(io_weapon, g_framedelay * 0.006f);
 						}
@@ -737,37 +737,37 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						}
 					} else if(target->ioflags & IO_NPC) {
 						unsigned int nb;
-
+						
 						if(target->spark_n_blood == SP_SPARKING) {
 							nb = Random::getu(0, 3);
 						} else {
 							nb = 30;
 						}
-
+						
 						if(target->ioflags & IO_ITEM) {
 							nb = 1;
 						}
-
+						
 						ParticleSparkSpawnContinous(pos, nb);
 						spawnAudibleSound(pos, *io_source);
 						target->spark_n_blood = SP_SPARKING;
-
+						
 						if(!(target->ioflags & IO_NPC)) {
 							HIT_SPARK = true;
 						}
 					} else if((target->ioflags & IO_FIX) || (target->ioflags & IO_ITEM)) {
 						unsigned int nb;
-
+						
 						if(target->spark_n_blood == SP_SPARKING) {
 							nb = Random::getu(0, 3);
 						} else {
 							nb = 30;
 						}
-
+						
 						if(target->ioflags & IO_ITEM) {
 							nb = 1;
 						}
-
+						
 						ParticleSparkSpawnContinous(pos, nb);
 						spawnAudibleSound(pos, *io_source);
 						target->spark_n_blood = SP_SPARKING;
@@ -777,7 +777,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						}
 						
 					}
-
+					
 					if(HIT_SPARK) {
 						if(!io_source->isHit) {
 							ARX_DAMAGES_DurabilityCheck(io_weapon, 1.f);
@@ -797,7 +797,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 				}
 			}
 		}
-
+		
 		const EERIEPOLY * ep = CheckBackgroundInSphere(sphere);
 		if(ep) {
 			if(io_source == entities.player()) {
@@ -818,12 +818,12 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 					ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, sphere.origin, io_source);
 				}
 			}
-
+			
 			ParticleSparkSpawnContinous(sphere.origin, Random::getu(0, 10));
 			spawnAudibleSound(sphere.origin, *io_source);
 		}
 	}
-
+	
 	return ret;
 }
 
@@ -1034,7 +1034,7 @@ void ARX_EQUIPMENT_Remove_All_Special(Entity * io)
 	if(!io || !(io->ioflags & IO_ITEM)) {
 		return;
 	}
-
+	
 	io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_SPECIAL_1].special = IO_SPECIAL_ELEM_NONE;
 	io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_SPECIAL_2].special = IO_SPECIAL_ELEM_NONE;
 	io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_SPECIAL_3].special = IO_SPECIAL_ELEM_NONE;
@@ -1078,7 +1078,7 @@ void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
 	if(io == nullptr) {
 		return;
 	}
-
+	
 	if(!(io->ioflags & IO_ITEM)) {
 		return;
 	}

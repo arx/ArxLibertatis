@@ -420,7 +420,7 @@ void CurseSpell::Update() {
 	Entity * targetIo = entities.get(m_target);
 	if(targetIo) {
 		target = targetIo->pos;
-
+		
 		if(m_target == EntityHandle_Player) {
 			target.y -= 200.f;
 		} else {

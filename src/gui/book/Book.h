@@ -121,9 +121,9 @@ public:
 	SpellsPage spells;
 	MapPage map;
 	QuestBookPage questBook;
-
+	
 	ARX_INTERFACE_BOOK_MODE m_currentPage;
-
+	
 	PlayerBook();
 	void update();
 	void manage();

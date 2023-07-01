@@ -1557,7 +1557,7 @@ void ARX_SCENE_Update() {
 	
 	const Vec3f camPos = g_camera->m_pos;
 	const float camDepth = g_camera->cdepth;
-
+	
 	TreatBackgroundDynlights();
 	PrecalcDynamicLighting(camPos, camDepth);
 	

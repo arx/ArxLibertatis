@@ -107,8 +107,6 @@ void MenuReInitAll();
 void MainMenuDoFrame();
 void Menu2_Close();
 
-
-
 void ARX_MENU_Clicked_QUIT();
 
 void ARX_LoadGame(const SaveGame & save);

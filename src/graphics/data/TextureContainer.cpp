@@ -230,7 +230,7 @@ bool TextureContainer::CreateHalo() {
 	// Convert image to grayscale, and turn it to black & white
 	im.toGrayscale(Image::Format_L8);
 	im.applyThreshold(0, ~0);
-
+	
 	// Blur the image
 	im.blur(HALO_RADIUS);
 

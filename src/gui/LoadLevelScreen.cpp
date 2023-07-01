@@ -109,7 +109,7 @@ void LoadLevelScreen(AreaId area ) {
 		if(pbar) {
 			Vec2f pos = Vec2f(g_size.center());
 			pos += Vec2f(-100 * scale, ((area == AreaId(10)) ? 221 : 35) * scale);
-
+			
 			Vec2f size = Vec2f(ratio * 200 * scale, 8 * scale);
 			EERIEDrawBitmap_uv(Rectf(pos, size.x, size.y), 0.f, pbar, Color::white, 0.f, 0.f, ratio, 1.f);
 		}

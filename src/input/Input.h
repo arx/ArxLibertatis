@@ -209,5 +209,5 @@ extern Input * GInput;
 
 bool ARX_INPUT_Init(Window * window);
 void ARX_INPUT_Release();
- 
+
 #endif // ARX_INPUT_INPUT_H

@@ -47,12 +47,12 @@ namespace fs { class path; }
  * amount of health, the last spell casted... see setVariable() for more details.
  */
 class CrashHandler {
-
+	
 public:
 	
 	//! Crash callback type that can be used with registerCrashCallback().
 	typedef void (*CrashCallback)();
-
+	
 	/*!
 	 * \brief Initialize the crash handler
 	 *
@@ -63,19 +63,19 @@ public:
 	 * \return True if initialized correctly, false otherwise.
 	 */
 	static bool initialize(int argc, char ** argv);
-
+	
 	/*!
 	 * \brief Shut down the crash handler
 	 */
 	static void shutdown();
-
+	
 	/*!
 	 * \brief Return the status of the crash handler
 	 *
 	 * \return True if the crash handler is initialized, false otherwise.
 	 */
 	static bool isInitialized();
-
+	
 	/*!
 	 * \brief Add a file that will be included in the crash report
 	 *
@@ -162,7 +162,7 @@ public:
 	 * \return True if the report location could be set, false otherwise.
 	 */
 	static bool setReportLocation(const fs::path & location);
-
+	
 	/*!
 	 * \brief Remove old reports from the report location specified with setReportLocation().
 	 *
@@ -171,7 +171,7 @@ public:
 	 * \return True if operation was successful.
 	 */
 	static bool deleteOldReports(size_t nbReportsToKeep);
-
+	
 	/*!
 	 * \brief Register platform specific crash handlers for the current thread
 	 *
@@ -181,7 +181,7 @@ public:
 	 * \return True if the crash handlers could be registered, or false otherwise.
 	 */
 	static bool registerThreadCrashHandlers();
-
+	
 	/*!
 	 * \brief Unregister platform specific crash handlers for the current thread
 	 *
@@ -189,7 +189,7 @@ public:
 	 * It's not necessary to call this method for the main thread.
 	 */
 	static void unregisterThreadCrashHandlers();
-
+	
 	/*!
 	 * \brief Register a callback in order to react in case a crash occurs
 	 *
@@ -200,7 +200,7 @@ public:
 	 * memory accesses to a minimum as the process is in an unstable state.
 	 */
 	static void registerCrashCallback(CrashCallback crashCallback);
-
+	
 	/*!
 	 * \brief Unregister a previously registered crash callback
 	 */

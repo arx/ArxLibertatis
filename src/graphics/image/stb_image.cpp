@@ -3100,7 +3100,7 @@ static stbi_uc *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
             trans_data[0] = (raw_data[1] >> 2) & 0x1F;
             trans_data[1] = ((raw_data[1] << 3) & 0x1C) | ((raw_data[0] >> 5) & 0x07);
             trans_data[2] = (raw_data[0] & 0x1F);
- 
+            
             // Convert 5-bit channels to 8-bit channels by left shifting by three
             // and repeating the first three bits to cover the range [0,255] with
             // even spacing. For example:
@@ -3658,7 +3658,7 @@ static int stbi_gif_header(stbi *s, stbi_gif *g, int *comp, int is_info)
    version = get8u(s);
    if (version != '7' && version != '9')    return stbi_error("not GIF", "Corrupt GIF");
    if (get8(s) != 'a')                      return stbi_error("not GIF", "Corrupt GIF");
- 
+
    failure_reason = "";
    g->w = get16le(s);
    g->h = get16le(s);

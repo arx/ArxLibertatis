@@ -309,7 +309,7 @@ void ShowInfoText() {
 				
 				npcBox.print();
 			}
-
+			
 			if(io->ioflags & (IO_FIX | IO_ITEM)) {
 				DebugBox itemBox = DebugBox(Vec2i(500, entityBox.size().y + 5), "Item");
 				
@@ -376,7 +376,7 @@ void ShowFrameDurationPlot() {
 	
 	const float OFFSET_Y = 80.f;
 	const float SCALE_Y = 4.0f;
-
+	
 	for(size_t i = 0; i < frameDurationPlotValues.size(); ++i)
 	{
 		float time = frameDurationPlotValues[i];
@@ -386,17 +386,17 @@ void ShowFrameDurationPlot() {
 		frameDurationPlotVertices[i].p.z = 1.0f;
 		frameDurationPlotVertices[i].w = 1.0f;
 	}
-
+	
 	EERIEDRAWPRIM(Renderer::LineStrip, frameDurationPlotVertices.data(), frameDurationPlotValues.size());
-
+	
 	Color avgColor = Color::blue * 0.5f + Color::white * 0.5f;
 	float avgPos = OFFSET_Y + (avg * SCALE_Y);
 	drawLine(Vec2f(0, avgPos), Vec2f(windowSize.x, avgPos), 1.0f, Color::blue);
-
+	
 	Color worstColor = Color::red * 0.5f + Color::white * 0.5f;
 	float worstPos = OFFSET_Y + (worst * SCALE_Y);
 	drawLine(Vec2f(0, worstPos), Vec2f(windowSize.x, worstPos), 1.0f, Color::red);
-
+	
 	Font * font = hFontDebug;
 	float lineOffset = font->getLineHeight() + 2;
 	
@@ -418,7 +418,7 @@ void ShowFrameDurationPlot() {
 		widths[i] = font->getTextSize(texts[i]).width();
 		valueWidth = std::max(valueWidth, widths[i]);
 	}
-
+	
 	float x = 10;
 	float y = 10;
 	float xend = x + labelWidth + 10 + valueWidth;
@@ -427,5 +427,5 @@ void ShowFrameDurationPlot() {
 		font->draw(Vec2i(xend - widths[i], y), texts[i], colors[i]);
 		y += lineOffset;
 	}
-
+	
 }

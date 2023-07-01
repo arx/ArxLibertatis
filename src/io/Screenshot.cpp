@@ -63,18 +63,18 @@ SnapShot::SnapShot(fs::path name)
 
 fs::path SnapShot::getNextFilePath() {
 	int num = 0;
-
+	
 	fs::path file;
-
+	
 	do {
 		std::ostringstream oss;
 		oss << m_basePath.filename() << '_' << num << ".bmp";
-
+		
 		file = m_basePath.parent() / oss.str();
-
+		
 		num++;
 	} while(fs::exists(file));
-
+	
 	return file;
 }
 
@@ -87,7 +87,7 @@ bool SnapShot::GetSnapShot() {
 	}
 	
 	fs::path file = getNextFilePath();
-
+	
 	return image.save(file);
 }
 

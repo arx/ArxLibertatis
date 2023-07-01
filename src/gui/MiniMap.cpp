@@ -484,7 +484,7 @@ void MiniMap::drawBackground(MapLevel level, Rect boundaries, Vec2f start, float
 			verts[vert].color = Color::white.toRGB();
 			verts[vert].w = 1;
 			verts[vert].p.z = 0.00001f;
-
+			
 			// Array offset according to "vert"
 			int iOffset = 0;
 			int jOffset = 0;

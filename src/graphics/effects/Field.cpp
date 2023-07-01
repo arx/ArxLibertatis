@@ -115,7 +115,7 @@ void CCreateField::RenderQuad(const Vec3f & p1, const Vec3f & p2, const Vec3f & 
 		v[4].x += glm::sin(glm::radians((v[4].x - eSrc.x) * patchsize + fwrap)) * 5;
 		v[4].y += glm::sin(glm::radians((v[4].y - eSrc.y) * patchsize + fwrap)) * 5;
 		v[4].z += glm::sin(glm::radians((v[4].z - eSrc.z) * patchsize + fwrap)) * 5;
-
+		
 		RenderQuad(p1, v[4], v[0], v[1], rec, norm, mat);
 		RenderQuad(v[4], p2, v[2], v[0], rec, norm, mat);
 		RenderQuad(v[0], v[2], p3, v[3], rec, norm, mat);
@@ -133,10 +133,10 @@ void CCreateField::RenderQuad(const Vec3f & p1, const Vec3f & p2, const Vec3f & 
 		q.v[2].uv.y = 1 + zab;
 		q.v[3].uv.x = 0 + zab;
 		q.v[3].uv.y = 1 + zab;
-
+		
 		q.v[1].color = q.v[2].color = Color3f(falpha * .3f + Random::getf(0.f, .025f), 0.f, falpha * .5f + Random::getf(0.f, .025f)).toRGB();
 		q.v[0].color = q.v[3].color = Color3f(falpha * .3f + Random::getf(0.f, .025f), 0.f, falpha * .5f + Random::getf(0.f, .025f)).toRGB();
-	
+		
 		q.v[0].p = p1;
 		q.v[1].p = p2;
 		q.v[2].p = p3;
@@ -160,8 +160,8 @@ void CCreateField::Update(ShortGameDuration timeDelta) {
 	
 }
 
-void CCreateField::Render()
-{
+void CCreateField::Render() {
+	
 	if(!VisibleSphere(Sphere(eSrc - Vec3f(0.f, 120.f, 0.f), 400.f))) {
 		return;
 	}
@@ -170,13 +170,13 @@ void CCreateField::Render()
 	// rendu
 	if(youp) {
 		fglow += 0.5f;
-
+		
 		if(fglow >= 50) {
 			youp = false;
 		}
 	} else {
 		fglow -= 0.5f;
-
+		
 		if(fglow <= 0) {
 			youp = true;
 		}
@@ -188,19 +188,19 @@ void CCreateField::Render()
 		size = std::min(1.0f, (m_elapsed - 1s) / 1s);
 		size = std::max(size, 0.1f);
 	}
-
+	
 	// ondulation
 	ft += 0.01f;
-
+	
 	if(ft > 360.0f) {
 		ft = 0.0f;
 	}
-
+	
 	falpha = glm::sin(glm::radians(fglow)) + Random::getf(0.f, 0.2f);
 	falpha = glm::clamp(falpha, 0.f, 1.f);
 	
 	float smul = 100 * size;
-
+	
 	// bottom points
 	Vec3f b[4] = {
 		eSrc + Vec3f(-smul, 0.f, -smul),

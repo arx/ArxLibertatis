@@ -33,9 +33,9 @@ void FpsCounter::CalcFPS(bool reset) {
 		// Keep track of the time lapse and frame count
 		PlatformInstant fTime = g_platformTime.frameStart();
 		++dwFrames;
-
+		
 		float tmp = toS(fTime - fLastTime);
-
+		
 		// Update the frame rate once per second
 		if(tmp > 1.f) {
 			FPS = float(dwFrames) / tmp;

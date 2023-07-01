@@ -349,7 +349,7 @@ public:
 	explicit ConfigWriter(std::ostream & _output) : IniWriter(_output) { }
 	
 	void writeActionKey(ControlAction index, const ActionKey & value);
-
+	
 };
 
 void ConfigWriter::writeActionKey(ControlAction index, const ActionKey & value) {

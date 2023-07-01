@@ -106,7 +106,7 @@ public:
 	T * operator[](Handle handle) { return m_list[size_t(handle)]; }
 	const T * operator[](Handle handle) const { return m_list[size_t(handle)]; }
 	size_t size() const { return m_list.size(); }
-
+	
 	Handle add(T * element);
 	void remove(Handle handle);
 	void clear();

@@ -356,7 +356,7 @@ bool isAnyNPCOnPlatform(const Entity & platform) {
 }
 
 bool isCylinderCollidingWithPlatform(const Cylinder & cylinder, const Entity & platform) {
- 
+	
 	if(platform.bbox3D.max.y <= cylinder.origin.y + cylinder.height
 	   || platform.bbox3D.min.y >= cylinder.origin.y) {
 		return false;
@@ -1356,15 +1356,15 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit) {
 			if((polygon.min.y - pas >= tmpPos.y) || (polygon.max.y + pas <= tmpPos.y)) {
 				continue;
 			}
-
+			
 			if((polygon.min.x - pas >= tmpPos.x) || (polygon.max.x + pas <= tmpPos.x)) {
 				continue;
 			}
-
+			
 			if((polygon.min.z - pas >= tmpPos.z) || (polygon.max.z + pas <= tmpPos.z)) {
 				continue;
 			}
-
+			
 			if(RayCollidingPoly(orgn, dest, polygon, hit)) {
 				float dd = fdist(orgn, *hit);
 				if(dd < nearest) {

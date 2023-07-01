@@ -97,15 +97,15 @@ void CMagicMissile::Create(const Vec3f & startPos, const Anglef & angles) {
 	pathways[0] = startPos;
 	pathways[5] = endPos;
 	Split(pathways, 0, 5, 50, 0.5f);
-
+	
 	for(i = 0; i < 6; i++) {
 		if(pathways[i].y >= startPos.y + 150) {
 			pathways[i].y = startPos.y + 150;
 		}
 	}
-
+	
 	fTrail = 0;
-
+	
 	iLength = 50;
 	iBezierPrecision = BEZIERPrecision;
 	bExplo = false;
@@ -159,11 +159,11 @@ void CMagicMissile::Render() {
 			if(fTrail < i * iBezierPrecision + toto) {
 				break;
 			}
-
+			
 			float t = toto * (1.0f / iBezierPrecision);
 			
 			newpos = arx::catmullRom(v1, v2, v3, v4, t);
-
+			
 			if(!((fTrail - (i * iBezierPrecision + toto)) > iLength)) {
 				
 				float fsize = 1.f - (fTrail - i * iBezierPrecision - toto) / std::min(fTrail, float(iLength));
@@ -180,7 +180,7 @@ void CMagicMissile::Render() {
 				float fe = fsize * 6.f + Random::getf(0.f, 0.3f);
 				Draw3DLineTexNew(mat, lastpos, newpos, color, color, fs, fe);
 			}
-
+			
 			Vec3f temp_vector = lastpos;
 			lastpos = newpos;
 			newpos = temp_vector;
@@ -198,15 +198,15 @@ void CMagicMissile::Render() {
 	stiteangle.setYaw(-glm::degrees(bubu));
 	stiteangle.setPitch(0);
 	stiteangle.setRoll(-(glm::degrees(bubu1)));
-
+	
 	if(av.x < 0) {
 		stiteangle.setRoll(stiteangle.getRoll() - 90);
 	}
-
+	
 	if(av.x > 0) {
 		stiteangle.setRoll(stiteangle.getRoll() + 90);
 	}
-
+	
 	if(stiteangle.getRoll() < 0) {
 		stiteangle.setRoll(stiteangle.getRoll() + 360.0f);
 	}

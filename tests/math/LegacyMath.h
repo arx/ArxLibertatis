@@ -82,12 +82,12 @@ inline void Quat_Reverse(glm::quat * q) {
 inline glm::quat Quat_Multiply(const glm::quat & q1, const glm::quat & q2) {
 	/*
 	Fast multiplication
-
+	
 	There are some schemes available that reduces the number of internal
 	multiplications when doing quaternion multiplication. Here is one:
-
+	
 	   q = (a, b, c, d), p = (x, y, z, w)
-
+	
 	   tmp_00 = (d - c) * (z - w)
 	   tmp_01 = (a + b) * (x + y)
 	   tmp_02 = (a - b) * (z + w)
@@ -98,16 +98,16 @@ inline glm::quat Quat_Multiply(const glm::quat & q1, const glm::quat & q2) {
 	   tmp_07 = (a - c) * (x + w)
 	   tmp_08 = tmp_05 + tmp_06 + tmp_07
 	   tmp_09 = 0.5 * (tmp_04 + tmp_08)
-
+	
 	   q * p = (tmp_00 + tmp_09 - tmp_05,
 	            tmp_01 + tmp_09 - tmp_08,
 	            tmp_02 + tmp_09 - tmp_07,
 	            tmp_03 + tmp_09 - tmp_06)
-
+	
 	With this method You get 7 less multiplications, but 15 more
 	additions/subtractions. Generally, this is still an improvement.
 	  */
-
+	 
 	return glm::quat(
 		q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z,
 		q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y,
@@ -172,11 +172,11 @@ inline void QuatFromMatrix(glm::quat & quat, const glm::mat4x4 & mat) {
 	m[3][2] = mat[3][2];
 	m[3][3] = mat[3][3];
 	float  tr, s, q[4];
-
+	
 	int nxt[3] = {1, 2, 0};
-
+	
 	tr = m[0][0] + m[1][1] + m[2][2];
-
+	
 	// check the diagonal
 	if (tr > 0.0f)
 	{
@@ -191,25 +191,29 @@ inline void QuatFromMatrix(glm::quat & quat, const glm::mat4x4 & mat) {
 	{
 		// diagonal is negative
 		int i = 0;
-
-		if (m[1][1] > m[0][0]) i = 1;
-
-		if (m[2][2] > m[i][i]) i = 2;
-
+		
+		if (m[1][1] > m[0][0]) {
+			i = 1;
+		}
+		
+		if (m[2][2] > m[i][i]) {
+			i = 2;
+		}
+		
 		int j = nxt[i];
 		int k = nxt[j];
-
+		
 		s = std::sqrt((m[i][i] - (m[j][j] + m[k][k])) + 1.0f);
-
+		
 		q[i] = s * 0.5f;
-
+		
 		if (s != 0.0f) s = 0.5f / s;
-
+		
 		q[3] = (m[j][k] - m[k][j]) * s;
 		q[j] = (m[i][j] + m[j][i]) * s;
 		q[k] = (m[i][k] + m[k][i]) * s;
-
-
+		
+		
 		quat.x = q[0];
 		quat.y = q[1];
 		quat.z = q[2];
@@ -259,26 +263,26 @@ inline Vec2s inventorySizeFromTextureSize_2(u32 m_dwWidth, u32 m_dwHeight) {
 }
 
 inline float focalToFovLegacy(float focal) {
-	if(focal < 200)
+	if(focal < 200) {
 		return (-.34f * focal + 168.5f);
-	else if(focal < 300)
+	} else if(focal < 300) {
 		return (-.25f * focal + 150.5f);
-	else if(focal < 400)
+	} else if(focal < 400) {
 		return (-.155f * focal + 124.f);
-	else if(focal < 500)
+	} else if(focal < 500) {
 		return (-.11f * focal + 106.f);
-	else if(focal < 600)
+	} else if(focal < 600) {
 		return (-.075f * focal + 88.5f);
-	else if(focal < 700)
+	} else if(focal < 700) {
 		return (-.055f * focal + 76.5f);
-	else if(focal < 800)
+	} else if(focal < 800) {
 		return (-.045f * focal + 69.5f);
-	else
+	} else {
 		return 33.5f;
+	}
 }
 
-inline Vec3f interpolatePos(float t, const Vec3f prevPos, const Vec3f currentPos, const Vec3f nextPos, const Vec3f next2Pos)
-{
+inline Vec3f interpolatePos(float t, const Vec3f prevPos, const Vec3f currentPos, const Vec3f nextPos, const Vec3f next2Pos) {
 	const float t1 = t;
 	const float t2 = t1 * t1;
 	const float t3 = t2 * t1;

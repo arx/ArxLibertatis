@@ -141,16 +141,16 @@ void ARX_MENU_Clicked_CREDITS() {
 void ARX_MENU_Launch(bool allowResume) {
 	
 	g_canResumeGame = allowResume;
-
+	
 	g_gameTime.pause(GameTime::PauseMenu);
-
+	
 	// Synchronize menu mixers with game mixers and switch between them
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
 	ARX_SOUND_MixerResume(ARX_SOUND_MixerMenu);
-
+	
 	ARX_SOUND_PlayMenuAmbiance(AMB_MENU);
 	ARX_SOUND_PlayMenu(g_snd.MENU_CLICK);
-
+	
 	ARXmenu.requestMode(Mode_MainMenu);
 	
 	if(pMenuCursor) {
@@ -185,7 +185,7 @@ void ARX_Menu_Manage() {
 					ARX_MENU_Launch(true);
 					MenuFader_start(Fade_Out, -1); // TODO: does this fader even work ?
 					TRUE_PLAYER_MOUSELOOK_ON = false;
-
+					
 					ARX_PLAYER_PutPlayerInNormalStance();
 				}
 			}

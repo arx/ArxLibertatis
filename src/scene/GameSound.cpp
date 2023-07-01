@@ -402,14 +402,14 @@ audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar,
 	channel.volume = 1.f;
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART;
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND;
-
+	
 	if(io) {
 		if((io == entities.player() && !EXTERNALVIEW)) {
 			channel.position = ARX_SOUND_IOFrontPos(io);
 		} else {
 			channel.position = io->pos;
 		}
-
+		
 		if(g_camera && fartherThan(g_camera->m_pos, io->pos, ARX_SOUND_REFUSE_DISTANCE)) {
 			if(tooFar) {
 				*tooFar = true;
@@ -417,7 +417,7 @@ audio::SourcedSample ARX_SOUND_PlaySpeech(const res::path & name, bool * tooFar,
 			// TODO sample is never freed!
 			return audio::SourcedSample();
 		}
-
+		
 		if(io->ioflags & IO_NPC && io->_npcdata->speakpitch != 1.f) {
 			channel.flags |= FLAG_PITCH;
 			channel.pitch = io->_npcdata->speakpitch;
@@ -435,21 +435,21 @@ void ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float p
 	if(!g_soundInitialized) {
 		return;
 	}
-
+	
 	if(mat1 == MATERIAL_NONE || mat2 == MATERIAL_NONE) {
 		return;
 	}
-
+	
 	if(mat1 == MATERIAL_WATER || mat2 == MATERIAL_WATER) {
 		ARX_PARTICLES_SpawnWaterSplash(position);
 	}
-
+	
 	audio::SampleHandle sample_id = g_soundMaterials[mat1][mat2];
-
+	
 	if(sample_id == audio::SampleHandle()) {
 		return;
 	}
-
+	
 	audio::Channel channel(ARX_SOUND_MixerGameSample);
 	channel.flags = FLAG_VOLUME | FLAG_PITCH | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
 	
@@ -579,7 +579,7 @@ void ARX_SOUND_PlayAnim(audio::SampleHandle sample_id, const Vec3f * position) {
 	audio::Channel channel(ARX_SOUND_MixerGameSample);
 	channel.flags = FLAG_VOLUME;
 	channel.volume = 1.f;
-
+	
 	if(position) {
 		if(g_camera && fartherThan(g_camera->m_pos, *position, ARX_SOUND_REFUSE_DISTANCE)) {
 			return;

@@ -119,7 +119,7 @@ void LegacyMathTest::quaternionTests() {
 		
 		glm::quat A = rotation.quat;
 		glm::quat B = rotation.quat;
-	
+		
 		CPPUNIT_ASSERT_EQUAL(A, B);
 		
 		glm::quat inverseA = A;
@@ -127,7 +127,7 @@ void LegacyMathTest::quaternionTests() {
 		glm::quat inverseB = glm::inverse(B);
 		
 		CPPUNIT_ASSERT_EQUAL(inverseA, inverseB);
-	
+		
 		Vec3f vecA = TransformVertexQuat(A, Vec3f(1.f, 0.5f, 0.1f));
 		Vec3f vecB = B * Vec3f(1.f, 0.5f, 0.1f);
 		

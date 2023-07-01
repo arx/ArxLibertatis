@@ -174,17 +174,17 @@ void RuneRecognitionAlt::resampleInput(const std::vector<Vec2f> &in) {
 		float pointsToAddFloat = (segLen / totalLen) * (s_requiredPointCount - 1) + segRemains;
 		int pointsToAdd = int(glm::round(pointsToAddFloat));
 		segRemains = pointsToAddFloat - float(pointsToAdd);
-
+		
 		if(segment != segmentCount - 1) {
 			pointsAdded += pointsToAdd;
 		} else {
 			pointsToAdd = s_requiredPointCount - 1 - pointsAdded;
 		}
-
+		
 		if(pointsToAdd == 0) {
 			continue;
 		}
-
+		
 		arx_assert(pointsToAdd > 0);
 		
 		float interval = segLen / pointsToAdd;
@@ -365,7 +365,7 @@ int RuneRecognitionAlt::findMatchingPattern() {
 		int errors = 0;
 		size_t patternIndex = 0, inputIndex = 0;
 		size_t patternSize = patternData[rune].dirs.size();
-
+		
 		int curPatternDir = arx2angle(patternData[rune].dirs[0]);
 		int curInputDir = m_dirs[0];
 		int nextPatternDir = (patternIndex < patternSize - 1) ? arx2angle(patternData[rune].dirs[1]) : curPatternDir;
@@ -649,7 +649,7 @@ void ARX_SPELLS_Analyse() {
 	unsigned char dirs[MAX_POINTS];
 	unsigned char lastdir = 255;
 	long cdir = 0;
-
+	
 	for(size_t i = 1; i < plist.size() ; i++) {
 		
 		Vec2f d = plist[i - 1] - plist[i];
@@ -746,7 +746,7 @@ void ARX_SPELLS_Analyse() {
 
 static void handleRuneDetection(Rune rune) {
 	SpellSymbol[CurrSpellSymbol++] = rune;
-
+	
 	if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 		CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 	}

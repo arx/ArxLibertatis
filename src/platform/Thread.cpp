@@ -307,7 +307,7 @@ void Thread::disableFloatDenormals() {
 	static_assert(ARX_HAVE_SSE);
 	
 	#if ARX_HAVE_XMMINTRIN
-
+	
 	_MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON); // SSE
 	
 	#if ARX_HAVE_SSE3 || ARX_COMPILER_MSVC || ARX_HAVE_GET_CPUID

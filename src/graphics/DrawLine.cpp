@@ -38,13 +38,13 @@ void drawLine(const Vec2f & from, const Vec2f & to, float z, Color col) {
 	v[1].p.y = to.y;
 	v[1].color = v[0].color = col.toRGBA();
 	v[1].w = v[0].w = 1.f;
-
+	
 	GRenderer->ResetTexture(0);
 	EERIEDRAWPRIM(Renderer::LineList, v, 2);
 }
 
 void drawLineRectangle(const Rectf & rect, float z, Color col) {
-
+	
 	TexturedVertex v[5];
 	v[0].p = Vec3f(rect.bottomLeft(), z);
 	v[1].p = Vec3f(rect.bottomRight(), z);
@@ -54,13 +54,13 @@ void drawLineRectangle(const Rectf & rect, float z, Color col) {
 	
 	v[4].color = v[3].color = v[2].color = v[1].color = v[0].color = col.toRGBA();
 	v[4].w = v[3].w = v[2].w = v[1].w = v[0].w = 1.f;
-
+	
 	GRenderer->ResetTexture(0);
 	EERIEDRAWPRIM(Renderer::LineStrip, v, 5);
 }
 
 void EERIEDrawFill2DRectDegrad(Vec2f a, Vec2f b, float z, Color cold, Color cole) {
-
+	
 	TexturedVertex v[4];
 	v[0].p.x = v[2].p.x = a.x;
 	v[0].p.y = v[1].p.y = a.y;
@@ -70,28 +70,28 @@ void EERIEDrawFill2DRectDegrad(Vec2f a, Vec2f b, float z, Color cold, Color cole
 	v[2].color = v[3].color = cole.toRGBA();
 	v[0].p.z = v[1].p.z = v[2].p.z = v[3].p.z = z;
 	v[3].w = v[2].w = v[1].w = v[0].w = 1.f;
-
+	
 	GRenderer->ResetTexture(0);
 	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 }
 
 void drawLineSphere(const Sphere & sphere, Color color) {
-
+	
 	if(sphere.radius <= 0) {
 		return;
 	}
-
+	
 	static const size_t sections = 64;
-
+	
 	size_t rings = size_t(sphere.radius / 10);
 	if(rings < 7) {
 		rings = 7;
 	}
-
+	
 	std::vector<TexturedVertex> vertices;
-
+	
 	bool skip = false;
-
+	
 	for(size_t i = 1; i < rings - 1; i++) {
 		float a = float(i) * glm::pi<float>() / float(rings - 1);
 		for(size_t j = 0; j <= sections; j++) {
@@ -103,16 +103,16 @@ void drawLineSphere(const Sphere & sphere, Color color) {
 			
 			TexturedVertex out;
 			worldToClipSpace(pos, out);
-
+			
 			if(skip) {
 				skip = false;
 				out.color = Color().toRGBA();
 				vertices.push_back(out);
 			}
-
+			
 			out.color = color.toRGBA();
 			vertices.push_back(out);
-
+			
 			if(j == sections) {
 				skip = true;
 				out.color = Color().toRGBA();
@@ -120,7 +120,7 @@ void drawLineSphere(const Sphere & sphere, Color color) {
 			}
 		}
 	}
-
+	
 	GRenderer->ResetTexture(0);
 	EERIEDRAWPRIM(Renderer::LineStrip, vertices.data(), vertices.size());
 }

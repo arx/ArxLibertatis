@@ -74,7 +74,7 @@ void SliderWidget::move(const Vec2f & offset) {
 }
 
 void SliderWidget::hover() {
-
+	
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_LeftArrow) || GInput->getMouseWheelDir() < 0) {
 		newValue(m_value - 1);
 	} else if(GInput->isKeyPressedNowPressed(Keyboard::Key_RightArrow) || GInput->getMouseWheelDir() > 0) {

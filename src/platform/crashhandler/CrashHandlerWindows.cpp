@@ -51,7 +51,7 @@ struct PlatformCrashHandlers {
 	signal_handler m_SIGABRTHandler;                      // SIGABRT handler.
 	signal_handler m_SIGINTHandler;                       // SIGINT handler.
 	signal_handler m_SIGTERMHandler;                      // SIGTERM handler.
-
+	
 	// List of exception handlers installed for worker threads of current process.
 	std::map<DWORD, ThreadExceptionHandlers> m_threadExceptionHandlers;
 };
@@ -254,7 +254,7 @@ void CrashHandlerWindows::writeCrashDump(PEXCEPTION_POINTERS pointers) {
 	exceptionInfo.ThreadId = m_pCrashInfo->threadId;
 	exceptionInfo.ExceptionPointers = pointers;
 	exceptionInfo.ClientPointers = TRUE;
-
+	
 	// Write the minidump
 	MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), file, miniDumpType,
 	                  &exceptionInfo, nullptr, nullptr);

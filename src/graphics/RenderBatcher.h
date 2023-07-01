@@ -33,7 +33,7 @@ struct TexturedQuad {
 };
 
 struct RenderMaterial {
-
+	
 	enum BlendType {
 		Opaque,
 		Additive,
@@ -42,7 +42,7 @@ struct RenderMaterial {
 		Subtractive,
 		Subtractive2
 	};
-
+	
 	enum Layer {
 		Decal,
 		Effect,
@@ -50,34 +50,34 @@ struct RenderMaterial {
 		FullscreenEffect,
 		HUDEffect
 	};
-
+	
 	RenderMaterial();
-
+	
 	bool operator<(const RenderMaterial & other) const;
 	RenderState apply() const;
-
+	
 	Texture * getTexture() const { return m_texture; }
 	void resetTexture() { m_texture = nullptr; }
 	void setTexture(Texture * tex) { m_texture = tex; }
 	void setTexture(TextureContainer * texContainer) {
 		m_texture = texContainer ? texContainer->m_pTexture : nullptr;
 	}
-
+	
 	bool getDepthTest() const { return m_depthTest; }
 	void setDepthTest(bool bEnable) { m_depthTest = bEnable; }
-
+	
 	BlendType getBlendType() const { return m_blendType; }
 	void setBlendType(BlendType type) { m_blendType = type; }
-
+	
 	Layer getLayer() const { return m_layer; }
 	void setLayer(Layer layer) { m_layer = layer; }
-
+	
 	TextureStage::WrapMode getWrapMode() const { return m_wrapMode; }
 	void setWrapMode(TextureStage::WrapMode mode) { m_wrapMode = mode; }
-
+	
 	int getDepthBias() const { return m_depthBias; }
 	void setDepthBias(int bias) { m_depthBias = bias; }
-
+	
 	bool getCulling() const { return m_cullBackfaces; }
 	void setCulling(bool cullBackfaces) { m_cullBackfaces = cullBackfaces; }
 	
@@ -96,16 +96,16 @@ class RenderBatcher {
 public:
 	
 	~RenderBatcher();
-
+	
 	void add(const RenderMaterial & mat, const TexturedVertex (&vertices)[3]);
 	void add(const RenderMaterial & mat, const TexturedQuad & sprite);
-
+	
 	//! Render all batches
 	void render();
-
+	
 	//! Remove all batches
 	void clear();
-
+	
 	//! Free all memory pools
 	void reset();
 	

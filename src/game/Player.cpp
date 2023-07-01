@@ -680,7 +680,7 @@ void ARX_PLAYER_MakeFreshHero() {
 	player.m_attribute.mind = 6;
 	player.m_attribute.dexterity = 6;
 	player.m_attribute.constitution = 6;
-
+	
 	PlayerSkill skill;
 	skill.stealth = 0;
 	skill.mecanism = 0;
@@ -708,7 +708,7 @@ void ARX_PLAYER_MakeFreshHero() {
 	
 	ARX_PLAYER_ComputePlayerStats();
 	player.rune_flags = 0;
-
+	
 	player.SpellToMemorize.bSpell = false;
 }
 
@@ -723,7 +723,7 @@ void ARX_PLAYER_MakeSpHero()
 	player.m_attribute.mind = 12;
 	player.m_attribute.dexterity = 12;
 	player.m_attribute.constitution = 12;
-
+	
 	PlayerSkill skill;
 	skill.stealth = 5;
 	skill.mecanism = 5;
@@ -736,20 +736,20 @@ void ARX_PLAYER_MakeSpHero()
 	skill.defense = 5;
 	
 	player.m_skillOld = player.m_skill = skill;
-
+	
 	player.Attribute_Redistribute = 6;
 	player.Skill_Redistribute = 10;
-
+	
 	player.level = 1;
 	player.xp = 0;
 	player.poison = 0.f;
 	player.hunger = 100.f;
 	player.skin = 4;
-
+	
 	ARX_PLAYER_ComputePlayerStats();
 	player.lifePool.current = player.m_lifeMaxWithoutMods;
 	player.manaPool.current = player.m_manaMaxWithoutMods;
-
+	
 	player.rune_flags = RuneFlags::all();
 	player.SpellToMemorize.bSpell = false;
 	
@@ -796,10 +796,10 @@ void ARX_PLAYER_QuickGeneration() {
 	unsigned char old_skin = player.skin;
 	ARX_PLAYER_MakeFreshHero();
 	player.skin = old_skin;
-
+	
 	while(player.Attribute_Redistribute) {
 		float rn = Random::getf();
-
+		
 		if(rn < 0.25f && player.m_attribute.strength < 18) {
 			player.m_attribute.strength++;
 			player.Attribute_Redistribute--;
@@ -817,7 +817,7 @@ void ARX_PLAYER_QuickGeneration() {
 
 	while(player.Skill_Redistribute) {
 		float rn = Random::getf();
-
+		
 		if(rn < 0.1f && player.m_skill.stealth < 18) {
 			player.m_skill.stealth++;
 			player.Skill_Redistribute--;
@@ -847,11 +847,11 @@ void ARX_PLAYER_QuickGeneration() {
 			player.Skill_Redistribute--;
 		}
 	}
-
+	
 	player.level = 0;
 	player.xp = 0;
 	player.hunger = 100.f;
-
+	
 	ARX_PLAYER_ComputePlayerStats();
 }
 
@@ -877,7 +877,7 @@ long GetXPforLevel(short level)
 		600000,
 		750000
 	};
-
+	
 	long xpNeeded;
 	if(level < short(std::size(XP_FOR_LEVEL))) {
 		xpNeeded = XP_FOR_LEVEL[level];
@@ -946,26 +946,26 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta) {
 		
 		if(player.lifePool.current > 0.f) {
 			float inc_hunger = 0.00008f * Framedelay * (player.m_attributeFull.constitution + player.m_attributeFull.strength * 0.5f) * 0.02f;
-
+			
 			// Check for player hungry sample playing
 			if((player.hunger > 10.f && player.hunger - inc_hunger <= 10.f)
 			   || (player.hunger < 10.f && g_gameTime.now() > LastHungerSample + 180s)) {
 				
 				LastHungerSample = g_gameTime.now();
-
+				
 				if(!BLOCK_PLAYER_CONTROLS) {
 					if(!getSpeechForEntity(*entities.player())) {
 						ARX_SPEECH_AddSpeech(*entities.player(), "player_off_hungry", ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
 					}
 				}
 			}
-
+			
 			player.hunger -= inc_hunger * .5f;
-
+			
 			if(player.hunger < -10.f) {
 				player.hunger = -10.f;
 			}
-
+			
 			if(!BLOCK_PLAYER_CONTROLS) {
 				if(player.hunger < 0.f) {
 					player.lifePool.current -= inc * 0.5f;
@@ -1001,7 +1001,7 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta) {
 				player.poison -= cp;
 			}
 		}
-
+		
 		if(player.poison < 0.1f) {
 			player.poison = 0.f;
 		}
@@ -1060,25 +1060,25 @@ void ARX_PLAYER_Restore_Skin() {
 			tx4 = "graph/obj3d/textures/npc_human_leather_hero_head";
 			break;
 	}
-
+	
 	TextureContainer * tmpTC;
 	
 	// TODO maybe it would be better to replace the textures in the player object instead of replacing the texture data for all objects that use these textures
-
+	
 	if(PLAYER_SKIN_TC && !tx.empty()) {
 		PLAYER_SKIN_TC->LoadFile(tx);
 	}
-
+	
 	tmpTC = TextureContainer::Find("graph/obj3d/textures/npc_human_chainmail_hero_head");
 	if(tmpTC && !tx2.empty()) {
 		tmpTC->LoadFile(tx2);
 	}
-
+	
 	tmpTC = TextureContainer::Find("graph/obj3d/textures/npc_human_chainmail_mithril_hero_head");
 	if(tmpTC && !tx3.empty()) {
 		tmpTC->LoadFile(tx3);
 	}
-
+	
 	tmpTC = TextureContainer::Find("graph/obj3d/textures/npc_human_leather_hero_head");
 	if(tmpTC && !tx4.empty()) {
 		tmpTC->LoadFile(tx4);
@@ -1150,7 +1150,7 @@ static void ARX_PLAYER_StartFall() {
 	FALLING_TIME = 1;
 	Falling_Height = 50.f;
 	EERIEPOLY * ep = CheckInPoly(player.pos);
-
+	
 	if(ep) {
 		Falling_Height = player.pos.y;
 	}
@@ -1377,70 +1377,70 @@ void ARX_PLAYER_Manage_Visual() {
 	LASTPLAYERA = player.angle.getPitch();
 	
 	{
-	long tmove = player.m_currentMovement;
-	
-	if((tmove & PLAYER_MOVE_STRAFE_LEFT) && (tmove & PLAYER_MOVE_STRAFE_RIGHT)) {
-		tmove &= ~PLAYER_MOVE_STRAFE_LEFT;
-		tmove &= ~PLAYER_MOVE_STRAFE_RIGHT;
-	}
-	
-	if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_LEFT) {
-		tmove &= ~PLAYER_MOVE_STRAFE_RIGHT;
-	}
-	
-	if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_RIGHT) {
-		tmove &= ~PLAYER_MOVE_STRAFE_LEFT;
-	}
-	
-	if(MOVE_PRECEDENCE == PLAYER_MOVE_WALK_FORWARD) {
-		tmove &= ~PLAYER_MOVE_WALK_BACKWARD;
-	}
-	
-	if(player.m_currentMovement & PLAYER_MOVE_WALK_FORWARD) {
-		tmove = PLAYER_MOVE_WALK_FORWARD;
-	}
-	
-	if(tmove & PLAYER_MOVE_STRAFE_LEFT) {
-		if(player.Interface & INTER_COMBATMODE) {
-			request0_anim = alist[ANIM_FIGHT_STRAFE_LEFT];
-		} else if(player.m_currentMovement & PLAYER_MOVE_STEALTH) {
-			request0_anim = alist[ANIM_STRAFE_LEFT];
-		} else {
-			request0_anim = alist[ANIM_STRAFE_RUN_LEFT];
+		long tmove = player.m_currentMovement;
+		
+		if((tmove & PLAYER_MOVE_STRAFE_LEFT) && (tmove & PLAYER_MOVE_STRAFE_RIGHT)) {
+			tmove &= ~PLAYER_MOVE_STRAFE_LEFT;
+			tmove &= ~PLAYER_MOVE_STRAFE_RIGHT;
 		}
-	}
-	
-	if(tmove & PLAYER_MOVE_STRAFE_RIGHT) {
-		if(player.Interface & INTER_COMBATMODE) {
-			request0_anim = alist[ANIM_FIGHT_STRAFE_RIGHT];
-		} else if(player.m_currentMovement & PLAYER_MOVE_STEALTH) {
-			request0_anim = alist[ANIM_STRAFE_RIGHT];
-		} else {
-			request0_anim = alist[ANIM_STRAFE_RUN_RIGHT];
+		
+		if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_LEFT) {
+			tmove &= ~PLAYER_MOVE_STRAFE_RIGHT;
 		}
-	}
-	
-	if(tmove & PLAYER_MOVE_WALK_BACKWARD) {
-		if(player.Interface & INTER_COMBATMODE) {
-			request0_anim = alist[ANIM_FIGHT_WALK_BACKWARD];
-		} else if(player.m_currentMovement & PLAYER_MOVE_STEALTH) {
-			request0_anim = alist[ANIM_WALK_BACKWARD];
-		} else if(player.m_currentMovement & PLAYER_CROUCH) {
-			request0_anim = alist[ANIM_WALK_BACKWARD];
-		} else {
-			request0_anim = alist[ANIM_RUN_BACKWARD];
+		
+		if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_RIGHT) {
+			tmove &= ~PLAYER_MOVE_STRAFE_LEFT;
 		}
-	}
-	
-	if(tmove & PLAYER_MOVE_WALK_FORWARD) {
-		if(player.Interface & INTER_COMBATMODE) {
-			request0_anim = alist[ANIM_FIGHT_WALK_FORWARD];
-		} else if(player.m_currentMovement & PLAYER_MOVE_STEALTH) {
-			request0_anim = alist[ANIM_WALK];
-		} else {
-			request0_anim = alist[ANIM_RUN];
+		
+		if(MOVE_PRECEDENCE == PLAYER_MOVE_WALK_FORWARD) {
+			tmove &= ~PLAYER_MOVE_WALK_BACKWARD;
 		}
-	}
+		
+		if(player.m_currentMovement & PLAYER_MOVE_WALK_FORWARD) {
+			tmove = PLAYER_MOVE_WALK_FORWARD;
+		}
+		
+		if(tmove & PLAYER_MOVE_STRAFE_LEFT) {
+			if(player.Interface & INTER_COMBATMODE) {
+				request0_anim = alist[ANIM_FIGHT_STRAFE_LEFT];
+			} else if(player.m_currentMovement & PLAYER_MOVE_STEALTH) {
+				request0_anim = alist[ANIM_STRAFE_LEFT];
+			} else {
+				request0_anim = alist[ANIM_STRAFE_RUN_LEFT];
+			}
+		}
+		
+		if(tmove & PLAYER_MOVE_STRAFE_RIGHT) {
+			if(player.Interface & INTER_COMBATMODE) {
+				request0_anim = alist[ANIM_FIGHT_STRAFE_RIGHT];
+			} else if(player.m_currentMovement & PLAYER_MOVE_STEALTH) {
+				request0_anim = alist[ANIM_STRAFE_RIGHT];
+			} else {
+				request0_anim = alist[ANIM_STRAFE_RUN_RIGHT];
+			}
+		}
+		
+		if(tmove & PLAYER_MOVE_WALK_BACKWARD) {
+			if(player.Interface & INTER_COMBATMODE) {
+				request0_anim = alist[ANIM_FIGHT_WALK_BACKWARD];
+			} else if(player.m_currentMovement & PLAYER_MOVE_STEALTH) {
+				request0_anim = alist[ANIM_WALK_BACKWARD];
+			} else if(player.m_currentMovement & PLAYER_CROUCH) {
+				request0_anim = alist[ANIM_WALK_BACKWARD];
+			} else {
+				request0_anim = alist[ANIM_RUN_BACKWARD];
+			}
+		}
+		
+		if(tmove & PLAYER_MOVE_WALK_FORWARD) {
+			if(player.Interface & INTER_COMBATMODE) {
+				request0_anim = alist[ANIM_FIGHT_WALK_FORWARD];
+			} else if(player.m_currentMovement & PLAYER_MOVE_STEALTH) {
+				request0_anim = alist[ANIM_WALK];
+			} else {
+				request0_anim = alist[ANIM_RUN];
+			}
+		}
 	}
 	
 	if(!request0_anim) {
@@ -1595,7 +1595,7 @@ void ARX_PLAYER_Manage_Visual() {
 	}
 	
 	ARX_PLAYER_Manage_Visual_End(request0_anim, request3_anim, request0_loop, false);
-
+	
 }
 
 /*!
@@ -1655,19 +1655,19 @@ void ARX_PLAYER_Frame_Update()
 		entities.player()->ioflags &= ~IO_FREEZESCRIPT;
 		player.m_paralysed = false;
 	}
-
+	
 	// Reset player moveto info
 	g_moveto = player.pos;
-
+	
 	// Reset current movement flags
 	player.m_currentMovement = 0;
-
+	
 	// Updates player angles to desired angles
 	player.angle = player.desiredangle;
-
+	
 	// Updates player Extra-Rotate Informations
 	Entity * io = entities.player();
-
+	
 	if(io && io->_npcdata->ex_rotate) {
 		EERIE_EXTRA_ROTATE * extraRotation = io->_npcdata->ex_rotate;
 		
@@ -1703,16 +1703,16 @@ void ARX_PLAYER_Frame_Update()
 			extraRotation->group_rotate[5] = Anglef(); // Right shoulder
 		}
 	}
-
+	
 	ARX_PLAYER_ComputePlayerFullStats();
-
+	
 	player.TRAP_DETECT = player.m_skillFull.mecanism;
 	player.TRAP_SECRET = player.m_skillFull.intuition;
-
+	
 	if(spells.getSpellOnTarget(EntityHandle_Player, SPELL_DETECT_TRAP)) {
 		player.TRAP_DETECT = 100.f;
 	}
-
+	
 	ARX_PLAYER_ManageTorch();
 }
 
@@ -1850,7 +1850,6 @@ static void PlayerMovementIterate(float DeltaTime) {
 				entities.player()->_npcdata->climb_count = 0.f;
 			}
 		}
-		
 		
 		CollisionFlags levitate = 0;
 		if(player.climbing) {
@@ -2080,7 +2079,7 @@ static void PlayerMovementIterate(float DeltaTime) {
 		if(player.levitate) {
 			player.physics.velocity.y = 0.0f;
 		}
-
+		
 		// Apply climbing velocity
 		if(player.climbing) {
 			if(player.m_currentMovement & PLAYER_MOVE_WALK_FORWARD) {
@@ -2103,7 +2102,7 @@ static void PlayerMovementIterate(float DeltaTime) {
 		} else if(!player.climbing && player.pos.y >= posy) {
 			player.physics.velocity.y = 0;
 		}
-
+		
 		// Reset forces
 		player.physics.forces = Vec3f(0.f);
 		
@@ -2258,20 +2257,20 @@ void ARX_PLAYER_Manage_Movement() {
 	if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS || !entities.player()) {
 		return;
 	}
-
+	
 	// Compute current player speedfactor
 	float speedfactor = entities.player()->basespeed + entities.player()->speed_modif;
-
+	
 	if(speedfactor < 0) {
 		speedfactor = 0;
 	}
-
+	
 	// Compute time things
 	const float FIXED_TIMESTEP = 25.f;
 	const float MAX_FRAME_TIME = 200.f;
-
+	
 	static float StoredTime = 0;
-
+	
 	float DeltaTime = std::min(toMsf(g_platformTime.lastFrameDuration()), MAX_FRAME_TIME);
 	DeltaTime = StoredTime + DeltaTime * speedfactor;
 	
@@ -2303,10 +2302,10 @@ void ARX_PLAYER_Manage_Death() {
 	if(player.DeadTime <= 2s) {
 		return;
 	}
-
+	
 	player.m_paralysed = false;
 	float ratio = (player.DeadTime - 2s) / 5s;
-
+	
 	if(ratio >= 1.f) {
 		ARX_MENU_Launch(false);
 		player.DeadTime = 0;
@@ -2400,7 +2399,7 @@ bool ARX_PLAYER_CanStealItem(Entity * item) {
 }
 
 void ARX_PLAYER_Rune_Add_All() {
-
+	
 	ARX_Player_Rune_Add(FLAG_AAM);
 	ARX_Player_Rune_Add(FLAG_CETRIUS);
 	ARX_Player_Rune_Add(FLAG_COMUNICATUM);
@@ -2424,7 +2423,7 @@ void ARX_PLAYER_Rune_Add_All() {
 }
 
 void ARX_PLAYER_Invulnerability(long flag) {
-
+	
 	if(flag) {
 		player.playerflags |= PLAYERFLAGS_INVULNERABILITY;
 	} else {
@@ -2445,60 +2444,60 @@ void ARX_GAME_Reset() {
 	FlyingOverIO = nullptr;
 	g_miniMap.mapMarkerInit();
 	ClearDynLights();
-
+	
 	if(!DONT_ERASE_PLAYER) {
 		entities.player()->halo.flags = 0;
 	}
-
+	
 	entities.player()->gameFlags &= ~GFLAG_INVISIBILITY;
 	
 	ARX_PLAYER_Invulnerability(0);
 	player.m_paralysed = false;
-
+	
 	ARX_PLAYER_Reset_Fall();
-
+	
 	player.levitate = false;
 	player.m_telekinesis = false;
 	player.onfirmground = false;
 	TRUE_FIRM_GROUND = 0;
-
+	
 	lastposy = -99999999999.f;
-
+	
 	ioSteal = nullptr;
-
+	
 	g_gameTime.setSpeed(1.f);
-
+	
 	CheatReset();
 	
 	entities.player()->spellcast_data.castingspell = SPELL_NONE;
 	
 	ARX_INTERFACE_NoteClear();
 	player.Interface = INTER_LIFE_MANA | INTER_MINIBACK | INTER_MINIBOOK;
-
+	
 	// Interactive DynData
 	ARX_INTERACTIVE_ClearAllDynData();
-
+	
 	// PolyBooms
 	PolyBoomClear();
-
+	
 	// Magical Flares
 	ARX_MAGICAL_FLARES_KillAll();
-
+	
 	// Thrown Objects
 	ARX_THROWN_OBJECT_KillAll();
-
+	
 	// Pathfinder
 	EERIE_PATHFINDER_Clear();
-
+	
 	// Sound
 	ARX_SOUND_MixerStop(ARX_SOUND_MixerGame);
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
 	ARX_SOUND_MixerResume(ARX_SOUND_MixerGame);
-
+	
 	// Damages
 	ARX_DAMAGE_Reset_Blood_Info();
 	ARX_DAMAGES_Reset();
-
+	
 	// Scripts
 	ARX_SCRIPT_Timer_ClearAll();
 	ARX_SCRIPT_EventStackClear();
@@ -2508,65 +2507,65 @@ void ARX_GAME_Reset() {
 	REQUEST_SPEECH_SKIP = false;
 	notification_ClearAll();
 	ARX_SPEECH_Reset();
-
+	
 	// Spells
 	ARX_SPELLS_Precast_Reset();
 	ARX_SPELLS_CancelSpellTarget();
-
+	
 	spells.clearAll();
 	ARX_SPELLS_ClearAllSymbolDraw();
 	ARX_SPELLS_ResetRecognition();
-
+	
 	// Particles
 	ARX_PARTICLES_ClearAll();
 	ParticleSparkClear();
 	g_particleManager.Clear();
-
+	
 	// Fogs
 	ARX_FOGS_Render();
-
+	
 	// Anchors
 	ANCHOR_BLOCK_Clear();
-
+	
 	// Attractors
 	ARX_SPECIAL_ATTRACTORS_Reset();
-
+	
 	// Cinematics
 	cinematicKill();
-
+	
 	// Paths
 	ARX_PATH_ClearAllControled();
 	ARX_PATH_ClearAllUsePath();
 	
 	// Player Quests
 	ARX_PLAYER_Quest_Init();
-
+	
 	// Player Keyring
 	ARX_KEYRING_Init();
-
+	
 	// Player Init
 	if(!DONT_ERASE_PLAYER) {
 		g_miniMap.mapMarkerInit();
 		GLOBAL_MAGIC_MODE = true;
-
+		
 		// Linked Objects
 		UnlinkAllLinkedObjects();
 		ARX_EQUIPMENT_UnEquipAllPlayer();
-
+		
 		ARX_EQUIPMENT_ReleaseAll(entities.player());
-
+		
 		CleanInventory();
 		ARX_PLAYER_InitPlayer();
 		ARX_INTERACTIVE_RemoveGoreOnIO(entities.player());
 		
 		// default to mouselook on, inventory closed
 		TRUE_PLAYER_MOUSELOOK_ON = true;
-
+		
 		// Player Inventory
 		CleanInventory();
 		g_playerInventoryHud.setCurrentBag(0);
 	}
-
+	
 	// Misc Player Vars.
 	ROTATE_START = 0;
 	BLOCK_PLAYER_CONTROLS = false;
@@ -2576,10 +2575,10 @@ void ARX_GAME_Reset() {
 	player.jumpstarttime = 0;
 	player.jumpphase = NotJumping;
 	entities.player()->inzone = nullptr;
-
+	
 	RemoveQuakeFX();
 	player.m_improve = false;
-
+	
 	eyeball.reset();
 	
 	entities.player()->ouch_time = 0;
@@ -2589,7 +2588,7 @@ void ARX_GAME_Reset() {
 	
 	// GLOBALMods
 	ARX_GLOBALMODS_Reset();
-
+	
 	// Missiles
 	ARX_MISSILES_ClearAll();
 	
@@ -2611,4 +2610,3 @@ void ARX_PLAYER_Reset_Fall()
 	Falling_Height = 50.f;
 	player.falling = false;
 }
-

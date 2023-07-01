@@ -582,7 +582,7 @@ size_t initSuppressions() {
 	suppress("hammer_club", 66, "settwohanded"); // obsolete command
 	
 	suppress("hanged_gob", 526, "playanim"); // animation 'action3' not loaded
-
+	
 	suppress("human_base", 5872, "loadanim"); // bad animation id: 'bae_ready', should be 'bare_ready'
 	suppress("human_base", 13711, "loadanim"); // missing animation "child_get_hit", should be "child_hit"?
 	suppress("human_base", 13751, "loadanim"); // missing animation "child_get_hit", should be "child_hit"?

@@ -188,7 +188,7 @@ struct EERIE_SCRIPT {
 	bool valid = false;
 	std::string data;
 	size_t shortcut[SM_MAXCMD];
-
+	
 	EERIE_SCRIPT() noexcept {
 		memset(&shortcut, 0, sizeof(shortcut));
 	}
@@ -486,7 +486,7 @@ void ARX_SCRIPT_Timer_Check();
 void ARX_SCRIPT_Timer_ClearAll();
 void ARX_SCRIPT_Timer_Clear_For_IO(Entity * io);
 SCR_TIMER & createScriptTimer(Entity * io, std::string && name);
- 
+
 void ARX_SCRIPT_EventStackExecute(size_t limit = 20);
 void ARX_SCRIPT_EventStackExecuteAll();
 void ARX_SCRIPT_EventStackInit();

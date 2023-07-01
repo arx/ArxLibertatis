@@ -472,7 +472,7 @@ size_t blastInMem(void * param, const unsigned char ** buf) {
 	
 	p->buf += size;
 	p->size = 0;
-
+	
 	return size;
 }
 

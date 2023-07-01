@@ -78,7 +78,7 @@ void DeleteTrack() {
 	delete CKTrack;
 	CKTrack = nullptr;
 }
- 
+
 static void UpDateKeyLight(CinematicKeyframe * kbase) {
 	
 	CinematicKeyframe * klightprev2, * klightnext2;
@@ -335,14 +335,14 @@ static void interpolateLight(float alight, CinematicKeyframe * lightprec, Cinema
 	
 	CinematicLight ldep;
 	CinematicLight lend;
-
+	
 	if(lightprec->light.intensity < 0.f) {
 		c->m_light.intensity = -1.f;
 		return;
 	} else {
 		ldep = lightprec->light;
 	}
-
+	
 	if(c->m_lightd.intensity < 0.f) {
 		return;
 	} else {
@@ -474,32 +474,32 @@ void GereTrack(Cinematic * c, PlatformDuration frameDuration, bool resized, bool
 			const float p1sp = 0.5f * (ksuivsuiv->speedtrack - current->speedtrack);
 			c->speedtrack = f0 * current->speedtrack + f1 * tempsp + f2 * p0sp + f3 * p1sp;
 			}
-
+			
 			interpolateLight(alight, light, c);
 			break;
 		}
 	}
 	
 	updateFadeOut(c, current, a, current != c->m_key || (resized && play));
-
+	
 	if(current != c->m_key) {
 		c->m_key = current;
 		c->changekey = true;
 	}
 	
 	if(play) {
-	
-	c->flTime = c->flTime + frameDuration;
-	CKTrack->currframe = toS(c->flTime) * float(CKTrack->endframe) / GetTimeKeyFramer();
-	
-	// TODO this assert fails if you pause the gametime before a cinematic starts and unpause after
-	arx_assert(CKTrack->currframe >= 0);
-	
-	if(CKTrack->currframe > float(CKTrack->endframe)) {
-		CKTrack->currframe = 0;
-		c->m_key = nullptr;
-		c->flTime = 0;
-	}
+		
+		c->flTime = c->flTime + frameDuration;
+		CKTrack->currframe = toS(c->flTime) * float(CKTrack->endframe) / GetTimeKeyFramer();
+		
+		// TODO this assert fails if you pause the gametime before a cinematic starts and unpause after
+		arx_assert(CKTrack->currframe >= 0);
+		
+		if(CKTrack->currframe > float(CKTrack->endframe)) {
+			CKTrack->currframe = 0;
+			c->m_key = nullptr;
+			c->flTime = 0;
+		}
 	}
 }
 

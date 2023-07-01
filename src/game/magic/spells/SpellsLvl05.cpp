@@ -423,7 +423,7 @@ void RepelUndeadSpell::Update() {
 	mat.setBlendType(RenderMaterial::Additive);
 	
 	Anglef  eObjAngle;
-
+	
 	eObjAngle.setYaw(m_yaw);
 	eObjAngle.setPitch(0);
 	eObjAngle.setRoll(0);

@@ -72,26 +72,26 @@ bool FX_Blur(Cinematic * c, CinematicBitmap * tb, Camera & camera) {
 	if(c->numbitmap < 0 || !tb) {
 		return false;
 	}
-
+	
 	if(TotOldPos == NBOLDPOS) {
 		TotOldPos--;
 		std::copy(OldPos + 1, OldPos + 1 + TotOldPos, OldPos);
 		memmove(OldAz, OldAz + 1, TotOldPos * 4);
 	}
-
+	
 	if((GetTimeKeyFramer() - LastTime) < 0.40f) {
 		LastTime = GetTimeKeyFramer();
 		OldPos[TotOldPos] = c->m_pos;
 		OldAz[TotOldPos] = c->angz;
 		TotOldPos++;
 	}
-
+	
 	float alpha = 32.f;
 	float dalpha = (127.f / NBOLDPOS);
 	Vec3f * pos = OldPos;
 	float * az = OldAz;
 	int nb = TotOldPos;
-
+	
 	while(nb) {
 		camera.m_pos = *pos;
 		camera.angle.setPitch(0);
@@ -102,13 +102,13 @@ bool FX_Blur(Cinematic * c, CinematicBitmap * tb, Camera & camera) {
 		Color col = Color::white;
 		col.a = u8(alpha);
 		DrawGrille(tb, col, 0, nullptr, c->posgrille, c->angzgrille, c->fadegrille);
-
+		
 		alpha += dalpha;
 		pos++;
 		az++;
 		nb--;
 	}
-
+	
 	return true;
 }
 

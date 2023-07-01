@@ -483,12 +483,12 @@ void handleCheatRuneDetection(CheatRune rune) {
 				cur_mx = 2;
 				MakeCoolFx(player.pos);
 			}
-
+			
 			if(cur_rf == 1) {
 				cur_rf = 2;
 				MakeCoolFx(player.pos);
 			}
-
+			
 			if(cur_sm == 1) {
 				cur_sm++;
 			}
@@ -552,7 +552,7 @@ void handleCheatRuneDetection(CheatRune rune) {
 		}
 		case CheatRune_ChangeSkin: {
 			player.skin++;
-
+			
 			if(player.skin == 4 && Random::getf() < 0.9f) {
 				player.skin++;
 			}

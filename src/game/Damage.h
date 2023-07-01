@@ -139,7 +139,7 @@ void doSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, Spell *
 void ARX_DAMAGE_Reset_Blood_Info();
 void ARX_DAMAGE_Show_Hit_Blood();
 void ARX_DAMAGES_Reset();
- 
+
 void ARX_DAMAGES_UpdateAll();
 float damagePlayer(float dmg, DamageType type, Entity * source = nullptr);
 void damageProp(Entity & prop, float dmg, Entity * source, Spell * spell, DamageType type);

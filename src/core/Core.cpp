@@ -143,7 +143,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Angle.h"
 #include "math/Rectangle.h"
 #include "math/Vector.h"
- 
+
 #include "physics/Collisions.h"
 #include "physics/Projectile.h"
 
@@ -290,7 +290,7 @@ void SetEditMode() {
 	}
 	
 	RestoreAllLightsInitialStatus();
-
+	
 	RestoreInitialIOStatus();
 	
 	if(!DONT_ERASE_PLAYER) {
@@ -316,7 +316,7 @@ void levelInit() {
 	if(GMOD_RESET) {
 		ARX_GLOBALMODS_Reset();
 	}
-
+	
 	GMOD_RESET = true;
 	
 	g_dragStartPos = Vec2s(0);
@@ -359,9 +359,9 @@ void levelInit() {
 		if(!DONT_ERASE_PLAYER) {
 			ARX_PLAYER_InitPlayer();
 		}
-
+		
 		g_hudRoot.playerInterfaceFader.resetSlid();
-
+		
 		player.lifePool.current = player.m_lifeMaxWithoutMods;
 		player.manaPool.current = player.m_manaMaxWithoutMods;
 		if(!DONT_ERASE_PLAYER) {
@@ -373,7 +373,7 @@ void levelInit() {
 	
 	progressBarAdvance(4.f);
 	LoadLevelScreen();
-
+	
 	if(player.torch) {
 		player.torch_loop = ARX_SOUND_PlaySFX_loop(g_snd.TORCH_LOOP, nullptr, 1.f);
 	}
@@ -382,23 +382,23 @@ void levelInit() {
 	g_playerCamera.angle = player.angle;
 	
 	RestoreLastLoadedLightning();
-
+	
 	progressBarAdvance();
 	LoadLevelScreen();
-
+	
 	if(LOAD_N_ERASE) {
 		SetEditMode();
 		ARX_SOUND_MixerStop(ARX_SOUND_MixerGame);
 		ARX_SCRIPT_ResetAll(true);
 		EERIE_ANIMMANAGER_PurgeUnused();
 	}
-
+	
 	progressBarAdvance();
 	LoadLevelScreen();
-
+	
 	LOAD_N_ERASE = true;
 	DONT_ERASE_PLAYER = false;
-
+	
 	progressBarAdvance();
 	LoadLevelScreen();
 	
@@ -406,11 +406,11 @@ void levelInit() {
 	
 	progressBarAdvance(2.f);
 	LoadLevelScreen();
-
+	
 	player.desiredangle.setPitch(0.f);
 	player.angle.setPitch(0.f);
 	ARX_PLAYER_RectifyPosition();
-
+	
 	entities.player()->_npcdata->vvpos = -99999;
 	
 	SendMsgToAllIO(nullptr, SM_GAME_READY);
@@ -1005,7 +1005,7 @@ void ManageCombatModeAnimationsEND() {
 				break;
 			}
 			case WEAPON_DAGGER: { // DAGGER ANIMS end
-
+				
 				if(alist[ANIM_DAGGER_READY_PART_1]) {
 					if(layer1.cur_anim == alist[ANIM_DAGGER_READY_PART_1]) {
 						ARX_EQUIPMENT_AttachPlayerWeaponToHand();
@@ -1024,11 +1024,11 @@ void ManageCombatModeAnimationsEND() {
 						changeAnimation(io, 1, alist[ANIM_DAGGER_UNREADY_PART_2]);
 					}
 				}
-
+				
 			break;
 			}
 			case WEAPON_1H: { // 1H ANIMS end
-
+				
 				if(alist[ANIM_1H_READY_PART_1]) {
 					if(layer1.cur_anim == alist[ANIM_1H_READY_PART_1]) {
 						ARX_EQUIPMENT_AttachPlayerWeaponToHand();
@@ -1047,11 +1047,11 @@ void ManageCombatModeAnimationsEND() {
 						changeAnimation(io, 1, alist[ANIM_1H_UNREADY_PART_2]);
 					}
 				}
-
+				
 			break;
 			}
 			case WEAPON_2H: { // 2H ANIMS end
-
+				
 				if(alist[ANIM_2H_READY_PART_1]) {
 					if(layer1.cur_anim == alist[ANIM_2H_READY_PART_1]) {
 						ARX_EQUIPMENT_AttachPlayerWeaponToHand();
@@ -1070,11 +1070,11 @@ void ManageCombatModeAnimationsEND() {
 						changeAnimation(io, 1, alist[ANIM_2H_UNREADY_PART_2]);
 					}
 				}
-
+				
 			break;
 			}
 			case WEAPON_BOW: { // MISSILE Weapon ANIMS end
-
+				
 				if(alist[ANIM_MISSILE_READY_PART_1]) {
 					if(layer1.cur_anim == alist[ANIM_MISSILE_READY_PART_1]) {
 						ARX_EQUIPMENT_AttachPlayerWeaponToHand();
@@ -1103,11 +1103,11 @@ void ManageCombatModeAnimationsEND() {
 						changeAnimation(io, 1, alist[ANIM_MISSILE_UNREADY_PART_2]);
 					}
 				}
-
+				
 			break;
 			}
 		}
-
+		
 		// Spell casting anims
 		if(alist[ANIM_CAST] && layer1.cur_anim == alist[ANIM_CAST]) {
 			if(alist[ANIM_CAST_END]) {
@@ -1117,11 +1117,11 @@ void ManageCombatModeAnimationsEND() {
 			AcquireLastAnim(io);
 			layer1.cur_anim = nullptr;
 			player.doingmagic = 0;
-
+			
 			if(WILLRETURNTOCOMBATMODE) {
 				player.Interface |= INTER_COMBATMODE;
 				player.Interface |= INTER_NO_STRIKE;
-
+				
 				ARX_EQUIPMENT_LaunchPlayerReadyWeapon();
 				WILLRETURNTOCOMBATMODE = false;
 			}

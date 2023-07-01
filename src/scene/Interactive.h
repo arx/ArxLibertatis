@@ -145,11 +145,11 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance = -1, AddIn
 void UpdateCameras();
 
 Entity * InterClick(const Vec2s & pos);
- 
+
 void UpdateInter();
 void RenderInter();
 void SetWeapon_On(Entity * io);
- 
+
 void Prepare_SetWeapon(Entity * io, const res::path & temp);
 void ComputeVVPos(Entity * io);
 void SetYlsideDeath(Entity * io);

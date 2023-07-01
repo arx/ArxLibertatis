@@ -64,11 +64,11 @@ public:
 	[[nodiscard]] constexpr T getPitch() const noexcept {
 		return m_pitch;
 	}
-
+	
 	[[nodiscard]] constexpr T getYaw() const noexcept {
 		return m_yaw;
 	}
-
+	
 	[[nodiscard]] constexpr T getRoll() const noexcept {
 		return m_roll;
 	}
@@ -76,11 +76,11 @@ public:
 	constexpr void setPitch(T pitch) noexcept {
 		m_pitch = pitch;
 	}
-
+	
 	constexpr void setYaw(T yaw) noexcept {
 		m_yaw = yaw;
 	}
-
+	
 	constexpr void setRoll(T roll) noexcept {
 		m_roll = roll;
 	}

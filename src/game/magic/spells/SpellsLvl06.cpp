@@ -67,12 +67,12 @@ bool RaiseDeadSpell::CanLaunch() {
 	Vec3f target;
 	
 	GetTargetAndBeta(target, beta);
-
+	
 	if(!ARX_INTERACTIVE_ConvertToValidPosForIO(nullptr, &target)) {
 		ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE);
 		return false;
 	}
-
+	
 	return true;
 }
 

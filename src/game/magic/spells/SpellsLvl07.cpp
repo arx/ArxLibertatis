@@ -54,7 +54,7 @@ bool FlyingEyeSpell::CanLaunch() {
 	if(!eyeball.isInactive()) {
 		return false;
 	}
-
+	
 	if(spells.getSpellByCaster(m_caster, m_type)) {
 		return false;
 	}
@@ -104,7 +104,7 @@ void FlyingEyeSpell::Launch() {
 }
 
 void FlyingEyeSpell::End() {
-
+	
 	if(eyeball.isInactive()) {
 		return;
 	}
@@ -116,7 +116,7 @@ void FlyingEyeSpell::End() {
 	
 	ARX_SOUND_PlaySFX(g_snd.SPELL_EYEBALL_OUT);
 	eyeball.end();
-
+	
 	for(long n = 0; n < 12; n++) {
 		PARTICLE_DEF * pd = createParticle(true);
 		if(!pd) {
@@ -172,7 +172,7 @@ static void FlyingEyeSpellUpdateHand(const Vec3f & pos, LightHandle & light, siz
 void FlyingEyeSpell::Update() {
 	
 	const GameInstant now = g_gameTime.now();
-
+	
 	eyeball.update();
 	
 	m_lastupdate = now;
@@ -375,7 +375,7 @@ void IceFieldSpell::Launch() {
 	
 	for(int i = 0; i < iMax; i++) {
 		float t = Random::getf();
-
+		
 		if(t < 0.5f) {
 			tType[i] = 0;
 		} else {
@@ -425,7 +425,7 @@ void IceFieldSpell::Update() {
 		el->duration = 600ms;
 		el->extras = 0;
 	}
-
+	
 	if(!VisibleSphere(Sphere(m_pos - Vec3f(0.f, 120.f, 0.f), 350.f))) {
 		return;
 	}

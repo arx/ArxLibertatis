@@ -79,16 +79,16 @@ bool CursorTrail::ComputePer(const Vec2s & p1, const Vec2s & p2, TexturedVertex 
 	if(fMag < std::numeric_limits<float>::epsilon()) {
 		return false;
 	}
-
+	
 	fMag = size / fMag;
-
+	
 	v1->p.x = sTemp.x * fMag;
 	v1->p.y = sTemp.y * fMag;
 	v2->p.x = p1f.x - v1->p.x;
 	v2->p.y = p1f.y - v1->p.y;
 	v1->p.x += p1f.x;
 	v1->p.y += p1f.y;
-
+	
 	return true;
 }
 
@@ -219,7 +219,6 @@ void MenuCursor::DrawCursor() {
 
 MenuCursor * pMenuCursor = nullptr;
 
-
 ThumbnailCursor g_thumbnailCursor;
 
 void ThumbnailCursor::render() {
@@ -238,7 +237,7 @@ void ThumbnailCursor::render() {
 		
 		EERIEDrawBitmap(rect, 0.001f, m_loadTexture, Color::white);
 		drawLineRectangle(rect, 0.01f, Color::white);
-
+		
 		m_renderTexture = nullptr;
 	}
 }

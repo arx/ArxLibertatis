@@ -250,25 +250,25 @@ float Cedric_GetInvisibility(Entity * io) {
 void Cedric_ApplyLightingFirstPartRefactor(Entity & io) {
 	
 	io.special_color = Color3f::white;
-
+	
 	float poisonpercent = 0.f;
 	float trappercent = 0.f;
 	float secretpercent = 0.f;
-
+	
 	if((io.ioflags & IO_NPC) && io._npcdata->poisonned > 0.f) {
 		poisonpercent = io._npcdata->poisonned * 0.05f;
 		if(poisonpercent > 1.f) {
 			poisonpercent = 1.f;
 		}
 	}
-
+	
 	if((io.ioflags & IO_ITEM) && io.poisonous > 0.f && io.poisonous_count) {
 		poisonpercent = io.poisonous * (1.0f / 20);
 		if(poisonpercent > 1.f) {
 			poisonpercent = 1.f;
 		}
 	}
-
+	
 	if((io.ioflags & IO_FIX) && io._fixdata->trapvalue > -1) {
 		trappercent = player.TRAP_DETECT - io._fixdata->trapvalue;
 		if(trappercent > 0.f) {
@@ -276,7 +276,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity & io) {
 			trappercent = glm::clamp(trappercent, 0.6f, 1.f);
 		}
 	}
-
+	
 	if((io.ioflags & IO_FIX) && io.secretvalue > -1) {
 		secretpercent = player.TRAP_SECRET - io.secretvalue;
 		if(secretpercent > 0.f) {
@@ -284,23 +284,23 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity & io) {
 			secretpercent = glm::clamp(secretpercent, 0.6f, 1.f);
 		}
 	}
-
+	
 	if(poisonpercent > 0.f) {
 		io.special_color = Color3f::green;
 	}
-
+	
 	if(trappercent > 0.f) {
 		io.special_color = Color3f(trappercent, 1.f - trappercent, 1.f - trappercent);
 	}
-
+	
 	if(secretpercent > 0.f) {
 		io.special_color = Color3f(1.f - secretpercent, 1.f - secretpercent, secretpercent);
 	}
-
+	
 	if(io.ioflags & IO_FREEZESCRIPT) {
 		io.special_color = Color3f::blue;
 	}
-
+	
 	if(io.sfx_flag & SFX_TYPE_YLSIDE_DEATH) {
 		if(io.show == SHOW_FLAG_TELEPORTING) {
 			io.sfx_time = io.sfx_time + g_gameTime.lastFrameDuration();
@@ -309,7 +309,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity & io) {
 			}
 		} else {
 			const GameDuration elapsed = g_gameTime.now() - io.sfx_time;
-
+			
 			if(elapsed > 0) {
 				if(elapsed < 3s) { // 5 seconds to red
 					float ratio = elapsed / 3s;
@@ -323,7 +323,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity & io) {
 					AddRandomSmoke(io, 2);
 				} else { // SFX finish
 					io.sfx_time = 0;
-
+					
 					if(io.ioflags & IO_NPC) {
 						MakePlayerAppearsFX(io);
 						AddRandomSmoke(io, 50);
@@ -349,16 +349,16 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity & io) {
 							light->pos = io.pos + Vec3f(0.f, -80.f, 0.f);
 							light->duration = 600ms;
 						}
-
+						
 						if(io.sfx_flag & SFX_TYPE_INCINERATE) {
 							io.sfx_flag &= ~SFX_TYPE_INCINERATE;
 							io.sfx_flag &= ~SFX_TYPE_YLSIDE_DEATH;
 							Spell * spell = spells.getSpellOnTarget(io.index(), SPELL_INCINERATE);
-
+							
 							if(!spell) {
 								spell = spells.getSpellOnTarget(io.index(), SPELL_MASS_INCINERATE);
 							}
-
+							
 							if(spell) {
 								spells.endSpell(spell);
 								float damages = ARX_SPELLS_ApplyFireProtection(&io, 20 * spell->m_level);
@@ -583,7 +583,7 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 		long first;
 		long second;
 		long third;
-
+		
 		if(_ffr[0] >= _ffr[1] && _ffr[1] >= _ffr[2]) {
 			first = 0;
 			second = 1;
@@ -609,7 +609,7 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 			second = 1;
 			third = 0;
 		}
-
+		
 		if(_ffr[first] > 70.f && _ffr[second] > 60.f) {
 			float wave = timeWaveSin(g_gameTime.now(), 200ms * glm::pi<float>());
 			float siz = ddist * (halo.radius * 1.5f * (wave * .1f + .7f)) * .6f;
@@ -654,12 +654,12 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 extern float WATEREFFECT;
 
 void DrawEERIEInter_Render(EERIE_3DOBJ * eobj, const TransformInfo & t, Entity * io, float invisibility) {
-
+	
 	ColorMod colorMod;
 	colorMod.updateFromEntity(io, !io);
-
+	
 	Vec3f tv = t.pos;
-
+	
 	if(io && (io->ioflags & IO_ITEM)) {
 		tv.y -= 60.f;
 	} else {
@@ -721,9 +721,9 @@ void DrawEERIEInter_Render(EERIE_3DOBJ * eobj, const TransformInfo & t, Entity *
 				float lr = Color4f::fromRGBA(tvList[n].color).r;
 				
 				float dd = 1.f / tvList[n].w;
-
+				
 				dd = glm::clamp(dd, 0.f, 1.f);
-
+				
 				Vec3f & norm = eobj->vertexlist[face.vid[n]].norm;
 				
 				float fb = ((1.f - dd) * 6.f + (glm::abs(norm.x) + glm::abs(norm.y))) * 0.125f;
@@ -737,13 +737,13 @@ void DrawEERIEInter_Render(EERIE_3DOBJ * eobj, const TransformInfo & t, Entity *
 				
 				tvList[n].color = Color::rgb(fr, 0.118f, fb).toRGB();
 			}
-
+			
 			// Transparent poly: storing info to draw later
 			if((face.facetype & POLY_TRANS) || invisibility > 0.f) {
 				tvList[n].color = Color::gray(fTransp).toRGB();
 			}
 		}
-
+		
 		// HALO HANDLING START
 		if(io && (io->halo.flags & HALO_ACTIVE)) {
 			const IO_HALO & halo = io->halo;
@@ -763,26 +763,26 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 	if(!eobj) {
 		return;
 	}
-
+	
 	// Avoids To treat an object that isn't Visible
 	if(!forceDraw && io && io != entities.player() && !Cedric_IO_Visible(t.pos)) {
 		return;
 	}
-
+	
 	DrawEERIEInter_ModelTransform(eobj, t);
 	if(io) {
 		io->bbox3D = UpdateBbox3d(eobj);
 	}
-
+	
 	DrawEERIEInter_ViewProjectTransform(eobj);
 	if(io) {
 		io->bbox2D = UpdateBbox2d(*eobj);
 	}
-
+	
 	if(!forceDraw && ARX_SCENE_PORTAL_ClipIO(io, t.pos)) {
 		return;
 	}
-
+	
 	DrawEERIEInter_Render(eobj, t, io, invisibility);
 }
 
@@ -810,7 +810,7 @@ struct HaloInfo {
 	HaloRenderInfo entries[maxSize];
 	float MAX_ZEDE;
 	float ddist;
-
+	
 	HaloInfo()
 		: size(0)
 		, MAX_ZEDE(0.f)
@@ -898,7 +898,7 @@ static void AddAnimatedObjectHalo(const HaloInfo & haloInfo, const VertexId * pa
 		long first;
 		long second;
 		long third;
-
+		
 		if(_ffr[0] >= _ffr[1] && _ffr[1] >= _ffr[2]) {
 			first = 0;
 			second = 1;
@@ -924,7 +924,7 @@ static void AddAnimatedObjectHalo(const HaloInfo & haloInfo, const VertexId * pa
 			second = 1;
 			third = 0;
 		}
-
+		
 		if(_ffr[first] > 150.f && _ffr[second] > 110.f) {
 			float wave = timeWaveSin(g_gameTime.now(), 200ms * glm::pi<float>());
 			float siz = haloInfo.ddist * (curhalo->radius * (wave * .1f + 1.f)) * .6f;
@@ -1010,7 +1010,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 			PrepareAnimatedObjectHalo(haloInfo, pos, obj, eobj);
 		}
 	}
-
+	
 	bool glow = false;
 	ColorRGBA glowColor;
 	if(io && (io->sfx_flag & SFX_TYPE_YLSIDE_DEATH) && io->show != SHOW_FLAG_TELEPORTING) {
@@ -1157,7 +1157,7 @@ static Vec3f CalcTranslation(AnimLayer & layer) {
 }
 
 static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
-
+	
 	if(!io) {
 		return;
 	}
@@ -1165,21 +1165,21 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 	arx_assert(isallfinite(ftr));
 	
 	ftr *= scale;
-
+	
 	float temp;
 	if(io == entities.player()) {
 		temp = MAKEANGLE(180.f - player.angle.getYaw());
 	} else {
 		temp = MAKEANGLE(180.f - io->angle.getYaw());
 	}
-
+	
 	Vec3f ftr2 = VRotateY(ftr, temp);
-
+	
 	// stores Translations for a later use
 	io->move = ftr2;
-
+	
 	if(io->animlayer[0].cur_anim) {
-
+		
 		// Use calculated value to notify the Movement engine of the translation to do
 		if(io->ioflags & IO_NPC) {
 			ftr = Vec3f(0.f);
@@ -1188,7 +1188,7 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 			// Must recover translations for NON-NPC IO
 			PushIO_ON_Top(*io, io->move.y - io->lastmove.y);
 		}
-
+		
 		io->lastmove = ftr2;
 	}
 }
@@ -1199,7 +1199,7 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer) {
 	
 	std::vector<unsigned char> grps(obj->bones.size());
-
+	
 	for(long count = MAX_ANIM_LAYERS - 1; count >= 0; count--) {
 		
 		AnimLayer & layer = animlayer[count];
@@ -1257,7 +1257,7 @@ static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer) {
 }
 
 static void Cedric_BlendAnimation(Skeleton & rig, AnimationBlendStatus * animBlend) {
-
+	
 	if(!animBlend->m_active) {
 		return;
 	}
@@ -1431,25 +1431,25 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
                              Entity * io,
                              bool update_movement
 ) {
-
+	
 	ARX_PROFILE_FUNC();
 	
 	if(io) {
 		float speedfactor = io->basespeed + io->speed_modif;
-
+		
 		if(speedfactor < 0) {
 			speedfactor = 0;
 		}
-
+		
 		AnimationDuration tim = time * speedfactor;
-
+		
 		if(tim <= 0) {
 			time = 0;
 		} else {
 			time = tim;
 		}
 	}
-
+	
 	if(time > 0) {
 		for(size_t count = 0; count < MAX_ANIM_LAYERS; count++) {
 			AnimLayer & layer = animlayer[count];

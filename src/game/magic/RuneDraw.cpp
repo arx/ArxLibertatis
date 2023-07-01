@@ -103,30 +103,30 @@ static void updateIOLight(Entity * io) {
 }
 
 void ARX_SPELLS_UpdateBookSymbolDraw(const Rect & rect) {
-
+	
 	if(g_bookSymbolDraw.sequence.empty()) {
 		return;
 	}
 	
 	GameInstant now = g_gameTime.now();
-
+	
 	SYMBOL_DRAW * sd = &g_bookSymbolDraw;
 	AnimationDuration elapsed = toAnimationDuration(now - sd->starttime);
 	sd->elapsed = elapsed;
-
+	
 	const size_t nbcomponents = sd->sequence.length();
-
+	
 	if(elapsed > sd->duration || nbcomponents == 0) {
 		sd->sequence.clear();
 		return;
 	}
 		
 	AnimationDuration timePerComponent = sd->duration * (1.0f / float(nbcomponents));
-
+	
 	if(timePerComponent <= 0) {
 		timePerComponent = 1ms;
 	}
-
+	
 	AnimationDuration timeRemaining = elapsed;
 	
 	if(timeRemaining > sd->duration) {
@@ -136,33 +136,33 @@ void ARX_SPELLS_UpdateBookSymbolDraw(const Rect & rect) {
 	// Keep size ratios among runes
 	Vec2f rectToSymbolsRatio = Vec2f(rect.size()) / (Vec2f(lMaxSymbolDrawSize));
 	Vec2f scale = Vec2f(glm::min(rectToSymbolsRatio.x, rectToSymbolsRatio.y));
-
+	
 	Vec2s iMin;
 	Vec2s iMax;
-
+	
 	ReCenterSequence(sd->sequence, iMin, iMax);
 	Vec2f size = Vec2f(iMax - iMin) * scale;
-
+	
 	Vec2f scaledMin = Vec2f(iMin) * scale;
-
+	
 	Vec2f pos = Vec2f(rect.center()) - size / 2.0f - scaledMin;
-
+	
 	for(size_t j = 0; j < nbcomponents; j++) {
-
+		
 		Vec2f vect = Vec2f(GetSymbVector(sd->sequence[j]));
 		vect *= symbolVecScale;
 		vect *= scale;
-
+		
 		if(timeRemaining < timePerComponent) {
 			float ratio = timeRemaining / timePerComponent;
 			pos += vect * ratio * 0.5f;
 			AddFlare(pos, glm::min(scale.x, scale.y) * 0.2f, 1, entities.player(), true);
-
+			
 			break;
 		}
-
+		
 		pos += vect;
-
+		
 		timeRemaining -= timePerComponent;
 	}
 }

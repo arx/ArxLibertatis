@@ -71,11 +71,11 @@ bool MenuFader_process() {
 	
 	float alpha = menuFadeElapsed / fadeDuration;
 	FadeInOut(alpha);
-
+	
 	if(!g_menuFadeActive) {
 		return true;
 	}
-
+	
 	if(bFadeInOut == Fade_In) {
 		menuFadeElapsed = menuFadeElapsed + g_platformTime.lastFrameDuration();
 		

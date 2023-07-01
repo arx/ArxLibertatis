@@ -71,7 +71,7 @@ static MemoryLogger memLogger;
 void ArxIO_init() {
 	Logger::add(&memLogger);
 	Logger::set("*", Logger::Debug);
-
+	
 	LogInfo << "Arx Io library initialized";
 }
 
@@ -86,10 +86,10 @@ int ArxIO_getLogLine(char * outMessage, int size) {
 	if(memLogger.m_Lines.empty()) {
 		return 0;
 	}
-
+	
 	memLogger.m_Lines.front().copy(outMessage, size);
 	memLogger.m_Lines.pop_front();
-
+	
 	return memLogger.m_Lines.size();
 }
 

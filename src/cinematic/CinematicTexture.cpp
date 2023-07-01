@@ -91,7 +91,7 @@ std::unique_ptr<CinematicBitmap> CreateCinematicBitmap(const res::path & path, i
 	if(size.x % cinMaxSize.x) {
 		nb.x++;
 	}
-
+	
 	if(size.y % cinMaxSize.y) {
 		nb.y++;
 	}
@@ -100,18 +100,18 @@ std::unique_ptr<CinematicBitmap> CreateCinematicBitmap(const res::path & path, i
 	bi->m_count = nb;
 	
 	bi->grid.AllocGrille(bi->m_count, Vec2f(bi->m_size), Vec2f(((bi->m_size.x > cinMaxSize.x) ? cinMaxSize.x : bi->m_size.x), ((bi->m_size.y > cinMaxSize.y) ? cinMaxSize.y : bi->m_size.y)), scale);
-
+	
 	int h = bi->m_size.y;
-
+	
 	while(nb.y) {
 		int h2 = (h - cinMaxSize.y) < 0 ? h : cinMaxSize.y;
-
+		
 		int w = bi->m_size.x;
 		int nbxx = nb.x;
-
+		
 		while(nbxx) {
 			int w2 = (w - cinMaxSize.x) < 0 ? w : cinMaxSize.x;
-
+			
 			Texture * tex = GRenderer->createTexture();
 			tex->create(size_t(w2), size_t(h2), cinematicImage.getFormat());
 			tex->getImage().copy(cinematicImage, 0, 0,
@@ -126,20 +126,20 @@ std::unique_ptr<CinematicBitmap> CreateCinematicBitmap(const res::path & path, i
 			
 			bi->grid.AddQuadUVs(depc, tc, bitmappos, bitmapw, tex);
 			}
-
+			
 			w -= cinMaxSize.x;
-
+			
 			nbxx--;
 		}
-
+		
 		h -= cinMaxSize.y;
 		nb.y--;
 	}
-
+	
 	bi->grid.m_scale = scale;
-
+	
 	bi->grid.ReajustUV();
-
+	
 	return bi;
 }
 
@@ -159,20 +159,20 @@ bool CinematicGrid::AllocGrille(Vec2i nb, Vec2f t, Vec2f d, int scale) {
 	Vec2f dep = -t;
 	
 	float olddyy = oldd.y;
-
+	
 	while(oldnb.y--) {
 		nb.y = scale;
-
+		
 		if(!oldnb.y) {
 			nb.y = 1;
 		}
-
+		
 		while(nb.y--) {
 			float olddxx = oldd.x;
 			float depxx = dep.x;
 			float dxx = d.x;
 			int oldnbxx = oldnb.x;
-
+			
 			while(oldnbxx--) {
 				nb.x = scale;
 				
@@ -184,28 +184,28 @@ bool CinematicGrid::AllocGrille(Vec2i nb, Vec2f t, Vec2f d, int scale) {
 					m_vertexs.emplace_back(depxx, dep.y);
 					depxx += dxx;
 				}
-
+				
 				olddxx += oldd.x;
-
+				
 				if(olddxx > (t.x * 2.f)) {
 					dxx = t.x - depxx;
 					dxx /= float(scale);
 				}
 				
 			}
-
+			
 			dep.y += d.y;
 		}
 		
-			olddyy += oldd.y;
-
-			if(olddyy > (t.y * 2.f)) {
-				d.y = t.y - dep.y;
-				d.y /= float(scale);
-			}
+		olddyy += oldd.y;
+		
+		if(olddyy > (t.y * 2.f)) {
+			d.y = t.y - dep.y;
+			d.y /= float(scale);
+		}
 		
 	}
-
+	
 	return true;
 }
 
@@ -235,12 +235,12 @@ void CinematicGrid::AddQuadUVs(Vec2i depc, Vec2i tc, Vec2i bitmappos, Vec2i bitm
 	tc.x++;
 	int tcyy = tc.y;
 	int depcyy = depc.y;
-
+	
 	while(tcyy--) {
 		float u = 0.f;
 		int depcxx = depc.x;
 		int tcxx = tc.x;
-
+		
 		while(tcxx--) {
 			int i0, i1, i2, i3;
 			GetIndNumCube(depcxx, depcyy, &i0, &i1, &i2, &i3);
@@ -252,27 +252,27 @@ void CinematicGrid::AddQuadUVs(Vec2i depc, Vec2i tc, Vec2i bitmappos, Vec2i bitm
 			depcxx++;
 			u += du;
 		}
-
+		
 		depcyy++;
 		v += dv;
 	}
-
+	
 	tc.x--;
 	tc.y--;
-
+	
 	while(tc.y--) {
 		int depcxx = depc.x;
 		int tcxx = tc.x;
-
+		
 		while(tcxx--) {
 			int i0, i1, i2, i3;
 			GetIndNumCube(depcxx, depc.y, &i0, &i1, &i2, &i3);
-
+			
 			AddPoly(matIdx, i0, i1, i2);
 			AddPoly(matIdx, i1, i2, i3);
 			depcxx++;
 		}
-
+		
 		depc.y++;
 	}
 }
@@ -322,7 +322,7 @@ size_t CinematicGrid::AddMaterial(Texture * tex) {
 	m_mats[matIdx].tex = tex;
 	m_mats[matIdx].startind = deb;
 	m_mats[matIdx].nbind = 0;
-
+	
 	return matIdx;
 }
 

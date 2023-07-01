@@ -47,22 +47,22 @@ public:
 	
 	CrashHandlerImpl();
 	virtual ~CrashHandlerImpl() = default;
-
+	
 	virtual bool initialize();
 	virtual void shutdown();
-
+	
 	bool addAttachedFile(const fs::path & file);
 	bool setVariable(std::string_view name, std::string_view value);
 	void setWindow(u64 window);
 	
 	bool addText(std::string_view text);
-
+	
 	bool setReportLocation(const fs::path & location);
 	bool deleteOldReports(size_t nbReportsToKeep);
-
+	
 	void registerCrashCallback(CrashHandler::CrashCallback crashCallback);
 	void unregisterCrashCallback(CrashHandler::CrashCallback crashCallback);
-
+	
 	virtual bool registerThreadCrashHandlers() = 0;
 	virtual void unregisterThreadCrashHandlers() = 0;
 	

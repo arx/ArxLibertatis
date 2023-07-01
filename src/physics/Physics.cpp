@@ -230,7 +230,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj) {
 			particle.pos.x = (particle.pos.x - pbox->vert[0].pos.x) * 0.5f + pbox->vert[0].pos.x;
 			particle.pos.z = (particle.pos.z - pbox->vert[0].pos.z) * 0.5f + pbox->vert[0].pos.z;
 		}
-
+		
 		particle.initpos = particle.pos;
 		
 		if(first) {

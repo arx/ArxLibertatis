@@ -151,7 +151,7 @@ static void ComputeLight2DPos(EERIE_LIGHT * _pL) {
 		float fMaxdist = player.m_telekinesis ? 850 : 300;
 		
 		float t = siz * (1.0f - 1.0f * p.w / fMaxdist) + 10;
-
+		
 		_pL->m_screenRect = Rectf(pos2d.x - t, pos2d.y - t, pos2d.x + t, pos2d.y + t);
 	}
 }
@@ -437,7 +437,7 @@ void UpdateLlights(ShaderLight lights[], size_t & lightsCount, const Vec3f pos, 
 	for(size_t i = 0; i < g_culledStaticLightsCount; i++) {
 		Insertllight(llights, values, g_culledStaticLights[i], pos, forPlayerColor);
 	}
-
+	
 	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {
 		Insertllight(llights, values, g_culledDynamicLights[i], pos, forPlayerColor);
 	}
@@ -489,7 +489,7 @@ void ClearTileLights() {
 }
 
 float GetColorz(const Vec3f & pos) {
-
+	
 	ShaderLight lights[llightsSize];
 	size_t lightsCount;
 	UpdateLlights(lights, lightsCount, pos, true);
@@ -591,18 +591,18 @@ ColorRGBA ApplyLight(ShaderLight lights[], size_t lightsCount, const Vec3f & pos
 			}
 			
 			cosangle *= materialDiffuse;
-
+			
 			tempColor += light.rgb255 * cosangle;
 		}
 	}
-
+	
 	tempColor *= colorMod.factor;
 	tempColor += colorMod.term;
-
+	
 	u8 ir = clipByte255(int(tempColor.r));
 	u8 ig = clipByte255(int(tempColor.g));
 	u8 ib = clipByte255(int(tempColor.b));
-
+	
 	return Color(ir, ig, ib).toRGBA();
 }
 

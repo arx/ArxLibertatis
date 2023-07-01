@@ -92,7 +92,7 @@ void ARX_EQUIPMENT_ReleaseAll(Entity * io);
 void ARX_EQUIPMENT_AttachPlayerWeaponToHand();
 void ARX_EQUIPMENT_AttachPlayerWeaponToBack();
 void ARX_EQUIPMENT_LaunchPlayerReadyWeapon();
- 
+
 void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon();
 WeaponType ARX_EQUIPMENT_GetPlayerWeaponType();
 
@@ -127,7 +127,7 @@ Entity * getWeapon(Entity & entity) noexcept;
 std::string_view getWeaponMaterial(Entity & entity) noexcept;
 DamageType getDamageTypeFromWeaponMaterial(std::string_view material) noexcept;
 float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float ratioaim, Vec3f * pos = nullptr);
- 
+
 void ARX_EQUIPMENT_IdentifyAll();
 
 void ARX_EQUIPMENT_UnEquipAllPlayer();

@@ -630,9 +630,9 @@ static bool ARX_CHANGELEVEL_Push_Player(AreaId area) {
 	
 	size_t pos = 0;
 	pos += (sizeof(ARX_CHANGELEVEL_PLAYER));
-
+	
 	memset(asp, 0, sizeof(ARX_CHANGELEVEL_PLAYER));
-
+	
 	asp->AimTime = 1500;
 	asp->angle = player.angle;
 	asp->Attribute_Constitution = player.m_attribute.constitution;
@@ -688,7 +688,7 @@ static bool ARX_CHANGELEVEL_Push_Player(AreaId area) {
 	asp->falling = player.falling;
 	asp->gold = player.gold;
 	asp->invisibility = entities.player()->invisibility;
-
+	
 	asp->jumpphase = player.jumpphase;
 	
 	GameInstant jumpstart = g_gameTime.now() + (player.jumpstarttime - g_platformTime.frameStart()).value();
@@ -874,7 +874,7 @@ static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 		+ sizeof(SavedGroupData) * io->groups.size()
 		+ sizeof(SavedTweakInfo) * io->tweaks.size()
 		+ 48000;
-
+	
 	// Allocate Main Save Buffer
 	std::vector<char> buffer(allocsize);
 	char * dat = buffer.data();
@@ -1049,7 +1049,7 @@ static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 			ais.nbtimers++;
 		}
 	}
-
+	
 	ais.halo = io->halo_native;
 	ais.Tweak_nb = io->tweaks.size();
 	
@@ -1120,13 +1120,13 @@ static bool ARX_CHANGELEVEL_Push_IO(const Entity * io, AreaId area) {
 			as->damages = io->_npcdata->damages;
 			as->detect = io->_npcdata->detect;
 			as->fightdecision = io->_npcdata->fightdecision;
-
+			
 			if(io->_npcdata->lifePool.current > 0.f) {
 				storeIdString(as->id_weapon, io->_npcdata->weapon);
 			} else {
 				as->id_weapon[0] = 0;
 			}
-
+			
 			as->lastmouth = io->_npcdata->lastmouth;
 			as->look_around_inc = io->_npcdata->look_around_inc;
 			
@@ -1766,7 +1766,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(std::string_view idString, EntityInstance
 			LogWarning << "Found bad entity move in " << io->idString();
 			io->move = Vec3f(0.f);
 		}
-
+		
 		io->lastmove = ais->lastmove.toVec3();
 		if(!isallfinite(io->lastmove)) {
 			LogWarning << "Found bad entity lastmove in " << io->idString();
@@ -2500,7 +2500,7 @@ static bool ARX_CHANGELEVEL_PopLevel(AreaId area, bool reloadflag, std::string_v
 	ARX_INTERACTIVE_Show_Hide_1st(entities.player(), !EXTERNALVIEW);
 	
 	ARX_INTERACTIVE_HideGore(entities.player(), false);
-
+	
 	// default to mouselook true, inventory/book closed
 	TRUE_PLAYER_MOUSELOOK_ON = true;
 	// disable combat mode

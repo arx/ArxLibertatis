@@ -100,7 +100,7 @@ bool PlayerInventoryHud::updateInput() {
 		}
 		
 	}
-
+	
 	if(size_t(m_currentBag) < entities.player()->inventory->bags() - 1) {
 		
 		pos.y += std::floor(37.f * m_scale);
@@ -197,8 +197,6 @@ void PlayerInventoryHud::update() {
 }
 
 void PlayerInventoryHud::CalculateInventoryCoordinates() {
-	
-	
 	Vec2f anchorPos = anchorPosition();
 	
 	m_arrowsAnchor.x = anchorPos.x + (m_bagSize.x * m_scale) - ((32 + 3)  * m_scale);
@@ -402,7 +400,7 @@ bool PlayerInventoryHud::containsPos(const Vec2s & pos) {
 	Vec2f anchorPos = anchorPosition();
 	
 	Vec2s iPos = Vec2s(anchorPos);
-
+	
 	if(player.Interface & INTER_INVENTORY) {
 		Vec2s t = pos - iPos;
 		
@@ -439,7 +437,7 @@ bool PlayerInventoryHud::containsPos(const Vec2s & pos) {
 		}
 		
 	}
-
+	
 	return false;
 }
 

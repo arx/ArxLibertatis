@@ -87,14 +87,14 @@ void CinematicBorder::update() {
 	
 	if(m_direction == 1) {
 		CINEMA_DECAL += g_platformTime.lastFrameDuration() / 10ms;
-
+		
 		if(CINEMA_DECAL > 100.f) {
 			CINEMA_DECAL = 100.f;
 			m_direction = 0;
 		}
 	} else if(m_direction == -1) {
 		CINEMA_DECAL -= g_platformTime.lastFrameDuration() / 10ms;
-
+		
 		if(CINEMA_DECAL < 0.f) {
 			CINEMA_DECAL = 0.f;
 			m_direction = 0;

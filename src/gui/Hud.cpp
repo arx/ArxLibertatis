@@ -214,7 +214,7 @@ void BookIconGui::updateInput() {
 	
 	if(m_isSelected) {
 		cursorSetInteraction();
-
+		
 		if(eeMouseDown1()) {
 			g_playerBook.toggle();
 		}
@@ -1417,8 +1417,7 @@ void HudRoot::draw() {
 	
 	damagedEquipmentGui.updateRect(stealthGauge.rect());
 	if(player.torch && damagedEquipmentGui.rect().overlaps(currentTorchIconGui.rect())) {
-		Vec2f offset = Vec2f(currentTorchIconGui.rect().right - stealthGauge.rect().right + indicatorHorizSpacing,
-		                     0.0f);
+		Vec2f offset = Vec2f(currentTorchIconGui.rect().right - stealthGauge.rect().right + indicatorHorizSpacing, 0.0f);
 		damagedEquipmentGui.updateRect(stealthGauge.rect() + offset);
 	}
 	damagedEquipmentGui.update();
@@ -1454,7 +1453,6 @@ void HudRoot::draw() {
 	damagedEquipmentGui.draw();
 	
 	if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MINIBACK)) {
-		
 		if(player.Interface & INTER_STEAL) {
 			stealIconGui.draw();
 		}

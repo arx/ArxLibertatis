@@ -356,15 +356,15 @@ bool NeedHalo(Entity * io)
 	if(!io || !(io->ioflags & IO_ITEM)) {
 		return false;
 	}
-
+	
 	if(io->halo.flags & HALO_ACTIVE) {
-		(io->m_icon) {
+		if(io->m_icon) {
 			io->m_icon->getHalo();
 		}
-
+		
 		return true;
 	}
-
+	
 	return false;
 }
 
@@ -374,16 +374,16 @@ void InventoryOpenClose(unsigned long t) {
 	if(t == 1 && (player.Interface & INTER_INVENTORY)) {
 		return;
 	}
-
+	
 	if(t == 2 && !(player.Interface & INTER_INVENTORY)) {
 		return;
 	}
-
+	
 	ARX_SOUND_PlayInterface(g_snd.BACKPACK, Random::getf(0.9f, 1.1f));
-
+	
 	if((player.Interface & INTER_INVENTORY) || (player.Interface & INTER_INVENTORYALL)) {
 		g_playerInventoryHud.close();
-
+		
 		if(WILLRETURNTOFREELOOK) {
 			TRUE_PLAYER_MOUSELOOK_ON = true;
 			SLID_START = g_platformTime.frameStart();
@@ -392,7 +392,7 @@ void InventoryOpenClose(unsigned long t) {
 	} else {
 		player.Interface |= INTER_INVENTORY;
 		g_playerInventoryHud.resetPos();
-
+		
 		if(TRUE_PLAYER_MOUSELOOK_ON) {
 			WILLRETURNTOFREELOOK = true;
 		}
@@ -602,11 +602,11 @@ void ARX_INTERFACE_setCombatMode(ARX_INTERFACE_COMBAT_MODE i) {
 	if(i >= 1 && (player.Interface & INTER_COMBATMODE)) {
 		return;
 	}
-
+	
 	if(i == COMBAT_MODE_OFF && !(player.Interface & INTER_COMBATMODE)) {
 		return;
 	}
-
+	
 	if(player.Interface & INTER_COMBATMODE) {
 		
 		player.Interface &= ~INTER_COMBATMODE;
@@ -655,7 +655,7 @@ void ArxGame::managePlayerControls() {
 	   && !g_cursorOverBook && eMouseState != MOUSE_IN_NOTE) {
 		
 		Entity * t = InterClick(DANAEMouse);
-
+		
 		if(t) {
 			if(t->ioflags & IO_NPC) {
 				if(t->script.valid) {
@@ -767,7 +767,7 @@ void ArxGame::managePlayerControls() {
 			phys.cyl.height = -110.f;
 			phys.cyl.origin = eyeball.getPosition() + move + Vec3f(0.f, 70.f, 0.f);
 			phys.cyl.radius = 45.f;
-
+			
 			Cylinder test = phys.cyl;
 			
 			bool npc = AttemptValidCylinderPos(test, nullptr, CFLAG_JUST_TEST | CFLAG_NPC);
@@ -898,22 +898,22 @@ void ArxGame::managePlayerControls() {
 	if(GInput->actionNowPressed(CONTROLS_CUST_CROUCHTOGGLE)) {
 		bGCroucheToggle = !bGCroucheToggle;
 	}
-
+	
 	if(GInput->actionPressed(CONTROLS_CUST_CROUCH) || bGCroucheToggle) {
 		player.m_currentMovement |= PLAYER_CROUCH;
 	}
-
+	
 	if(GInput->actionNowPressed(CONTROLS_CUST_UNEQUIPWEAPON)) {
 		ARX_EQUIPMENT_UnEquipPlayerWeapon();
 	}
-
+	
 	// Can only lean outside of combat mode
 	if(!(player.Interface & INTER_COMBATMODE)) {
 		// Checks LEAN_LEFT Key Status.
 		if(GInput->actionPressed(CONTROLS_CUST_LEANLEFT)) {
 			player.m_currentMovement |= PLAYER_LEAN_LEFT;
 		}
-
+		
 		// Checks LEAN_RIGHT Key Status.
 		if(GInput->actionPressed(CONTROLS_CUST_LEANRIGHT)) {
 			player.m_currentMovement |= PLAYER_LEAN_RIGHT;
@@ -938,19 +938,19 @@ void ArxGame::managePlayerControls() {
 		ARX_SOUND_Stop(player.magic_draw);
 		player.magic_draw = audio::SourcedSample();
 	}
-
+	
 	if(GInput->actionNowPressed(CONTROLS_CUST_DRINKPOTIONLIFE)) {
 		useInventoryItemWithLowestDurability("potion_life");
 	}
-
+	
 	if(GInput->actionNowPressed(CONTROLS_CUST_DRINKPOTIONMANA)) {
 		useInventoryItemWithLowestDurability("potion_mana");
 	}
-
+	
 	if(GInput->actionNowPressed(CONTROLS_CUST_DRINKPOTIONCURE)) {
 		useInventoryItemWithLowestDurability("potion_purple");
 	}
-
+	
 	if(GInput->actionNowPressed(CONTROLS_CUST_TORCH)) {
 		if(Entity * torch = player.torch) {
 			InventoryPos pos = locateInInventories(torch);
@@ -960,11 +960,11 @@ void ArxGame::managePlayerControls() {
 			useInventoryItemWithLowestDurability("torch");
 		}
 	}
-
+	
 	if(GInput->actionNowPressed(CONTROLS_CUST_MINIMAP)) {
 		SHOW_INGAME_MINIMAP = !SHOW_INGAME_MINIMAP;
 	}
-
+	
 	if(GInput->actionNowPressed(CONTROLS_CUST_PREVIOUS)) {
 		if(eMouseState == MOUSE_IN_BOOK) {
 			if(player.Interface & INTER_PLAYERBOOK) {
@@ -978,7 +978,7 @@ void ArxGame::managePlayerControls() {
 			g_playerInventoryHud.previousBag();
 		}
 	}
-
+	
 	if(GInput->actionNowPressed(CONTROLS_CUST_NEXT)) {
 		if(eMouseState == MOUSE_IN_BOOK) {
 			if(player.Interface & INTER_PLAYERBOOK) {
@@ -1038,7 +1038,7 @@ void ArxGame::managePlayerControls() {
 			ARX_SPELLS_Precast_Launch(PrecastHandle(2));
 		}
 	}
-
+	
 	if(GInput->actionNowPressed(CONTROLS_CUST_WEAPON) || lChangeWeapon) {
 		
 		bool bGo = true;
@@ -1102,7 +1102,7 @@ void ArxGame::managePlayerControls() {
 						SLID_START = g_platformTime.frameStart();
 					} else {
 						TRUE_PLAYER_MOUSELOOK_ON = false;
-
+						
 						if(player.Interface & INTER_COMBATMODE) {
 							ARX_INTERFACE_setCombatMode(COMBAT_MODE_OFF);
 						}
@@ -1111,7 +1111,7 @@ void ArxGame::managePlayerControls() {
 			}
 		}
 	}
-
+	
 	if((player.Interface & INTER_COMBATMODE) && GInput->actionNowReleased(CONTROLS_CUST_FREELOOK)) {
 		ARX_INTERFACE_setCombatMode(COMBAT_MODE_OFF);
 	}
@@ -1136,7 +1136,7 @@ void ArxGame::managePlayerControls() {
 	if(GInput->actionNowPressed(CONTROLS_CUST_BOOK)) {
 		g_playerBook.toggle();
 	}
-
+	
 	// Check For Combat Mode ON/OFF
 	if(   eeMousePressed1()
 	   && !(player.Interface & INTER_COMBATMODE)
@@ -1268,14 +1268,14 @@ void ArxGame::manageKeyMouse() {
 	
 	if(ARXmenu.mode() == Mode_InGame) {
 		Entity * pIO = nullptr;
-
+		
 		if(!BLOCK_PLAYER_CONTROLS) {
 			if(TRUE_PLAYER_MOUSELOOK_ON
 			   && !(player.Interface & INTER_COMBATMODE)
 			   && eMouseState != MOUSE_IN_NOTE
 			) {
 				Vec2s poss = MemoMouse;
-
+				
 				// mode systemshock
 				if(config.input.mouseLookToggle && config.input.autoReadyWeapon != AlwaysAutoReadyWeapon) {
 					
@@ -1307,7 +1307,7 @@ void ArxGame::manageKeyMouse() {
 				if(pIO->ioflags & IO_ITEM) {
 					FlyingOverIO = pIO;
 					COMBINE = nullptr;
-
+					
 					if(!g_draggedEntity) {
 						
 						bool bOk = true;
@@ -1387,7 +1387,7 @@ void ArxGame::manageKeyMouse() {
 			PLAYER_MOUSELOOK_ON = false;
 		}
 	}
-
+	
 	if(ARXmenu.mode() != Mode_InGame) {
 		PLAYER_MOUSELOOK_ON = false;
 	}
@@ -1416,7 +1416,7 @@ void ArxGame::manageKeyMouse() {
 	
 	LAST_PLAYER_MOUSELOOK_ON = mouselook;
 	PLAYER_ROTATION = 0;
-
+	
 	Vec2f rotation = GInput->getRelativeMouseMovement();
 	
 	ARX_Menu_Manage();
@@ -1566,7 +1566,7 @@ void ArxGame::manageKeyMouse() {
 				
 			}
 		}
-
+		
 		if(GInput->actionPressed(CONTROLS_CUST_CENTERVIEW)) {
 			eyeball.centerView();
 			player.desiredangle.setPitch(0);
@@ -1576,7 +1576,7 @@ void ArxGame::manageKeyMouse() {
 		}
 		
 		if(PLAYER_MOUSELOOK_ON || bKeySpecialMove) {
-
+			
 			if(eyeball.isActive()) {
 				float eyePitch = eyeball.getAngle().getPitch();
 				if(   ((eyePitch < 70.f)  && (eyePitch + rotation.y < 70.f))
@@ -1585,11 +1585,11 @@ void ArxGame::manageKeyMouse() {
 				
 				eyeball.turn(Anglef(0.f, -rotation.x, 0.f));
 			} else if(ARXmenu.mode() != Mode_CharacterCreation) {
-
+				
 				float iangle = player.angle.getPitch();
-
+				
 				player.desiredangle.setPitch(MAKEANGLE(iangle + rotation.y));
-
+				
 				if(player.desiredangle.getPitch() >= 74.9f && player.desiredangle.getPitch() <= 301.f) {
 					if(iangle < 75.f) {
 						player.desiredangle.setPitch(74.9f);
@@ -1597,11 +1597,11 @@ void ArxGame::manageKeyMouse() {
 						player.desiredangle.setPitch(301.f);
 					}
 				}
-
+				
 				if(glm::abs(rotation.y) > 2.f) {
 					entities.player()->animBlend.lastanimtime = 0;
 				}
-
+				
 				if(rotation.x != 0.f) {
 					player.m_currentMovement |= PLAYER_ROTATE;
 				}
@@ -1678,7 +1678,7 @@ void ArxGame::manageEditorControls() {
 	ARX_PROFILE_FUNC();
 	
 	eMouseState = MOUSE_IN_WORLD;
-
+	
 	if(   TRUE_PLAYER_MOUSELOOK_ON
 	   && config.input.autoReadyWeapon != AlwaysAutoReadyWeapon
 	   && config.input.mouseLookToggle
@@ -1935,11 +1935,11 @@ void ArxGame::manageEditorControls() {
 				
 			}
 		}
-	
+		
 		// Debug Selection
 		if(eeMouseUp1()) {
 			Entity * io = GetFirstInterAtPos(DANAEMouse);
-
+			
 			if(io) {
 				LastSelectedIONum = io->index();
 			} else {

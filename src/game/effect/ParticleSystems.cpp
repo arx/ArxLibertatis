@@ -96,12 +96,12 @@ void particleParametersInit() {
 	cp.m_speedRandom = 84;
 	cp.m_gravity = Vec3f(0, -10, 0);
 	cp.m_rotation = 1.0f / (101 - 80);
-
+	
 	cp.m_startSegment.m_size = 8;
 	cp.m_startSegment.m_sizeRandom = 8;
 	cp.m_startSegment.m_color = Color4f::rgba(0.8f, 0.8f, 1.f, 0.96f);
 	cp.m_startSegment.m_colorRandom = Color4f(Color3f::yellow * 0.2f, 0.04f);
-
+	
 	cp.m_endSegment.m_size = 6;
 	cp.m_endSegment.m_sizeRandom = 4;
 	cp.m_endSegment.m_color = Color4f::rgba(0.08f, 0.08f, 0.12f, 0.f);
@@ -125,17 +125,17 @@ void particleParametersInit() {
 	cp.m_speedRandom = 84;
 	cp.m_gravity = Vec3f(0, -10, 0);
 	cp.m_rotation = 1.0f / (101 - 80);
-
+	
 	cp.m_startSegment.m_size = 8;
 	cp.m_startSegment.m_sizeRandom = 8;
 	cp.m_startSegment.m_color = Color4f::rgba(0.41f, 0.41f, 0.08f, 0.57f);
 	cp.m_startSegment.m_colorRandom = Color4f(Color3f::yellow * 0.2f, 0.04f);
-
+	
 	cp.m_endSegment.m_size = 6;
 	cp.m_endSegment.m_sizeRandom = 4;
 	cp.m_endSegment.m_color = Color4f::rgba(0.08f, 0.08f, 0.02f, 0.f);
 	cp.m_endSegment.m_colorRandom = Color4f::rgba(0.16f, 0.16f, 0.f, 0.f);
-
+	
 	cp.m_blendMode = RenderMaterial::Additive;
 	cp.m_texture.set("graph/particles/create_food");
 	cp.m_spawnFlags = PARTICLE_CIRCULAR | PARTICLE_BORDER;
@@ -155,12 +155,12 @@ void particleParametersInit() {
 	cp.m_speedRandom = 84;
 	cp.m_gravity = Vec3f(0, -10, 0);
 	cp.m_rotation = 1.0f / (101 - 80);
-
+	
 	cp.m_startSegment.m_size = 8;
 	cp.m_startSegment.m_sizeRandom = 8;
 	cp.m_startSegment.m_color = Color4f::rgba(0.08f, 0.8f, 0.08f, 0.96f);
 	cp.m_startSegment.m_colorRandom = Color4f::gray(0.2f, 0.04f);
-
+	
 	cp.m_endSegment.m_size = 6;
 	cp.m_endSegment.m_sizeRandom = 4;
 	cp.m_endSegment.m_color = Color4f::rgba(0.02f, 0.08f, 0.02f, 0.f);
@@ -185,17 +185,17 @@ void particleParametersInit() {
 	cp.m_rotation = 0;
 	cp.m_rotationRandomDirection = false;
 	cp.m_rotationRandomStart = false;
-
+	
 	cp.m_startSegment.m_size = 10;
 	cp.m_startSegment.m_sizeRandom = 3;
 	cp.m_startSegment.m_color = Color4f::gray(0.1f, 0.2f);
 	cp.m_startSegment.m_colorRandom = Color4f::gray(0.2f, 0.4f);
-
+	
 	cp.m_endSegment.m_size = 10;
 	cp.m_endSegment.m_sizeRandom = 3;
 	cp.m_endSegment.m_color = Color4f::gray(0.1f, 0.2f);
 	cp.m_endSegment.m_colorRandom = Color4f(Color3f::black, 0.4f);
-
+	
 	cp.m_blendMode = RenderMaterial::AlphaAdditive;
 	cp.m_freq = 150;
 	cp.m_texture.set("graph/particles/firebase", 4, 100ms);
@@ -218,17 +218,17 @@ void particleParametersInit() {
 	cp.m_rotation = 0;
 	cp.m_rotationRandomDirection = false;
 	cp.m_rotationRandomStart = false;
-
+	
 	cp.m_startSegment.m_size = 10;
 	cp.m_startSegment.m_sizeRandom = 10;
 	cp.m_startSegment.m_color = Color4f::gray(0.16f, 0.2f);
 	cp.m_startSegment.m_colorRandom = Color4f::gray(0.2f, 0.4f);
-
+	
 	cp.m_endSegment.m_size = 10;
 	cp.m_endSegment.m_sizeRandom = 10;
 	cp.m_endSegment.m_color = Color4f(Color3f::black, 0.2f);
 	cp.m_endSegment.m_colorRandom = Color4f(Color3f::black, 0.4f);
-
+	
 	cp.m_blendMode = RenderMaterial::Additive;
 	cp.m_freq = 150;
 	cp.m_texture.set("graph/particles/fire");

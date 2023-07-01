@@ -89,15 +89,15 @@ void FlyingEye::centerView() {
 }
 
 void FlyingEye::launch() {
-
+	
 	m_timeCreation = g_gameTime.now();
 	
 	m_state = FlyingEye::EYEBALL_APPEAR;
-
+	
 	m_pos = player.pos;
 	m_pos += angleToVectorXZ(player.angle.getYaw()) * 200.f;
 	m_pos += Vec3f(0.f, 50.f, 0.f);
-
+	
 	m_angle = player.angle;
 }
 
@@ -105,10 +105,10 @@ void FlyingEye::update() {
 	
 	GameDuration frameDiff = g_gameTime.lastFrameDuration();
 	GameDuration elapsed = g_gameTime.now() - frameDiff - m_timeCreation;
-
+	
 	m_floatY = std::sin((elapsed) / 1s);
 	m_floatY *= 10.f;
-
+	
 	// the eyeball spins 5 times before becoming active (takes 3 seconds)
 	if(m_state != EYEBALL_ACTIVE) {
 		m_progress = long((elapsed) / 30ms);
@@ -125,11 +125,11 @@ void FlyingEye::drawMagicSightInterface() {
 	}
 	
 	UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
-
+	
 	float col;
-
+	
 	if(m_state == EYEBALL_DISAPPEAR || m_state == EYEBALL_APPEAR) {
-
+		
 		col = m_progress * (1.f / 100);
 	} else {
 		col = 0.75f + PULSATE * (1.f / 20);

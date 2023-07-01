@@ -272,7 +272,7 @@ ScriptResult ScriptEvent::send(const EERIE_SCRIPT * es, Entity * sender, Entity 
 		pos = es->shortcut[event.getId()];
 		arx_assert(pos == size_t(-1) || pos <= es->data.size());
 	}
-
+	
 	if(pos == size_t(-1)) {
 		return ACCEPT;
 	}

@@ -94,9 +94,9 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	float fBetaRad = glm::radians(_fBeta);
 	float fBetaRadCos = glm::cos(fBetaRad);
 	float fBetaRadSin = glm::sin(fBetaRad);
-
+	
 	eSrc = _eSrc;
-
+	
 	eMove = Vec3f(-fBetaRadSin * 2, 0.f, fBetaRadCos * 2);
 	
 	Vec3f rayEnd = eSrc + eMove * 500.f;

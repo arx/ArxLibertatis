@@ -107,22 +107,22 @@ bool RenderMaterial::operator<(const RenderMaterial & other) const {
 	if(m_layer != other.m_layer) {
 		return m_layer < other.m_layer;
 	}
-
+	
 	// Then by blend type
 	if(m_blendType != other.m_blendType) {
 		return m_blendType < other.m_blendType;
 	}
-
+	
 	// Then depth test state
 	if(m_depthTest != other.m_depthTest) {
 		return m_depthTest;
 	}
-
+	
 	// Then depth bias
 	if(m_depthBias != other.m_depthBias) {
 		return m_depthBias < other.m_depthBias;
 	}
-
+	
 	// Then texture
 	if(m_texture != other.m_texture) {
 		return m_texture < other.m_texture;
@@ -155,11 +155,11 @@ RenderState RenderMaterial::apply() const {
 	state.setAlphaCutout(m_texture && m_texture->hasAlpha());
 	
 	state.setDepthOffset(m_depthBias);
-
+	
 	state.setDepthTest(m_depthTest);
 	
 	state.setDepthWrite(false);
-
+	
 	state.setCull(m_cullBackfaces);
 	
 	switch(m_blendType) {

@@ -455,7 +455,7 @@ void ARX_PLAYER_KillTorch();
 void ARX_PLAYER_PutPlayerInNormalStance();
 void ARX_PLAYER_Start_New_Quest();
 void ARX_PLAYER_Rune_Add_All();
- 
+
 void ARX_PLAYER_Restore_Skin();
 float GetPlayerStealth();
 

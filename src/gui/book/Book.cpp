@@ -136,7 +136,7 @@ void PlayerBookPage::checkTabClick(long tabNum, long & activeTab) {
 	
 	Vec2f bookPos = g_bookRect.topLeft();
 	float scale = g_bookScale;
-
+	
 	if(MouseInBookRect(bookPos + m_tabOffsets[tabNum] * scale, Vec2f(32, 32) * scale)) {
 		UseRenderState state(render2D().blendAdditive());
 		DrawBookInterfaceItem(g_bookResouces.accessibleTab[tabNum], bookPos + m_tabOffsets[tabNum] * scale,
@@ -179,7 +179,7 @@ void PlayerBook::forcePage(ARX_INTERFACE_BOOK_MODE page) {
 }
 
 void PlayerBook::onClosePage() {
-
+	
 	if(currentPage() == BOOKMODE_SPELLS) {
 		// Closing spell page - clean up any rune flares
 		ARX_SPELLS_ClearAllSymbolDraw();
@@ -251,31 +251,31 @@ void PlayerBook::manage() {
 
 void PlayerBook::openPage(ARX_INTERFACE_BOOK_MODE newPage, bool _toggle) {
 	if((player.Interface & INTER_PLAYERBOOK) && currentPage() == newPage) {
-
+		
 		if(_toggle) {
 			// Close the book
 			g_playerBook.close();
 		}
-
+		
 		return; // nothing to do
 	}
-
+	
 	if(!canOpenPage(newPage)) {
 		return;
 	}
-
+	
 	if(player.Interface & INTER_PLAYERBOOK) {
-
+		
 		onClosePage();
-
+		
 		// If the book is already open, play the page turn sound
 		ARX_SOUND_PlayInterface(g_snd.BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
-
+		
 	} else {
 		// Otherwise open the book
 		toggle();
 	}
-
+	
 	forcePage(newPage);
 }
 
@@ -288,28 +288,28 @@ void PlayerBook::openPrevPage() {
 }
 
 ARX_INTERFACE_BOOK_MODE PlayerBook::nextPage() {
-
+	
 	ARX_INTERFACE_BOOK_MODE nextPage = currentPage(), oldPage;
 	do {
 		oldPage = nextPage;
-
+		
 		switch(oldPage) {
 			case BOOKMODE_STATS:   nextPage = BOOKMODE_SPELLS;  break;
 			case BOOKMODE_SPELLS:  nextPage = BOOKMODE_MINIMAP; break;
 			case BOOKMODE_MINIMAP: nextPage = BOOKMODE_QUESTS;  break;
 			case BOOKMODE_QUESTS:  nextPage = BOOKMODE_QUESTS;  break;
 		}
-
+		
 		if(canOpenPage(nextPage)) {
 			return nextPage;
 		}
-
+		
 	} while(nextPage != oldPage);
 	return currentPage();
 }
 
 ARX_INTERFACE_BOOK_MODE PlayerBook::prevPage() {
-
+	
 	ARX_INTERFACE_BOOK_MODE prevPage = currentPage(), oldPage;
 	do {
 		oldPage = prevPage;
@@ -320,11 +320,11 @@ ARX_INTERFACE_BOOK_MODE PlayerBook::prevPage() {
 			case BOOKMODE_MINIMAP: prevPage = BOOKMODE_SPELLS;  break;
 			case BOOKMODE_QUESTS:  prevPage = BOOKMODE_MINIMAP; break;
 		}
-
+		
 		if(canOpenPage(prevPage)) {
 			return prevPage;
 		}
-
+		
 	} while(prevPage != oldPage);
 	return currentPage();
 }
@@ -375,7 +375,7 @@ void PlayerBook::manageTopTabs() {
 			Vec2f pos = BOOKMARKS_POS + Vec2f(32, 0) * scale;
 			
 			DrawBookInterfaceItem(g_bookResouces.bookmark_magic, pos, Color::white, 0.000001f);
-
+			
 			if(NewSpell == 1) {
 				NewSpell = 2;
 				for(long nk = 0; nk < 2; nk++) {
@@ -586,7 +586,7 @@ void StatsPage::manageStats()
 	long FLYING_OVER = 0;
 	
 	ARX_PLAYER_ComputePlayerFullStats();
-
+	
 	Vec2f bookPos = g_bookRect.topLeft();
 	float scale = g_bookScale;
 	
@@ -764,225 +764,225 @@ void StatsPage::manageStats()
 	//------------------------------
 	
 	{
-	Vec2f pos = bookPos + Vec2f(294, 63) * scale;
-	
-	std::stringstream ss3;
-	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.strength;
-	
-	Color color = attributeModToColor(player.m_attributeMod.strength);
-	
-	if(ARXmenu.mode() == Mode_CharacterCreation) {
-		if(player.m_attributeFull.strength == 6) {
-			color = Color::red;
+		Vec2f pos = bookPos + Vec2f(294, 63) * scale;
+		
+		std::stringstream ss3;
+		ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.strength;
+		
+		Color color = attributeModToColor(player.m_attributeMod.strength);
+		
+		if(ARXmenu.mode() == Mode_CharacterCreation) {
+			if(player.m_attributeFull.strength == 6) {
+				color = Color::red;
+			}
 		}
-	}
-	
-	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
+		
+		UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(343, 63) * scale;
-	
-	std::stringstream ss3;
-	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.mind;
-	
-	Color color = attributeModToColor(player.m_attributeMod.mind);
-	
-	if(ARXmenu.mode() == Mode_CharacterCreation) {
-		if(player.m_attributeFull.mind == 6) {
-			color = Color::red;
+		Vec2f pos = bookPos + Vec2f(343, 63) * scale;
+		
+		std::stringstream ss3;
+		ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.mind;
+		
+		Color color = attributeModToColor(player.m_attributeMod.mind);
+		
+		if(ARXmenu.mode() == Mode_CharacterCreation) {
+			if(player.m_attributeFull.mind == 6) {
+				color = Color::red;
+			}
 		}
-	}
-	
-	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
+		
+		UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(393, 63) * scale;
-	
-	std::stringstream ss3;
-	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.dexterity;
-	
-	Color color = attributeModToColor(player.m_attributeMod.dexterity);
-	
-	if(ARXmenu.mode() == Mode_CharacterCreation) {
-		if(player.m_attributeFull.dexterity == 6) {
-			color = Color::red;
+		Vec2f pos = bookPos + Vec2f(393, 63) * scale;
+		
+		std::stringstream ss3;
+		ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.dexterity;
+		
+		Color color = attributeModToColor(player.m_attributeMod.dexterity);
+		
+		if(ARXmenu.mode() == Mode_CharacterCreation) {
+			if(player.m_attributeFull.dexterity == 6) {
+				color = Color::red;
+			}
 		}
-	}
-	
-	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
+		
+		UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(441, 63) * scale;
-	
-	std::stringstream ss3;
-	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.constitution;
-	
-	Color color = attributeModToColor(player.m_attributeMod.constitution);
-	
-	if(ARXmenu.mode() == Mode_CharacterCreation) {
-		if(player.m_attributeFull.constitution == 6) {
-			color = Color::red;
+		Vec2f pos = bookPos + Vec2f(441, 63) * scale;
+		
+		std::stringstream ss3;
+		ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.constitution;
+		
+		Color color = attributeModToColor(player.m_attributeMod.constitution);
+		
+		if(ARXmenu.mode() == Mode_CharacterCreation) {
+			if(player.m_attributeFull.constitution == 6) {
+				color = Color::red;
+			}
 		}
-	}
-	
-	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
+		
+		UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	// Player Skills
 	{
-	Vec2f pos = bookPos + Vec2f(305, 144) * scale;
-	
-	std::stringstream ss3;
-	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.stealth;
-	
-	Color color = attributeModToColor(player.m_skillMod.stealth);
-	
-	if(ARXmenu.mode() == Mode_CharacterCreation) {
-		if(player.m_skill.stealth == 0) {
-			color = Color::red;
+		Vec2f pos = bookPos + Vec2f(305, 144) * scale;
+		
+		std::stringstream ss3;
+		ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.stealth;
+		
+		Color color = attributeModToColor(player.m_skillMod.stealth);
+		
+		if(ARXmenu.mode() == Mode_CharacterCreation) {
+			if(player.m_skill.stealth == 0) {
+				color = Color::red;
+			}
 		}
-	}
-	
-	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
+		
+		UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
 		Vec2f pos = bookPos + Vec2f(369, 144) * scale;
-	
-	std::stringstream ss3;
-	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.mecanism;
-	
-	Color color = attributeModToColor(player.m_skillMod.mecanism);
-	
-	if(ARXmenu.mode() == Mode_CharacterCreation) {
-		if(player.m_skill.mecanism == 0) {
-			color = Color::red;
+		
+		std::stringstream ss3;
+		ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.mecanism;
+		
+		Color color = attributeModToColor(player.m_skillMod.mecanism);
+		
+		if(ARXmenu.mode() == Mode_CharacterCreation) {
+			if(player.m_skill.mecanism == 0) {
+				color = Color::red;
+			}
 		}
-	}
-	
-	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
+		
+		UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(433, 144) * scale;
-	
-	std::stringstream ss3;
-	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.intuition;
-	
-	Color color = attributeModToColor(player.m_skillMod.intuition);
-	
-	if(ARXmenu.mode() == Mode_CharacterCreation) {
-		if(player.m_skill.intuition == 0) {
-			color = Color::red;
+		Vec2f pos = bookPos + Vec2f(433, 144) * scale;
+		
+		std::stringstream ss3;
+		ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.intuition;
+		
+		Color color = attributeModToColor(player.m_skillMod.intuition);
+		
+		if(ARXmenu.mode() == Mode_CharacterCreation) {
+			if(player.m_skill.intuition == 0) {
+				color = Color::red;
+			}
 		}
-	}
-
-	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
+		
+		UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(305, 198) * scale;
-	
-	std::stringstream ss3;
-	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.etheralLink;
-	
-	Color color = attributeModToColor(player.m_skillMod.etheralLink);
-	
-	if(ARXmenu.mode() == Mode_CharacterCreation) {
-		if(player.m_skill.etheralLink == 0) {
-			color = Color::red;
+		Vec2f pos = bookPos + Vec2f(305, 198) * scale;
+		
+		std::stringstream ss3;
+		ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.etheralLink;
+		
+		Color color = attributeModToColor(player.m_skillMod.etheralLink);
+		
+		if(ARXmenu.mode() == Mode_CharacterCreation) {
+			if(player.m_skill.etheralLink == 0) {
+				color = Color::red;
+			}
 		}
-	}
-
-	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
+		
+		UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(369, 198) * scale;
-	
-	std::stringstream ss3;
-	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.objectKnowledge;
-	
-	Color color = attributeModToColor(player.m_skillMod.objectKnowledge);
-	
-	if(ARXmenu.mode() == Mode_CharacterCreation) {
-		if(player.m_skill.objectKnowledge == 0) {
-			color = Color::red;
+		Vec2f pos = bookPos + Vec2f(369, 198) * scale;
+		
+		std::stringstream ss3;
+		ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.objectKnowledge;
+		
+		Color color = attributeModToColor(player.m_skillMod.objectKnowledge);
+		
+		if(ARXmenu.mode() == Mode_CharacterCreation) {
+			if(player.m_skill.objectKnowledge == 0) {
+				color = Color::red;
+			}
 		}
-	}
-	
-	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
+		
+		UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(433, 198) * scale;
-	
-	std::stringstream ss3;
-	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.casting;
-	
-	Color color = attributeModToColor(player.m_skillMod.casting);
-	
-	if(ARXmenu.mode() == Mode_CharacterCreation) {
-		if(player.m_skill.casting == 0) {
-			color = Color::red;
+		Vec2f pos = bookPos + Vec2f(433, 198) * scale;
+		
+		std::stringstream ss3;
+		ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.casting;
+		
+		Color color = attributeModToColor(player.m_skillMod.casting);
+		
+		if(ARXmenu.mode() == Mode_CharacterCreation) {
+			if(player.m_skill.casting == 0) {
+				color = Color::red;
+			}
 		}
-	}
-
-	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
+		
+		UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(305, 253) * scale;
-	
-	std::stringstream ss3;
-	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.closeCombat;
-	
-	Color color = attributeModToColor(player.m_skillMod.closeCombat);
-	
-	if(ARXmenu.mode() == Mode_CharacterCreation) {
-		if(player.m_skill.closeCombat == 0) {
-			color = Color::red;
+		Vec2f pos = bookPos + Vec2f(305, 253) * scale;
+		
+		std::stringstream ss3;
+		ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.closeCombat;
+		
+		Color color = attributeModToColor(player.m_skillMod.closeCombat);
+		
+		if(ARXmenu.mode() == Mode_CharacterCreation) {
+			if(player.m_skill.closeCombat == 0) {
+				color = Color::red;
+			}
 		}
-	}
-
-	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
-	}
-
-	{
-	Vec2f pos = bookPos + Vec2f(369, 253) * scale;
-	
-	std::stringstream ss3;
-	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.projectile;
-	
-	Color color = attributeModToColor(player.m_skillMod.projectile);
-	
-	if(ARXmenu.mode() == Mode_CharacterCreation) {
-		if(player.m_skill.projectile == 0) {
-			color = Color::red;
-		}
-	}
-
-	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
+		
+		UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
-	Vec2f pos = bookPos + Vec2f(433, 253) * scale;
-	
-	std::stringstream ss3;
-	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.defense;
-	
-	Color color = attributeModToColor(player.m_skillMod.defense);
-	
-	if(ARXmenu.mode() == Mode_CharacterCreation) {
-		if(player.m_skill.defense == 0) {
-			color = Color::red;
+		Vec2f pos = bookPos + Vec2f(369, 253) * scale;
+		
+		std::stringstream ss3;
+		ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.projectile;
+		
+		Color color = attributeModToColor(player.m_skillMod.projectile);
+		
+		if(ARXmenu.mode() == Mode_CharacterCreation) {
+			if(player.m_skill.projectile == 0) {
+				color = Color::red;
+			}
 		}
+		
+		UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
-	UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
+	{
+		Vec2f pos = bookPos + Vec2f(433, 253) * scale;
+		
+		std::stringstream ss3;
+		ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.defense;
+		
+		Color color = attributeModToColor(player.m_skillMod.defense);
+		
+		if(ARXmenu.mode() == Mode_CharacterCreation) {
+			if(player.m_skill.defense == 0) {
+				color = Color::red;
+			}
+		}
+		
+		UNICODE_ARXDrawTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	// Secondary Attributes
@@ -1320,7 +1320,7 @@ bool StatsPage::CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc, f
 	
 	float t = *val;
 	float ot = oldval;
-
+	
 	float scale = g_bookScale;
 	
 	if(MouseInBookRect(pos, Vec2f(32, 32) * scale)) {

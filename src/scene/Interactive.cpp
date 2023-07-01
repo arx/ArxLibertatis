@@ -723,7 +723,7 @@ static void RestoreIOInitPos(Entity * io) {
 	if(!io) {
 		return;
 	}
-
+	
 	ARX_INTERACTIVE_Teleport(io, io->initpos);
 	io->pos = io->lastpos = io->initpos;
 	io->move = Vec3f(0.f);
@@ -742,28 +742,28 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 	if(!io) {
 		return;
 	}
-
+	
 	ARX_INTERACTIVE_ClearIODynData_II(io);
-
+	
 	io->shop_multiply = 1.f;
-
+	
 	ARX_INTERACTIVE_HideGore(io, false);
-
+	
 	io->halo_native.color = Color3f(0.2f, 0.5f, 1.f);
 	io->halo_native.radius = 45.f;
 	io->halo_native.flags = 0;
-
+	
 	ARX_HALO_SetToNative(io);
-
+	
 	io->forcedmove = Vec3f(0.f);
 	io->ioflags &= ~IO_NO_COLLISIONS;
 	io->ioflags &= ~IO_INVERTED;
 	io->lastspeechflag = 2;
-
+	
 	io->no_collide = { };
-
+	
 	MagicFlareReleaseEntity(io);
-
+	
 	io->flarecount = 0;
 	io->inzone = nullptr;
 	io->speed_modif = 0.f;
@@ -809,11 +809,11 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 	
 	io->poisonous = 0;
 	io->poisonous_count = 0;
-
+	
 	for(size_t count = 0; count < MAX_ANIM_LAYERS; count++) {
 		io->animlayer[count] = AnimLayer();
 	}
-
+	
 	if(io->obj && io->obj->pbox) {
 		io->obj->pbox->storedtiming = 0;
 	}
@@ -827,7 +827,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 	io->targetinfo = EntityHandle(TARGET_NONE);
 	io->spellcast_data.castingspell = SPELL_NONE;
 	io->spark_n_blood = 0;
-
+	
 	if(io->ioflags & IO_NPC) {
 		io->_npcdata->climb_count = 0;
 		io->_npcdata->vvpos = -99999.f;
@@ -839,14 +839,14 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->_npcdata->poisonned = 0.f;
 		io->_npcdata->blood_color = Color::red;
 		io->_npcdata->stare_factor = 1.f;
-
+		
 		io->_npcdata->weapon = nullptr;
 		io->_npcdata->weaponinhand = 0;
 		io->_npcdata->weapontype = 0;
 		io->_npcdata->weaponinhand = 0;
 		io->_npcdata->fightdecision = 0;
 		io->_npcdata->walk_start_time = 0;
-
+		
 		io->_npcdata->reachedtarget = 0;
 		io->_npcdata->lifePool.max = 20.f;
 		io->_npcdata->lifePool.current = io->_npcdata->lifePool.max;
@@ -974,11 +974,11 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target) {
 		phys.origin.x = target->x + mod.x;
 		phys.origin.z = target->z + mod.z;
 		float anything = CheckAnythingInCylinder(phys, io, CFLAG_JUST_TEST);
-
+		
 		if(glm::abs(anything) < 150.f) {
 			EERIEPOLY * ep = CheckInPoly(phys.origin + Vec3f(0.f, -20.f, 0.f));
 			EERIEPOLY * ep2 = CheckTopPoly(phys.origin + Vec3f(0.f, anything, 0.f));
-
+			
 			if(ep && ep2 && glm::abs((phys.origin.y + anything) - ep->center.y) < 20.f) {
 				target->x = phys.origin.x;
 				target->y = phys.origin.y + anything;
@@ -986,10 +986,10 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target) {
 				return true;
 			}
 		}
-
+		
 		count += 5.f;
 	}
-
+	
 	return false;
 }
 
@@ -1026,16 +1026,16 @@ void ResetVVPos(Entity * io)
 void ComputeVVPos(Entity * io) {
 	if(io->ioflags & IO_NPC) {
 		float vvp = io->_npcdata->vvpos;
-
+		
 		if(vvp == -99999.f || vvp == io->pos.y) {
 			io->_npcdata->vvpos = io->pos.y;
 			return;
 		}
-
+		
 		float diff = io->pos.y - vvp;
 		float fdiff = glm::abs(diff);
 		float eediff = fdiff;
-
+		
 		if(fdiff > 120.f) {
 			fdiff = 120.f;
 		} else {
@@ -1517,14 +1517,14 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInteractiveFlags flags) {
 	
 	EntityFlags type = IO_ITEM;
-
+	
 	res::path classPath = classPath_;
 	
 	if(boost::starts_with(classPath.filename(), "gold_coin")) {
 		classPath.up() /= "gold_coin";
 		type = IO_ITEM | IO_GOLD;
 	}
-
+	
 	if(boost::contains(classPath.string(), "movable")) {
 		type = IO_ITEM | IO_MOVABLE;
 	}
@@ -1551,15 +1551,15 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	io->_itemdata->maxcount = 1;
 	io->_itemdata->food_value = 0;
 	io->_itemdata->LightValue = -1;
-
+	
 	if(io->ioflags & IO_GOLD) {
 		io->_itemdata->price = 1;
 	} else {
 		io->_itemdata->price = 10;
 	}
-
+	
 	io->_itemdata->playerstacksize = 1;
-
+	
 	loadScript(io->script, g_resources->getFile(script));
 	
 	if(!(flags & NO_ON_LOAD)) {
@@ -1573,7 +1573,7 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	
 	io->lastpos.x = io->initpos.x = std::floor(io->pos.x / 20.f) * 20.f;
 	io->lastpos.z = io->initpos.z = std::floor(io->pos.z / 20.f) * 20.f;
-
+	
 	EERIEPOLY * ep;
 	ep = CheckInPoly(io->pos + Vec3f(0.f, -60.f, 0.f));
 	
@@ -1585,12 +1585,12 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	}
 	
 	ep = CheckInPoly(io->pos);
-
+	
 	if(ep) {
 		io->pos.y = std::min(ep->v[0].p.y, ep->v[1].p.y);
 		io->lastpos.y = io->initpos.y = io->pos.y = std::min(io->pos.y, ep->v[2].p.y);
 	}
-
+	
 	if(io->ioflags & IO_GOLD) {
 		io->obj = GoldCoinsObj[0].get();
 	}
@@ -1607,7 +1607,7 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	} else {
 		tc = TextureContainer::LoadUI(icon, TextureContainer::Level);
 	}
-
+	
 	if(!tc) {
 		tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]");
 	}
@@ -1616,10 +1616,10 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 		io->m_inventorySize = inventorySizeFromTextureSize(tc->size());
 		io->m_icon = tc;
 	}
-
+	
 	io->infracolor = Color3f(0.2f, 0.2f, 1.f);
 	io->collision = 0;
-
+	
 	return io;
 }
 

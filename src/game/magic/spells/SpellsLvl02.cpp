@@ -178,8 +178,8 @@ void DetectTrapSpell::Update() {
 }
 
 
-void ArmorSpell::Launch()
-{
+void ArmorSpell::Launch() {
+	
 	spells.endByTarget(m_target, SPELL_ARMOR);
 	spells.endByCaster(m_caster, SPELL_LOWER_ARMOR);
 	spells.endByCaster(m_caster, SPELL_FIRE_PROTECTION);

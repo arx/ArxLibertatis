@@ -479,7 +479,6 @@ bool SecondaryInventoryHud::isOpen() const noexcept {
 	return m_open;
 }
 
-
 bool SecondaryInventoryHud::isOpen(const Entity * container) const noexcept {
 	return (isOpen() && m_container == container);
 }

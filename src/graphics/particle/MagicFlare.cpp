@@ -108,7 +108,7 @@ long MagicFlareCountNonFlagged() {
 			count++;
 		}
 	}
-
+	
 	return count;
 }
 
@@ -124,7 +124,7 @@ static void removeFlare(MagicFlare & flare) {
 	if(flare.io && ValidIOAddress(flare.io)) {
 		flare.io->flarecount--;
 	}
-
+	
 	lightHandleDestroy(flare.dynlight);
 	
 	flare.tolive = 0;
@@ -149,7 +149,7 @@ static short g_magicFlareCurrentColor = 0;
 
 void MagicFlareChangeColor() {
 	g_magicFlareCurrentColor++;
-
+	
 	if(g_magicFlareCurrentColor > 2) {
 		g_magicFlareCurrentColor = 0;
 	}
@@ -171,7 +171,7 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 		removeFlare(g_magicFlares[oldest]);
 		i = oldest;
 	}
-
+	
 	MagicFlare & flare = g_magicFlares[i];
 	flare.exist = 1;
 	g_magicFlaresCount++;
@@ -185,10 +185,10 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 	} else {
 		flare.flags = 0;
 	}
-
+	
 	flare.pos.x = pos.x - Random::getf(0.f, 4.f);
 	flare.pos.y = pos.y - Random::getf(0.f, 4.f);
-
+	
 	if(!bookDraw) {
 		if(io) {
 			float vx = -(flare.pos.x - g_size.center().x) * 0.2173913f;
@@ -202,7 +202,7 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 	} else {
 		flare.p = Vec3f(flare.pos.x, flare.pos.y, 0.001f);
 	}
-
+	
 	switch(g_magicFlareCurrentColor) {
 		case 0: {
 			flare.rgb = Color3f(0.4f, 0.f, 0.4f) + Color3f(2.f / 3, 2.f / 3, 2.f / 3) * randomColor3f();
@@ -338,11 +338,11 @@ void FlareLine(Vec2f tmpPos0, Vec2f tmpPos1, Entity * io) {
 
 
 void ARX_MAGICAL_FLARES_Update() {
-
+	
 	if(!g_magicFlaresCount) {
 		return;
 	}
-
+	
 	shinum++;
 	if(shinum >= 10) {
 		shinum = 1;
@@ -351,14 +351,14 @@ void ARX_MAGICAL_FLARES_Update() {
 	PlatformDuration diff = g_platformTime.lastFrameDuration();
 	
 	bool key = !GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
-
+	
 	RenderMaterial mat;
 	mat.setBlendType(RenderMaterial::Additive);
 	
 	EERIE_LIGHT * light = lightHandleGet(torchLightHandle);
 	
 	for(long j = 1; j < 5; j++) {
-
+		
 		TextureContainer * surf;
 		switch(j) {
 			case 2:  surf = g_magicFlareTextures.lumignon; break;
@@ -366,13 +366,13 @@ void ARX_MAGICAL_FLARES_Update() {
 			case 4:  surf = g_magicFlareTextures.plasm; break;
 			default: surf = g_magicFlareTextures.shine[shinum]; break;
 		}
-
+		
 		mat.setTexture(surf);
-
+		
 		for(size_t i = 0; i < g_magicFlaresMax; i++) {
-
+			
 			MagicFlare & flare = g_magicFlares[i];
-
+			
 			if(!flare.exist || flare.type != j) {
 				continue;
 			}
@@ -393,18 +393,18 @@ void ARX_MAGICAL_FLARES_Update() {
 			} else {
 				size = flare.size;
 			}
-
+			
 			if(flare.tolive <= 0 || flare.pos.y < -64.f || size < 3.f) {
 				removeFlare(flare);
 				continue;
 			}
-
+			
 			if(flare.type == 1 && z < 0.6f)  {
 				z = 0.6f;
 			}
-
+			
 			Color3f color = flare.rgb * z;
-
+			
 			light->rgb = componentwise_max(light->rgb, color);
 			
 			EERIE_LIGHT * el = lightHandleGet(flare.dynlight);
@@ -412,7 +412,7 @@ void ARX_MAGICAL_FLARES_Update() {
 				el->pos = flare.p;
 				el->rgb = color;
 			}
-
+			
 			mat.setDepthTest(flare.io != nullptr);
 			
 			if(flare.bDrawBitmap) {
@@ -421,9 +421,9 @@ void ARX_MAGICAL_FLARES_Update() {
 			} else {
 				EERIEAddSprite(mat, flare.p, size * 0.025f + 1.f, Color(color), 2.f);
 			}
-
+			
 		}
 	}
-
+	
 	light->rgb = componentwise_min(light->rgb, Color3f::white);
 }

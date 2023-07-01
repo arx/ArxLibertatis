@@ -105,7 +105,7 @@ bool CheckEverythingInSphere(const Sphere & sphere, const Entity * source, Entit
                              std::vector<Entity *> & sphereContent);
 
 const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere);
- 
+
 bool IsCollidingIO(Entity * io, Entity * ioo);
 
 /*!

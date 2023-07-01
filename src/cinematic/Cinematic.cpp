@@ -154,13 +154,13 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 	size_t nb = grille->m_nbvertexs;
 	Vec2f * v = grille->m_vertexs.data();
 	TexturedVertex * d3dv = AllTLVertex;
-
+	
 	float LocalSin = glm::sin(glm::radians(angle));
 	float LocalCos = glm::cos(glm::radians(angle));
-
+	
 	if((fx & CinematicFxPreMask) == FX_DREAM) {
 		float * dream = DreamTable;
-
+		
 		while(nb--) {
 			Vec2f t;
 			t.x = v->x + *dream++;

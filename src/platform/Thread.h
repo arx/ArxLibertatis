@@ -86,7 +86,7 @@ public:
 	 * \param threadName The thread name.
 	 */
 	void setThreadName(std::string_view threadName);
-
+	
 	void setPriority(Priority priority);
 	
 	/*!

@@ -145,18 +145,18 @@ public:
 	 * TODO Rewrite this feature using shaders instead of hacking a texture effect
 	 */
 	bool CreateHalo();
-
+	
 	static const size_t HALO_RADIUS = 5;
 	TextureContainer * getHalo() {
 		return (TextureHalo ? TextureHalo : (CreateHalo() ? TextureHalo : nullptr));
 	}
-
+	
 private:
-
+	
 	TextureContainer * TextureHalo;
 	
 public:
-
+	
 	bool LoadFile(const res::path & strPathname);
 	
 	const res::path m_texName; // Name of texture
@@ -191,7 +191,7 @@ DECLARE_FLAGS_OPERATORS(TextureContainer::TCFlags)
 // Access functions for loaded textures. Note: these functions search
 // an internal list of the textures, and use the texture associated with the
 // ASCII name.
- 
+
 TextureContainer * GetTextureList();
 
 #endif // ARX_GRAPHICS_DATA_TEXTURECONTAINER_H

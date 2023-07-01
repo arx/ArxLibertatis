@@ -160,7 +160,7 @@ public:
 	}
 	
 private:
-
+	
 	size_t hash(const char * input, size_t length);
 	void pad(size_t last_block_size, char pad_first = '\x80');
 	

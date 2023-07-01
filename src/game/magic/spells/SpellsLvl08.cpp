@@ -49,7 +49,7 @@ void InvisibilitySpell::Launch() {
 	if(m_caster == EntityHandle_Player) {
 		m_target = EntityHandle_Player;
 	}
-
+	
 	entities[m_target]->gameFlags |= GFLAG_INVISIBILITY;
 	entities[m_target]->invisibility = 0.f;
 	

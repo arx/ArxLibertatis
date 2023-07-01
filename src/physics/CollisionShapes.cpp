@@ -56,13 +56,13 @@ void EERIE_COLLISION_Cylinder_Create(Entity * io)
 	if(!io) {
 		return;
 	}
-
+	
 	EERIE_3DOBJ * obj = io->obj;
-
+	
 	if(!obj) {
 		return;
 	}
-
+	
 	if(obj->vertexlist.empty()) {
 		io->physics.cyl.height = 0.f;
 		return;
@@ -80,7 +80,7 @@ void EERIE_COLLISION_Cylinder_Create(Entity * io)
 		}
 		height = std::max(height, io->physics.cyl.origin.y - vertex.v.y);
 	}
-
+	
 	if(d == 0.f || height == 0.f) {
 		io->physics.cyl.height = 0.f;
 		return;
@@ -100,7 +100,7 @@ void EERIE_COLLISION_Cylinder_Create(Entity * io)
 	if(io->original_radius > 40.f) {
 		io->original_radius = 40.f;
 	}
-
+	
 	io->physics.cyl.radius = io->original_radius * io->scale;
 	io->physics.cyl.height = io->original_height * io->scale;
 }

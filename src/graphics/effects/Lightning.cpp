@@ -162,9 +162,9 @@ void CLightning::BuildS(LIGHTNING * lightingInfo) {
 		
 		int anb = lightingInfo->anb;
 		int anbrec = lightingInfo->anbrec;
-
+		
 		float p = Random::getf();
-
+		
 		if(p <= 0.15f && lightingInfo->anbrec < 7) {
 			float m = Random::getf();
 			
@@ -180,7 +180,7 @@ void CLightning::BuildS(LIGHTNING * lightingInfo) {
 				lightingInfo->fAngleMax = m_fAngleMax;
 				
 				BuildS(lightingInfo);
-
+				
 				lightingInfo->eStart = astart;
 				lightingInfo->eVect = avect;
 				lightingInfo->abFollow = true;
@@ -204,7 +204,7 @@ void CLightning::BuildS(LIGHTNING * lightingInfo) {
 				lightingInfo->fAngleMax = m_fAngleMax;
 				
 				BuildS(lightingInfo);
-
+				
 				lightingInfo->abFollow = false;
 				lightingInfo->eStart = astart;
 				lightingInfo->eVect = avect;
@@ -320,7 +320,7 @@ void CLightning::Render()
 	mat.setBlendType(RenderMaterial::Additive);
 	
 	float fbeta = fBeta + Random::getf(0.f, 2.f) * fMySize;
-
+	
 	for(size_t i = 0; i < m_nodes.size() && i <= fTotoro; i++) {
 		CLightningNode & node = m_nodes[i];
 		
@@ -382,7 +382,7 @@ void CLightning::Render()
 		
 		{
 		TexturedQuad q;
-
+		
 		q.v[0].color = Color::white.toRGBA();
 		q.v[1].color = (Color::blue * 0.353f).toRGBA();
 		q.v[2].color = (Color::blue * 0.353f).toRGBA();

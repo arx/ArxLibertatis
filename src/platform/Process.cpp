@@ -217,7 +217,7 @@ process_handle runAsync(const char * exe, const char * const args[], bool detach
 	STARTUPINFO si;
 	memset(&si, 0, sizeof(STARTUPINFO));
 	si.cb = sizeof(STARTUPINFO);
-
+	
 	PROCESS_INFORMATION pi;
 	memset(&pi, 0, sizeof(PROCESS_INFORMATION));
 	

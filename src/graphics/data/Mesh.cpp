@@ -146,7 +146,7 @@ bool RayCollidingPoly(const Vec3f & orgn, const Vec3f & dest, const EERIEPOLY & 
 			return true;
 		}
 	}
-
+	
 	return false;
 }
 

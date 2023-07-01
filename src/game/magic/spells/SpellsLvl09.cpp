@@ -157,7 +157,7 @@ void SummonCreatureSpell::Update() {
 		
 		m_requestSummon = true;
 		m_summonedEntity = EntityHandle();
-
+		
 	} else if(m_requestSummon) {
 		lightHandleDestroy(m_light);
 		

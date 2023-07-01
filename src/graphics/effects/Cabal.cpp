@@ -135,7 +135,7 @@ Vec3f CabalFx::update(Vec3f casterPos) {
 		
 		cabalangle.setYaw(-cabalangle.getYaw());
 		timeOffset = 30ms;
-
+		
 		for(size_t i = 0; i < m_ringCount; i++) {
 			if(i > 0) {
 				mov = timeWaveSin(g_gameTime.now() - timeOffset, 1600ms * glm::pi<float>()) * m_scaleY;

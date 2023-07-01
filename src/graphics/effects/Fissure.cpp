@@ -86,7 +86,7 @@ CRiseDead::CRiseDead()
 void CRiseDead::Create(Vec3f aeSrc, float afBeta) {
 	
 	SetDuration(m_durationIntro, m_durationRender, m_durationOuttro);
-
+	
 	m_eSrc = aeSrc + Vec3f(0.f, -10.f, 0.f);
 	
 	float fBetaRad = glm::radians(afBeta);
@@ -97,7 +97,7 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta) {
 	m_visibleNotches = 0;
 	end = 40 - 1;
 	bIntro = true;
-
+	
 	for(int i = 0; i < 40; i++) {
 		tfRaysa[i] = Random::getf(0.f, 0.4f);
 		tfRaysb[i] = Random::getf(0.f, 0.4f);
@@ -109,14 +109,14 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta) {
 	v1a[end].x = m_eSrc.x + fBetaRadSin * 100;
 	v1a[end].y = m_eSrc.y;
 	v1a[end].z = m_eSrc.z - fBetaRadCos * 100;
-
+	
 	v1b[0] = v1a[0];
 	v1b[end] = v1a[end];
-
+	
 	sizeF = 200;
 	Split(v1a, 0, end, 20);
 	Split(v1b, 0, end, -20);
-
+	
 	sizeF = 200;
 	Split(v1a, 0, end, 80);
 	Split(v1b, 0, end, -80);
@@ -155,11 +155,11 @@ void CRiseDead::RenderFissure() {
 	RenderMaterial mat;
 	mat.setWrapMode(TextureStage::WrapClamp);
 	mat.setLayer(RenderMaterial::EffectForeground);
-
+	
 	//-------------------------------------------------------------------------
 	// computation des sommets
 	mat.setBlendType(RenderMaterial::Opaque);
-
+	
 	for(int i = 0; i <= std::min(end, m_visibleNotches); i++) {
 		
 		float ff;
@@ -168,31 +168,31 @@ void CRiseDead::RenderFissure() {
 		} else {
 			ff = 1.0f - ((i - (end + 1) * 0.5f) / (end * 0.5f));
 		}
-
+		
 		float fTempCos = ff * fBetaRadCos;
 		float fTempSin = ff * fBetaRadSin;
-
+		
 		va[i].x   = v1a[i].x   + sizeF * fTempCos;
 		va[i].y   = v1a[i].y;
 		va[i].z   = v1a[i].z   + sizeF * fTempSin;
-
+		
 		vb[i].x   = v1b[i].x   - sizeF * fTempCos;
 		vb[i].y   = v1b[i].y;
 		vb[i].z   = v1b[i].z   - sizeF * fTempSin;
-
+		
 		va[i].x += Random::getf(0.f, 0.5f) * fTempCos;
 		va[i].z += Random::getf(0.f, 0.5f) * fTempSin;
 		vb[i].x -= Random::getf(0.f, 0.5f) * fTempCos;
 		vb[i].z -= Random::getf(0.f, 0.5f) * fTempSin;
 	}
-
+	
 	//-------------------------------------------------------------------------
 	// rendu de la fissure
 	mat.setBlendType(RenderMaterial::Opaque);
 	
 	TexturedVertexUntransformed vr[4];
 	vr[0].color = vr[1].color = vr[2].color = vr[3].color = Color::black.toRGB();
-
+	
 	if(bIntro) {
 		for(int i = 0; i < std::min(end, m_visibleNotches); i++) {
 			vr[0].p = v1a[i];
@@ -212,7 +212,7 @@ void CRiseDead::RenderFissure() {
 			drawTriangle(mat, &vr[1]);
 		}
 	}
-
+	
 	//-------------------------------------------------------------------------
 	// rendu de la bordure
 	mat.setBlendType(RenderMaterial::Additive);
@@ -241,7 +241,7 @@ void CRiseDead::RenderFissure() {
 		drawTriangle(mat, &vr[1]);
 		
 	}
-
+	
 	//-------------------------------------------------------------------------
 	// rendu des faisceaux
 	// blend additif ou mul
@@ -423,7 +423,7 @@ CSummonCreature::CSummonCreature()
 void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(m_durationIntro, m_durationRender, m_durationOuttro);
-
+	
 	m_eSrc = aeSrc + Vec3f(0.f, -50.f, 0.f);
 	
 	float fBetaRad = glm::radians(afBeta);
@@ -434,7 +434,7 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 	m_visibleNotches = 0;
 	end = 40 - 1;
 	bIntro = true;
-
+	
 	for(int i = 0; i < 40; i++) {
 		tfRaysa[i] = Random::getf(0.f, 0.4f);
 		tfRaysb[i] = Random::getf(0.f, 0.4f);
@@ -444,15 +444,15 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 	v1a[end] = m_eSrc + Vec3f(0.f, 100.f, 0.f);
 	v1b[0] = v1a[0];
 	v1b[end] = v1a[end];
-
+	
 	sizeF = 200;
 	Split(v1a, 0, end, 20);
 	Split(v1b, 0, end, -20);
-
+	
 	sizeF = 200;
 	Split(v1a, 0, end, 80);
 	Split(v1b, 0, end, -80);
-
+	
 	// check de la conformité du split
 	// sinon recalc de l'un de l'autre ou des deux
 	// espace min
@@ -462,17 +462,17 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 			v1a[i].x = v1b[i].x;
 			v1b[i].x = fTemp;
 		}
-
+		
 		if(v1a[i].z > v1b[i].z) {
 			float fTemp = v1a[i].z;
 			v1a[i].z = v1b[i].z;
 			v1b[i].z = fTemp;
 		}
-
+		
 		if((v1b[i].x - v1a[i].x) > 20) {
 			v1b[i].x = v1a[i].x + Random::getf(0.f, 20.0f);
 		}
-
+		
 		if((v1b[i].z - v1a[i].z) > 20) {
 			v1b[i].z = v1a[i].z + Random::getf(0.f, 20.0f);
 		}
@@ -506,11 +506,11 @@ void CSummonCreature::RenderFissure() {
 	RenderMaterial mat;
 	mat.setWrapMode(TextureStage::WrapClamp);
 	mat.setLayer(RenderMaterial::EffectForeground);
-
+	
 	//-------------------------------------------------------------------------
 	// computation des sommets
 	mat.setBlendType(RenderMaterial::Opaque);
-
+	
 	for(int i = 0; i <= std::min(end, m_visibleNotches); i++) {
 		
 		float ff;
@@ -519,24 +519,24 @@ void CSummonCreature::RenderFissure() {
 		} else {
 			ff = 1.0f - ((i - (end + 1) * 0.5f) / (end * 0.5f));
 		}
-
+		
 		float fTempCos = ff * fBetaRadCos;
 		float fTempSin = ff * fBetaRadSin;
-
+		
 		va[i].x   = v1a[i].x   + sizeF * fTempCos;
 		va[i].y   = v1a[i].y;
 		va[i].z   = v1a[i].z   + sizeF * fTempSin;
-
+		
 		vb[i].x   = v1b[i].x   - sizeF * fTempCos;
 		vb[i].y   = v1b[i].y;
 		vb[i].z   = v1b[i].z   - sizeF * fTempSin;
-
+		
 		va[i].x += Random::getf(0.f, 0.5f) * fTempCos;
 		va[i].z += Random::getf(0.f, 0.5f) * fTempSin;
 		vb[i].x -= Random::getf(0.f, 0.5f) * fTempCos;
 		vb[i].z -= Random::getf(0.f, 0.5f) * fTempSin;
 	}
-
+	
 	//-------------------------------------------------------------------------
 	// rendu de la fissure
 	mat.setBlendType(RenderMaterial::Opaque);
@@ -563,7 +563,7 @@ void CSummonCreature::RenderFissure() {
 			drawTriangle(mat, &vr[1]);
 		}
 	}
-
+	
 	//-------------------------------------------------------------------------
 	// rendu de la bordure
 	mat.setBlendType(RenderMaterial::Additive);
@@ -614,7 +614,7 @@ void CSummonCreature::RenderFissure() {
 	vr[2].uv.y = 0;
 	vr[3].uv.x = 1.0f;
 	vr[3].uv.y = 0;
-
+	
 	for(int i = 0; i < end - 1; i++) {
 		
 		if(i < m_visibleNotches) {

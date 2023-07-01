@@ -548,27 +548,27 @@ static float ARX_DAMAGES_DrainMana(Entity * io, float dmg) {
 	if(!io || !(io->ioflags & IO_NPC)) {
 		return 0;
 	}
-
+	
 	if(io == entities.player()) {
 		if(player.playerflags & PLAYERFLAGS_NO_MANA_DRAIN) {
 			return 0;
 		}
-
+		
 		if(player.manaPool.current >= dmg) {
 			player.manaPool.current -= dmg;
 			return dmg;
 		}
-
+		
 		float d = player.manaPool.current;
 		player.manaPool.current = 0;
 		return d;
 	}
-
+	
 	if(io->_npcdata->manaPool.current >= dmg) {
 		io->_npcdata->manaPool.current -= dmg;
 		return dmg;
 	}
-
+	
 	float d = io->_npcdata->manaPool.current;
 	io->_npcdata->manaPool.current = 0;
 	return d;
@@ -984,6 +984,7 @@ static void updateDamage(DAMAGE_INFO & damage, GameInstant now) {
 	if(!(damage.params.type & DAMAGE_TYPE_NO_FIX)) {
 		flags |= IO_FIX;
 	}
+	
 	for(Entity & entity : entities.inScene(flags)) {
 		
 		if(!(entity.gameFlags & GFLAG_ISINTREATZONE)
@@ -1393,11 +1394,11 @@ void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent) {
 	
 	if(v <= 0.f) {
 		float mloss = 1.f;
-
+		
 		if(io->ioflags & IO_ITEM) {
 			io->_itemdata->price -= util::to<long>(float(io->_itemdata->price) / io->max_durability);
 		}
-
+		
 		io->max_durability -= mloss;
 	} else {
 		
@@ -1410,20 +1411,20 @@ void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent) {
 		if(io->ioflags & IO_ITEM) {
 			io->_itemdata->price -= static_cast<long>(float(io->_itemdata->price) * v);
 		}
-
+		
 		io->max_durability -= mloss;
 	}
-
+	
 	io->durability += to_restore;
-
+	
 	if(io->durability > io->max_durability) {
 		io->durability = io->max_durability;
 	}
-
+	
 	if(io->max_durability <= 0.f) {
 		ARX_DAMAGES_DurabilityLoss(io, 100);
 	}
-
+	
 }
 
 void ARX_DAMAGES_DurabilityCheck(Entity * io, float ratio) {
@@ -1470,28 +1471,28 @@ float ARX_DAMAGES_ComputeRepairPrice(const Entity * torepair, const Entity * bla
 	if(!torepair || !blacksmith) {
 		return -1.f;
 	}
-
+	
 	if(!(torepair->ioflags & IO_ITEM)) {
 		return -1.f;
 	}
-
+	
 	if(torepair->max_durability <= 0.f) {
 		return -1.f;
 	}
-
+	
 	if(torepair->durability == torepair->max_durability) return -1.f;
-
+	
 	float ratio = (torepair->max_durability - torepair->durability) / torepair->max_durability;
 	float price = float(torepair->_itemdata->price) * ratio;
-
+	
 	if(blacksmith->shop_multiply != 0.f) {
 		price *= blacksmith->shop_multiply;
 	}
-
+	
 	if(price > 0.f && price < 1.f) {
 		price = 1.f;
 	}
-
+	
 	return price;
 }
 

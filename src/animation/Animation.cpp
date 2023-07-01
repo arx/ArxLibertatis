@@ -195,11 +195,11 @@ void EERIE_ANIMMANAGER_PurgeUnused() {
 }
 
 void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim) {
-
+	
 	if(!anim) {
 		return;
 	}
-
+	
 	anim->locks--;
 	if(anim->locks < 0) {
 		anim->locks = 0;
@@ -234,11 +234,11 @@ static float GetTimeBetweenKeyFrames(EERIE_ANIM * ea, long f1, long f2) {
 }
 
 static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path & file) {
-
+	
 	(void)size; // TODO use size
-
+	
 	LogDebug("Loading animation file " << file);
-
+	
 	size_t pos = 0;
 	
 	const THEA_HEADER * th = reinterpret_cast<const THEA_HEADER *>(adr + pos);
@@ -262,13 +262,13 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 	eerie->groups.resize(keyFrames * groupCount);
 	eerie->voidgroups.resize(groupCount);
 	std::fill(eerie->voidgroups.begin(), eerie->voidgroups.end(), false);
-
+	
 	eerie->anim_time = 0;
-
+	
 	// Go For Keyframes read
 	for(size_t i = 0; i < keyFrames; i++) {
 		LogDebug("Loading keyframe " << i);
-
+		
 		THEA_KEYFRAME_2015 kf2015;
 		const THEA_KEYFRAME_2015 * tkf2015;
 		if(th->version >= 2015) {
@@ -290,9 +290,9 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 			kf2015.time_frame = tkf->time_frame;
 			tkf2015 = &kf2015;
 		}
-
+		
 		eerie->frames[i].num_frame = tkf2015->num_frame;
-
+		
 		eerie->frames[i].f_rotate = (tkf2015->key_orient != 0);
 		eerie->frames[i].f_translate = (tkf2015->key_move != 0);
 		
@@ -308,7 +308,7 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 		
 		// Is There a Global translation ?
 		if(tkf2015->key_move != 0) {
-
+			
 			const THEA_KEYMOVE * tkm = reinterpret_cast<const THEA_KEYMOVE *>(adr + pos);
 			pos += sizeof(THEA_KEYMOVE);
 			
@@ -317,11 +317,11 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 			
 			eerie->frames[i].translate = tkm->toVec3();
 		}
-
+		
 		// Is There a Global Rotation ?
 		if(tkf2015->key_orient != 0) {
 			pos += 8; // THEO_ANGLE
-
+			
 			const ArxQuat * quat = reinterpret_cast<const ArxQuat *>(adr + pos);
 			pos += sizeof(ArxQuat);
 			
@@ -330,33 +330,33 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 			
 			eerie->frames[i].quat = *quat;
 		}
-
+		
 		// Is There a Global Morph ? (IGNORED!)
 		if(tkf2015->key_morph != 0) {
 			pos += 16; // THEA_MORPH
 		}
-
+		
 		// Now go for Group Rotations/Translations/scaling for each GROUP
 		for(size_t j = 0; j < groupCount; j++) {
-
+			
 			const THEO_GROUPANIM * tga = reinterpret_cast<const THEO_GROUPANIM *>(adr + pos);
 			pos += sizeof(THEO_GROUPANIM);
-
+			
 			EERIE_GROUP * eg = &eerie->groups[j + i * groupCount];
 			eg->key = tga->key_group;
 			eg->quat = tga->Quaternion;
 			eg->translate = tga->translate.toVec3();
 			eg->zoom = tga->zoom.toVec3();
 		}
-
+		
 		// Now Read Sound Data included in this frame
 		s32 num_sample = *reinterpret_cast<const s32 *>(adr + pos);
 		pos += sizeof(s32);
 		LogDebug(" -> num_sample " << num_sample << " s32:" << sizeof(s32));
-
+		
 		eerie->frames[i].sample = audio::SampleHandle();
 		if(num_sample != -1) {
-
+			
 			const THEA_SAMPLE * ts = reinterpret_cast<const THEA_SAMPLE *>(adr + pos);
 			pos += sizeof(THEA_SAMPLE);
 			pos += ts->sample_size;
@@ -366,7 +366,7 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 			
 			eerie->frames[i].sample = ARX_SOUND_Load(res::path::load(util::loadString(ts->sample_name)));
 		}
-
+		
 		pos += 4; // num_sfx
 	}
 	
@@ -423,7 +423,7 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 		}
 		
 	}
-
+	
 	for(size_t i = 0; i < keyFrames; i++) {
 		eerie->frames[i].f_translate = true;
 		eerie->frames[i].f_rotate = true;
@@ -453,13 +453,11 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 	if(eerie->anim_time < 1ms) {
 		eerie->anim_time = 1ms;
 	}
-
+	
 	LogDebug("Finished Conversion TEA -> EERIE - " << toS(eerie->anim_time) << " seconds");
-
+	
 	return eerie;
 }
-
-
 
 static bool EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE & ah, const res::path & path) {
 	
@@ -559,7 +557,7 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 	if(layer.flags & EA_PAUSED) {
 		time = 0;
 	}
-
+	
 	if(io && (io->ioflags & IO_FREEZESCRIPT)) {
 		time = 0;
 	}
@@ -571,13 +569,13 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 	if(!(layer.flags & EA_EXCONTROL)) {
 		layer.ctime += time;
 	}
-
+	
 	layer.flags &= ~EA_ANIMEND;
-
+	
 	AnimationDuration animTime = layer.currentAltAnim()->anim_time;
 	
 	if(layer.ctime > animTime) {
-	
+		
 		if(layer.flags & EA_STOPEND) {
 			layer.ctime = animTime;
 		}
@@ -615,11 +613,11 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 	for(size_t i = 1; i < anim.frames.size(); i++) {
 		AnimationDuration tcf = anim.frames[i - 1].time;
 		AnimationDuration tnf = anim.frames[i].time;
-
+		
 		if(tcf == tnf) {
 			return;
 		}
-
+		
 		if((tim < tnf && tim >= tcf) || (i == anim.frames.size() - 1 && tim == tnf)) {
 			const size_t fr = i - 1;
 			tim -= tcf;
@@ -628,7 +626,7 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity * io) {
 			if(!(layer.flags & EA_ANIMEND)
 			   && time != 0
 			   && layer.lastframe != long(fr)) {
-			
+				
 				// Frame Sound Management
 				if(anim.frames[fr].sample != audio::SampleHandle()) {
 					Vec3f * position = io ? &io->pos : nullptr;
