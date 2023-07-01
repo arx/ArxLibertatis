@@ -1480,7 +1480,9 @@ float ARX_DAMAGES_ComputeRepairPrice(const Entity * torepair, const Entity * bla
 		return -1.f;
 	}
 	
-	if(torepair->durability == torepair->max_durability) return -1.f;
+	if(torepair->durability == torepair->max_durability) {
+		return -1.f;
+	}
 	
 	float ratio = (torepair->max_durability - torepair->durability) / torepair->max_durability;
 	float price = float(torepair->_itemdata->price) * ratio;

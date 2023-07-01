@@ -206,7 +206,9 @@ struct opname_size {
 	void operator()(Key & key) {
 		typename Key::const_iterator it(key.begin()) , end(key.end());
 		
-		if(it == end) { return; }
+		if(it == end) {
+			return;
+		}
 		
 		size_t cur_size(0);
 		
