@@ -91,7 +91,7 @@ public:
 		return function(args);
 	}
 	
-	void swap(self_t & rh) {
+	void swap(self_t & rh) noexcept {
 		function.swap(rh.swap());
 	}
 	
