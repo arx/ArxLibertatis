@@ -204,18 +204,18 @@ public:
 };
 
 /*!
- * \brief Split a string at each occurance of a character.
+ * \brief Split a string at each occurrence of a character.
  *
- * Returns an iterable view of all substrings between occurances of the separator even if they are empty.
+ * Returns an iterable view of all substrings between occurrences of the separator even if they are empty.
  */
 [[nodiscard]] inline SplitStringView<char, false> split(std::string_view string, char separator) {
     return { string, separator };
 }
 
 /*!
- * \brief Split a string at each occurance of any of the characters in the separator string.
+ * \brief Split a string at each occurrence of any of the characters in the separator string.
  *
- * Returns an iterable view of all substrings between occurances of a separator even if they are empty.
+ * Returns an iterable view of all substrings between occurrences of a separator even if they are empty.
  */
 [[nodiscard]] inline SplitStringView<std::string_view, false> split(std::string_view string,
                                                                     std::string_view separators) {
@@ -223,18 +223,18 @@ public:
 }
 
 /*!
- * \brief Split a string at each occurance of a character.
+ * \brief Split a string at each occurrence of a character.
  *
- * Returns an iterable view of all non-empty substrings between occurances of the separator
+ * Returns an iterable view of all non-empty substrings between occurrences of the separator
  */
 [[nodiscard]] inline SplitStringView<char, true> splitIgnoreEmpty(std::string_view string, char separator) {
     return { string, separator };
 }
 
 /*!
- * \brief Split a string at each occurance of any of the characters in the separator string.
+ * \brief Split a string at each occurrence of any of the characters in the separator string.
  *
- * Returns an iterable view of all non-empty substrings between occurances of a separator.
+ * Returns an iterable view of all non-empty substrings between occurrences of a separator.
  */
 [[nodiscard]] inline SplitStringView<std::string_view, true> splitIgnoreEmpty(std::string_view string,
                                                                               std::string_view separators) {

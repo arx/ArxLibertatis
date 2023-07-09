@@ -147,7 +147,7 @@ public:
 	
 	/*!
 	 * Configure log levels for multiple components.
-	 * Config is a comma-seperated list of compontent log level assignments,
+	 * Config is a comma-seperated list of component log level assignments.
 	 * Each assignment is of the form "component=level" or "component".
 	 * Valid levels are:
 	 *  - "debug" / "d" / "D" (default if level is omitted)

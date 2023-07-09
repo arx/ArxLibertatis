@@ -45,7 +45,7 @@ Here is a short summary of the options available in arx. Please refer to the det
 \fB\-\-benchmark\fP[=\fITIMELIMIT\fP]
 Log time taken for startup, loading levels and shutdown, and the minimum, maximum and average framerate.
 
-If a \fITIMELIMIT\fP argument is given, the game will exit after the specified amout of time has been spent rendering normal frames. This time does not include the startup or loading time. Valid values are a number, optionally followed by a unit. Valid units are "\fIms\fP" (milliseconds), "\fIs\fP" (seconds), "\fIm\fP" (minutes) and "\fIh\fP" (hours). The default unit is milliseconds.
+If a \fITIMELIMIT\fP argument is given, the game will exit after the specified amount of time has been spent rendering normal frames. This time does not include the startup or loading time. Valid values are a number, optionally followed by a unit. Valid units are "\fIms\fP" (milliseconds), "\fIs\fP" (seconds), "\fIm\fP" (minutes) and "\fIh\fP" (hours). The default unit is milliseconds.
 
 This option can be combined with the \fB--loadlevel\fP, \fB--loadsave\fP or \fB--loadslot\fP options to benchmark a specific scene.
 .TP
@@ -111,7 +111,7 @@ Disables looking for default data directories. Default user and config directori
 \fB\-\-override\-gl\fP=\fIOVERRIDES\fP
 Overrides the used OpenGL extensions and features. By default, Arx Libertatis will use all extensions that the driver claims to support except for some that are known to cause issues with certain drivers. This options allows the user to disable additional extensions or re-enable extensions that are by default disabled. It will not make Arx Libertatis attempt to use extensions that the driver does not claim to support.
 
-The overrides passed to this option are parsed after, and thus overrride, those in the \fIextension_override\fP setting in the \fI[video]\fP section of \fIcfg.ini\fP which is in turn applied after the built-in driver quirk overrides.
+The overrides passed to this option are parsed after, and thus override, those in the \fIextension_override\fP setting in the \fI[video]\fP section of \fIcfg.ini\fP which is in turn applied after the built-in driver quirk overrides.
 
 All disabled extensions - either by built-in rules or user-supplied overrides are logged.
 
@@ -137,7 +137,7 @@ Re-enable all non-core OpenGL extensions
 Re-enable extensions part of any known OpenGL version and disabling all others
 .RE
 .IP
-Note that the version overrrides (i.e. all except "\fB-GL_ext\fP" and "\fB+GL_ext\fP") fully override the set of allowed extensions and thus make all previous tokens meaningless. In particular, \fB\-\-override\-gl="+"\fP will disable both the built-in driver quirk overrides and the \fIextension_override\fP setting while \fB\-\-override\-gl="1.5"\fP will disable the use of all optional extensions.
+Note that the version overrides (i.e. all except "\fB-GL_ext\fP" and "\fB+GL_ext\fP") fully override the set of allowed extensions and thus make all previous tokens meaningless. In particular, \fB\-\-override\-gl="+"\fP will disable both the built-in driver quirk overrides and the \fIextension_override\fP setting while \fB\-\-override\-gl="1.5"\fP will disable the use of all optional extensions.
 .TP
 \fB\-\-skiplogo\fP
 Don't display Logo images at startup. Currently this will not skip the intro cutscene.

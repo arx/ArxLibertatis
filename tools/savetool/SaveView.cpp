@@ -924,7 +924,7 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 	std::cout << "Magic resistance: " << asp.resist_magic << '\n';
 	std::cout << "Poison resistance: " << asp.resist_poison << '\n';
 	if(asp.Attribute_Redistribute) std::cout << "Available attribute points: " << asp.Attribute_Redistribute << '\n';
-	if(asp.Skill_Redistribute) std::cout << "Availbale skill points: " << asp.Skill_Redistribute << '\n';
+	if(asp.Skill_Redistribute) std::cout << "Available skill points: " << asp.Skill_Redistribute << '\n';
 	
 	if(asp.rune_flags) {
 		std::cout << "Runes:";

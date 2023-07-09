@@ -38,7 +38,7 @@
 
 namespace util::cmdline {
 
-//! default strategy for types convertation
+//! default strategy for types conversion
 struct type_cast {
 	
 	//! converts input parameter to value which type is Dest

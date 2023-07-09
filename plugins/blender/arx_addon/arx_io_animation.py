@@ -91,7 +91,7 @@ class ArxAnimationManager(object):
                 bone.keyframe_insert(data_path="scale")
                 #bpy.ops.anim.keyframe_insert(type='LocRotScale', confirm_success=False)
                 # FIXME translation and zoom are both 0,0,0
-                # TODO keyframes of rotation are glitchy. probably cause im not doing it right. keyframe has to be set via bpy.ops.anim.keyframe_insert but i dont know how to select the bone.
+                # TODO keyframes of rotation are glitchy. probably cause I'm not doing it right. keyframe has to be set via bpy.ops.anim.keyframe_insert but I don't know how to select the bone.
                 
             bpy.ops.object.mode_set(mode='OBJECT')
             
