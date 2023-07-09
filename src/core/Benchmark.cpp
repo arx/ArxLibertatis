@@ -309,7 +309,7 @@ static void enable(util::cmdline::optional<std::string> limit) {
 			g_timeLimit = multiplier * timeLimit.value();
 		} else {
 			throw util::cmdline::error(util::cmdline::error::invalid_cmd_syntax,
-			                           "inavlid number \"" + *limit + "\"");
+			                           "invalid number \"" + *limit + "\"");
 		}
 	} else {
 		g_timeLimit = PlatformDuration::max();

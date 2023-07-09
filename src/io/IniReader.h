@@ -58,7 +58,7 @@ public:
 	/*!
 	 * Gets the specified configuration value from the map of ConfigSections
 	 * \param sectionName The section to search in
-	 * \param keyName The key to look for in the section. Retuns the value of the first key if this is empty.
+	 * \param keyName The key to look for in the section. Returns the value of the first key if this is empty.
 	 * \param defaultValue The default value to return if anything doesn't match
 	 * \return The value of the key found or the default value otherwise
 	 */
@@ -68,7 +68,7 @@ public:
 	/*!
 	 * Gets the specified configuration value from the map of ConfigSections
 	 * \param sectionName The section to search in
-	 * \param keyName The key to look for in the section. Retuns the value of the first key if this is empty.
+	 * \param keyName The key to look for in the section. Returns the value of the first key if this is empty.
 	 * \param defaultValue The default value to return if anything doesn't match
 	 * \return The value of the key found or the default value otherwise
 	 */

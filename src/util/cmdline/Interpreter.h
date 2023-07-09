@@ -55,7 +55,7 @@ struct type_cast;
  *
  * \tparam StringType type of string
  *
- * \tparam TypeCast type of class that is used to convertation StringType to
+ * \tparam TypeCast type of class that is used to conversion StringType to
  *   expected type by option handler.
  */
 template <typename StringType, typename TypeCast = type_cast>

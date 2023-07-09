@@ -2761,7 +2761,7 @@ use_file() {
 	chmod -x "$_out" > /dev/null 2>&1
 }
 
-data_lang=''      # Data language/tipe ID
+data_lang=''      # Data language/type ID
 data_lang_desc='' # Friendly data language/type label
 
 # Detect the data language and type

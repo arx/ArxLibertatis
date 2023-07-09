@@ -89,7 +89,7 @@ struct MemoryInfo {
 /*!
  * \brief Get the total and available physical memory size
  *
- * \return the total and avaialbe memory size or 0 if it could not be determined.
+ * \return the total and available memory size or 0 if it could not be determined.
  */
 MemoryInfo getMemoryInfo();
 

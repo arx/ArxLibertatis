@@ -79,20 +79,20 @@ class QHexEdit final : public QScrollArea {
 	Q_PROPERTY(int addressOffset READ addressOffset WRITE setAddressOffset)
 	
 	/*!
-	 * Property address area color sets (setAddressAreaColor()) the backgorund
+	 * Property address area color sets (setAddressAreaColor()) the background
 	 * color of address areas. You can also read the color (addressAreaColor()).
 	 */
 	Q_PROPERTY(QColor addressAreaColor READ addressAreaColor WRITE setAddressAreaColor)
 	
 	/*!
-	 * Property highlighting color sets (setHighlightingColor()) the backgorund
+	 * Property highlighting color sets (setHighlightingColor()) the background
 	 * color of highlighted text areas. You can also read the color
 	 * (highlightingColor()).
 	 */
 	Q_PROPERTY(QColor highlightingColor READ highlightingColor WRITE setHighlightingColor)
 	
 	/*!
-	 * Property selection color sets (setSelectionColor()) the backgorund
+	 * Property selection color sets (setSelectionColor()) the background
 	 * color of selected text areas. You can also read the color
 	 * (selectionColor()).
 	 */

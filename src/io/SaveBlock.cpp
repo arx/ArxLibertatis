@@ -354,7 +354,7 @@ void SaveBlock::writeFileTable(std::string_view important) {
 
 bool SaveBlock::open(bool writable) {
 	
-	LogDebug("opening savefile " << m_savefile << " witable=" << writable);
+	LogDebug("opening savefile " << m_savefile << " writable=" << writable);
 	
 	fs::fstream::openmode mode = fs::fstream::in | fs::fstream::binary | fs::fstream::ate;
 	if(writable) {

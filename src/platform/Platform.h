@@ -349,11 +349,11 @@ namespace ARX_ANONYMOUS_NAMESPACE {
  * \brief Assume that a code branch cannot be reached.
  *
  * This is similar to arx_assume(false) but falls back to a while loop instead of a no-op when we don't know
- * of a way to tell the compiler about assumtions.
+ * of a way to tell the compiler about assumptions.
  *
  * Unlike arx_assert(false) this macro also tells the compiler to assume that the branch is unreachable
  * in release builds. Therefore there should never be any code after uses of this macro, including
- * return statements, as wether this code is executed would be undefined.
+ * return statements, as whether this code is executed would be undefined.
  *
  * This macro can be used to avoid dummy values when switching over enums, ie if only A and B are possible:
  * \code
