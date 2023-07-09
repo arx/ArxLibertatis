@@ -72,25 +72,25 @@ struct optional {
 	 * This function exchanges the content of the optional by the content
 	 * of optional, which is another optional of the same type.
 	 */
-	void swap(optional & rh) { // never throws
+	void swap(optional & rh) noexcept {
 		T * tmp(m_ptr);
 		m_ptr = rh.m_ptr;
 		rh.m_ptr = tmp;
 	}
 	
-	const T & operator*() const { // never throws
+	const T & operator*() const noexcept {
 		return *m_ptr;
 	}
 	
-	T & operator*() { // never throws
+	T & operator*() noexcept {
 		return const_cast<T &>(static_cast<const optional *>(this)->operator*());
 	}
 	
-	const T * operator->() const { // never throws
+	const T * operator->() const noexcept {
 		return &**this;
 	}
 	
-	T * operator->() { // never throws
+	T * operator->() noexcept {
 		return &**this;
 	}
 	
