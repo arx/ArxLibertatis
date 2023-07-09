@@ -246,7 +246,7 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 
 /*!
  * \def arx_force_inline
- * \brief Declare that a function never throws exceptions.
+ * \brief Tell the compiler to always inline a function.
  */
 #if ARX_COMPILER_MSVC
 	#define arx_force_inline __forceinline
