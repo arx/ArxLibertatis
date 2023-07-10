@@ -240,10 +240,13 @@ static bool FrustrumsClipSphere(const RoomData::Frustums & frustums, const Spher
 	
 	float dists = distanceToPoint(efpPlaneNear, sphere.origin);
 	
-	if(dists + sphere.radius > 0) {
-		for(const EERIE_FRUSTRUM & frustum : frustums) {
-			if(IsSphereInFrustrum(sphere.origin, frustum, sphere.radius))
-				return false;
+	if(dists + sphere.radius <= 0) {
+		return true;
+	}
+	
+	for(const EERIE_FRUSTRUM & frustum : frustums) {
+		if(IsSphereInFrustrum(sphere.origin, frustum, sphere.radius)) {
+			return false;
 		}
 	}
 	
