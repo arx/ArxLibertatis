@@ -1349,10 +1349,22 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit) {
 		}
 		
 		for(EERIEPOLY & polygon : tile.intersectingPolygons()) {
-			if(!(polygon.type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)))
-			if((polygon.min.y - pas < tmpPos.y) && (polygon.max.y + pas > tmpPos.y))
-			if((polygon.min.x - pas < tmpPos.x) && (polygon.max.x + pas > tmpPos.x))
-			if((polygon.min.z - pas < tmpPos.z) && (polygon.max.z + pas > tmpPos.z))
+			if((polygon.type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))) {
+				continue;
+			}
+			
+			if((polygon.min.x - pas >= tmpPos.x) || (polygon.max.x + pas <= tmpPos.x)) {
+				continue;
+			}
+			
+			if((polygon.min.y - pas >= tmpPos.y) || (polygon.max.y + pas <= tmpPos.y)) {
+				continue;
+			}
+			
+			if((polygon.min.z - pas >= tmpPos.z) || (polygon.max.z + pas <= tmpPos.z)) {
+				continue;
+			}
+			
 			if(RayCollidingPoly(orgn, dest, polygon, hit)) {
 				float dd = fdist(orgn, *hit);
 				if(dd < nearest) {
