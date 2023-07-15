@@ -260,6 +260,13 @@ void CrashHandlerImpl::processCrash() {
 		std::ostringstream oss;
 		oss << arx_name + " crashed!\n\n";
 		if(m_pCrashInfo) {
+			std::string_view description(m_pCrashInfo->description, m_textLength);
+			if(size_t pos = description.find("\n\n"); pos != std::string_view::npos) {
+				description = description.substr(0, pos);
+			}
+			if(!description.empty()) {
+				oss << description << "\n\n";
+			}
 			oss << "Please install arxcrashreporter or manually report the crash to "
 			    << url::bug_report << "\n\n";
 			oss << "Include the files contained in the following directory in your report:\n";
