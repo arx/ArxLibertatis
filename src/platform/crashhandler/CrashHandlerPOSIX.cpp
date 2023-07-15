@@ -19,6 +19,7 @@
 
 #include "platform/crashhandler/CrashHandlerPOSIX.h"
 
+#include <cstdlib>
 #include <cstring>
 #include <sstream>
 
@@ -52,9 +53,13 @@
 #include <ucontext.h>
 #endif
 
+#if ARX_HAVE_KILL
 #include <signal.h>
-#include <string.h>
+#endif
+
+#if ARX_HAVE_FORK || ARX_HAVE_EXECVP || ARX_HAVE_CHDIR
 #include <unistd.h>
+#endif
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -477,9 +482,15 @@ void CrashHandlerPOSIX::handleCrash(int signal, void * info, void * context) {
 	}
 	
 	// Try to spawn a sub-process to process the crash info
+	#if ARX_HAVE_FORK && ARX_HAVE_EXECVP
 	// Using fork() in a signal handler is bad, but we are already crashing anyway
-	platform::process_id processor = fork();
+	platform::process_handle processor = fork();
+	#else
+	const char * args[] = { m_executable.string().c_str(), m_arg.c_str(), nullptr };
+	platform::process_handle processor = platform::runAsync(m_executable.string(), args);
+	#endif
 	if(processor > 0) {
+		// In the original process if the crash processor has been spawned
 		while(true) {
 			if(m_pCrashInfo->exitLock.try_wait()) {
 				break;
@@ -489,11 +500,11 @@ void CrashHandlerPOSIX::handleCrash(int signal, void * info, void * context) {
 			}
 			Thread::sleep(100us);
 		}
-		// Exit if the crash reporter failed
+		// Exit if the crash processor failed
 		platform::killProcess(platform::getProcessId());
 		std::abort();
 	}
-	#ifdef ARX_HAVE_EXECVP
+	#if ARX_HAVE_FORK && ARX_HAVE_EXECVP
 	const char * args[] = { m_executable.string().c_str(), m_arg.c_str(), nullptr };
 	execvp(m_executable.string().c_str(), const_cast<char **>(args));
 	#endif
