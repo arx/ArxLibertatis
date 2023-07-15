@@ -427,7 +427,7 @@ void CrashHandlerPOSIX::processCrashTrace() {
 			"-ex", "thread apply all bt full",
 			"--pid", pid.c_str(), nullptr
 		};
-		std::string gdbstdout = platform::getOutputOf(args, /*unlocalized=*/ true);
+		std::string gdbstdout = platform::getOutputOf(args, /*unlocalized=*/ true, &m_pCrashInfo->toolProcessId);
 		if(!gdbstdout.empty()) {
 			description << "\nGDB stack trace:\n";
 			FrameType status = Handler;

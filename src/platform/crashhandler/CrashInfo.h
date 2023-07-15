@@ -122,6 +122,7 @@ struct CrashInfoBase {
 	u64 frame;
 	
 	platform::process_id processorProcessId;
+	platform::process_id toolProcessId;
 	
 };
 

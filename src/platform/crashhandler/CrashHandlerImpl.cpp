@@ -145,6 +145,7 @@ void CrashHandlerImpl::fillBasicCrashInfo() {
 	m_pCrashInfo->frame = 0;
 	
 	m_pCrashInfo->processorProcessId = 0;
+	m_pCrashInfo->toolProcessId = 0;
 	
 }
 
