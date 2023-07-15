@@ -80,6 +80,8 @@ public:
 	void SetLoginInfo(const QString & username, const QString & password);
 	void SetReproSteps(const QString & reproSteps);
 	
+	void ReleaseApplicationLock();
+	
 private:
 	
 	bool Initialize();
@@ -87,8 +89,6 @@ private:
 	void getCrashInfo();
 	
 	void AddFile(const QString & fileName);
-	
-	void ReleaseApplicationLock();
 	
 	FileList m_AttachedFiles;
 	
@@ -100,6 +100,7 @@ private:
 	boost::interprocess::mapped_region m_MemoryMappedRegion;
 	CrashInfo * m_pCrashInfo;
 	
+	bool m_terminated;
 	QString m_ReportUniqueID;
 	QString m_ReportTitle;
 	QString m_ReportDescription;

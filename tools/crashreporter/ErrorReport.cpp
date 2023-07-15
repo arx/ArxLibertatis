@@ -55,7 +55,8 @@
 
 ErrorReport::ErrorReport(QString sharedMemoryName)
 	: m_SharedMemoryName(std::move(sharedMemoryName))
-	, m_pCrashInfo()
+	, m_pCrashInfo( nullptr )
+	, m_terminated( false )
 	, m_Username("CrashBot")
 	, m_Password("WbAtVjS9")
 {
@@ -97,6 +98,7 @@ bool ErrorReport::Initialize() {
 	}
 	
 	if(!m_pCrashInfo || m_MemoryMappedRegion.get_size() != sizeof(CrashInfo)) {
+		m_pCrashInfo = nullptr;
 		m_DetailedError = "The size of the memory mapped region does not match the size of the CrashInfo structure.";
 		return false;
 	}
@@ -306,11 +308,13 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier * pProgressNotifier)
 
 void ErrorReport::ReleaseApplicationLock() {
 	
-	if(m_pCrashInfo) {
+	if(m_pCrashInfo && !m_terminated) {
 		// Kill the original, busy-waiting process.
 		platform::killProcess(m_pCrashInfo->processorProcessId);
+		platform::killProcess(m_pCrashInfo->toolProcessId);
 		m_pCrashInfo->exitLock.post();
 		platform::killProcess(m_pCrashInfo->processId);
+		m_terminated = true;
 	}
 	
 }
