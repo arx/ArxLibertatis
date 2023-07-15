@@ -35,10 +35,6 @@
 #include <sys/wait.h>
 #endif
 
-#if ARX_HAVE_NANOSLEEP
-#include <time.h>
-#endif
-
 #if ARX_HAVE_GETRUSAGE
 #include <sys/resource.h>
 #include <sys/time.h>
@@ -118,11 +114,11 @@ void CrashHandlerPOSIX::processCrashInfo() {
 		return;
 	}
 	
-	pid_t processor = getpid();
+	platform::process_id processor = platform::getProcessId();
 	if(processor == m_pCrashInfo->processId) {
 		
 		// Spawn a new child to get the current tick count
-		pid_t child = fork();
+		platform::process_id child = fork();
 		if(child == 0) {
 			while(true) {
 				#if ARX_HAVE_WAITPID
@@ -130,15 +126,10 @@ void CrashHandlerPOSIX::processCrashInfo() {
 					break;
 				}
 				#endif
-				#if ARX_HAVE_NANOSLEEP
-				timespec t;
-				t.tv_sec = 0;
-				t.tv_nsec = 100 * 1000;
-				nanosleep(&t, nullptr);
-				#endif
+				Thread::sleep(100us);
 			}
 			// Exit if the crash processor failed
-			kill(getpid(), SIGKILL);
+			platform::killProcess(platform::getProcessId());
 			std::abort();
 		}
 		
