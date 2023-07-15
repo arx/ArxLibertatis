@@ -62,6 +62,8 @@
 #include "util/String.h"
 
 
+#if ARX_PLATFORM == ARX_PLATFORM_LINUX
+
 static void getProcessSatus(platform::process_id pid, u64 & rss, u64 & startTicks) {
 	
 	rss = startTicks = 0;
@@ -83,6 +85,8 @@ static void getProcessSatus(platform::process_id pid, u64 & rss, u64 & startTick
 	
 }
 
+#endif
+
 void CrashHandlerPOSIX::processCrashInfo() {
 	
 	#if ARX_HAVE_GETRUSAGE && ARX_PLATFORM != ARX_PLATFORM_MACOS
@@ -94,7 +98,7 @@ void CrashHandlerPOSIX::processCrashInfo() {
 	}
 	#endif
 	
-	#if ARX_HAVE_SYSCONF && (defined(_SC_PAGESIZE) || defined(_SC_CLK_TCK))
+	#if ARX_PLATFORM == ARX_PLATFORM_LINUX && ARX_HAVE_SYSCONF && (defined(_SC_PAGESIZE) || defined(_SC_CLK_TCK))
 	
 	// Get the rss memory usage from /proc/pid/stat
 	u64 rss, startTicks;
@@ -306,24 +310,17 @@ void CrashHandlerPOSIX::processCrashTrace() {
 	
 	std::ostringstream description;
 	
-	std::string maps;
+	std::map<intptr_t, MemoryRegion> regions;
+	#if ARX_PLATFORM == ARX_PLATFORM_LINUX
 	{
 		std::ostringstream oss;
 		oss << "/proc/" << m_pCrashInfo->processId << "/maps";
-		maps = fs::read(oss.str());
+		std::string maps = fs::read(oss.str());
 		if(!maps.empty()) {
 			fs::path file = m_crashReportDir / "maps.txt";
 			if(fs::write(file, maps)) {
 				addAttachedFile(file);
 			}
-		}
-	}
-	
-	enum FrameType { Handler = 0, System = 1, Fault = 2, Done = 3 };
-	#if ARX_HAVE_BACKTRACE
-	if(m_pCrashInfo->backtrace[0] != 0) {
-		std::map<intptr_t, MemoryRegion> regions;
-		if(!maps.empty()) {
 			std::istringstream iss(maps);
 			while(iss.good()) {
 				MemoryRegion region;
@@ -351,6 +348,12 @@ void CrashHandlerPOSIX::processCrashTrace() {
 				}
 			}
 		}
+	}
+	#endif
+	
+	enum FrameType { Handler = 0, System = 1, Fault = 2, Done = 3 };
+	#if ARX_HAVE_BACKTRACE
+	if(m_pCrashInfo->backtrace[0] != 0) {
 		description << "\nCallstack:\n";
 		boost::crc_32_type checksum;
 		std::string exe(fs::path(util::loadString(m_pCrashInfo->executablePath)).filename());
@@ -407,7 +410,7 @@ void CrashHandlerPOSIX::processCrashTrace() {
 		m_pCrashInfo->crashId = checksum.checksum();
 	}
 	#else
-	ARX_UNUSED(maps);
+	ARX_UNUSED(regions);
 	#endif
 	
 	// Get a stack trace via GDB
