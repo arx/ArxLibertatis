@@ -55,8 +55,8 @@
 
 ErrorReport::ErrorReport(QString sharedMemoryName)
 	: m_SharedMemoryName(std::move(sharedMemoryName))
-	, m_pCrashInfo( nullptr )
-	, m_terminated( false )
+	, m_pCrashInfo(nullptr)
+	, m_terminated(false)
 	, m_Username("CrashBot")
 	, m_Password("WbAtVjS9")
 {
