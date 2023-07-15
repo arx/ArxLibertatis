@@ -35,10 +35,6 @@
 #endif
 #endif
 
-#if ARX_HAVE_WAITPID
-#include <sys/wait.h>
-#endif
-
 #if ARX_HAVE_SETRLIMIT
 #include <sys/resource.h>
 #endif
@@ -488,11 +484,9 @@ void CrashHandlerPOSIX::handleCrash(int signal, void * info, void * context) {
 			if(m_pCrashInfo->exitLock.try_wait()) {
 				break;
 			}
-			#if ARX_HAVE_WAITPID
-			if(waitpid(processor, nullptr, WNOHANG) != 0) {
+			if(platform::getProcessExitCode(processor, false) != platform::StillRunning) {
 				break;
 			}
-			#endif
 			Thread::sleep(100us);
 		}
 		// Exit if the crash reporter failed
