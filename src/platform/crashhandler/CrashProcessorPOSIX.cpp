@@ -37,10 +37,6 @@
 #include <signal.h>
 #endif
 
-#if ARX_HAVE_WAITPID
-#include <sys/wait.h>
-#endif
-
 #if ARX_HAVE_GETRUSAGE
 #include <sys/resource.h>
 #include <sys/time.h>
@@ -130,11 +126,9 @@ void CrashHandlerPOSIX::processCrashInfo() {
 		platform::process_id child = fork();
 		if(child == 0) {
 			while(true) {
-				#if ARX_HAVE_WAITPID
-				if(waitpid(processor, nullptr, WNOHANG) != 0) {
+				if(platform::getProcessExitCode(processor, false) != platform::StillRunning) {
 					break;
 				}
-				#endif
 				Thread::sleep(100us);
 			}
 			// Exit if the crash processor failed
