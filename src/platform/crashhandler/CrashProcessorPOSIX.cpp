@@ -311,8 +311,9 @@ void CrashHandlerPOSIX::processCrashTrace() {
 	std::ostringstream description;
 	
 	std::map<intptr_t, MemoryRegion> regions;
-	#if ARX_PLATFORM == ARX_PLATFORM_LINUX
 	{
+		#if ARX_PLATFORM == ARX_PLATFORM_LINUX
+		
 		std::ostringstream oss;
 		oss << "/proc/" << m_pCrashInfo->processId << "/maps";
 		std::string maps = fs::read(oss.str());
@@ -348,8 +349,51 @@ void CrashHandlerPOSIX::processCrashTrace() {
 				}
 			}
 		}
+		
+		#elif ARX_PLATFORM == ARX_PLATFORM_MACOS
+		
+		std::string pid = std::to_string(m_pCrashInfo->processId);
+		const char * args[] = { "vmmap", "-verbose", pid.c_str(), nullptr };
+		std::string maps = platform::getOutputOf(args, /*unlocalized=*/ true, &m_pCrashInfo->toolProcessId);
+		if(!maps.empty()) {
+			fs::path file = m_crashReportDir / "vmmap.txt";
+			if(fs::write(file, maps)) {
+				addAttachedFile(file);
+			}
+		}
+		
+		#elif ARX_PLATFORM == ARX_PLATFORM_BSD
+		
+		#if defined(__FreeBSD__)
+		{
+			std::string pid = std::to_string(m_pCrashInfo->processId);
+			const char * args[] = { "procstat", "-v", pid.c_str(), nullptr };
+			std::string maps = platform::getOutputOf(args, /*unlocalized=*/ true, &m_pCrashInfo->toolProcessId);
+			if(!maps.empty()) {
+				fs::path file = m_crashReportDir / "procstat.txt";
+				if(fs::write(file, maps)) {
+					addAttachedFile(file);
+				}
+			}
+		}
+		#endif
+		
+		#if defined(__OpenBSD__)
+		{
+			std::string pid = std::to_string(m_pCrashInfo->processId);
+			const char * args[] = { "procmap", "-l", pid.c_str(), nullptr };
+			std::string maps = platform::getOutputOf(args, /*unlocalized=*/ true, &m_pCrashInfo->toolProcessId);
+			if(!maps.empty()) {
+				fs::path file = m_crashReportDir / "procmap.txt";
+				if(fs::write(file, maps)) {
+					addAttachedFile(file);
+				}
+			}
+		}
+		#endif
+		
+		#endif
 	}
-	#endif
 	
 	enum FrameType { Handler = 0, System = 1, Fault = 2, Done = 3 };
 	#if ARX_HAVE_BACKTRACE
