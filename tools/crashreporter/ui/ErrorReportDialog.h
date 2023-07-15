@@ -234,6 +234,8 @@ public:
 	
 private slots:
 	
+	void cleanup();
+	
 	void onTaskStarted(const QString & taskDescription, int numSteps);
 	void onTaskStepStarted(const QString & taskStepDescription);
 	void onTaskStepEnded();

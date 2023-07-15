@@ -78,10 +78,16 @@ ErrorReportDialog::ErrorReportDialog(ErrorReport & errorReport, QWidget * parent
 	startTask(new GatherInfoTask(m_errorReport), Pane_Welcome);
 	
 	setWindowIcon(QApplication::windowIcon());
+	
+	connect(this, SIGNAL(finished(int)), SLOT(cleanup()));
 }
 
 ErrorReportDialog::~ErrorReportDialog() {
 	delete ui;
+}
+
+void ErrorReportDialog::cleanup() {
+	m_errorReport.ReleaseApplicationLock();
 }
 
 void ErrorReportDialog::onBack() {
