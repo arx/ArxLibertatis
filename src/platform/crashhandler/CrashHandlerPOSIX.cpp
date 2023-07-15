@@ -39,10 +39,6 @@
 #include <sys/wait.h>
 #endif
 
-#if ARX_HAVE_NANOSLEEP
-#include <time.h>
-#endif
-
 #if ARX_HAVE_SETRLIMIT
 #include <sys/resource.h>
 #endif
@@ -486,7 +482,7 @@ void CrashHandlerPOSIX::handleCrash(int signal, void * info, void * context) {
 	
 	// Try to spawn a sub-process to process the crash info
 	// Using fork() in a signal handler is bad, but we are already crashing anyway
-	pid_t processor = fork();
+	platform::process_id processor = fork();
 	if(processor > 0) {
 		while(true) {
 			if(m_pCrashInfo->exitLock.try_wait()) {
@@ -497,15 +493,10 @@ void CrashHandlerPOSIX::handleCrash(int signal, void * info, void * context) {
 				break;
 			}
 			#endif
-			#if ARX_HAVE_NANOSLEEP
-			timespec t;
-			t.tv_sec = 0;
-			t.tv_nsec = 100 * 1000;
-			nanosleep(&t, nullptr);
-			#endif
+			Thread::sleep(100us);
 		}
 		// Exit if the crash reporter failed
-		kill(getpid(), SIGKILL);
+		platform::killProcess(platform::getProcessId());
 		std::abort();
 	}
 	#ifdef ARX_HAVE_EXECVP
