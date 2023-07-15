@@ -19,6 +19,7 @@
 
 #include "platform/crashhandler/CrashHandlerPOSIX.h"
 
+#include <cstdlib>
 #include <algorithm>
 #include <iomanip>
 #include <limits>
@@ -26,10 +27,15 @@
 #include <sstream>
 #include <string_view>
 
-#include <signal.h>
-#include <unistd.h>
-
 #include "Configure.h"
+
+#if ARX_HAVE_FORK
+#include <unistd.h>
+#endif
+
+#if ARX_HAVE_KILL
+#include <signal.h>
+#endif
 
 #if ARX_HAVE_WAITPID
 #include <sys/wait.h>
@@ -94,11 +100,10 @@ void CrashHandlerPOSIX::processCrashInfo() {
 	
 	#if ARX_HAVE_SYSCONF && (defined(_SC_PAGESIZE) || defined(_SC_CLK_TCK))
 	
-	u64 rss, startTicks, endTicks, dummy;
-	
+	// Get the rss memory usage from /proc/pid/stat
+	u64 rss, startTicks;
 	getProcessSatus(m_pCrashInfo->processId, rss, startTicks);
 	
-	// Get the rss memory usage from /proc/pid/stat
 	#ifdef _SC_PAGESIZE
 	if(rss != 0) {
 		long pagesize = sysconf(_SC_PAGESIZE);
@@ -114,8 +119,12 @@ void CrashHandlerPOSIX::processCrashInfo() {
 		return;
 	}
 	
+	u64 endTicks = 0;
+	
 	platform::process_id processor = platform::getProcessId();
 	if(processor == m_pCrashInfo->processId) {
+		
+		#if ARX_HAVE_FORK && ARX_HAVE_KILL
 		
 		// Spawn a new child to get the current tick count
 		platform::process_id child = fork();
@@ -134,14 +143,16 @@ void CrashHandlerPOSIX::processCrashInfo() {
 		}
 		
 		if(child > 0) {
-			getProcessSatus(child, dummy, endTicks);
+			getProcessSatus(child, rss, endTicks);
 			kill(child, SIGTERM);
 		} else {
 			endTicks = 0;
 		}
 		
+		#endif
+		
 	} else {
-		getProcessSatus(processor, dummy, endTicks);
+		getProcessSatus(processor, rss, endTicks);
 	}
 	
 	if(startTicks != 0 && endTicks != 0) {
