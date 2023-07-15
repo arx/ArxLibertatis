@@ -209,11 +209,12 @@ bool isWoW64Process(process_handle process);
  * \param args program arguments. The first argument should be the program name/path and
  *             the last argument must be nullptr.
  * \param unlocalized true if localization environment varuables should be reset.
+ * \param pid location where to store the process ID while it is running
  *
  * \return the program's standard output, or an empty string if there was an error.
  */
 std::string getOutputOf(const char * exe, const char * const args[],
-                        bool unlocalized = false);
+                        bool unlocalized = false, process_id * pid = nullptr);
 
 /*!
  * \brief Start a program and get its standard output
@@ -223,11 +224,13 @@ std::string getOutputOf(const char * exe, const char * const args[],
  * \param args program arguments. The first argument is the program to run, either an
  *             absolute path or a program name in the PATH. The last argument must be nullptr.
  * \param unlocalized true if localization environment varuables should be reset.
+ * \param pid location where to store the process ID while it is running
  *
  * \return the program's standard output, or an empty string if there was an error.
  */
-inline std::string getOutputOf(const char * const args[], bool unlocalized = false) {
-	return getOutputOf(args[0], args, unlocalized);
+inline std::string getOutputOf(const char * const args[],
+                               bool unlocalized = false, process_id * pid = nullptr) {
+	return getOutputOf(args[0], args, unlocalized, pid);
 }
 
 /*!
@@ -239,12 +242,13 @@ inline std::string getOutputOf(const char * const args[], bool unlocalized = fal
  * \param args program arguments. The first argument should be the program name/path and
  *             the last argument must be nullptr.
  * \param unlocalized true if localization environment varuables should be reset.
+ * \param pid location where to store the process ID while it is running
  *
  * \return the program's standard output, or an empty string if there was an error.
  */
 inline std::string getOutputOf(const std::string & exe, const char * const args[],
-                               bool unlocalized = false) {
-	return getOutputOf(exe.c_str(), args, unlocalized);
+                               bool unlocalized = false, process_id * pid = nullptr) {
+	return getOutputOf(exe.c_str(), args, unlocalized, pid);
 }
 
 #endif

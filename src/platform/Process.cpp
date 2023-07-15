@@ -420,7 +420,7 @@ bool isWoW64Process(process_handle process) {
 
 #else
 
-std::string getOutputOf(const char * exe, const char * const args[], bool unlocalized) {
+std::string getOutputOf(const char * exe, const char * const args[], bool unlocalized, process_id * pid) {
 	
 	#if (ARX_HAVE_PIPE2 || ARX_HAVE_PIPE) && ARX_HAVE_READ && ARX_HAVE_CLOSE
 	
@@ -435,6 +435,9 @@ std::string getOutputOf(const char * exe, const char * const args[], bool unloca
 	}
 	
 	process_handle process = run(exe, args, pipefd[1], unlocalized, false);
+	if(pid) {
+		*pid = getProcessId(process);
+	}
 	if(!process) {
 		close(pipefd[0]);
 		close(pipefd[1]);
@@ -458,6 +461,7 @@ std::string getOutputOf(const char * exe, const char * const args[], bool unloca
 	close(pipefd[0]);
 	
 	closeProcessHandle(process);
+	*pid = 0;
 	
 	return result;
 	
