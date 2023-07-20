@@ -666,6 +666,24 @@ public:
 	
 };
 
+class NoclipCommand : public Command {
+	
+public:
+	
+	NoclipCommand() : Command("noclip") { }
+	
+	Result execute(Context & context) override {
+		bool enable = context.getBool();
+		
+		DebugScript(' ' << enable);
+		
+		USE_PLAYERCOLLISIONS = !enable;
+		
+		return Success;
+	}
+	
+};
+
 } // anonymous namespace
 
 void setupScriptedPlayer() {
@@ -687,6 +705,7 @@ void setupScriptedPlayer() {
 	ScriptEvent::registerCommand(std::make_unique<PoisonCommand>());
 	ScriptEvent::registerCommand(std::make_unique<PlayerManaDrainCommand>());
 	ScriptEvent::registerCommand(std::make_unique<InvulnerabilityCommand>());
+	ScriptEvent::registerCommand(std::make_unique<NoclipCommand>());
 	
 }
 
