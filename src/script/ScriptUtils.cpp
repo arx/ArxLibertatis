@@ -125,11 +125,11 @@ std::string Context::getCommand(bool skipNewlines) {
 	return word;
 }
 
-std::string Context::getWord() {
+std::string Context::getWord(bool warnNewlines) {
 	
 	std::string_view esdat = m_script->data;
 	
-	skipWhitespace(false, true);
+	skipWhitespace(false, warnNewlines);
 	
 	if(m_pos >= esdat.size()) {
 		return std::string();
@@ -201,6 +201,16 @@ std::string Context::getWord() {
 	}
 	
 	return word;
+}
+
+std::string Context::peekWord() {
+	
+	size_t old_m_pos = m_pos;
+	std::string word = getWord(false);
+	m_pos = old_m_pos;
+	
+	return word;
+	
 }
 
 void Context::skipWord() {
