@@ -673,15 +673,18 @@ public:
 	NoclipCommand() : Command("noclip") { }
 	
 	Result execute(Context & context) override {
+		std::string param = context.peekWord();
 		
-		bool enable = context.getBool();
-		
-		DebugScript(' ' << enable);
-		
-		if(enable) {
-			USE_PLAYERCOLLISIONS = false;
-		} else {
-			USE_PLAYERCOLLISIONS = true;
+		if(param == "on" || param == "yes" || param == "off" || param == "no") {
+			bool enable = context.getBool();
+			
+			DebugScript(' ' << enable);
+			
+			USE_PLAYERCOLLISIONS = !enable;
+		} else if(param == "") {
+			DebugScript(' ');
+			
+			USE_PLAYERCOLLISIONS = !USE_PLAYERCOLLISIONS;
 		}
 		
 		return Success;
