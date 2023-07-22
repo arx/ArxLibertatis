@@ -553,6 +553,7 @@ private:
 GameFlow::Transition GameFlow::s_currentTransition = GameFlow::FirstLogo;
 
 static AreaId g_areaToLoad = AreaId(10);
+static bool g_initialPlayerCollision = true;
 
 static void skipLogo() {
 	if(GameFlow::getTransition() != GameFlow::LoadingScreen) {
@@ -560,6 +561,11 @@ static void skipLogo() {
 	}
 }
 ARX_PROGRAM_OPTION("skiplogo", "", "Skip logos at startup", &skipLogo)
+
+static void startWithNoclip() {
+	g_initialPlayerCollision = false;
+}
+ARX_PROGRAM_OPTION("noclip", "", "Start the game with noclipping enabled", &startWithNoclip)
 
 static void loadLevel(u32 level) {
 	g_areaToLoad = AreaId(level);
@@ -658,6 +664,10 @@ static bool HandleGameFlowTransitions() {
 		LoadLevelScreen(g_areaToLoad);
 		
 		DanaeLoadLevel(g_areaToLoad);
+		
+		USE_PLAYERCOLLISIONS = g_initialPlayerCollision;
+		g_initialPlayerCollision = true;
+		
 		GameFlow::setTransition(GameFlow::InGame);
 		return false;
 	}
