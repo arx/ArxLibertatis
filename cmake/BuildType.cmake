@@ -453,10 +453,17 @@ else(MSVC)
 			add_definitions(-D_GLIBCXX_ASSERTIONS=1)
 		endif()
 	elseif(SET_OPTIMIZATION_FLAGS)
-		if(IS_LIBCXX)
+		if(ARX_HAVE_LIBCPP_ENABLE_HARDENED_MODE)
+			# libc++ 17+
 			add_cxxflag("-Wp,-D_LIBCPP_ENABLE_HARDENED_MODE=0")
+		elseif(ARX_HAVE_LIBCPP_ENABLE_ASSERTIONS)
+			# libc++ 15+
 			add_cxxflag("-Wp,-D_LIBCPP_ENABLE_ASSERTIONS=0")
+		elseif(IS_LIBCXX)
+			# older libc++
+			add_cxxflag("-Wp,-U_LIBCPP_DEBUG")
 		else()
+			# libstdc++
 			add_cxxflag("-Wp,-U_GLIBCXX_ASSERTIONS")
 		endif()
 	endif()
