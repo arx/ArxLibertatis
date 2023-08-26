@@ -384,6 +384,13 @@ else(MSVC)
 				else()
 					add_cxxflag("-Wno-uninitialized")
 				endif()
+				# Too many false positives
+				# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=111159
+				# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=109642
+				check_compiler_flag(FLAG_FOUND "-Wdangling-reference")
+				if(FLAG_FOUND)
+					add_cxxflag("-Wno-dangling-reference")
+				endif()
 			endif()
 			
 			# Xcode does not support -isystem yet
