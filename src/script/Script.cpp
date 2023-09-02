@@ -589,36 +589,6 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			break;
 		}
 		
-		case 'g': {
-			
-			if(name == "^gore") {
-				*lcontent = 1;
-				return TYPE_LONG;
-			}
-			
-			if(name == "^gamedays") {
-				*lcontent = static_cast<long>(toMsi(g_gameTime.now()) / 86400000);
-				return TYPE_LONG;
-			}
-			
-			if(name == "^gamehours") {
-				*lcontent = static_cast<long>(toMsi(g_gameTime.now()) / 3600000);
-				return TYPE_LONG;
-			}
-			
-			if(name == "^gameminutes") {
-				*lcontent = static_cast<long>(toMsi(g_gameTime.now()) / 60000);
-				return TYPE_LONG;
-			}
-			
-			if(name == "^gameseconds") {
-				*lcontent = static_cast<long>(toMsi(g_gameTime.now()) / 1000);
-				return TYPE_LONG;
-			}
-			
-			break;
-		}
-		
 		case 'a': {
 			
 			if(boost::starts_with(name, "^amount")) {
@@ -714,174 +684,6 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			break;
 		}
 		
-		case 'r': {
-			
-			if(boost::starts_with(name, "^realdist_")) {
-				if(context.getEntity()) {
-					
-					Entity * target = entities.getById(name.substr(10));
-					if(target == entities.player()) {
-						if(context.getEntity()->requestRoomUpdate) {
-							UpdateIORoom(context.getEntity());
-						}
-						RoomHandle playerRoom = ARX_PORTALS_GetRoomNumForPosition(player.pos, RoomPositionForCamera);
-						*fcontent = SP_GetRoomDist(context.getEntity()->pos, player.pos, context.getEntity()->room, playerRoom);
-					} else if(target
-					          && (context.getEntity()->show == SHOW_FLAG_IN_SCENE
-					              || context.getEntity()->show == SHOW_FLAG_IN_INVENTORY)
-					          && (target->show == SHOW_FLAG_IN_SCENE
-					              || target->show == SHOW_FLAG_IN_INVENTORY)) {
-						
-						Vec3f pos  = GetItemWorldPosition(context.getEntity());
-						Vec3f pos2 = GetItemWorldPosition(target);
-						
-						if(context.getEntity()->requestRoomUpdate) {
-							UpdateIORoom(context.getEntity());
-						}
-						
-						if(target->requestRoomUpdate) {
-							UpdateIORoom(target);
-						}
-						
-						*fcontent = SP_GetRoomDist(pos, pos2, context.getEntity()->room, target->room);
-						
-					} else {
-						// Out of this world item
-						*fcontent = 99999999999.f;
-					}
-					return TYPE_FLOAT;
-				}
-			}
-			
-			if(name == "^realtime_year") {
-				*lcontent = getSystemTime().year;
-				return TYPE_LONG;
-			}
-			
-			if(name == "^realtime_month") {
-				*lcontent = getSystemTime().month;
-				return TYPE_LONG;
-			}
-			
-			if(name == "^realtime_day") {
-				*lcontent = getSystemTime().day;
-				return TYPE_LONG;
-			}
-			
-			if(boost::starts_with(name, "^repairprice_")) {
-				Entity * target = entities.getById(name.substr(13));
-				if(target) {
-					*fcontent = ARX_DAMAGES_ComputeRepairPrice(target, context.getEntity());
-				} else {
-					*fcontent = 0;
-				}
-				return TYPE_FLOAT;
-			}
-			
-			if(boost::starts_with(name, "^rnd_")) {
-				std::string_view max = name.substr(5);
-				// TODO should max be inclusive or exclusive?
-				// if inclusive, use proper integer random, otherwise fix rnd()?
-				if(!max.empty()) {
-					*fcontent = Random::getf(0.f, util::parseFloat(max));
-				} else {
-					*fcontent = 0;
-				}
-				return TYPE_FLOAT;
-			}
-			
-			if(boost::starts_with(name, "^rune_")) {
-				std::string_view temp = name.substr(6);
-				*lcontent = 0;
-				if(temp == "aam") {
-					*lcontent = player.rune_flags & FLAG_AAM;
-				} else if(temp == "cetrius") {
-					*lcontent = player.rune_flags & FLAG_CETRIUS;
-				} else if(temp == "comunicatum") {
-					*lcontent = player.rune_flags & FLAG_COMUNICATUM;
-				} else if(temp == "cosum") {
-					*lcontent = player.rune_flags & FLAG_COSUM;
-				} else if(temp == "folgora") {
-					*lcontent = player.rune_flags & FLAG_FOLGORA;
-				} else if(temp == "fridd") {
-					*lcontent = player.rune_flags & FLAG_FRIDD;
-				} else if(temp == "kaom") {
-					*lcontent = player.rune_flags & FLAG_KAOM;
-				} else if(temp == "mega") {
-					*lcontent = player.rune_flags & FLAG_MEGA;
-				} else if(temp == "morte") {
-					*lcontent = player.rune_flags & FLAG_MORTE;
-				} else if(temp == "movis") {
-					*lcontent = player.rune_flags & FLAG_MOVIS;
-				} else if(temp == "nhi") {
-					*lcontent = player.rune_flags & FLAG_NHI;
-				} else if(temp == "rhaa") {
-					*lcontent = player.rune_flags & FLAG_RHAA;
-				} else if(temp == "spacium") {
-					*lcontent = player.rune_flags & FLAG_SPACIUM;
-				} else if(temp == "stregum") {
-					*lcontent = player.rune_flags & FLAG_STREGUM;
-				} else if(temp == "taar") {
-					*lcontent = player.rune_flags & FLAG_TAAR;
-				} else if(temp == "tempus") {
-					*lcontent = player.rune_flags & FLAG_TEMPUS;
-				} else if(temp == "tera") {
-					*lcontent = player.rune_flags & FLAG_TERA;
-				} else if(temp == "vista") {
-					*lcontent = player.rune_flags & FLAG_VISTA;
-				} else if(temp == "vitae") {
-					*lcontent = player.rune_flags & FLAG_VITAE;
-				} else if(temp == "yok") {
-					*lcontent = player.rune_flags & FLAG_YOK;
-				}
-				return TYPE_LONG;
-			}
-			
-			break;
-		}
-		
-		case 'h': {
-			
-			if(name == "^hover") {
-				txtcontent = idString(FlyingOverIO);
-				return TYPE_TEXT;
-			}
-			
-			break;
-		}
-		
-		case 'i': {
-			
-			if(boost::starts_with(name, "^inzone_")) {
-				std::string_view zone = name.substr(8);
-				Zone * ap = getZoneByName(zone);
-				*lcontent = 0;
-				if(context.getEntity() && ap) {
-					if(ARX_PATH_IsPosInZone(ap, context.getEntity()->pos)) {
-						*lcontent = 1;
-					}
-				}
-				return TYPE_LONG;
-			}
-			
-			if(boost::starts_with(name, "^ininitpos")) {
-				*lcontent = 0;
-				if(context.getEntity()) {
-					Vec3f pos = GetItemWorldPosition(context.getEntity());
-					if(pos == context.getEntity()->initpos)
-						*lcontent = 1;
-				}
-				return TYPE_LONG;
-			}
-			
-			if(boost::starts_with(name, "^inplayerinventory")) {
-				*lcontent = IsInPlayerInventory(context.getEntity()) ? 1 : 0;
-				return TYPE_LONG;
-			}
-			
-			break;
-		}
-		
 		case 'b': {
 			
 			if(boost::starts_with(name, "^behavior")) {
@@ -936,50 +738,177 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			break;
 		}
 		
-		case 's': {
+		case 'c': {
 			
-			if(boost::starts_with(name, "^sender")) {
-				txtcontent = idString(context.getSender());
+			if(name == "^camera") {
+				txtcontent = idString(g_cameraEntity);
 				return TYPE_TEXT;
 			}
 			
-			if(boost::starts_with(name, "^scale")) {
-				*fcontent = (context.getEntity()) ? context.getEntity()->scale * 100.f : 0.f;
-				return TYPE_FLOAT;
+			if(name == "^caster" || boost::starts_with(name, "^caster_")) {
+				Entity * caster = nullptr;
+				if(Entity * entity = getEntityParam(name, 8, context)) {
+					caster = (entity->ioflags & IO_NPC) ? entities.get(entity->_npcdata->summoner) : nullptr;
+				} else if(Spell * spell = getSpellParam(name, 8)) {
+					caster = entities.get(spell->m_caster);
+				}
+				txtcontent = idString(caster);
+				return TYPE_TEXT;
 			}
 			
-			if(boost::starts_with(name, "^speaking")) {
-				if(context.getEntity() && getSpeechForEntity(*context.getEntity())) {
-					*lcontent = 1;
-					return TYPE_LONG;
+			if(name == "^class") {
+				txtcontent = context.getEntity() ? context.getEntity()->className() : "";
+				return TYPE_TEXT;
+			}
+			
+			if(name == "^class" || boost::starts_with(name, "^class_")) {
+				txtcontent = EntityId(name.substr(7)).className();
+				return TYPE_TEXT;
+			}
+			
+			break;
+		}
+		
+		case 'd': {
+			
+			if(boost::starts_with(name, "^dist_")) {
+				if(context.getEntity()) {
+					Entity * target = entities.getById(name.substr(6));
+					if(target == entities.player()) {
+						*fcontent = fdist(player.pos, context.getEntity()->pos);
+					} else if(target
+					          && (context.getEntity()->show == SHOW_FLAG_IN_SCENE
+					              || context.getEntity()->show == SHOW_FLAG_IN_INVENTORY)
+					          && (target->show == SHOW_FLAG_IN_SCENE
+					              || target->show == SHOW_FLAG_IN_INVENTORY)) {
+						*fcontent = fdist(GetItemWorldPosition(context.getEntity()), GetItemWorldPosition(target));
+					} else {
+						*fcontent = 99999999999.f;
+					}
+					return TYPE_FLOAT;
 				}
-				*lcontent = 0;
+			}
+			
+			if(boost::starts_with(name, "^demo")) {
+				*lcontent = (g_resources->getReleaseType() & PakReader::Demo) ? 1 : 0;
 				return TYPE_LONG;
 			}
 			
-			if(name == "^spell" || boost::starts_with(name, "^spell_")) {
-				Entity * entity = getEntityParam(name, 7, context);
-				Spell * lastSpell = nullptr;
-				if(entity) {
-					for(Spell & spell : spells.byCaster(entity->index())) {
-						if(!lastSpell || lastSpell->m_timcreation < spell.m_timcreation) {
-							lastSpell = &spell;
-						}
-					}
-				}
-				txtcontent = lastSpell ? lastSpell->idString() : "none";
+			if(boost::starts_with(name, "^durability")) {
+				*fcontent = (context.getEntity()) ? context.getEntity()->durability : 0.f;
+				return TYPE_FLOAT;
+			}
+			
+			if(name == "^dragged") {
+				txtcontent = idString(g_draggedEntity);
 				return TYPE_TEXT;
 			}
 			
-			if(name == "^spelllevel") {
-				*fcontent = player.spellLevel();
+			break;
+		}
+		
+		case 'f': {
+			
+			if(boost::starts_with(name, "^focal")) {
+				if(context.getEntity() && (context.getEntity()->ioflags & IO_CAMERA)) {
+					*fcontent = context.getEntity()->_camdata->cam.focal;
+					return TYPE_FLOAT;
+				}
+			}
+			
+			if(boost::starts_with(name, "^fighting")) {
+				*lcontent = long(ARX_PLAYER_IsInFightMode());
+				return TYPE_LONG;
+			}
+			
+			break;
+		}
+		
+		case 'g': {
+			
+			if(name == "^gore") {
+				*lcontent = 1;
+				return TYPE_LONG;
+			}
+			
+			if(name == "^gamedays") {
+				*lcontent = static_cast<long>(toMsi(g_gameTime.now()) / 86400000);
+				return TYPE_LONG;
+			}
+			
+			if(name == "^gamehours") {
+				*lcontent = static_cast<long>(toMsi(g_gameTime.now()) / 3600000);
+				return TYPE_LONG;
+			}
+			
+			if(name == "^gameminutes") {
+				*lcontent = static_cast<long>(toMsi(g_gameTime.now()) / 60000);
+				return TYPE_LONG;
+			}
+			
+			if(name == "^gameseconds") {
+				*lcontent = static_cast<long>(toMsi(g_gameTime.now()) / 1000);
+				return TYPE_LONG;
+			}
+			
+			break;
+		}
+		
+		case 'h': {
+			
+			if(name == "^hover") {
+				txtcontent = idString(FlyingOverIO);
+				return TYPE_TEXT;
+			}
+			
+			break;
+		}
+		
+		case 'i': {
+			
+			if(boost::starts_with(name, "^inzone_")) {
+				std::string_view zone = name.substr(8);
+				Zone * ap = getZoneByName(zone);
+				*lcontent = 0;
+				if(context.getEntity() && ap) {
+					if(ARX_PATH_IsPosInZone(ap, context.getEntity()->pos)) {
+						*lcontent = 1;
+					}
+				}
+				return TYPE_LONG;
+			}
+			
+			if(boost::starts_with(name, "^ininitpos")) {
+				*lcontent = 0;
+				if(context.getEntity()) {
+					Vec3f pos = GetItemWorldPosition(context.getEntity());
+					if(pos == context.getEntity()->initpos)
+						*lcontent = 1;
+				}
+				return TYPE_LONG;
+			}
+			
+			if(boost::starts_with(name, "^inplayerinventory")) {
+				*lcontent = IsInPlayerInventory(context.getEntity()) ? 1 : 0;
+				return TYPE_LONG;
+			}
+			
+			break;
+		}
+		
+		case 'l': {
+			
+			if(boost::starts_with(name, "^life")) {
+				*fcontent = 0;
+				if(context.getEntity() && (context.getEntity()->ioflags & IO_NPC)) {
+					*fcontent = context.getEntity()->_npcdata->lifePool.current;
+				}
 				return TYPE_FLOAT;
 			}
 			
-			if(boost::starts_with(name, "^spelllevel_")) {
-				Spell * spell = getSpellParam(name, 12);
-				*fcontent = spell ? spell->m_level : -1;
-				return TYPE_FLOAT;
+			if(boost::starts_with(name, "^last_spawned")) {
+				txtcontent = idString(LASTSPAWNED);
+				return TYPE_TEXT;
 			}
 			
 			break;
@@ -1036,88 +965,55 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			break;
 		}
 		
-		case 'c': {
+		case 'n': {
 			
-			if(name == "^camera") {
-				txtcontent = idString(g_cameraEntity);
-				return TYPE_TEXT;
-			}
-			
-			if(name == "^caster" || boost::starts_with(name, "^caster_")) {
-				Entity * caster = nullptr;
-				if(Entity * entity = getEntityParam(name, 8, context)) {
-					caster = (entity->ioflags & IO_NPC) ? entities.get(entity->_npcdata->summoner) : nullptr;
-				} else if(Spell * spell = getSpellParam(name, 8)) {
-					caster = entities.get(spell->m_caster);
-				}
-				txtcontent = idString(caster);
-				return TYPE_TEXT;
-			}
-			
-			if(name == "^class") {
-				txtcontent = context.getEntity() ? context.getEntity()->className() : "";
-				return TYPE_TEXT;
-			}
-			
-			if(name == "^class" || boost::starts_with(name, "^class_")) {
-				txtcontent = EntityId(name.substr(7)).className();
+			if(boost::starts_with(name, "^npcinsight")) {
+				txtcontent = idString(context.getEntity() ? getFirstNpcInSight(*context.getEntity()) : nullptr);
 				return TYPE_TEXT;
 			}
 			
 			break;
 		}
 		
-		case 'l': {
+		case 'o': {
 			
-			if(boost::starts_with(name, "^life")) {
-				*fcontent = 0;
-				if(context.getEntity() && (context.getEntity()->ioflags & IO_NPC)) {
-					*fcontent = context.getEntity()->_npcdata->lifePool.current;
-				}
-				return TYPE_FLOAT;
-			}
-			
-			if(boost::starts_with(name, "^last_spawned")) {
-				txtcontent = idString(LASTSPAWNED);
-				return TYPE_TEXT;
-			}
-			
-			break;
-		}
-		
-		case 'd': {
-			
-			if(boost::starts_with(name, "^dist_")) {
-				if(context.getEntity()) {
-					Entity * target = entities.getById(name.substr(6));
-					if(target == entities.player()) {
-						*fcontent = fdist(player.pos, context.getEntity()->pos);
-					} else if(target
-					          && (context.getEntity()->show == SHOW_FLAG_IN_SCENE
-					              || context.getEntity()->show == SHOW_FLAG_IN_INVENTORY)
-					          && (target->show == SHOW_FLAG_IN_SCENE
-					              || target->show == SHOW_FLAG_IN_INVENTORY)) {
-						*fcontent = fdist(GetItemWorldPosition(context.getEntity()), GetItemWorldPosition(target));
-					} else {
-						*fcontent = 99999999999.f;
+			if(name == "^onscreen" || boost::starts_with(name, "^onscreen_")) {
+				Entity * entity = getEntityParam(name, 10, context);
+				if(isInCinematic() || !entity) {
+					*lcontent = -2;
+				} else {
+					switch(getEntityVisibility(*entity)) {
+						case EntityInactive: [[fallthrough]];
+						case EntityNotInView: [[fallthrough]];
+						case EntityFullyOccluded: {
+							*lcontent = -1;
+							break;
+						}
+						case EntityVisibilityUnknown: {
+							*lcontent = 0;
+							break;
+						}
+						case EntityVisible: {
+							*lcontent = 1;
+							break;
+						}
+						case EntityInFocus: {
+							*lcontent = 2;
+							break;
+						}
 					}
-					return TYPE_FLOAT;
 				}
-			}
-			
-			if(boost::starts_with(name, "^demo")) {
-				*lcontent = (g_resources->getReleaseType() & PakReader::Demo) ? 1 : 0;
 				return TYPE_LONG;
 			}
 			
-			if(boost::starts_with(name, "^durability")) {
-				*fcontent = (context.getEntity()) ? context.getEntity()->durability : 0.f;
-				return TYPE_FLOAT;
-			}
-			
-			if(name == "^dragged") {
-				txtcontent = idString(g_draggedEntity);
-				return TYPE_TEXT;
+			if(name == "^offscreen" || boost::starts_with(name, "^offscreen_")) {
+				Entity * entity = getEntityParam(name, 11, context);
+				if(isInCinematic() || !entity) {
+					*lcontent = 2;
+				} else {
+					*lcontent = (getEntityVisibility(*entity, true) < EntityVisibilityUnknown ? 1 : 0);
+				}
+				return TYPE_LONG;
 			}
 			
 			break;
@@ -1303,55 +1199,176 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 			break;
 		}
 		
-		case 'n': {
+		case 'r': {
 			
-			if(boost::starts_with(name, "^npcinsight")) {
-				txtcontent = idString(context.getEntity() ? getFirstNpcInSight(*context.getEntity()) : nullptr);
-				return TYPE_TEXT;
+			if(boost::starts_with(name, "^realdist_")) {
+				if(context.getEntity()) {
+					
+					Entity * target = entities.getById(name.substr(10));
+					if(target == entities.player()) {
+						if(context.getEntity()->requestRoomUpdate) {
+							UpdateIORoom(context.getEntity());
+						}
+						RoomHandle playerRoom = ARX_PORTALS_GetRoomNumForPosition(player.pos, RoomPositionForCamera);
+						*fcontent = SP_GetRoomDist(context.getEntity()->pos, player.pos, context.getEntity()->room, playerRoom);
+					} else if(target
+					          && (context.getEntity()->show == SHOW_FLAG_IN_SCENE
+					              || context.getEntity()->show == SHOW_FLAG_IN_INVENTORY)
+					          && (target->show == SHOW_FLAG_IN_SCENE
+					              || target->show == SHOW_FLAG_IN_INVENTORY)) {
+						
+						Vec3f pos  = GetItemWorldPosition(context.getEntity());
+						Vec3f pos2 = GetItemWorldPosition(target);
+						
+						if(context.getEntity()->requestRoomUpdate) {
+							UpdateIORoom(context.getEntity());
+						}
+						
+						if(target->requestRoomUpdate) {
+							UpdateIORoom(target);
+						}
+						
+						*fcontent = SP_GetRoomDist(pos, pos2, context.getEntity()->room, target->room);
+						
+					} else {
+						// Out of this world item
+						*fcontent = 99999999999.f;
+					}
+					return TYPE_FLOAT;
+				}
+			}
+			
+			if(name == "^realtime_year") {
+				*lcontent = getSystemTime().year;
+				return TYPE_LONG;
+			}
+			
+			if(name == "^realtime_month") {
+				*lcontent = getSystemTime().month;
+				return TYPE_LONG;
+			}
+			
+			if(name == "^realtime_day") {
+				*lcontent = getSystemTime().day;
+				return TYPE_LONG;
+			}
+			
+			if(boost::starts_with(name, "^repairprice_")) {
+				Entity * target = entities.getById(name.substr(13));
+				if(target) {
+					*fcontent = ARX_DAMAGES_ComputeRepairPrice(target, context.getEntity());
+				} else {
+					*fcontent = 0;
+				}
+				return TYPE_FLOAT;
+			}
+			
+			if(boost::starts_with(name, "^rnd_")) {
+				std::string_view max = name.substr(5);
+				// TODO should max be inclusive or exclusive?
+				// if inclusive, use proper integer random, otherwise fix rnd()?
+				if(!max.empty()) {
+					*fcontent = Random::getf(0.f, util::parseFloat(max));
+				} else {
+					*fcontent = 0;
+				}
+				return TYPE_FLOAT;
+			}
+			
+			if(boost::starts_with(name, "^rune_")) {
+				std::string_view temp = name.substr(6);
+				*lcontent = 0;
+				if(temp == "aam") {
+					*lcontent = player.rune_flags & FLAG_AAM;
+				} else if(temp == "cetrius") {
+					*lcontent = player.rune_flags & FLAG_CETRIUS;
+				} else if(temp == "comunicatum") {
+					*lcontent = player.rune_flags & FLAG_COMUNICATUM;
+				} else if(temp == "cosum") {
+					*lcontent = player.rune_flags & FLAG_COSUM;
+				} else if(temp == "folgora") {
+					*lcontent = player.rune_flags & FLAG_FOLGORA;
+				} else if(temp == "fridd") {
+					*lcontent = player.rune_flags & FLAG_FRIDD;
+				} else if(temp == "kaom") {
+					*lcontent = player.rune_flags & FLAG_KAOM;
+				} else if(temp == "mega") {
+					*lcontent = player.rune_flags & FLAG_MEGA;
+				} else if(temp == "morte") {
+					*lcontent = player.rune_flags & FLAG_MORTE;
+				} else if(temp == "movis") {
+					*lcontent = player.rune_flags & FLAG_MOVIS;
+				} else if(temp == "nhi") {
+					*lcontent = player.rune_flags & FLAG_NHI;
+				} else if(temp == "rhaa") {
+					*lcontent = player.rune_flags & FLAG_RHAA;
+				} else if(temp == "spacium") {
+					*lcontent = player.rune_flags & FLAG_SPACIUM;
+				} else if(temp == "stregum") {
+					*lcontent = player.rune_flags & FLAG_STREGUM;
+				} else if(temp == "taar") {
+					*lcontent = player.rune_flags & FLAG_TAAR;
+				} else if(temp == "tempus") {
+					*lcontent = player.rune_flags & FLAG_TEMPUS;
+				} else if(temp == "tera") {
+					*lcontent = player.rune_flags & FLAG_TERA;
+				} else if(temp == "vista") {
+					*lcontent = player.rune_flags & FLAG_VISTA;
+				} else if(temp == "vitae") {
+					*lcontent = player.rune_flags & FLAG_VITAE;
+				} else if(temp == "yok") {
+					*lcontent = player.rune_flags & FLAG_YOK;
+				}
+				return TYPE_LONG;
 			}
 			
 			break;
 		}
 		
-		case 'o': {
+		case 's': {
 			
-			if(name == "^onscreen" || boost::starts_with(name, "^onscreen_")) {
-				Entity * entity = getEntityParam(name, 10, context);
-				if(isInCinematic() || !entity) {
-					*lcontent = -2;
-				} else {
-					switch(getEntityVisibility(*entity)) {
-						case EntityInactive: [[fallthrough]];
-						case EntityNotInView: [[fallthrough]];
-						case EntityFullyOccluded: {
-							*lcontent = -1;
-							break;
-						}
-						case EntityVisibilityUnknown: {
-							*lcontent = 0;
-							break;
-						}
-						case EntityVisible: {
-							*lcontent = 1;
-							break;
-						}
-						case EntityInFocus: {
-							*lcontent = 2;
-							break;
-						}
-					}
+			if(boost::starts_with(name, "^sender")) {
+				txtcontent = idString(context.getSender());
+				return TYPE_TEXT;
+			}
+			
+			if(boost::starts_with(name, "^scale")) {
+				*fcontent = (context.getEntity()) ? context.getEntity()->scale * 100.f : 0.f;
+				return TYPE_FLOAT;
+			}
+			
+			if(boost::starts_with(name, "^speaking")) {
+				if(context.getEntity() && getSpeechForEntity(*context.getEntity())) {
+					*lcontent = 1;
+					return TYPE_LONG;
 				}
+				*lcontent = 0;
 				return TYPE_LONG;
 			}
 			
-			if(name == "^offscreen" || boost::starts_with(name, "^offscreen_")) {
-				Entity * entity = getEntityParam(name, 11, context);
-				if(isInCinematic() || !entity) {
-					*lcontent = 2;
-				} else {
-					*lcontent = (getEntityVisibility(*entity, true) < EntityVisibilityUnknown ? 1 : 0);
+			if(name == "^spell" || boost::starts_with(name, "^spell_")) {
+				Entity * entity = getEntityParam(name, 7, context);
+				Spell * lastSpell = nullptr;
+				if(entity) {
+					for(Spell & spell : spells.byCaster(entity->index())) {
+						if(!lastSpell || lastSpell->m_timcreation < spell.m_timcreation) {
+							lastSpell = &spell;
+						}
+					}
 				}
-				return TYPE_LONG;
+				txtcontent = lastSpell ? lastSpell->idString() : "none";
+				return TYPE_TEXT;
+			}
+			
+			if(name == "^spelllevel") {
+				*fcontent = player.spellLevel();
+				return TYPE_FLOAT;
+			}
+			
+			if(boost::starts_with(name, "^spelllevel_")) {
+				Spell * spell = getSpellParam(name, 12);
+				*fcontent = spell ? spell->m_level : -1;
+				return TYPE_FLOAT;
 			}
 			
 			break;
@@ -1385,23 +1402,6 @@ ValueType getSystemVar(const script::Context & context, std::string_view name,
 				Entity * entity = getEntityParam(name, 7, context);
 				*fcontent = entity ? angleToVector(entity == entities.player() ? player.angle : entity->angle).z : 0;
 				return TYPE_FLOAT;
-			}
-			
-			break;
-		}
-		
-		case 'f': {
-			
-			if(boost::starts_with(name, "^focal")) {
-				if(context.getEntity() && (context.getEntity()->ioflags & IO_CAMERA)) {
-					*fcontent = context.getEntity()->_camdata->cam.focal;
-					return TYPE_FLOAT;
-				}
-			}
-			
-			if(boost::starts_with(name, "^fighting")) {
-				*lcontent = long(ARX_PLAYER_IsInFightMode());
-				return TYPE_LONG;
 			}
 			
 			break;
