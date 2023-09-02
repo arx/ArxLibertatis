@@ -31,7 +31,7 @@
 #include "gui/Speech.h"
 #include "scene/GameSound.h"
 
-const size_t MAX_PRECAST = 3;
+const size_t MAX_PRECAST = 9;
 
 GameInstant LAST_PRECAST_TIME = 0;
 

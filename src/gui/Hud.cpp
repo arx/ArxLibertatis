@@ -1195,7 +1195,10 @@ void DamagedEquipmentGui::update() {
 		Entity * io = entities.get(player.equiped[eq]);
 		if(io) {
 			float ratio = io->durability / io->max_durability;
-			if(ratio <= 0.5f) {
+			bool isInvulnerable = io->durability >= 100;
+			if(isInvulnerable) {
+				m_colors[i] = Color::cyan;
+			} else {
 				m_colors[i] = Color::rgb(1.f - ratio, ratio, 0);
 			}
 		}

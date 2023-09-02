@@ -405,6 +405,13 @@ struct ARXCHARACTER {
 	
 };
 
+/*!
+ * \brief player.skin goes from 0 to NUMBER_OF_PLAYER_SKINS - 1
+ */
+constexpr short NUMBER_OF_PLAYER_SKINS = 10;
+constexpr short MAX_CHEAT_PLAYER_SKIN = NUMBER_OF_PLAYER_SKINS;
+constexpr short EXTRA_PLAYER_SKIN = MAX_CHEAT_PLAYER_SKIN + 1;
+
 extern float CURRENT_PLAYER_COLOR;
 
 extern ARXCHARACTER player;
