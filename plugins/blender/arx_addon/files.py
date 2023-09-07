@@ -41,7 +41,7 @@ EntityData = namedtuple("EntityData", ["path", "script", "icon", "instances"])
 
 class Entities:
     def __init__(self):
-        self.paths = ["graph/obj3d/interactive"]
+        self.paths = [os.path.normpath("graph/obj3d/interactive")]
         self.danglingPaths = []
         self.data = {}
 
@@ -121,7 +121,7 @@ ModelData = namedtuple("ModelData", ["path", "model", "tweaks"])
 
 class Models:
     def __init__(self):
-        self.paths = ["game/graph/obj3d/interactive"]
+        self.paths = [os.path.normpath("game/graph/obj3d/interactive")]
         self.danglingPaths = []
         self.data = {}
 
@@ -211,7 +211,7 @@ class LevelInfos(object):
 
 class Levels:
     def __init__(self):
-        self.paths = ["graph/levels", "game/graph/levels"]
+        self.paths = [os.path.normpath("graph/levels"), os.path.normpath("game/graph/levels")]
         self.danglingPaths = []
         self.levels = OrderedDict()
 
@@ -254,7 +254,7 @@ class Levels:
 
 class Cinematics:
     def __init__(self):
-        self.paths = ["graph/interface"] # TODO why not "graph/interface/illustrations"
+        self.paths = [os.path.normpath("graph/interface")] # TODO why not "graph/interface/illustrations"
         self.danglingPaths = []
         self.cins = []
         self.textures = {}
@@ -285,7 +285,7 @@ class Cinematics:
 
 class Textures:
     def __init__(self):
-        self.paths = ["graph/particles", "graph/interface", "graph/obj3d/textures"]
+        self.paths = [os.path.normpath("graph/particles"), os.path.normpath("graph/interface"), os.path.normpath("graph/obj3d/textures")]
         self.danglingPaths = []
         self.textures = []
 
@@ -295,7 +295,7 @@ class Textures:
 
 class Animations:
     def __init__(self):
-        self.paths = ["graph/obj3d/anims"]
+        self.paths = [os.path.normpath("graph/obj3d/anims")]
         self.danglingPaths = []
         self.amins = []
         self.data = {}
@@ -386,7 +386,7 @@ class ArxFiles(object):
             relRoot = os.path.relpath(root, self.rootPath)
 
             for h in self.handlers:
-                if relRoot in h.paths:
+                if os.path.normpath(relRoot) in h.paths:
                     h.update(root)
                     dirs.clear()
                     files.clear()
