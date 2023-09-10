@@ -41,7 +41,8 @@
 #include "graphics/data/TextureContainer.h"
 #include "math/RandomVector.h"
 
-struct MagicFlare {
+class MagicFlare {
+public:
 	unsigned char exist;
 	char type;
 	short flags;
