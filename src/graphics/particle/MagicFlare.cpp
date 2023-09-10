@@ -74,7 +74,7 @@ public:
 	MagicFlare& operator[](size_t element);
 	void removeFlare(MagicFlare& flare);
 	void addFlare(const Vec2f& pos, float sm, short typ, Entity* io, bool bookDraw);
-
+	long flaggedCount();
 	short shinum = 1;
 private:
 	MagicFlare m_flares[g_magicFlaresMax];
@@ -227,6 +227,20 @@ void MagicFlareContainer::removeFlare(MagicFlare& flare) {
 
 }
 
+long MagicFlareContainer::flaggedCount() {
+	if(!g_magicFlaresCount)
+		return 0;
+
+	long count = 0;
+	for(size_t i = 0; i < g_magicFlaresMax; i++) {
+		if(g_magicFlares[i].exist && g_magicFlares[i].flags == 0) {
+			count++;
+		}
+	}
+
+	return count;
+}
+
 void MagicFlareLoadTextures() {
 	
 	TextureContainer::TCFlags flags = TextureContainer::NoColorKey;
@@ -254,17 +268,7 @@ void MagicFlareReleaseEntity(const Entity * entity) {
 
 long MagicFlareCountNonFlagged() {
 	
-	if(!g_magicFlaresCount)
-		return 0;
-	
-	long count = 0;
-	for(size_t i = 0; i < g_magicFlaresMax; i++) {
-		if(g_magicFlares[i].exist && g_magicFlares[i].flags == 0) {
-			count++;
-		}
-	}
-
-	return count;
+	return g_magicFlares.flaggedCount();
 }
 
 void ARX_MAGICAL_FLARES_FirstInit() {
