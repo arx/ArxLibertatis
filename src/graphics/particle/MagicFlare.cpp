@@ -56,7 +56,20 @@ struct MagicFlare {
 };
 
 static const size_t g_magicFlaresMax = 500;
-static MagicFlare g_magicFlares[g_magicFlaresMax];
+
+class MagicFlareContainer {
+public:
+	MagicFlare& operator[](size_t element);
+private:
+	MagicFlare m_flares[g_magicFlaresMax];
+};
+
+MagicFlare& MagicFlareContainer::operator[](size_t element) {
+	
+	return m_flares[element];
+}
+
+static MagicFlareContainer g_magicFlares;
 static long g_magicFlaresCount = 0;
 
 struct FLARETC
