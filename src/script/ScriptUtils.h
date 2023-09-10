@@ -50,7 +50,7 @@ inline u64 flagsToMask(std::string_view flags) {
 	
 	
 	size_t i = 0;
-	if(flags.length() > 0 && flags[0] == '-') {
+	if(!flags.empty() && flags[0] == '-') {
 		i++;
 	}
 	
