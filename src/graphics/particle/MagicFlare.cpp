@@ -63,6 +63,8 @@ class MagicFlareContainer {
 public:
 	MagicFlare& operator[](size_t element);
 	void removeFlare(MagicFlare& flare);
+
+	short shinum = 1;
 private:
 	MagicFlare m_flares[g_magicFlaresMax];
 };
@@ -114,8 +116,6 @@ void MagicFlareLoadTextures() {
 	}
 	
 }
-
-static short shinum = 1;
 
 void MagicFlareReleaseEntity(const Entity * entity) {
 	for(size_t i = 0; i < g_magicFlaresMax; i++) {
@@ -355,9 +355,9 @@ void ARX_MAGICAL_FLARES_Update() {
 	if(!g_magicFlaresCount)
 		return;
 
-	shinum++;
-	if(shinum >= 10) {
-		shinum = 1;
+	g_magicFlares.shinum++;
+	if(g_magicFlares.shinum >= 10) {
+		g_magicFlares.shinum = 1;
 	}
 	
 	PlatformDuration diff = g_platformTime.lastFrameDuration();
@@ -376,7 +376,7 @@ void ARX_MAGICAL_FLARES_Update() {
 			case 2:  surf = g_magicFlareTextures.lumignon; break;
 			case 3:  surf = g_magicFlareTextures.lumignon2; break;
 			case 4:  surf = g_magicFlareTextures.plasm; break;
-			default: surf = g_magicFlareTextures.shine[shinum]; break;
+			default: surf = g_magicFlareTextures.shine[g_magicFlares.shinum]; break;
 		}
 
 		mat.setTexture(surf);
