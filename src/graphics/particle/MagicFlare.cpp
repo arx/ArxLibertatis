@@ -77,6 +77,7 @@ public:
 	long flaggedCount();
 	void removeFlareEntityPtr(const Entity* entity);
 	void init();
+	void removeAll();
 
 	short shinum = 1;
 private:
@@ -260,6 +261,18 @@ void MagicFlareContainer::init() {
 	}
 }
 
+void MagicFlareContainer::removeAll() {
+	
+	for(size_t i = 0; i < g_magicFlaresMax; i++) {
+		MagicFlare& flare = g_magicFlares[i];
+		if(flare.exist) {
+			g_magicFlares.removeFlare(flare);
+		}
+	}
+
+	g_magicFlaresCount = 0;
+}
+
 void MagicFlareLoadTextures() {
 	
 	TextureContainer::TCFlags flags = TextureContainer::NoColorKey;
@@ -294,14 +307,7 @@ void ARX_MAGICAL_FLARES_FirstInit() {
 
 void ARX_MAGICAL_FLARES_KillAll() {
 	
-	for(size_t i = 0; i < g_magicFlaresMax; i++) {
-		MagicFlare & flare = g_magicFlares[i];
-		if(flare.exist) {
-			g_magicFlares.removeFlare(flare);
-		}
-	}
-	
-	g_magicFlaresCount = 0;
+	g_magicFlares.removeAll();
 }
 
 void MagicFlareChangeColor() {
