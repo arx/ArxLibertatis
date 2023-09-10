@@ -73,15 +73,144 @@ class MagicFlareContainer {
 public:
 	MagicFlare& operator[](size_t element);
 	void removeFlare(MagicFlare& flare);
+	void addFlare(const Vec2f& pos, float sm, short typ, Entity* io, bool bookDraw);
 
 	short shinum = 1;
 private:
 	MagicFlare m_flares[g_magicFlaresMax];
 };
 
+static MagicFlareContainer g_magicFlares;
+
 MagicFlare& MagicFlareContainer::operator[](size_t element) {
 	
 	return m_flares[element];
+}
+
+void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, short typ, Entity* io, bool bookDraw) {
+	size_t oldest = 0;
+	size_t i;
+	for(i = 0; i < g_magicFlaresMax; i++) {
+		if(!g_magicFlares[i].exist) {
+			break;
+		}
+		if(g_magicFlares[i].tolive < g_magicFlares[oldest].tolive) {
+			oldest = i;
+		}
+	}
+	if(i >= g_magicFlaresMax) {
+		g_magicFlares.removeFlare(g_magicFlares[oldest]);
+		i = oldest;
+	}
+
+	MagicFlare& flare = g_magicFlares[i];
+	flare.exist = 1;
+	g_magicFlaresCount++;
+
+	flare.bDrawBitmap = bookDraw;
+
+	flare.io = io;
+	if(io) {
+		flare.flags = 1;
+		io->flarecount++;
+	} else {
+		flare.flags = 0;
+	}
+
+	flare.pos.x = pos.x - Random::getf(0.f, 4.f);
+	flare.pos.y = pos.y - Random::getf(0.f, 4.f);
+
+	if(!bookDraw) {
+		if(io) {
+			float vx = -(flare.pos.x - g_size.center().x) * 0.2173913f;
+			float vy = (flare.pos.y - g_size.center().y) * 0.1515151515151515f;
+			flare.p = io->pos;
+			flare.p += angleToVectorXZ(io->angle.getYaw() + vx) * 100.f;
+			flare.p.y += std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() + vy))) * 100.f - 150.f;
+		} else {
+			flare.p = screenToWorldSpace(pos, 75.f);
+		}
+	} else {
+		flare.p = Vec3f(flare.pos.x, flare.pos.y, 0.001f);
+	}
+
+	switch(g_magicFlareCurrentColor) {
+		case 0:
+		{
+			flare.rgb = Color3f(0.4f, 0.f, 0.4f) + Color3f(2.f / 3, 2.f / 3, 2.f / 3) * randomColor3f();
+			break;
+		}
+		case 1:
+		{
+			flare.rgb = Color3f(0.5f, 0.5f, 0.f) + Color3f(0.625f, 0.625f, 0.55f) * randomColor3f();
+			break;
+		}
+		case 2:
+		{
+			flare.rgb = Color3f(0.4f, 0.f, 0.f) + Color3f(2.f / 3, 0.55f, 0.55f) * randomColor3f();
+			break;
+		}
+		default: arx_unreachable();
+	}
+
+	if(typ == -1) {
+		float zz = eeMousePressed1() ? 0.29f : ((sm > 0.5f) ? Random::getf() : 1.f);
+		if(zz < 0.2f) {
+			flare.type = 2;
+			flare.size = Random::getf(42.f, 84.f);
+			flare.tolive = Random::get(1600000us, 3200000us);
+		} else if(zz < 0.5f) {
+			flare.type = 3;
+			flare.size = Random::getf(16.f, 68.f);
+			flare.tolive = Random::get(1600000us, 3200000us);
+		} else {
+			flare.type = 1;
+			flare.size = Random::getf(32.f, 56.f) * sm;
+			flare.tolive = Random::get(3400000us, 4400000us);
+		}
+	} else {
+		flare.type = (Random::getf() > 0.8f) ? 1 : 4;
+		flare.size = Random::getf(64.f, 102.f) * sm;
+		flare.tolive = Random::get(3400000us, 4400000us);
+	}
+
+	flare.dynlight = {};
+
+	for(unsigned int kk = 0; kk < 3; kk++) {
+
+		if(Random::getf() < 0.5f) {
+			continue;
+		}
+
+		PARTICLE_DEF* pd = createParticle(true);
+		if(!pd) {
+			break;
+		}
+
+		if(!bookDraw) {
+			pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
+			if(!io) {
+				pd->m_flags |= PARTICLE_NOZBUFFER;
+			}
+		} else {
+			pd->m_flags = FADE_IN_AND_OUT | PARTICLE_2D;
+		}
+
+		pd->ov = flare.p + arx::randomVec(-5.f, 5.f);
+		pd->move = Vec3f(0.f, 5.f, 0.f);
+		pd->sizeDelta = -2.f;
+		pd->duration = 1300ms + kk * 100ms + Random::get(0ms, 800ms);
+		pd->tc = g_particleTextures.fire2;
+		if(kk == 1) {
+			pd->move.y = 4.f;
+			pd->size = 1.5f;
+		} else {
+			pd->size = Random::getf(1.f, 2.f);
+		}
+		pd->rgb = flare.rgb * (2.f / 3);
+		pd->m_rotation = 1.2f;
+
+	}
 }
 
 void MagicFlareContainer::removeFlare(MagicFlare& flare) {
@@ -97,8 +226,6 @@ void MagicFlareContainer::removeFlare(MagicFlare& flare) {
 	g_magicFlaresCount--;
 
 }
-
-static MagicFlareContainer g_magicFlares;
 
 void MagicFlareLoadTextures() {
 	
@@ -168,127 +295,7 @@ void MagicFlareChangeColor() {
 
 void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw) {
 	
-	size_t oldest = 0;
-	size_t i;
-	for(i = 0; i < g_magicFlaresMax; i++) {
-		if(!g_magicFlares[i].exist) {
-			break;
-		}
-		if(g_magicFlares[i].tolive < g_magicFlares[oldest].tolive) {
-			oldest = i;
-		}
-	}
-	if(i >= g_magicFlaresMax) {
-		g_magicFlares.removeFlare(g_magicFlares[oldest]);
-		i = oldest;
-	}
-
-	MagicFlare & flare = g_magicFlares[i];
-	flare.exist = 1;
-	g_magicFlaresCount++;
-	
-	flare.bDrawBitmap = bookDraw;
-	
-	flare.io = io;
-	if(io) {
-		flare.flags = 1;
-		io->flarecount++;
-	} else {
-		flare.flags = 0;
-	}
-
-	flare.pos.x = pos.x - Random::getf(0.f, 4.f);
-	flare.pos.y = pos.y - Random::getf(0.f, 4.f);
-
-	if(!bookDraw) {
-		if(io) {
-			float vx = -(flare.pos.x - g_size.center().x) * 0.2173913f;
-			float vy = (flare.pos.y - g_size.center().y) * 0.1515151515151515f;
-			flare.p = io->pos;
-			flare.p += angleToVectorXZ(io->angle.getYaw() + vx) * 100.f;
-			flare.p.y += std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() + vy))) * 100.f - 150.f;
-		} else {
-			flare.p = screenToWorldSpace(pos, 75.f);
-		}
-	} else {
-		flare.p = Vec3f(flare.pos.x, flare.pos.y, 0.001f);
-	}
-
-	switch(g_magicFlareCurrentColor) {
-		case 0: {
-			flare.rgb = Color3f(0.4f, 0.f, 0.4f) + Color3f(2.f / 3, 2.f / 3, 2.f / 3) * randomColor3f();
-			break;
-		}
-		case 1: {
-			flare.rgb = Color3f(0.5f, 0.5f, 0.f) + Color3f(0.625f, 0.625f, 0.55f) * randomColor3f();
-			break;
-		}
-		case 2: {
-			flare.rgb = Color3f(0.4f, 0.f, 0.f) + Color3f(2.f / 3, 0.55f, 0.55f) * randomColor3f();
-			break;
-		}
-		default: arx_unreachable();
-	}
-	
-	if(typ == -1) {
-		float zz = eeMousePressed1() ? 0.29f : ((sm > 0.5f) ? Random::getf() : 1.f);
-		if(zz < 0.2f) {
-			flare.type = 2;
-			flare.size = Random::getf(42.f, 84.f);
-			flare.tolive = Random::get(1600000us, 3200000us);
-		} else if(zz < 0.5f) {
-			flare.type = 3;
-			flare.size = Random::getf(16.f, 68.f);
-			flare.tolive = Random::get(1600000us, 3200000us);
-		} else {
-			flare.type = 1;
-			flare.size = Random::getf(32.f, 56.f) * sm;
-			flare.tolive = Random::get(3400000us, 4400000us);
-		}
-	} else {
-		flare.type = (Random::getf() > 0.8f) ? 1 : 4;
-		flare.size = Random::getf(64.f, 102.f) * sm;
-		flare.tolive = Random::get(3400000us, 4400000us);
-	}
-	
-	flare.dynlight = { };
-	
-	for(unsigned int kk = 0; kk < 3; kk++) {
-		
-		if(Random::getf() < 0.5f) {
-			continue;
-		}
-		
-		PARTICLE_DEF * pd = createParticle(true);
-		if(!pd) {
-			break;
-		}
-		
-		if(!bookDraw) {
-			pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
-			if(!io) {
-				pd->m_flags |= PARTICLE_NOZBUFFER;
-			}
-		} else {
-			pd->m_flags = FADE_IN_AND_OUT | PARTICLE_2D;
-		}
-		
-		pd->ov = flare.p + arx::randomVec(-5.f, 5.f);
-		pd->move = Vec3f(0.f, 5.f, 0.f);
-		pd->sizeDelta = -2.f;
-		pd->duration = 1300ms + kk * 100ms + Random::get(0ms, 800ms);
-		pd->tc = g_particleTextures.fire2;
-		if(kk == 1) {
-			pd->move.y = 4.f;
-			pd->size = 1.5f;
-		} else {
-			pd->size = Random::getf(1.f, 2.f);
-		}
-		pd->rgb = flare.rgb * (2.f / 3);
-		pd->m_rotation = 1.2f;
-		
-	}
-	
+	g_magicFlares.addFlare(pos, sm, typ, io, bookDraw);
 }
 
 //! Helper for FlareLine
