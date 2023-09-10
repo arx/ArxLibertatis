@@ -84,6 +84,8 @@ private:
 	MagicFlare m_flares[g_magicFlaresMax];
 	long g_magicFlaresCount;
 	short m_currentColor;
+
+	size_t findUsableIndex();
 };
 
 static MagicFlareContainer g_magicFlares;
@@ -98,7 +100,8 @@ MagicFlare& MagicFlareContainer::operator[](size_t element) {
 	return m_flares[element];
 }
 
-void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, short typ, Entity* io, bool bookDraw) {
+size_t MagicFlareContainer::findUsableIndex() {
+	
 	size_t oldest = 0;
 	size_t i;
 	for(i = 0; i < g_magicFlaresMax; i++) {
@@ -113,8 +116,13 @@ void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, short typ, Entity
 		g_magicFlares.removeFlare(g_magicFlares[oldest]);
 		i = oldest;
 	}
+	return i;
+}
 
-	MagicFlare& flare = g_magicFlares[i];
+void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, short typ, Entity* io, bool bookDraw) {
+	
+	size_t index = findUsableIndex();
+	MagicFlare& flare = g_magicFlares[index];
 	flare.exist = 1;
 	g_magicFlaresCount++;
 
