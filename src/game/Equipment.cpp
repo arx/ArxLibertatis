@@ -1120,9 +1120,7 @@ float GetHitValue(std::string_view name) {
 	
 	if(boost::starts_with(name, "hit_")) {
 		// Get the number after the first 4 characters in the string
-		try {
-			return float(util::parseInt(name.substr(4)));
-		} catch(...) { /* ignore */ }
+		return float(util::parseInt(name.substr(4)));
 	}
 	
 	return -1;
