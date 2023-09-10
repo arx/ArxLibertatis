@@ -461,7 +461,9 @@ std::string getOutputOf(const char * exe, const char * const args[], bool unloca
 	close(pipefd[0]);
 	
 	closeProcessHandle(process);
-	*pid = 0;
+	if(pid) {
+		*pid = 0;
+	}
 	
 	return result;
 	
