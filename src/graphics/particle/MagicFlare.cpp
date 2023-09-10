@@ -41,6 +41,15 @@
 #include "graphics/data/TextureContainer.h"
 #include "math/RandomVector.h"
 
+struct FLARETC {
+	TextureContainer* lumignon;
+	TextureContainer* lumignon2;
+	TextureContainer* plasm;
+	TextureContainer* shine[11];
+};
+
+static FLARETC g_magicFlareTextures;
+
 class MagicFlare {
 public:
 	unsigned char exist;
@@ -58,6 +67,7 @@ public:
 
 static const size_t g_magicFlaresMax = 500;
 static long g_magicFlaresCount = 0;
+static short g_magicFlareCurrentColor = 0;
 
 class MagicFlareContainer {
 public:
@@ -89,16 +99,6 @@ void MagicFlareContainer::removeFlare(MagicFlare& flare) {
 }
 
 static MagicFlareContainer g_magicFlares;
-
-struct FLARETC
-{
-	TextureContainer * lumignon;
-	TextureContainer * lumignon2;
-	TextureContainer * plasm;
-	TextureContainer * shine[11];
-};
-
-static FLARETC g_magicFlareTextures;
 
 void MagicFlareLoadTextures() {
 	
@@ -158,8 +158,6 @@ void ARX_MAGICAL_FLARES_KillAll() {
 	
 	g_magicFlaresCount = 0;
 }
-
-static short g_magicFlareCurrentColor = 0;
 
 void MagicFlareChangeColor() {
 	g_magicFlareCurrentColor++;
