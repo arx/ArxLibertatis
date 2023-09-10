@@ -57,10 +57,12 @@ public:
 };
 
 static const size_t g_magicFlaresMax = 500;
+static long g_magicFlaresCount = 0;
 
 class MagicFlareContainer {
 public:
 	MagicFlare& operator[](size_t element);
+	void removeFlare(MagicFlare& flare);
 private:
 	MagicFlare m_flares[g_magicFlaresMax];
 };
@@ -70,8 +72,21 @@ MagicFlare& MagicFlareContainer::operator[](size_t element) {
 	return m_flares[element];
 }
 
+void MagicFlareContainer::removeFlare(MagicFlare& flare) {
+
+	if(flare.io && ValidIOAddress(flare.io)) {
+		flare.io->flarecount--;
+	}
+
+	lightHandleDestroy(flare.dynlight);
+
+	flare.tolive = 0;
+	flare.exist = 0;
+	g_magicFlaresCount--;
+
+}
+
 static MagicFlareContainer g_magicFlares;
-static long g_magicFlaresCount = 0;
 
 struct FLARETC
 {
@@ -132,26 +147,12 @@ void ARX_MAGICAL_FLARES_FirstInit() {
 	}
 }
 
-static void removeFlare(MagicFlare & flare) {
-	
-	if(flare.io && ValidIOAddress(flare.io)) {
-		flare.io->flarecount--;
-	}
-
-	lightHandleDestroy(flare.dynlight);
-	
-	flare.tolive = 0;
-	flare.exist = 0;
-	g_magicFlaresCount--;
-	
-}
-
 void ARX_MAGICAL_FLARES_KillAll() {
 	
 	for(size_t i = 0; i < g_magicFlaresMax; i++) {
 		MagicFlare & flare = g_magicFlares[i];
 		if(flare.exist) {
-			removeFlare(flare);
+			g_magicFlares.removeFlare(flare);
 		}
 	}
 	
@@ -180,7 +181,7 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 		}
 	}
 	if(i >= g_magicFlaresMax) {
-		removeFlare(g_magicFlares[oldest]);
+		g_magicFlares.removeFlare(g_magicFlares[oldest]);
 		i = oldest;
 	}
 
@@ -406,7 +407,7 @@ void ARX_MAGICAL_FLARES_Update() {
 			}
 
 			if(flare.tolive <= 0 || flare.pos.y < -64.f || size < 3.f) {
-				removeFlare(flare);
+				g_magicFlares.removeFlare(flare);
 				continue;
 			}
 
