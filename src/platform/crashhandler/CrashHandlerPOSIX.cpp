@@ -21,6 +21,7 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <algorithm>
 #include <sstream>
 
 #include "Configure.h"
@@ -295,7 +296,7 @@ bool CrashHandlerPOSIX::initialize() {
 	
 	m_arg = "--crashinfo=" + m_SharedMemoryName;
 	
-	std::memset(m_pCrashInfo->backtrace, 0, sizeof(m_pCrashInfo->backtrace));
+	std::fill(std::begin(m_pCrashInfo->backtrace), std::end(m_pCrashInfo->backtrace), nullptr);
 	
 	#if ARX_HAVE_PRCTL
 	// Allow all processes in the same pid namespace to PTRACE this process
