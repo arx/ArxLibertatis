@@ -98,8 +98,7 @@ public:
 	
 	std::string getStringVar(std::string_view name) const;
 	std::string getFlags();
-	std::string getWord(bool warnNewlines = true);
-	std::string peekWord();
+	std::string getWord();
 	void skipWord();
 	
 	std::string getCommand(bool skipNewlines = true);
