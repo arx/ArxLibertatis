@@ -761,7 +761,10 @@ aalError OpenALSource::updateBuffers() {
 }
 
 bool OpenALSource::markAsLoaded() {
-	return (m_loadCount == unsigned(-1) || --m_loadCount);
+	if(m_loadCount == unsigned(-1)) {
+		m_loadCount--;
+	}
+	return (m_loadCount != 0);
 }
 
 aalError OpenALSource::setRolloffFactor(float factor) {
