@@ -76,6 +76,7 @@ public:
 	void addFlare(const Vec2f& pos, float sm, short typ, Entity* io, bool bookDraw);
 	long flaggedCount();
 	void removeFlareEntityPtr(const Entity* entity);
+	void init();
 
 	short shinum = 1;
 private:
@@ -252,6 +253,13 @@ void MagicFlareContainer::removeFlareEntityPtr(const Entity* entity) {
 	}
 }
 
+void MagicFlareContainer::init() {
+	g_magicFlaresCount = 0;
+	for(size_t i = 0; i < g_magicFlaresMax; i++) {
+		g_magicFlares[i].exist = 0;
+	}
+}
+
 void MagicFlareLoadTextures() {
 	
 	TextureContainer::TCFlags flags = TextureContainer::NoColorKey;
@@ -280,10 +288,8 @@ long MagicFlareCountNonFlagged() {
 }
 
 void ARX_MAGICAL_FLARES_FirstInit() {
-	g_magicFlaresCount = 0;
-	for(size_t i = 0; i < g_magicFlaresMax; i++) {
-		g_magicFlares[i].exist = 0;
-	}
+	
+	g_magicFlares.init();
 }
 
 void ARX_MAGICAL_FLARES_KillAll() {
