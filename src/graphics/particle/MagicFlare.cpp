@@ -65,8 +65,6 @@ public:
 	bool bDrawBitmap;
 };
 
-static short g_magicFlareCurrentColor = 0;
-
 class MagicFlareContainer {
 public:
 	MagicFlareContainer();
@@ -85,12 +83,14 @@ private:
 	static const size_t g_magicFlaresMax = 500;
 	MagicFlare m_flares[g_magicFlaresMax];
 	long g_magicFlaresCount;
+	short m_currentColor;
 };
 
 static MagicFlareContainer g_magicFlares;
 
 MagicFlareContainer::MagicFlareContainer()
 	: g_magicFlaresCount(0)
+	, m_currentColor(0)
 {}
 
 MagicFlare& MagicFlareContainer::operator[](size_t element) {
@@ -145,7 +145,7 @@ void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, short typ, Entity
 		flare.p = Vec3f(flare.pos.x, flare.pos.y, 0.001f);
 	}
 
-	switch(g_magicFlareCurrentColor) {
+	switch(m_currentColor) {
 		case 0:
 		{
 			flare.rgb = Color3f(0.4f, 0.f, 0.4f) + Color3f(2.f / 3, 2.f / 3, 2.f / 3) * randomColor3f();
@@ -372,10 +372,10 @@ void MagicFlareContainer::update() {
 
 void MagicFlareContainer::changeColor() {
 
-	g_magicFlareCurrentColor++;
+	m_currentColor++;
 
-	if(g_magicFlareCurrentColor > 2)
-		g_magicFlareCurrentColor = 0;
+	if(m_currentColor > 2)
+		m_currentColor = 0;
 }
 
 void MagicFlareLoadTextures() {
