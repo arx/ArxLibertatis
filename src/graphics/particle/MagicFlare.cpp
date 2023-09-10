@@ -52,17 +52,17 @@ static FLARETC g_magicFlareTextures;
 
 class MagicFlare {
 public:
-	unsigned char exist;
-	char type;
-	short flags;
-	Vec3f p;
-	Vec2f pos;
+	unsigned char exist = 0;
+	char type = -1;
+	short flags = 0;
+	Vec3f p = Vec3f(0.f);
+	Vec2f pos = Vec2f(0.f);
 	PlatformDuration tolive;
 	Color3f rgb;
-	float size;
+	float size = 0.f;
 	LightHandle dynlight;
-	Entity * io;
-	bool bDrawBitmap;
+	Entity * io = nullptr;
+	bool bDrawBitmap = false;
 };
 
 class MagicFlareContainer {
