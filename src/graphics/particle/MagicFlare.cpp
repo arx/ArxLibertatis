@@ -78,6 +78,7 @@ public:
 	void removeFlareEntityPtr(const Entity* entity);
 	void init();
 	void removeAll();
+	void update();
 
 	short shinum = 1;
 private:
@@ -273,6 +274,96 @@ void MagicFlareContainer::removeAll() {
 	g_magicFlaresCount = 0;
 }
 
+void MagicFlareContainer::update() {
+
+	if(!g_magicFlaresCount)
+		return;
+
+	g_magicFlares.shinum++;
+	if(g_magicFlares.shinum >= 10) {
+		g_magicFlares.shinum = 1;
+	}
+
+	PlatformDuration diff = g_platformTime.lastFrameDuration();
+
+	bool key = !GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
+
+	RenderMaterial mat;
+	mat.setBlendType(RenderMaterial::Additive);
+
+	EERIE_LIGHT* light = lightHandleGet(torchLightHandle);
+
+	for(long j = 1; j < 5; j++) {
+
+		TextureContainer* surf;
+		switch(j) {
+			case 2:  surf = g_magicFlareTextures.lumignon; break;
+			case 3:  surf = g_magicFlareTextures.lumignon2; break;
+			case 4:  surf = g_magicFlareTextures.plasm; break;
+			default: surf = g_magicFlareTextures.shine[g_magicFlares.shinum]; break;
+		}
+
+		mat.setTexture(surf);
+
+		for(size_t i = 0; i < g_magicFlaresMax; i++) {
+
+			MagicFlare& flare = g_magicFlares[i];
+
+			if(!flare.exist || flare.type != j) {
+				continue;
+			}
+
+			flare.tolive -= diff * 2;
+			if(flare.flags & 1) {
+				flare.tolive -= diff * 4;
+			} else if(key) {
+				flare.tolive -= diff * 6;
+			}
+
+			float z = flare.tolive / 4s;
+			float size;
+			if(flare.type == 1) {
+				size = flare.size * 2 * z;
+			} else if(flare.type == 4) {
+				size = flare.size * 2.f * z * (4.0f / 3.0f);
+			} else {
+				size = flare.size;
+			}
+
+			if(flare.tolive <= 0 || flare.pos.y < -64.f || size < 3.f) {
+				g_magicFlares.removeFlare(flare);
+				continue;
+			}
+
+			if(flare.type == 1 && z < 0.6f) {
+				z = 0.6f;
+			}
+
+			Color3f color = flare.rgb * z;
+
+			light->rgb = componentwise_max(light->rgb, color);
+
+			EERIE_LIGHT* el = lightHandleGet(flare.dynlight);
+			if(el) {
+				el->pos = flare.p;
+				el->rgb = color;
+			}
+
+			mat.setDepthTest(flare.io != nullptr);
+
+			if(flare.bDrawBitmap) {
+				Vec3f pos = Vec3f(flare.p.x - size / 2.0f, flare.p.y - size / 2.0f, flare.p.z);
+				EERIEAddBitmap(mat, pos, size, size, surf, Color(color));
+			} else {
+				EERIEAddSprite(mat, flare.p, size * 0.025f + 1.f, Color(color), 2.f);
+			}
+
+		}
+	}
+
+	light->rgb = componentwise_min(light->rgb, Color3f::white);
+}
+
 void MagicFlareLoadTextures() {
 	
 	TextureContainer::TCFlags flags = TextureContainer::NoColorKey;
@@ -381,90 +472,5 @@ void FlareLine(Vec2f tmpPos0, Vec2f tmpPos1, Entity * io) {
 
 void ARX_MAGICAL_FLARES_Update() {
 
-	if(!g_magicFlaresCount)
-		return;
-
-	g_magicFlares.shinum++;
-	if(g_magicFlares.shinum >= 10) {
-		g_magicFlares.shinum = 1;
-	}
-	
-	PlatformDuration diff = g_platformTime.lastFrameDuration();
-	
-	bool key = !GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
-
-	RenderMaterial mat;
-	mat.setBlendType(RenderMaterial::Additive);
-	
-	EERIE_LIGHT * light = lightHandleGet(torchLightHandle);
-	
-	for(long j = 1; j < 5; j++) {
-
-		TextureContainer * surf;
-		switch(j) {
-			case 2:  surf = g_magicFlareTextures.lumignon; break;
-			case 3:  surf = g_magicFlareTextures.lumignon2; break;
-			case 4:  surf = g_magicFlareTextures.plasm; break;
-			default: surf = g_magicFlareTextures.shine[g_magicFlares.shinum]; break;
-		}
-
-		mat.setTexture(surf);
-
-		for(size_t i = 0; i < g_magicFlaresMax; i++) {
-
-			MagicFlare & flare = g_magicFlares[i];
-
-			if(!flare.exist || flare.type != j) {
-				continue;
-			}
-			
-			flare.tolive -= diff * 2;
-			if(flare.flags & 1) {
-				flare.tolive -= diff * 4;
-			} else if(key) {
-				flare.tolive -= diff * 6;
-			}
-			
-			float z = flare.tolive / 4s;
-			float size;
-			if(flare.type == 1) {
-				size = flare.size * 2 * z;
-			} else if(flare.type == 4) {
-				size = flare.size * 2.f * z * (4.0f / 3.0f);
-			} else {
-				size = flare.size;
-			}
-
-			if(flare.tolive <= 0 || flare.pos.y < -64.f || size < 3.f) {
-				g_magicFlares.removeFlare(flare);
-				continue;
-			}
-
-			if(flare.type == 1 && z < 0.6f)  {
-				z = 0.6f;
-			}
-
-			Color3f color = flare.rgb * z;
-
-			light->rgb = componentwise_max(light->rgb, color);
-			
-			EERIE_LIGHT * el = lightHandleGet(flare.dynlight);
-			if(el) {
-				el->pos = flare.p;
-				el->rgb = color;
-			}
-
-			mat.setDepthTest(flare.io != nullptr);
-			
-			if(flare.bDrawBitmap) {
-				Vec3f pos = Vec3f(flare.p.x - size / 2.0f, flare.p.y - size / 2.0f, flare.p.z);
-				EERIEAddBitmap(mat, pos, size, size, surf, Color(color));
-			} else {
-				EERIEAddSprite(mat, flare.p, size * 0.025f + 1.f, Color(color), 2.f);
-			}
-
-		}
-	}
-
-	light->rgb = componentwise_min(light->rgb, Color3f::white);
+	g_magicFlares.update();
 }
