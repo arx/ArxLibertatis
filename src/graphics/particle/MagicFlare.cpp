@@ -66,11 +66,11 @@ public:
 };
 
 static const size_t g_magicFlaresMax = 500;
-static long g_magicFlaresCount = 0;
 static short g_magicFlareCurrentColor = 0;
 
 class MagicFlareContainer {
 public:
+	MagicFlareContainer();
 	MagicFlare& operator[](size_t element);
 	void removeFlare(MagicFlare& flare);
 	void addFlare(const Vec2f& pos, float sm, short typ, Entity* io, bool bookDraw);
@@ -83,9 +83,14 @@ public:
 	short shinum = 1;
 private:
 	MagicFlare m_flares[g_magicFlaresMax];
+	long g_magicFlaresCount;
 };
 
 static MagicFlareContainer g_magicFlares;
+
+MagicFlareContainer::MagicFlareContainer()
+	: g_magicFlaresCount(0)
+{}
 
 MagicFlare& MagicFlareContainer::operator[](size_t element) {
 	
