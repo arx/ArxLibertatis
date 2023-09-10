@@ -170,7 +170,7 @@ long MakeTopObjString(Entity * entity, std::string & dest) {
 			if(other.pos.x > box.min.x && other.pos.x < box.max.x && other.pos.z > box.min.z && other.pos.z < box.max.z) {
 				float offset = (&other == entities.player() ? 10.f : 0.f);
 				if(glm::abs(other.pos.y - offset - box.min.y) < 40.f + offset) {
-					if(dest.length() != 0) {
+					if(!dest.empty()) {
 						dest += ' ';
 					}
 					dest += other.idString();
@@ -179,7 +179,7 @@ long MakeTopObjString(Entity * entity, std::string & dest) {
 		}
 	}
 	
-	if(dest.length() == 0) {
+	if(dest.empty()) {
 		dest = "none";
 	}
 	
