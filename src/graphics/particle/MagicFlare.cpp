@@ -65,7 +65,6 @@ public:
 	bool bDrawBitmap;
 };
 
-static const size_t g_magicFlaresMax = 500;
 static short g_magicFlareCurrentColor = 0;
 
 class MagicFlareContainer {
@@ -82,6 +81,7 @@ public:
 
 	short shinum = 1;
 private:
+	static const size_t g_magicFlaresMax = 500;
 	MagicFlare m_flares[g_magicFlaresMax];
 	long g_magicFlaresCount;
 };
