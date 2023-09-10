@@ -78,6 +78,7 @@ public:
 	void init();
 	void removeAll();
 	void update();
+	void changeColor();
 
 	short shinum = 1;
 private:
@@ -369,6 +370,14 @@ void MagicFlareContainer::update() {
 	light->rgb = componentwise_min(light->rgb, Color3f::white);
 }
 
+void MagicFlareContainer::changeColor() {
+
+	g_magicFlareCurrentColor++;
+
+	if(g_magicFlareCurrentColor > 2)
+		g_magicFlareCurrentColor = 0;
+}
+
 void MagicFlareLoadTextures() {
 	
 	TextureContainer::TCFlags flags = TextureContainer::NoColorKey;
@@ -407,10 +416,8 @@ void ARX_MAGICAL_FLARES_KillAll() {
 }
 
 void MagicFlareChangeColor() {
-	g_magicFlareCurrentColor++;
-
-	if(g_magicFlareCurrentColor > 2)
-		g_magicFlareCurrentColor = 0;
+	
+	g_magicFlares.changeColor();
 }
 
 void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw) {
