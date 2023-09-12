@@ -45,7 +45,7 @@ struct FLARETC {
 	TextureContainer* lumignon;
 	TextureContainer* lumignon2;
 	TextureContainer* plasm;
-	TextureContainer* shine[11];
+	TextureContainer* shine[10];
 };
 
 static FLARETC g_magicFlareTextures;
