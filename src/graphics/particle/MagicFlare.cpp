@@ -80,8 +80,8 @@ public:
 
 	short shinum = 1;
 private:
-	static const size_t g_magicFlaresMax = 500;
-	MagicFlare m_flares[g_magicFlaresMax];
+	static const size_t m_magicFlaresMax = 500;
+	MagicFlare m_flares[m_magicFlaresMax];
 	long g_magicFlaresCount;
 	short m_currentColor;
 
@@ -105,7 +105,7 @@ size_t MagicFlareContainer::findUsableIndex() {
 	
 	size_t oldest = 0;
 	size_t i;
-	for(i = 0; i < g_magicFlaresMax; i++) {
+	for(i = 0; i < m_magicFlaresMax; i++) {
 		if(!g_magicFlares[i].exist) {
 			break;
 		}
@@ -113,7 +113,7 @@ size_t MagicFlareContainer::findUsableIndex() {
 			oldest = i;
 		}
 	}
-	if(i >= g_magicFlaresMax) {
+	if(i >= m_magicFlaresMax) {
 		g_magicFlares.removeFlare(g_magicFlares[oldest]);
 		i = oldest;
 	}
@@ -259,7 +259,7 @@ long MagicFlareContainer::flaggedCount() {
 		return 0;
 
 	long count = 0;
-	for(size_t i = 0; i < g_magicFlaresMax; i++) {
+	for(size_t i = 0; i < m_magicFlaresMax; i++) {
 		if(g_magicFlares[i].exist && g_magicFlares[i].flags == 0) {
 			count++;
 		}
@@ -270,7 +270,7 @@ long MagicFlareContainer::flaggedCount() {
 
 void MagicFlareContainer::removeFlareEntityPtr(const Entity* entity) {
 	
-	for(size_t i = 0; i < g_magicFlaresMax; i++) {
+	for(size_t i = 0; i < m_magicFlaresMax; i++) {
 		if(g_magicFlares[i].exist && g_magicFlares[i].io == entity) {
 			g_magicFlares[i].io = nullptr;
 		}
@@ -279,14 +279,14 @@ void MagicFlareContainer::removeFlareEntityPtr(const Entity* entity) {
 
 void MagicFlareContainer::init() {
 	g_magicFlaresCount = 0;
-	for(size_t i = 0; i < g_magicFlaresMax; i++) {
+	for(size_t i = 0; i < m_magicFlaresMax; i++) {
 		g_magicFlares[i].exist = 0;
 	}
 }
 
 void MagicFlareContainer::removeAll() {
 	
-	for(size_t i = 0; i < g_magicFlaresMax; i++) {
+	for(size_t i = 0; i < m_magicFlaresMax; i++) {
 		MagicFlare& flare = g_magicFlares[i];
 		if(flare.exist) {
 			g_magicFlares.removeFlare(flare);
@@ -327,7 +327,7 @@ void MagicFlareContainer::update() {
 
 		mat.setTexture(surf);
 
-		for(size_t i = 0; i < g_magicFlaresMax; i++) {
+		for(size_t i = 0; i < m_magicFlaresMax; i++) {
 
 			MagicFlare& flare = g_magicFlares[i];
 
