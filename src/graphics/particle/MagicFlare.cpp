@@ -86,6 +86,7 @@ private:
 	short m_currentColor;
 
 	size_t findUsableIndex();
+	Color3f newFlareColor();
 };
 
 static MagicFlareContainer g_magicFlares;
@@ -117,6 +118,30 @@ size_t MagicFlareContainer::findUsableIndex() {
 		i = oldest;
 	}
 	return i;
+}
+
+Color3f MagicFlareContainer::newFlareColor() {
+	
+	Color3f newColor;
+	switch(m_currentColor) {
+		case 0:
+		{
+			newColor = Color3f(0.4f, 0.f, 0.4f) + Color3f(2.f / 3, 2.f / 3, 2.f / 3) * randomColor3f();
+			break;
+		}
+		case 1:
+		{
+			newColor = Color3f(0.5f, 0.5f, 0.f) + Color3f(0.625f, 0.625f, 0.55f) * randomColor3f();
+			break;
+		}
+		case 2:
+		{
+			newColor = Color3f(0.4f, 0.f, 0.f) + Color3f(2.f / 3, 0.55f, 0.55f) * randomColor3f();
+			break;
+		}
+		default: arx_unreachable();
+	}
+	return newColor;
 }
 
 void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, short typ, Entity* io, bool bookDraw) {
@@ -153,24 +178,7 @@ void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, short typ, Entity
 		flare.p = Vec3f(flare.pos.x, flare.pos.y, 0.001f);
 	}
 
-	switch(m_currentColor) {
-		case 0:
-		{
-			flare.rgb = Color3f(0.4f, 0.f, 0.4f) + Color3f(2.f / 3, 2.f / 3, 2.f / 3) * randomColor3f();
-			break;
-		}
-		case 1:
-		{
-			flare.rgb = Color3f(0.5f, 0.5f, 0.f) + Color3f(0.625f, 0.625f, 0.55f) * randomColor3f();
-			break;
-		}
-		case 2:
-		{
-			flare.rgb = Color3f(0.4f, 0.f, 0.f) + Color3f(2.f / 3, 0.55f, 0.55f) * randomColor3f();
-			break;
-		}
-		default: arx_unreachable();
-	}
+	flare.rgb = newFlareColor();
 
 	if(typ == -1) {
 		float zz = eeMousePressed1() ? 0.29f : ((sm > 0.5f) ? Random::getf() : 1.f);
