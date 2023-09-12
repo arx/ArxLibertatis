@@ -403,7 +403,7 @@ void MagicFlareLoadTextures() {
 	g_magicFlareTextures.plasm = TextureContainer::LoadUI("graph/particles/plasm", flags);
 	
 	std::ostringstream oss;
-	for(size_t i = 1; i < 10; i++) {
+	for(size_t i = 0; i < 10; i++) {
 		oss.str(std::string());
 		oss << "graph/particles/shine" << i;
 		g_magicFlareTextures.shine[i] = TextureContainer::LoadUI(oss.str(), flags);
