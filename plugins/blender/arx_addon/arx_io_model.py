@@ -138,7 +138,8 @@ class ArxObjectManager(object):
         mesh = bpy.data.meshes.new(idString)
         bm.to_mesh(mesh)
 
-        #armatureObj = self.createArmature(canonicalId, bm, data.groups)
+        armatureObj = self.createArmature(canonicalId, bm, data.groups)
+        armatureObj.show_in_front = True
 
         bm.free()
 
@@ -151,11 +152,27 @@ class ArxObjectManager(object):
         obj['arx.ftl.name'] = data.metadata.name
         obj['arx.ftl.org'] = data.metadata.org
 
+        #   vertex groups in .tea has overlapping vert groups
+        #   this causes an arm bone to influence the hand and fingers, etc
+        #   blender bug??, vertices should not be allowed to influenced by more then one bone!
+        #   .tea stores vert groups from parent to child
+        #   if we loop in reverse, and remove child verts from their parents...
+        #   we are left with a clean vert group on each bone for blender to work with
+        vertgrps = []
         for i, g in enumerate(data.groups):
             grp = obj.vertex_groups.new(name="grp:" + str(i).zfill(2) + ":" + g.name)
             # XXX add the origin to the group ?
             for v in g.indices:
-                grp.add([v], 0.0, 'ADD')
+                grp.add([v], 1.0, 'REPLACE')
+            vertgrps.append(grp)
+        
+        #clear verts from all other groups
+        for i, g in sorted( enumerate(data.groups), reverse=True ):
+            vertgrp = vertgrps[i]
+            for ri in range(max(i-1,-1), -1, -1):
+                self.log.debug(f'removing {g.name}\"s {vertgrp.name} from {vertgrps[ri].name}')
+                for v in g.indices:
+                    vertgrps[ri].add([v], 1.0, 'SUBTRACT')
 
         for i, s in enumerate(data.sels):
             grp = obj.vertex_groups.new(name="sel:" + str(i).zfill(2) + ":" + s.name)
@@ -180,25 +197,12 @@ class ArxObjectManager(object):
             else:
                 action.scale = [3, 3, 3]
                 
-            
-        #armatureModifier = obj.modifiers.new(type='ARMATURE', name="Skeleton")
-        #armatureModifier.object = armatureObj
-
-
-        # for toDeSel in scene.objects: #deselect all first just to be sure
-        #    toDeSel.select = False
+        armatureModifier = obj.modifiers.new(type='ARMATURE', name="Skeleton")
+        armatureModifier.object = armatureObj
 
         collection.objects.link(obj)
-        #FIXME properly bind bones to mesh via vertex groups
-        #obj.select = True
-        #armatureObj.select = True
-        #bpy.context.scene.objects.active = armatureObj #select both the mesh and armature and set armature active
-        #bpy.ops.object.parent_set(type='ARMATURE_AUTO') # ctrl+p and automatic weights
-        #bpy.context.scene.objects.active = obj
-        #armatureObj.select = False
-
-        #bpy.ops.object.mode_set(mode='EDIT', toggle=False)  # initialises UVmap correctly
-
+        
+        obj.parent = armatureObj
 
         # TODO 2.8
         # mesh.uv_textures.new()
@@ -216,32 +220,30 @@ class ArxObjectManager(object):
 
         # Create armature and object
         amt = bpy.data.armatures.new(amtname)
-        amt.draw_type = 'WIRE'
         amtobject = bpy.data.objects.new(amtname + "-amt", amt)
         # amtobject.show_x_ray = True
         amtobject.location = origin
         # ob.show_name = True
 
         # Link object to scene and make active
-        bpy.context.scene.collection.link(amtobject)
-        bpy.context.scene.collection.active = amtobject
-        amtobject.select = True
+        bpy.context.collection.objects.link(amtobject)
+        bpy.context.view_layer.objects.active = amtobject
 
         bpy.ops.object.mode_set(mode='EDIT')
 
-        for i, (name, origin, indices, parentIndex) in enumerate(groups):
-            bGrpName = "grp:" + str(i).zfill(2) + ":" + name
+        for i, group in enumerate(groups):
+            bGrpName = "grp:" + str(i).zfill(2) + ":" + group.name
 
             bone = amt.edit_bones.new(bGrpName)
-            bone.head = bm.verts[origin].co
-            bone.tail = bm.verts[origin].co + Vector((0, -5, 0))
-            bone["OriginVertex"] = origin
+            bone.head = bm.verts[group.origin].co
+            bone.tail = bm.verts[group.origin].co + Vector((0, -5, 0))
+            bone["OriginVertex"] = group.origin
 
         editBonesArray = amt.edit_bones.values()
-        for i, (name, origin, indices, parentIndex) in enumerate(groups):
-            if parentIndex>=0:
+        for i, group in enumerate(groups):
+            if group.parentIndex>=0:
                 bone = editBonesArray[i]
-                bone.parent = editBonesArray[parentIndex]
+                bone.parent = editBonesArray[group.parentIndex]
 
         bpy.ops.object.mode_set(mode='OBJECT')
 
