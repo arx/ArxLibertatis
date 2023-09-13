@@ -328,69 +328,65 @@ void MagicFlareContainer::update() {
 
 	EERIE_LIGHT* light = lightHandleGet(torchLightHandle);
 
-	for(long j = 1; j < 5; j++) {
+	for(size_t i = 0; i < m_magicFlaresMax; i++) {
 
-		TextureContainer* surf = getTexContainerByType(j);
+		MagicFlare& flare = g_magicFlares[i];
+
+		if(!flare.exist) {
+			continue;
+		}
+
+		TextureContainer* surf = getTexContainerByType(flare.type);
 
 		mat.setTexture(surf);
 
-		for(size_t i = 0; i < m_magicFlaresMax; i++) {
+		flare.tolive -= diff * 2;
+		if(flare.flags & 1) {
+			flare.tolive -= diff * 4;
+		} else if(key) {
+			flare.tolive -= diff * 6;
+		}
 
-			MagicFlare& flare = g_magicFlares[i];
+		float decayRate = flare.tolive / 4s;
+		float size;
+		switch(flare.type) {
+			case 1:
+				size = flare.size * 2 * decayRate;
+				break;
+			case 4:
+				size = flare.size * 2.f * decayRate * (4.0f / 3.0f);
+				break;
+			default:
+				size = flare.size;
+				break;
+		}
 
-			if(!flare.exist || flare.type != j) {
-				continue;
-			}
+		if(flare.tolive <= 0 || flare.pos.y < -64.f || size < 3.f) {
+			g_magicFlares.removeFlare(flare);
+			continue;
+		}
 
-			flare.tolive -= diff * 2;
-			if(flare.flags & 1) {
-				flare.tolive -= diff * 4;
-			} else if(key) {
-				flare.tolive -= diff * 6;
-			}
+		if(flare.type == 1 && decayRate < 0.6f) {
+			decayRate = 0.6f;
+		}
 
-			float decayRate = flare.tolive / 4s;
-			float size;
-			switch(flare.type) {
-				case 1:
-					size = flare.size * 2 * decayRate;
-					break;
-				case 4:
-					size = flare.size * 2.f * decayRate * (4.0f / 3.0f);
-					break;
-				default:
-					size = flare.size;
-					break;
-			}
+		Color3f color = flare.rgb * decayRate;
 
-			if(flare.tolive <= 0 || flare.pos.y < -64.f || size < 3.f) {
-				g_magicFlares.removeFlare(flare);
-				continue;
-			}
+		light->rgb = componentwise_max(light->rgb, color);
 
-			if(flare.type == 1 && decayRate < 0.6f) {
-				decayRate = 0.6f;
-			}
+		EERIE_LIGHT* el = lightHandleGet(flare.dynlight);
+		if(el) {
+			el->pos = flare.p;
+			el->rgb = color;
+		}
 
-			Color3f color = flare.rgb * decayRate;
+		mat.setDepthTest(flare.io != nullptr);
 
-			light->rgb = componentwise_max(light->rgb, color);
-
-			EERIE_LIGHT* el = lightHandleGet(flare.dynlight);
-			if(el) {
-				el->pos = flare.p;
-				el->rgb = color;
-			}
-
-			mat.setDepthTest(flare.io != nullptr);
-
-			if(flare.bDrawBitmap) {
-				Vec3f pos = Vec3f(flare.p.x - size / 2.0f, flare.p.y - size / 2.0f, flare.p.z);
-				EERIEAddBitmap(mat, pos, size, size, surf, Color(color));
-			} else {
-				EERIEAddSprite(mat, flare.p, size * 0.025f + 1.f, Color(color), 2.f);
-			}
-
+		if(flare.bDrawBitmap) {
+			Vec3f pos = Vec3f(flare.p.x - size / 2.0f, flare.p.y - size / 2.0f, flare.p.z);
+			EERIEAddBitmap(mat, pos, size, size, surf, Color(color));
+		} else {
+			EERIEAddSprite(mat, flare.p, size * 0.025f + 1.f, Color(color), 2.f);
 		}
 	}
 
