@@ -54,7 +54,7 @@ class MagicFlare {
 public:
 	unsigned char exist = 0;
 	char type = -1;
-	short hasIO = 0;
+	bool hasIO = false;
 	Vec3f p = Vec3f(0.f);
 	Vec2f pos = Vec2f(0.f);
 	PlatformDuration tolive;
@@ -156,10 +156,10 @@ void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, short typ, Entity
 
 	flare.io = io;
 	if(io) {
-		flare.hasIO = 1;
+		flare.hasIO = true;
 		io->flarecount++;
 	} else {
-		flare.hasIO = 0;
+		flare.hasIO = false;
 	}
 
 	flare.pos.x = pos.x - Random::getf(0.f, 4.f);
@@ -261,7 +261,7 @@ long MagicFlareContainer::flaggedCount() {
 
 	long count = 0;
 	for(size_t i = 0; i < m_magicFlaresMax; i++) {
-		if(g_magicFlares[i].exist && g_magicFlares[i].hasIO == 0) {
+		if(g_magicFlares[i].exist && !g_magicFlares[i].hasIO) {
 			count++;
 		}
 	}
@@ -341,7 +341,7 @@ void MagicFlareContainer::update() {
 		mat.setTexture(surf);
 
 		flare.tolive -= diff * 2;
-		if(flare.hasIO & 1) {
+		if(flare.hasIO) {
 			flare.tolive -= diff * 4;
 		} else if(key) {
 			flare.tolive -= diff * 6;
