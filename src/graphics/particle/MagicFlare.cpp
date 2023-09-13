@@ -87,6 +87,7 @@ private:
 
 	size_t findUsableIndex();
 	Color3f newFlareColor();
+	TextureContainer* getTexContainerByType(char type);
 };
 
 static MagicFlareContainer g_magicFlares;
@@ -296,6 +297,18 @@ void MagicFlareContainer::removeAll() {
 	g_magicFlaresCount = 0;
 }
 
+TextureContainer* MagicFlareContainer::getTexContainerByType(char type) {
+	
+	TextureContainer* tc = nullptr;
+	switch(type) {
+		case 2:  tc = g_magicFlareTextures.lumignon; break;
+		case 3:  tc = g_magicFlareTextures.lumignon2; break;
+		case 4:  tc = g_magicFlareTextures.plasm; break;
+		default: tc = g_magicFlareTextures.shine[g_magicFlares.shinum]; break;
+	}
+	return tc;
+}
+
 void MagicFlareContainer::update() {
 
 	if(!g_magicFlaresCount)
@@ -317,13 +330,7 @@ void MagicFlareContainer::update() {
 
 	for(long j = 1; j < 5; j++) {
 
-		TextureContainer* surf;
-		switch(j) {
-			case 2:  surf = g_magicFlareTextures.lumignon; break;
-			case 3:  surf = g_magicFlareTextures.lumignon2; break;
-			case 4:  surf = g_magicFlareTextures.plasm; break;
-			default: surf = g_magicFlareTextures.shine[g_magicFlares.shinum]; break;
-		}
+		TextureContainer* surf = getTexContainerByType(j);
 
 		mat.setTexture(surf);
 
