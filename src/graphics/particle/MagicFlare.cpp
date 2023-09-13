@@ -342,12 +342,12 @@ void MagicFlareContainer::update() {
 				flare.tolive -= diff * 6;
 			}
 
-			float z = flare.tolive / 4s;
+			float decayRate = flare.tolive / 4s;
 			float size;
 			if(flare.type == 1) {
-				size = flare.size * 2 * z;
+				size = flare.size * 2 * decayRate;
 			} else if(flare.type == 4) {
-				size = flare.size * 2.f * z * (4.0f / 3.0f);
+				size = flare.size * 2.f * decayRate * (4.0f / 3.0f);
 			} else {
 				size = flare.size;
 			}
@@ -357,11 +357,11 @@ void MagicFlareContainer::update() {
 				continue;
 			}
 
-			if(flare.type == 1 && z < 0.6f) {
-				z = 0.6f;
+			if(flare.type == 1 && decayRate < 0.6f) {
+				decayRate = 0.6f;
 			}
 
-			Color3f color = flare.rgb * z;
+			Color3f color = flare.rgb * decayRate;
 
 			light->rgb = componentwise_max(light->rgb, color);
 
