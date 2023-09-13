@@ -344,12 +344,16 @@ void MagicFlareContainer::update() {
 
 			float decayRate = flare.tolive / 4s;
 			float size;
-			if(flare.type == 1) {
-				size = flare.size * 2 * decayRate;
-			} else if(flare.type == 4) {
-				size = flare.size * 2.f * decayRate * (4.0f / 3.0f);
-			} else {
-				size = flare.size;
+			switch(flare.type) {
+				case 1:
+					size = flare.size * 2 * decayRate;
+					break;
+				case 4:
+					size = flare.size * 2.f * decayRate * (4.0f / 3.0f);
+					break;
+				default:
+					size = flare.size;
+					break;
 			}
 
 			if(flare.tolive <= 0 || flare.pos.y < -64.f || size < 3.f) {
