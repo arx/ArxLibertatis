@@ -319,7 +319,7 @@ void MagicFlareContainer::update() {
 		g_magicFlares.shinum = 1;
 	}
 
-	PlatformDuration diff = g_platformTime.lastFrameDuration();
+	PlatformDuration lastFrameDuration = g_platformTime.lastFrameDuration();
 
 	bool key = !GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
 
@@ -340,11 +340,11 @@ void MagicFlareContainer::update() {
 
 		mat.setTexture(surf);
 
-		flare.tolive -= diff * 2;
+		flare.tolive -= lastFrameDuration * 2;
 		if(flare.hasIO) {
-			flare.tolive -= diff * 4;
+			flare.tolive -= lastFrameDuration * 4;
 		} else if(key) {
-			flare.tolive -= diff * 6;
+			flare.tolive -= lastFrameDuration * 6;
 		}
 
 		float decayRate = flare.tolive / 4s;
