@@ -78,7 +78,7 @@ public:
 	void update();
 	void changeColor();
 
-	short shinum = 1;
+	short m_currentShineTex = 1;
 private:
 	static const size_t m_magicFlaresMax = 500;
 	MagicFlare m_flares[m_magicFlaresMax];
@@ -307,7 +307,7 @@ TextureContainer* MagicFlareContainer::getTexContainerByType(char type) {
 		case 2:  tc = g_magicFlareTextures.lumignon; break;
 		case 3:  tc = g_magicFlareTextures.lumignon2; break;
 		case 4:  tc = g_magicFlareTextures.plasm; break;
-		default: tc = g_magicFlareTextures.shine[g_magicFlares.shinum]; break;
+		default: tc = g_magicFlareTextures.shine[g_magicFlares.m_currentShineTex]; break;
 	}
 	return tc;
 }
@@ -317,9 +317,9 @@ void MagicFlareContainer::update() {
 	if(!g_magicFlaresCount)
 		return;
 
-	g_magicFlares.shinum++;
-	if(g_magicFlares.shinum >= 10) {
-		g_magicFlares.shinum = 1;
+	g_magicFlares.m_currentShineTex++;
+	if(g_magicFlares.m_currentShineTex >= 10) {
+		g_magicFlares.m_currentShineTex = 1;
 	}
 
 	PlatformDuration lastFrameDuration = g_platformTime.lastFrameDuration();
