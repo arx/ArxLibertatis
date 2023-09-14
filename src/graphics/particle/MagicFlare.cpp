@@ -89,6 +89,7 @@ private:
 	Color3f newFlareColor();
 	TextureContainer* getTexContainerByType(char type);
 	void loadTextures();
+	void cycleShineTexture();
 };
 
 static MagicFlareContainer g_magicFlares;
@@ -312,15 +313,19 @@ TextureContainer* MagicFlareContainer::getTexContainerByType(char type) {
 	return tc;
 }
 
+void MagicFlareContainer::cycleShineTexture() {
+	m_currentShineTex++;
+	if(m_currentShineTex >= 10) {
+		m_currentShineTex = 1;
+	}
+}
+
 void MagicFlareContainer::update() {
 
 	if(!g_magicFlaresCount)
 		return;
 
-	m_currentShineTex++;
-	if(m_currentShineTex >= 10) {
-		m_currentShineTex = 1;
-	}
+	cycleShineTexture();
 
 	PlatformDuration lastFrameDuration = g_platformTime.lastFrameDuration();
 
