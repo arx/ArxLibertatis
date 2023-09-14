@@ -329,7 +329,7 @@ void MagicFlareContainer::update() {
 
 	PlatformDuration lastFrameDuration = g_platformTime.lastFrameDuration();
 
-	bool key = !GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
+	bool isMagicCastKeyUnpressed = !GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
 
 	RenderMaterial mat;
 	mat.setBlendType(RenderMaterial::Additive);
@@ -351,7 +351,7 @@ void MagicFlareContainer::update() {
 		flare.tolive -= lastFrameDuration * 2;
 		if(flare.hasIO) {
 			flare.tolive -= lastFrameDuration * 4;
-		} else if(key) {
+		} else if(isMagicCastKeyUnpressed) {
 			flare.tolive -= lastFrameDuration * 6;
 		}
 
