@@ -63,7 +63,21 @@ public:
 	LightHandle dynlight;
 	Entity * io = nullptr;
 	bool bDrawBitmap = false;
+
+	void clear();
 };
+
+void MagicFlare::clear() {
+
+	if(io && ValidIOAddress(io)) {
+		io->flarecount--;
+	}
+
+	lightHandleDestroy(dynlight);
+
+	tolive = 0;
+	exist = 0;
+}
 
 class MagicFlareContainer {
 public:
@@ -245,14 +259,7 @@ void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, short typ, Entity
 
 void MagicFlareContainer::removeFlare(MagicFlare& flare) {
 
-	if(flare.io && ValidIOAddress(flare.io)) {
-		flare.io->flarecount--;
-	}
-
-	lightHandleDestroy(flare.dynlight);
-
-	flare.tolive = 0;
-	flare.exist = 0;
+	flare.clear();
 	g_magicFlaresCount--;
 
 }
