@@ -317,9 +317,9 @@ void MagicFlareContainer::update() {
 	if(!g_magicFlaresCount)
 		return;
 
-	g_magicFlares.m_currentShineTex++;
-	if(g_magicFlares.m_currentShineTex >= 10) {
-		g_magicFlares.m_currentShineTex = 1;
+	m_currentShineTex++;
+	if(m_currentShineTex >= 10) {
+		m_currentShineTex = 1;
 	}
 
 	PlatformDuration lastFrameDuration = g_platformTime.lastFrameDuration();
