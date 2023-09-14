@@ -88,6 +88,7 @@ private:
 	size_t findUsableIndex();
 	Color3f newFlareColor();
 	TextureContainer* getTexContainerByType(char type);
+	void MagicFlareLoadTextures();
 };
 
 static MagicFlareContainer g_magicFlares;
@@ -403,7 +404,7 @@ void MagicFlareContainer::changeColor() {
 		m_currentColor = 0;
 }
 
-void MagicFlareLoadTextures() {
+void MagicFlareContainer::MagicFlareLoadTextures() {
 	
 	TextureContainer::TCFlags flags = TextureContainer::NoColorKey;
 	
