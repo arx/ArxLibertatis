@@ -24,8 +24,6 @@
 
 class Entity;
 
-void MagicFlareLoadTextures();
-
 void MagicFlareReleaseEntity(const Entity * entity);
 long MagicFlareCountNonFlagged();
 

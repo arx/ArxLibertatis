@@ -283,6 +283,8 @@ void MagicFlareContainer::init() {
 	for(size_t i = 0; i < m_magicFlaresMax; i++) {
 		g_magicFlares[i].exist = 0;
 	}
+
+	MagicFlareLoadTextures();
 }
 
 void MagicFlareContainer::removeAll() {

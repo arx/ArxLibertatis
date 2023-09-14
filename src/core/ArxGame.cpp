@@ -510,8 +510,6 @@ TextureContainer * arx_logo_tc = nullptr;
 
 static void LoadSysTextures() {
 	
-	MagicFlareLoadTextures();
-
 	spellDataInit();
 
 	enviro = TextureContainer::LoadUI("graph/particles/enviro", TextureContainer::NoColorKey);
