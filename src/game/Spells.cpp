@@ -516,9 +516,9 @@ void ARX_SPELLS_ManageMagic() {
 					}
 					
 					if(Random::getf() > 0.6f)
-						AddFlare(pos, 1.f, -1);
+						AddFlare(pos, 1.f, true);
 					else
-						AddFlare(pos, 1.f, 3);
+						AddFlare(pos, 1.f, false);
 					
 					g_LastFlareTime = now - std::min(now - g_LastFlareTime - interval, interval);
 				}

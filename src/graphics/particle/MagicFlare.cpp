@@ -84,7 +84,7 @@ public:
 	MagicFlareContainer();
 	MagicFlare& operator[](size_t element);
 	void removeFlare(MagicFlare& flare);
-	void addFlare(const Vec2f& pos, float sm, short typ, Entity* io, bool bookDraw);
+	void addFlare(const Vec2f& pos, float sm, bool typ, Entity* io, bool bookDraw);
 	long flaggedCount();
 	void removeFlareEntityPtr(const Entity* entity);
 	void init();
@@ -161,7 +161,7 @@ Color3f MagicFlareContainer::newFlareColor() {
 	return newColor;
 }
 
-void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, short typ, Entity* io, bool bookDraw) {
+void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, bool typ, Entity* io, bool bookDraw) {
 	
 	size_t index = findUsableIndex();
 	MagicFlare& flare = g_magicFlares[index];
@@ -197,7 +197,7 @@ void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, short typ, Entity
 
 	flare.rgb = newFlareColor();
 
-	if(typ == -1) {
+	if(typ) {
 		float zz = eeMousePressed1() ? 0.29f : ((sm > 0.5f) ? Random::getf() : 1.f);
 		if(zz < 0.2f) {
 			flare.type = 2;
@@ -458,14 +458,14 @@ void MagicFlareChangeColor() {
 	g_magicFlares.changeColor();
 }
 
-void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw) {
+void AddFlare(const Vec2f & pos, float sm, bool typ, Entity * io, bool bookDraw) {
 	
 	g_magicFlares.addFlare(pos, sm, typ, io, bookDraw);
 }
 
 //! Helper for FlareLine
 static void AddLFlare(const Vec2f & pos, Entity * io) {
-	AddFlare(pos, 0.45f, 1, io);
+	AddFlare(pos, 0.45f, false, io);
 }
 
 void FlareLine(Vec2f fromPos, Vec2f toPos, Entity * io) {
