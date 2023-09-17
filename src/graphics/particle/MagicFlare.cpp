@@ -468,24 +468,24 @@ static void AddLFlare(const Vec2f & pos, Entity * io) {
 	AddFlare(pos, 0.45f, 1, io);
 }
 
-void FlareLine(Vec2f fromPos, Vec2f tmpPos1, Entity * io) {
+void FlareLine(Vec2f fromPos, Vec2f toPos, Entity * io) {
 	
 	static const int FLARELINESTEP = 7;
 	static const int FLARELINERND = 6;
 	
-	Vec2f d = tmpPos1 - fromPos;
+	Vec2f d = toPos - fromPos;
 	Vec2f ad = glm::abs(d);
 	
 	if(ad.x > ad.y) {
 		
-		if(fromPos.x > tmpPos1.x) {
-			std::swap(fromPos, tmpPos1);
+		if(fromPos.x > toPos.x) {
+			std::swap(fromPos, toPos);
 		}
 		
 		float m = d.y / d.x;
 		float i = fromPos.x;
 		
-		while(i < tmpPos1.x) {
+		while(i < toPos.x) {
 			long z = Random::get(0, FLARELINERND);
 			z += FLARELINESTEP;
 			if(!io) {
@@ -498,14 +498,14 @@ void FlareLine(Vec2f fromPos, Vec2f tmpPos1, Entity * io) {
 		
 	} else {
 		
-		if(fromPos.y > tmpPos1.y) {
-			std::swap(fromPos, tmpPos1);
+		if(fromPos.y > toPos.y) {
+			std::swap(fromPos, toPos);
 		}
 		
 		float m = d.x / d.y;
 		float i = fromPos.y;
 		
-		while(i < tmpPos1.y) {
+		while(i < toPos.y) {
 			long z = Random::get(0, FLARELINERND);
 			z += FLARELINESTEP;
 			if(!io) {
