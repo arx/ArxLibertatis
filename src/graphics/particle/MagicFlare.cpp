@@ -183,7 +183,7 @@ void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, bool useVariedFla
 
 	if(!bookDraw) {
 		if(io) {
-			float vx = -(flare.pos.x - g_size.center().x) * 0.2173913f;
+			float vx = -(flare.pos.x - g_size.center().x) * (5.f/23.f);
 			float vy = (flare.pos.y - g_size.center().y) * (5.f/33.f);
 			flare.p = io->pos;
 			flare.p += angleToVectorXZ(io->angle.getYaw() + vx) * 100.f;
