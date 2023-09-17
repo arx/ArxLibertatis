@@ -86,7 +86,7 @@ public:
 	void removeFlare(MagicFlare& flare);
 	void addFlare(const Vec2f& pos, float sm, bool useVariedFlares, Entity* io, bool bookDraw);
 	long flaggedCount();
-	void removeFlareEntityPtr(const Entity* entity);
+	void removeEntityPtrFromFlares(const Entity* entity);
 	void init();
 	void removeAll();
 	void update();
@@ -278,7 +278,7 @@ long MagicFlareContainer::flaggedCount() {
 	return count;
 }
 
-void MagicFlareContainer::removeFlareEntityPtr(const Entity* entity) {
+void MagicFlareContainer::removeEntityPtrFromFlares(const Entity* entity) {
 	
 	for(size_t i = 0; i < m_magicFlaresMax; i++) {
 		if(g_magicFlares[i].exist && g_magicFlares[i].io == entity) {
@@ -435,7 +435,7 @@ void MagicFlareContainer::loadTextures() {
 
 void MagicFlareReleaseEntity(const Entity * entity) {
 	
-	g_magicFlares.removeFlareEntityPtr(entity);
+	g_magicFlares.removeEntityPtrFromFlares(entity);
 }
 
 long MagicFlareCountNonFlagged() {
