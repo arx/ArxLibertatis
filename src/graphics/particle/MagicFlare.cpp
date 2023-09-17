@@ -85,7 +85,7 @@ public:
 	MagicFlare& operator[](size_t element);
 	void removeFlare(MagicFlare& flare);
 	void addFlare(const Vec2f& pos, float sm, bool useVariedFlares, Entity* io, bool bookDraw);
-	long flaggedCount();
+	long countWithoutIO();
 	void removeEntityPtrFromFlares(const Entity* entity);
 	void init();
 	void removeAll();
@@ -264,7 +264,7 @@ void MagicFlareContainer::removeFlare(MagicFlare& flare) {
 
 }
 
-long MagicFlareContainer::flaggedCount() {
+long MagicFlareContainer::countWithoutIO() {
 	if(!g_magicFlaresCount)
 		return 0;
 
@@ -440,7 +440,7 @@ void MagicFlareReleaseEntity(const Entity * entity) {
 
 long MagicFlareCountWithoutEntity() {
 	
-	return g_magicFlares.flaggedCount();
+	return g_magicFlares.countWithoutIO();
 }
 
 void ARX_MAGICAL_FLARES_FirstInit() {
