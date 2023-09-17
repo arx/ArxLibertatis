@@ -473,8 +473,8 @@ void FlareLine(Vec2f fromPos, Vec2f toPos, Entity * io) {
 	static const int FLARELINESTEP = 7;
 	static const int FLARELINERND = 6;
 	
-	Vec2f d = toPos - fromPos;
-	Vec2f ad = glm::abs(d);
+	Vec2f dist = toPos - fromPos;
+	Vec2f ad = glm::abs(dist);
 	
 	if(ad.x > ad.y) {
 		
@@ -482,7 +482,7 @@ void FlareLine(Vec2f fromPos, Vec2f toPos, Entity * io) {
 			std::swap(fromPos, toPos);
 		}
 		
-		float m = d.y / d.x;
+		float m = dist.y / dist.x;
 		float i = fromPos.x;
 		
 		while(i < toPos.x) {
@@ -502,7 +502,7 @@ void FlareLine(Vec2f fromPos, Vec2f toPos, Entity * io) {
 			std::swap(fromPos, toPos);
 		}
 		
-		float m = d.x / d.y;
+		float m = dist.x / dist.y;
 		float i = fromPos.y;
 		
 		while(i < toPos.y) {
