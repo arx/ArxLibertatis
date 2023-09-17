@@ -438,7 +438,7 @@ void MagicFlareReleaseEntity(const Entity * entity) {
 	g_magicFlares.removeEntityPtrFromFlares(entity);
 }
 
-long MagicFlareCountNonFlagged() {
+long MagicFlareCountWithoutEntity() {
 	
 	return g_magicFlares.flaggedCount();
 }

@@ -25,7 +25,7 @@
 class Entity;
 
 void MagicFlareReleaseEntity(const Entity * entity);
-long MagicFlareCountNonFlagged();
+long MagicFlareCountWithoutEntity();
 
 void ARX_MAGICAL_FLARES_FirstInit();
 void ARX_MAGICAL_FLARES_KillAll();

@@ -433,7 +433,7 @@ void ManageTorch() {
 		
 	} else {
 		
-		long count = MagicFlareCountNonFlagged();
+		long count = MagicFlareCountWithoutEntity();
 		
 		if(count) {
 			float rr = Random::getf();
