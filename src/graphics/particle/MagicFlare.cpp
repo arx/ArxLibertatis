@@ -474,9 +474,9 @@ void FlareLine(Vec2f fromPos, Vec2f toPos, Entity * io) {
 	static const int FLARELINERND = 6;
 	
 	Vec2f dist = toPos - fromPos;
-	Vec2f ad = glm::abs(dist);
+	Vec2f absDist = glm::abs(dist);
 	
-	if(ad.x > ad.y) {
+	if(absDist.x > absDist.y) {
 		
 		if(fromPos.x > toPos.x) {
 			std::swap(fromPos, toPos);
