@@ -761,7 +761,7 @@ aalError OpenALSource::updateBuffers() {
 }
 
 bool OpenALSource::markAsLoaded() {
-	if(m_loadCount == unsigned(-1)) {
+	if(m_loadCount != unsigned(-1)) {
 		m_loadCount--;
 	}
 	return (m_loadCount != 0);
