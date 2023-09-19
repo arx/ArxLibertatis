@@ -315,7 +315,7 @@ TextureContainer* MagicFlareContainer::getTexContainerByType(char type) {
 		case 2:  tc = g_magicFlareTextures.lumignon; break;
 		case 3:  tc = g_magicFlareTextures.lumignon2; break;
 		case 4:  tc = g_magicFlareTextures.plasm; break;
-		default: tc = g_magicFlareTextures.shine[g_magicFlares.m_currentShineTex]; break;
+		default: tc = g_magicFlareTextures.shine[m_currentShineTex]; break;
 	}
 	return tc;
 }
