@@ -281,8 +281,8 @@ long MagicFlareContainer::countWithoutIO() {
 void MagicFlareContainer::removeEntityPtrFromFlares(const Entity* entity) {
 	
 	for(size_t i = 0; i < m_magicFlaresMax; i++) {
-		if(g_magicFlares[i].exist && g_magicFlares[i].io == entity) {
-			g_magicFlares[i].io = nullptr;
+		if(m_flares[i].exist && m_flares[i].io == entity) {
+			m_flares[i].io = nullptr;
 		}
 	}
 }
