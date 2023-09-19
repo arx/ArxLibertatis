@@ -96,7 +96,7 @@ public:
 private:
 	static const size_t m_magicFlaresMax = 500;
 	MagicFlare m_flares[m_magicFlaresMax];
-	long g_magicFlaresCount;
+	long m_flareCount;
 	short m_currentColor;
 
 	size_t findUsableIndex();
@@ -109,7 +109,7 @@ private:
 static MagicFlareContainer g_magicFlares;
 
 MagicFlareContainer::MagicFlareContainer()
-	: g_magicFlaresCount(0)
+	: m_flareCount(0)
 	, m_currentColor(0)
 {}
 
@@ -166,7 +166,7 @@ void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, bool useVariedFla
 	size_t index = findUsableIndex();
 	MagicFlare& flare = m_flares[index];
 	flare.exist = 1;
-	g_magicFlaresCount++;
+	m_flareCount++;
 
 	flare.bDrawBitmap = bookDraw;
 
@@ -260,12 +260,12 @@ void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, bool useVariedFla
 void MagicFlareContainer::removeFlare(MagicFlare& flare) {
 
 	flare.clear();
-	g_magicFlaresCount--;
+	m_flareCount--;
 
 }
 
 long MagicFlareContainer::countWithoutIO() {
-	if(!g_magicFlaresCount)
+	if(!m_flareCount)
 		return 0;
 
 	long count = 0;
@@ -288,7 +288,7 @@ void MagicFlareContainer::removeEntityPtrFromFlares(const Entity* entity) {
 }
 
 void MagicFlareContainer::init() {
-	g_magicFlaresCount = 0;
+	m_flareCount = 0;
 	for(size_t i = 0; i < m_magicFlaresMax; i++) {
 		m_flares[i].exist = 0;
 	}
@@ -305,7 +305,7 @@ void MagicFlareContainer::removeAll() {
 		}
 	}
 
-	g_magicFlaresCount = 0;
+	m_flareCount = 0;
 }
 
 TextureContainer* MagicFlareContainer::getTexContainerByType(char type) {
@@ -329,7 +329,7 @@ void MagicFlareContainer::cycleShineTexture() {
 
 void MagicFlareContainer::update() {
 
-	if(!g_magicFlaresCount)
+	if(!m_flareCount)
 		return;
 
 	cycleShineTexture();
