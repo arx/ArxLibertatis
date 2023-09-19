@@ -104,6 +104,7 @@ private:
 	TextureContainer* getTexContainerByType(char type);
 	void loadTextures();
 	void cycleShineTexture();
+	void createParticleDefs(const MagicFlare& flare, Entity* io, bool bookDraw);
 };
 
 static MagicFlareContainer g_magicFlares;
@@ -159,6 +160,45 @@ Color3f MagicFlareContainer::newFlareColor() {
 		default: arx_unreachable();
 	}
 	return newColor;
+}
+
+void MagicFlareContainer::createParticleDefs(const MagicFlare& flare, Entity *io, bool bookDraw) {
+	
+	for(unsigned int kk = 0; kk < 3; kk++) {
+
+		if(Random::getf() < 0.5f) {
+			continue;
+		}
+
+		PARTICLE_DEF* pd = createParticle(true);
+		if(!pd) {
+			break;
+		}
+
+		if(!bookDraw) {
+			pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
+			if(!io) {
+				pd->m_flags |= PARTICLE_NOZBUFFER;
+			}
+		} else {
+			pd->m_flags = FADE_IN_AND_OUT | PARTICLE_2D;
+		}
+
+		pd->ov = flare.p + arx::randomVec(-5.f, 5.f);
+		pd->move = Vec3f(0.f, 5.f, 0.f);
+		pd->sizeDelta = -2.f;
+		pd->duration = 1300ms + kk * 100ms + Random::get(0ms, 800ms);
+		pd->tc = g_particleTextures.fire2;
+		if(kk == 1) {
+			pd->move.y = 4.f;
+			pd->size = 1.5f;
+		} else {
+			pd->size = Random::getf(1.f, 2.f);
+		}
+		pd->rgb = flare.rgb * (2.f / 3);
+		pd->m_rotation = 1.2f;
+
+	}
 }
 
 void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, bool useVariedFlares, Entity* io, bool bookDraw) {
@@ -220,41 +260,7 @@ void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, bool useVariedFla
 
 	flare.dynlight = {};
 
-	for(unsigned int kk = 0; kk < 3; kk++) {
-
-		if(Random::getf() < 0.5f) {
-			continue;
-		}
-
-		PARTICLE_DEF* pd = createParticle(true);
-		if(!pd) {
-			break;
-		}
-
-		if(!bookDraw) {
-			pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
-			if(!io) {
-				pd->m_flags |= PARTICLE_NOZBUFFER;
-			}
-		} else {
-			pd->m_flags = FADE_IN_AND_OUT | PARTICLE_2D;
-		}
-
-		pd->ov = flare.p + arx::randomVec(-5.f, 5.f);
-		pd->move = Vec3f(0.f, 5.f, 0.f);
-		pd->sizeDelta = -2.f;
-		pd->duration = 1300ms + kk * 100ms + Random::get(0ms, 800ms);
-		pd->tc = g_particleTextures.fire2;
-		if(kk == 1) {
-			pd->move.y = 4.f;
-			pd->size = 1.5f;
-		} else {
-			pd->size = Random::getf(1.f, 2.f);
-		}
-		pd->rgb = flare.rgb * (2.f / 3);
-		pd->m_rotation = 1.2f;
-
-	}
+	createParticleDefs(flare, io, bookDraw);
 }
 
 void MagicFlareContainer::removeFlare(MagicFlare& flare) {
