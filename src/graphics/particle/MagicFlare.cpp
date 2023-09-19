@@ -123,15 +123,15 @@ size_t MagicFlareContainer::findUsableIndex() {
 	size_t oldest = 0;
 	size_t i;
 	for(i = 0; i < m_magicFlaresMax; i++) {
-		if(!g_magicFlares[i].exist) {
+		if(!m_flares[i].exist) {
 			break;
 		}
-		if(g_magicFlares[i].tolive < g_magicFlares[oldest].tolive) {
+		if(m_flares[i].tolive < m_flares[oldest].tolive) {
 			oldest = i;
 		}
 	}
 	if(i >= m_magicFlaresMax) {
-		g_magicFlares.removeFlare(g_magicFlares[oldest]);
+		removeFlare(m_flares[oldest]);
 		i = oldest;
 	}
 	return i;
@@ -270,7 +270,7 @@ long MagicFlareContainer::countWithoutIO() {
 
 	long count = 0;
 	for(size_t i = 0; i < m_magicFlaresMax; i++) {
-		if(g_magicFlares[i].exist && !g_magicFlares[i].hasIO) {
+		if(g_magicFlares[i].exist && !g_magicFlares[i].io) {
 			count++;
 		}
 	}
