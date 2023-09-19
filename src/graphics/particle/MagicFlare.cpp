@@ -345,7 +345,7 @@ void MagicFlareContainer::update() {
 
 	for(size_t i = 0; i < m_magicFlaresMax; i++) {
 
-		MagicFlare& flare = g_magicFlares[i];
+		MagicFlare& flare = m_flares[i];
 
 		if(!flare.exist) {
 			continue;
@@ -377,7 +377,7 @@ void MagicFlareContainer::update() {
 		}
 
 		if(flare.tolive <= 0 || flare.pos.y < -64.f || size < 3.f) {
-			g_magicFlares.removeFlare(flare);
+			removeFlare(flare);
 			continue;
 		}
 
