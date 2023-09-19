@@ -164,7 +164,7 @@ Color3f MagicFlareContainer::newFlareColor() {
 void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, bool useVariedFlares, Entity* io, bool bookDraw) {
 	
 	size_t index = findUsableIndex();
-	MagicFlare& flare = g_magicFlares[index];
+	MagicFlare& flare = m_flares[index];
 	flare.exist = 1;
 	g_magicFlaresCount++;
 
