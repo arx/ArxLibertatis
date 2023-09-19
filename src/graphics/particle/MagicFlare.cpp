@@ -270,7 +270,7 @@ long MagicFlareContainer::countWithoutIO() {
 
 	long count = 0;
 	for(size_t i = 0; i < m_magicFlaresMax; i++) {
-		if(g_magicFlares[i].exist && !g_magicFlares[i].io) {
+		if(m_flares[i].exist && !m_flares[i].io) {
 			count++;
 		}
 	}
