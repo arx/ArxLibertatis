@@ -56,7 +56,7 @@ public:
 	char type = -1;
 	bool hasIO = false;
 	Vec3f p = Vec3f(0.f);
-	Vec2f pos = Vec2f(0.f);
+	Vec2f pos2D = Vec2f(0.f);
 	PlatformDuration tolive;
 	Color3f rgb;
 	float size = 0.f;
@@ -218,13 +218,13 @@ void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, bool useVariedFla
 		flare.hasIO = false;
 	}
 
-	flare.pos.x = pos.x - Random::getf(0.f, 4.f);
-	flare.pos.y = pos.y - Random::getf(0.f, 4.f);
+	flare.pos2D.x = pos.x - Random::getf(0.f, 4.f);
+	flare.pos2D.y = pos.y - Random::getf(0.f, 4.f);
 
 	if(!bookDraw) {
 		if(io) {
-			float vx = -(flare.pos.x - g_size.center().x) * (5.f/23.f);
-			float vy = (flare.pos.y - g_size.center().y) * (5.f/33.f);
+			float vx = -(flare.pos2D.x - g_size.center().x) * (5.f/23.f);
+			float vy = (flare.pos2D.y - g_size.center().y) * (5.f/33.f);
 			flare.p = io->pos;
 			flare.p += angleToVectorXZ(io->angle.getYaw() + vx) * 100.f;
 			flare.p.y += std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() + vy))) * 100.f - 150.f;
@@ -232,7 +232,7 @@ void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, bool useVariedFla
 			flare.p = screenToWorldSpace(pos, 75.f);
 		}
 	} else {
-		flare.p = Vec3f(flare.pos.x, flare.pos.y, 0.001f);
+		flare.p = Vec3f(flare.pos2D.x, flare.pos2D.y, 0.001f);
 	}
 
 	flare.rgb = newFlareColor();
@@ -382,7 +382,7 @@ void MagicFlareContainer::update() {
 				break;
 		}
 
-		if(flare.tolive <= 0 || flare.pos.y < -64.f || size < 3.f) {
+		if(flare.tolive <= 0 || flare.pos2D.y < -64.f || size < 3.f) {
 			removeFlare(flare);
 			continue;
 		}
