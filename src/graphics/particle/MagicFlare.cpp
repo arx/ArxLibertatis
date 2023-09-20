@@ -55,7 +55,7 @@ public:
 	unsigned char exist = 0;
 	char type = -1;
 	bool hasIO = false;
-	Vec3f p = Vec3f(0.f);
+	Vec3f pos3D = Vec3f(0.f);
 	Vec2f pos2D = Vec2f(0.f);
 	PlatformDuration tolive;
 	Color3f rgb;
@@ -184,7 +184,7 @@ void MagicFlareContainer::createParticleDefs(const MagicFlare& flare, Entity *io
 			pd->m_flags = FADE_IN_AND_OUT | PARTICLE_2D;
 		}
 
-		pd->ov = flare.p + arx::randomVec(-5.f, 5.f);
+		pd->ov = flare.pos3D + arx::randomVec(-5.f, 5.f);
 		pd->move = Vec3f(0.f, 5.f, 0.f);
 		pd->sizeDelta = -2.f;
 		pd->duration = 1300ms + kk * 100ms + Random::get(0ms, 800ms);
@@ -225,14 +225,14 @@ void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, bool useVariedFla
 		if(io) {
 			float vx = -(flare.pos2D.x - g_size.center().x) * (5.f/23.f);
 			float vy = (flare.pos2D.y - g_size.center().y) * (5.f/33.f);
-			flare.p = io->pos;
-			flare.p += angleToVectorXZ(io->angle.getYaw() + vx) * 100.f;
-			flare.p.y += std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() + vy))) * 100.f - 150.f;
+			flare.pos3D = io->pos;
+			flare.pos3D += angleToVectorXZ(io->angle.getYaw() + vx) * 100.f;
+			flare.pos3D.y += std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() + vy))) * 100.f - 150.f;
 		} else {
-			flare.p = screenToWorldSpace(pos, 75.f);
+			flare.pos3D = screenToWorldSpace(pos, 75.f);
 		}
 	} else {
-		flare.p = Vec3f(flare.pos2D.x, flare.pos2D.y, 0.001f);
+		flare.pos3D = Vec3f(flare.pos2D.x, flare.pos2D.y, 0.001f);
 	}
 
 	flare.rgb = newFlareColor();
@@ -397,17 +397,17 @@ void MagicFlareContainer::update() {
 
 		EERIE_LIGHT* el = lightHandleGet(flare.dynlight);
 		if(el) {
-			el->pos = flare.p;
+			el->pos = flare.pos3D;
 			el->rgb = color;
 		}
 
 		mat.setDepthTest(flare.io != nullptr);
 
 		if(flare.bDrawBitmap) {
-			Vec3f pos = Vec3f(flare.p.x - size / 2.0f, flare.p.y - size / 2.0f, flare.p.z);
+			Vec3f pos = Vec3f(flare.pos3D.x - size / 2.0f, flare.pos3D.y - size / 2.0f, flare.pos3D.z);
 			EERIEAddBitmap(mat, pos, size, size, surf, Color(color));
 		} else {
-			EERIEAddSprite(mat, flare.p, size * 0.025f + 1.f, Color(color), 2.f);
+			EERIEAddSprite(mat, flare.pos3D, size * 0.025f + 1.f, Color(color), 2.f);
 		}
 	}
 
