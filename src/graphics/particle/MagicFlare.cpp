@@ -345,9 +345,7 @@ void MagicFlareContainer::removeAll() {
 	
 	for(size_t i = 0; i < m_magicFlaresMax; i++) {
 		MagicFlare& flare = m_flares[i];
-		if(flare.exist) {
-			removeFlare(flare);
-		}
+		removeFlare(flare);
 	}
 
 	m_flareCount = 0;
