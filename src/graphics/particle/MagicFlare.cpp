@@ -52,7 +52,7 @@ static FLARETC g_magicFlareTextures;
 
 class MagicFlare {
 public:
-	unsigned char exist = 0;
+	bool exist;
 	char type = -1;
 	bool hasIO = false;
 	Vec3f pos3D = Vec3f(0.f);
@@ -115,7 +115,7 @@ void MagicFlare::clear() {
 	lightHandleDestroy(dynlight);
 
 	tolive = 0;
-	exist = 0;
+	exist = false;
 }
 
 class MagicFlareContainer {
@@ -244,7 +244,7 @@ void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, bool useVariedFla
 	
 	size_t index = findUsableIndex();
 	MagicFlare& flare = m_flares[index];
-	flare.exist = 1;
+	flare.exist = true;
 	m_flareCount++;
 
 	flare.bDrawBitmap = bookDraw;
@@ -335,7 +335,7 @@ void MagicFlareContainer::removeEntityPtrFromFlares(const Entity* entity) {
 void MagicFlareContainer::init() {
 	m_flareCount = 0;
 	for(size_t i = 0; i < m_magicFlaresMax; i++) {
-		m_flares[i].exist = 0;
+		m_flares[i].exist = false;
 	}
 
 	loadTextures();
