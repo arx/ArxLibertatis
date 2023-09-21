@@ -52,7 +52,7 @@ static FLARETC g_magicFlareTextures;
 
 class MagicFlare {
 public:
-	bool exist;
+	bool isValid;
 	char type = -1;
 	bool hasIO = false;
 	Vec3f pos3D = Vec3f(0.f);
@@ -115,7 +115,7 @@ void MagicFlare::clear() {
 	lightHandleDestroy(dynlight);
 
 	tolive = 0;
-	exist = false;
+	isValid = false;
 }
 
 class MagicFlareContainer {
@@ -163,7 +163,7 @@ size_t MagicFlareContainer::findUsableIndex() {
 	size_t oldest = 0;
 	size_t i;
 	for(i = 0; i < m_magicFlaresMax; i++) {
-		if(!m_flares[i].exist) {
+		if(!m_flares[i].isValid) {
 			break;
 		}
 		if(m_flares[i].tolive < m_flares[oldest].tolive) {
@@ -244,7 +244,7 @@ void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, bool useVariedFla
 	
 	size_t index = findUsableIndex();
 	MagicFlare& flare = m_flares[index];
-	flare.exist = true;
+	flare.isValid = true;
 	m_flareCount++;
 
 	flare.bDrawBitmap = bookDraw;
@@ -315,7 +315,7 @@ long MagicFlareContainer::countWithoutIO() {
 
 	long count = 0;
 	for(size_t i = 0; i < m_magicFlaresMax; i++) {
-		if(m_flares[i].exist && !m_flares[i].io) {
+		if(m_flares[i].isValid && !m_flares[i].io) {
 			count++;
 		}
 	}
@@ -326,7 +326,7 @@ long MagicFlareContainer::countWithoutIO() {
 void MagicFlareContainer::removeEntityPtrFromFlares(const Entity* entity) {
 	
 	for(size_t i = 0; i < m_magicFlaresMax; i++) {
-		if(m_flares[i].exist && m_flares[i].io == entity) {
+		if(m_flares[i].isValid && m_flares[i].io == entity) {
 			m_flares[i].io = nullptr;
 		}
 	}
@@ -335,7 +335,7 @@ void MagicFlareContainer::removeEntityPtrFromFlares(const Entity* entity) {
 void MagicFlareContainer::init() {
 	m_flareCount = 0;
 	for(size_t i = 0; i < m_magicFlaresMax; i++) {
-		m_flares[i].exist = false;
+		m_flares[i].isValid = false;
 	}
 
 	loadTextures();
@@ -388,7 +388,7 @@ void MagicFlareContainer::update() {
 
 		MagicFlare& flare = m_flares[i];
 
-		if(!flare.exist) {
+		if(!flare.isValid) {
 			continue;
 		}
 
