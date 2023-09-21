@@ -58,7 +58,7 @@ public:
 	Vec3f pos3D = Vec3f(0.f);
 	Vec2f pos2D = Vec2f(0.f);
 	PlatformDuration tolive;
-	Color3f rgb;
+	Color3f color;
 	float size = 0.f;
 	float currentSize;
 	LightHandle dynlight;
@@ -222,7 +222,7 @@ void MagicFlareContainer::createParticleDefs(const MagicFlare& flare, Entity *io
 		} else {
 			pd->size = Random::getf(1.f, 2.f);
 		}
-		pd->rgb = flare.rgb * (2.f / 3);
+		pd->rgb = flare.color * (2.f / 3);
 		pd->m_rotation = 1.2f;
 
 	}
@@ -262,7 +262,7 @@ void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, bool useVariedFla
 		flare.pos3D = Vec3f(flare.pos2D.x, flare.pos2D.y, 0.001f);
 	}
 
-	flare.rgb = newFlareColor();
+	flare.color = newFlareColor();
 
 	if(useVariedFlares) {
 		float zz = eeMousePressed1() ? 0.29f : ((sm > 0.5f) ? Random::getf() : 1.f);
@@ -399,7 +399,7 @@ void MagicFlareContainer::update() {
 			decayRate = 0.6f;
 		}
 
-		Color3f color = flare.rgb * decayRate;
+		Color3f color = flare.color * decayRate;
 
 		light->rgb = componentwise_max(light->rgb, color);
 
