@@ -60,6 +60,7 @@ public:
 	PlatformDuration tolive;
 	Color3f rgb;
 	float size = 0.f;
+	float currentSize;
 	LightHandle dynlight;
 	Entity * io = nullptr;
 	bool bDrawBitmap = false;
@@ -257,7 +258,7 @@ void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, bool useVariedFla
 		flare.size = Random::getf(64.f, 102.f) * sm;
 		flare.tolive = Random::get(3400000us, 4400000us);
 	}
-
+	flare.currentSize = flare.size;
 	flare.dynlight = {};
 
 	createParticleDefs(flare, io, bookDraw);
@@ -369,20 +370,19 @@ void MagicFlareContainer::update() {
 		}
 
 		float decayRate = flare.tolive / 4s;
-		float size;
 		switch(flare.type) {
 			case 1:
-				size = flare.size * 2 * decayRate;
+				flare.currentSize = flare.size * 2 * decayRate;
 				break;
 			case 4:
-				size = flare.size * 2.f * decayRate * (4.0f / 3.0f);
+				flare.currentSize = flare.size * 2.f * decayRate * (4.0f / 3.0f);
 				break;
 			default:
-				size = flare.size;
+				flare.currentSize = flare.size;
 				break;
 		}
 
-		if(flare.tolive <= 0 || flare.pos2D.y < -64.f || size < 3.f) {
+		if(flare.tolive <= 0 || flare.pos2D.y < -64.f || flare.currentSize < 3.f) {
 			removeFlare(flare);
 			continue;
 		}
@@ -404,10 +404,10 @@ void MagicFlareContainer::update() {
 		mat.setDepthTest(flare.io != nullptr);
 
 		if(flare.bDrawBitmap) {
-			Vec3f pos = Vec3f(flare.pos3D.x - size / 2.0f, flare.pos3D.y - size / 2.0f, flare.pos3D.z);
-			EERIEAddBitmap(mat, pos, size, size, surf, Color(color));
+			Vec3f pos = Vec3f(flare.pos3D.x - flare.currentSize / 2.0f, flare.pos3D.y - flare.currentSize / 2.0f, flare.pos3D.z);
+			EERIEAddBitmap(mat, pos, flare.currentSize, flare.currentSize, surf, Color(color));
 		} else {
-			EERIEAddSprite(mat, flare.pos3D, size * 0.025f + 1.f, Color(color), 2.f);
+			EERIEAddSprite(mat, flare.pos3D, flare.currentSize * 0.025f + 1.f, Color(color), 2.f);
 		}
 	}
 
