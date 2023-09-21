@@ -66,18 +66,18 @@ public:
 	Entity * io = nullptr;
 	bool bDrawBitmap = false;
 
-	void update(bool isMagicCastKeyUnpressed);
+	void update(bool isMagicCastKeyPressed);
 	void clear();
 };
 
-void MagicFlare::update(bool isMagicCastKeyUnpressed) {
+void MagicFlare::update(bool isMagicCastKeyPressed) {
 
 	PlatformDuration lastFrameDuration = g_platformTime.lastFrameDuration();
 	
 	tolive -= lastFrameDuration * 2;
 	if(hasIO) {
 		tolive -= lastFrameDuration * 4;
-	} else if(isMagicCastKeyUnpressed) {
+	} else if(!isMagicCastKeyPressed) {
 		tolive -= lastFrameDuration * 6;
 	}
 
@@ -379,7 +379,7 @@ void MagicFlareContainer::update() {
 
 	cycleShineTexture();
 
-	bool isMagicCastKeyUnpressed = !GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
+	bool isMagicCastKeyPressed = GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
 
 	RenderMaterial mat;
 	mat.setBlendType(RenderMaterial::Additive);
@@ -398,7 +398,7 @@ void MagicFlareContainer::update() {
 
 		mat.setTexture(surf);
 
-		flare.update(isMagicCastKeyUnpressed);
+		flare.update(isMagicCastKeyPressed);
 
 		light->rgb = componentwise_max(light->rgb, flare.currentColor);
 
