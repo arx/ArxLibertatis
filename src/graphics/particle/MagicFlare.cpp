@@ -93,6 +93,17 @@ void MagicFlare::update(bool isMagicCastKeyUnpressed) {
 			currentSize = size;
 			break;
 	}
+
+	if(tolive <= 0 || pos2D.y < -64.f || currentSize < 3.f) {
+		clear();
+		return;
+	}
+
+	if(type == 1 && decayRate < 0.6f) {
+		decayRate = 0.6f;
+	}
+
+	currentColor = color * decayRate;
 }
 
 void MagicFlare::clear() {
@@ -388,19 +399,6 @@ void MagicFlareContainer::update() {
 		mat.setTexture(surf);
 
 		flare.update(isMagicCastKeyUnpressed);
-
-		float decayRate = flare.tolive / 4s;
-
-		if(flare.tolive <= 0 || flare.pos2D.y < -64.f || flare.currentSize < 3.f) {
-			removeFlare(flare);
-			continue;
-		}
-
-		if(flare.type == 1 && decayRate < 0.6f) {
-			decayRate = 0.6f;
-		}
-
-		flare.currentColor = flare.color * decayRate;
 
 		light->rgb = componentwise_max(light->rgb, flare.currentColor);
 
