@@ -65,8 +65,34 @@ public:
 	Entity * io = nullptr;
 	bool bDrawBitmap = false;
 
+	void update(bool isMagicCastKeyUnpressed);
 	void clear();
 };
+
+void MagicFlare::update(bool isMagicCastKeyUnpressed) {
+
+	PlatformDuration lastFrameDuration = g_platformTime.lastFrameDuration();
+	
+	tolive -= lastFrameDuration * 2;
+	if(hasIO) {
+		tolive -= lastFrameDuration * 4;
+	} else if(isMagicCastKeyUnpressed) {
+		tolive -= lastFrameDuration * 6;
+	}
+
+	float decayRate = tolive / 4s;
+	switch(type) {
+		case 1:
+			currentSize = size * 2 * decayRate;
+			break;
+		case 4:
+			currentSize = size * 2.f * decayRate * (4.0f / 3.0f);
+			break;
+		default:
+			currentSize = size;
+			break;
+	}
+}
 
 void MagicFlare::clear() {
 
@@ -341,8 +367,6 @@ void MagicFlareContainer::update() {
 
 	cycleShineTexture();
 
-	PlatformDuration lastFrameDuration = g_platformTime.lastFrameDuration();
-
 	bool isMagicCastKeyUnpressed = !GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
 
 	RenderMaterial mat;
@@ -362,25 +386,9 @@ void MagicFlareContainer::update() {
 
 		mat.setTexture(surf);
 
-		flare.tolive -= lastFrameDuration * 2;
-		if(flare.hasIO) {
-			flare.tolive -= lastFrameDuration * 4;
-		} else if(isMagicCastKeyUnpressed) {
-			flare.tolive -= lastFrameDuration * 6;
-		}
+		flare.update(isMagicCastKeyUnpressed);
 
 		float decayRate = flare.tolive / 4s;
-		switch(flare.type) {
-			case 1:
-				flare.currentSize = flare.size * 2 * decayRate;
-				break;
-			case 4:
-				flare.currentSize = flare.size * 2.f * decayRate * (4.0f / 3.0f);
-				break;
-			default:
-				flare.currentSize = flare.size;
-				break;
-		}
 
 		if(flare.tolive <= 0 || flare.pos2D.y < -64.f || flare.currentSize < 3.f) {
 			removeFlare(flare);
