@@ -59,6 +59,7 @@ public:
 	Vec2f pos2D = Vec2f(0.f);
 	PlatformDuration tolive;
 	Color3f color;
+	Color3f currentColor;
 	float size = 0.f;
 	float currentSize;
 	LightHandle dynlight;
@@ -399,23 +400,23 @@ void MagicFlareContainer::update() {
 			decayRate = 0.6f;
 		}
 
-		Color3f color = flare.color * decayRate;
+		flare.currentColor = flare.color * decayRate;
 
-		light->rgb = componentwise_max(light->rgb, color);
+		light->rgb = componentwise_max(light->rgb, flare.currentColor);
 
 		EERIE_LIGHT* el = lightHandleGet(flare.dynlight);
 		if(el) {
 			el->pos = flare.pos3D;
-			el->rgb = color;
+			el->rgb = flare.currentColor;
 		}
 
 		mat.setDepthTest(flare.io != nullptr);
 
 		if(flare.bDrawBitmap) {
 			Vec3f pos = Vec3f(flare.pos3D.x - flare.currentSize / 2.0f, flare.pos3D.y - flare.currentSize / 2.0f, flare.pos3D.z);
-			EERIEAddBitmap(mat, pos, flare.currentSize, flare.currentSize, surf, Color(color));
+			EERIEAddBitmap(mat, pos, flare.currentSize, flare.currentSize, surf, Color(flare.currentColor));
 		} else {
-			EERIEAddSprite(mat, flare.pos3D, flare.currentSize * 0.025f + 1.f, Color(color), 2.f);
+			EERIEAddSprite(mat, flare.pos3D, flare.currentSize * 0.025f + 1.f, Color(flare.currentColor), 2.f);
 		}
 	}
 
