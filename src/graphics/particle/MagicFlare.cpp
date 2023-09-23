@@ -118,9 +118,9 @@ void MagicFlare::clear() {
 	isValid = false;
 }
 
-class MagicFlareContainer {
+class MagicFlareHandler {
 public:
-	MagicFlareContainer();
+	MagicFlareHandler();
 	MagicFlare& operator[](size_t element);
 	void removeFlare(MagicFlare& flare);
 	void addFlare(const Vec2f& pos, float sm, bool useVariedFlares, Entity* io, bool bookDraw);
@@ -146,19 +146,19 @@ private:
 	void createParticleDefs(const MagicFlare& flare, Entity* io, bool bookDraw);
 };
 
-static MagicFlareContainer g_magicFlares;
+static MagicFlareHandler g_magicFlares;
 
-MagicFlareContainer::MagicFlareContainer()
+MagicFlareHandler::MagicFlareHandler()
 	: m_flareCount(0)
 	, m_currentColor(0)
 {}
 
-MagicFlare& MagicFlareContainer::operator[](size_t element) {
+MagicFlare& MagicFlareHandler::operator[](size_t element) {
 	
 	return m_flares[element];
 }
 
-size_t MagicFlareContainer::findUsableIndex() {
+size_t MagicFlareHandler::findUsableIndex() {
 	
 	size_t oldest = 0;
 	size_t i;
@@ -177,7 +177,7 @@ size_t MagicFlareContainer::findUsableIndex() {
 	return i;
 }
 
-Color3f MagicFlareContainer::newFlareColor() {
+Color3f MagicFlareHandler::newFlareColor() {
 	
 	Color3f newColor;
 	switch(m_currentColor) {
@@ -201,7 +201,7 @@ Color3f MagicFlareContainer::newFlareColor() {
 	return newColor;
 }
 
-void MagicFlareContainer::createParticleDefs(const MagicFlare& flare, Entity *io, bool bookDraw) {
+void MagicFlareHandler::createParticleDefs(const MagicFlare& flare, Entity *io, bool bookDraw) {
 	
 	for(unsigned int kk = 0; kk < 3; kk++) {
 
@@ -240,7 +240,7 @@ void MagicFlareContainer::createParticleDefs(const MagicFlare& flare, Entity *io
 	}
 }
 
-void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, bool useVariedFlares, Entity* io, bool bookDraw) {
+void MagicFlareHandler::addFlare(const Vec2f& pos, float sm, bool useVariedFlares, Entity* io, bool bookDraw) {
 	
 	size_t index = findUsableIndex();
 	MagicFlare& flare = m_flares[index];
@@ -302,14 +302,14 @@ void MagicFlareContainer::addFlare(const Vec2f& pos, float sm, bool useVariedFla
 	createParticleDefs(flare, io, bookDraw);
 }
 
-void MagicFlareContainer::removeFlare(MagicFlare& flare) {
+void MagicFlareHandler::removeFlare(MagicFlare& flare) {
 
 	flare.clear();
 	m_flareCount--;
 
 }
 
-long MagicFlareContainer::countWithoutIO() {
+long MagicFlareHandler::countWithoutIO() {
 	if(!m_flareCount)
 		return 0;
 
@@ -323,7 +323,7 @@ long MagicFlareContainer::countWithoutIO() {
 	return count;
 }
 
-void MagicFlareContainer::removeEntityPtrFromFlares(const Entity* entity) {
+void MagicFlareHandler::removeEntityPtrFromFlares(const Entity* entity) {
 	
 	for(size_t i = 0; i < m_magicFlaresMax; i++) {
 		if(m_flares[i].isValid && m_flares[i].io == entity) {
@@ -332,7 +332,7 @@ void MagicFlareContainer::removeEntityPtrFromFlares(const Entity* entity) {
 	}
 }
 
-void MagicFlareContainer::init() {
+void MagicFlareHandler::init() {
 	m_flareCount = 0;
 	for(size_t i = 0; i < m_magicFlaresMax; i++) {
 		m_flares[i].isValid = false;
@@ -341,7 +341,7 @@ void MagicFlareContainer::init() {
 	loadTextures();
 }
 
-void MagicFlareContainer::removeAll() {
+void MagicFlareHandler::removeAll() {
 	
 	for(size_t i = 0; i < m_magicFlaresMax; i++) {
 		MagicFlare& flare = m_flares[i];
@@ -351,7 +351,7 @@ void MagicFlareContainer::removeAll() {
 	m_flareCount = 0;
 }
 
-TextureContainer* MagicFlareContainer::getTexContainerByType(char type) {
+TextureContainer* MagicFlareHandler::getTexContainerByType(char type) {
 	
 	TextureContainer* tc = nullptr;
 	switch(type) {
@@ -363,14 +363,14 @@ TextureContainer* MagicFlareContainer::getTexContainerByType(char type) {
 	return tc;
 }
 
-void MagicFlareContainer::cycleShineTexture() {
+void MagicFlareHandler::cycleShineTexture() {
 	m_currentShineTex++;
 	if(m_currentShineTex >= 10) {
 		m_currentShineTex = 1;
 	}
 }
 
-void MagicFlareContainer::update() {
+void MagicFlareHandler::update() {
 
 	if(!m_flareCount)
 		return;
@@ -419,7 +419,7 @@ void MagicFlareContainer::update() {
 	light->rgb = componentwise_min(light->rgb, Color3f::white);
 }
 
-void MagicFlareContainer::changeColor() {
+void MagicFlareHandler::changeColor() {
 
 	m_currentColor++;
 
@@ -427,7 +427,7 @@ void MagicFlareContainer::changeColor() {
 		m_currentColor = 0;
 }
 
-void MagicFlareContainer::loadTextures() {
+void MagicFlareHandler::loadTextures() {
 	
 	TextureContainer::TCFlags flags = TextureContainer::NoColorKey;
 	
