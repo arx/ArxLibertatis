@@ -366,9 +366,9 @@ long MagicFlareHandler::countWithoutIO() {
 
 void MagicFlareHandler::removeEntityPtrFromFlares(const Entity* entity) {
 	
-	for(size_t i = 0; i < m_magicFlaresMax; i++) {
-		if(m_flares[i].isValid && m_flares[i].io == entity) {
-			m_flares[i].io = nullptr;
+	for(auto& flare : m_flares) {
+		if(flare.isValid && flare.io == entity) {
+			flare.io = nullptr;
 		}
 	}
 }
