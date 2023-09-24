@@ -136,6 +136,7 @@ public:
 	};
 	MagicFlare& operator[](size_t element);
 	size_t validFlareCount();
+	void removeFlare(MagicFlare& flare);
 
 	iterator begin() { return iterator(&m_flares[0]); }
 	iterator end() { return iterator(&m_flares[m_magicFlaresMax]); }
@@ -147,7 +148,6 @@ private:
 class MagicFlareHandler {
 public:
 	MagicFlareHandler();
-	void removeFlare(MagicFlare& flare);
 	void addFlare(const Vec2f& pos, float sm, bool useVariedFlares, Entity* io, bool bookDraw);
 	long countWithoutIO();
 	void removeEntityPtrFromFlares(const Entity* entity);
@@ -193,11 +193,10 @@ size_t MagicFlareContainer::validFlareCount() {
 	}
 	return count;
 }
-void MagicFlareHandler::removeFlare(MagicFlare& flare) {
+
+void MagicFlareContainer::removeFlare(MagicFlare& flare) {
 
 	flare.clear();
-	m_flareCount--;
-
 }
 
 size_t MagicFlareHandler::findUsableIndex() {
@@ -213,7 +212,7 @@ size_t MagicFlareHandler::findUsableIndex() {
 		}
 	}
 	if(i >= m_magicFlaresMax) {
-		removeFlare(m_flares[oldest]);
+		m_flares.removeFlare(m_flares[oldest]);
 		i = oldest;
 	}
 	return i;
@@ -380,7 +379,7 @@ void MagicFlareHandler::removeAll() {
 	
 	for(size_t i = 0; i < m_magicFlaresMax; i++) {
 		MagicFlare& flare = m_flares[i];
-		removeFlare(flare);
+		m_flares.removeFlare(flare);
 	}
 
 	m_flareCount = 0;
