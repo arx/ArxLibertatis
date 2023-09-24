@@ -134,6 +134,8 @@ public:
 	private:
 		MagicFlare* m_ptr;
 	};
+	MagicFlare& operator[](size_t element);
+
 	iterator begin() { return iterator(&m_flares[0]); }
 	iterator end() { return iterator(&m_flares[m_magicFlaresMax]); }
 private:
@@ -144,7 +146,6 @@ private:
 class MagicFlareHandler {
 public:
 	MagicFlareHandler();
-	MagicFlare& operator[](size_t element);
 	void removeFlare(MagicFlare& flare);
 	void addFlare(const Vec2f& pos, float sm, bool useVariedFlares, Entity* io, bool bookDraw);
 	long countWithoutIO();
@@ -176,7 +177,7 @@ MagicFlareHandler::MagicFlareHandler()
 	, m_currentColor(0)
 {}
 
-MagicFlare& MagicFlareHandler::operator[](size_t element) {
+MagicFlare& MagicFlareContainer::operator[](size_t element) {
 	
 	return m_flares[element];
 }
