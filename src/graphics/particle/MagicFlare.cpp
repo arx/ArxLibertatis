@@ -424,9 +424,7 @@ void MagicFlareHandler::update() {
 
 	EERIE_LIGHT* light = lightHandleGet(torchLightHandle);
 
-	for(size_t i = 0; i < m_magicFlaresMax; i++) {
-
-		MagicFlare& flare = m_flares[i];
+	for(auto& flare : m_flares) {
 
 		if(!flare.isValid) {
 			continue;
