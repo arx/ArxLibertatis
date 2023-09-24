@@ -355,8 +355,8 @@ long MagicFlareHandler::countWithoutIO() {
 		return 0;
 
 	long count = 0;
-	for(size_t i = 0; i < m_magicFlaresMax; i++) {
-		if(m_flares[i].isValid && !m_flares[i].io) {
+	for(auto &flare : m_flares) {
+		if(flare.isValid && !flare.io) {
 			count++;
 		}
 	}
