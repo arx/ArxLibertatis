@@ -137,6 +137,7 @@ public:
 	MagicFlare& operator[](size_t element);
 	size_t validFlareCount();
 	void removeFlare(MagicFlare& flare);
+	size_t findUsableIndex();
 
 	iterator begin() { return iterator(&m_flares[0]); }
 	iterator end() { return iterator(&m_flares[m_magicFlaresMax]); }
@@ -163,7 +164,6 @@ private:
 	long m_flareCount;
 	short m_currentColor;
 
-	size_t findUsableIndex();
 	Color3f newFlareColor();
 	TextureContainer* getTexContainerByType(char type);
 	void loadTextures();
@@ -199,7 +199,7 @@ void MagicFlareContainer::removeFlare(MagicFlare& flare) {
 	flare.clear();
 }
 
-size_t MagicFlareHandler::findUsableIndex() {
+size_t MagicFlareContainer::findUsableIndex() {
 	
 	size_t oldest = 0;
 	size_t i;
@@ -212,7 +212,7 @@ size_t MagicFlareHandler::findUsableIndex() {
 		}
 	}
 	if(i >= m_magicFlaresMax) {
-		m_flares.removeFlare(m_flares[oldest]);
+		removeFlare(m_flares[oldest]);
 		i = oldest;
 	}
 	return i;
@@ -283,7 +283,7 @@ void MagicFlareHandler::createParticleDefs(const MagicFlare& flare, Entity *io, 
 
 void MagicFlareHandler::addFlare(const Vec2f& pos, float sm, bool useVariedFlares, Entity* io, bool bookDraw) {
 	
-	size_t index = findUsableIndex();
+	size_t index = m_flares.findUsableIndex();
 	MagicFlare& flare = m_flares[index];
 	flare.isValid = true;
 	m_flareCount++;
