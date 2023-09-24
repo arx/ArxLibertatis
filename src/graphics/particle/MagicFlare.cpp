@@ -158,7 +158,7 @@ public:
 	short m_currentShineTex = 1;
 private:
 	static const size_t m_magicFlaresMax = 500;
-	MagicFlare m_flares[m_magicFlaresMax];
+	MagicFlareContainer m_flares;
 	long m_flareCount;
 	short m_currentColor;
 
