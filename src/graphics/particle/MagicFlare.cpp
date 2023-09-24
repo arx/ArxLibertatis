@@ -134,7 +134,6 @@ public:
 	private:
 		MagicFlare* m_ptr;
 	};
-	MagicFlare& operator[](size_t element);
 	size_t validFlareCount();
 	MagicFlare& newFlare();
 	void removeFlare(MagicFlare& flare);
@@ -179,11 +178,6 @@ MagicFlareHandler::MagicFlareHandler()
 	: m_flareCount(0)
 	, m_currentColor(0)
 {}
-
-MagicFlare& MagicFlareContainer::operator[](size_t element) {
-	
-	return m_flares[element];
-}
 
 size_t MagicFlareContainer::validFlareCount() {
 
