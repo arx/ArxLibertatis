@@ -375,8 +375,8 @@ void MagicFlareHandler::removeEntityPtrFromFlares(const Entity* entity) {
 
 void MagicFlareHandler::init() {
 	m_flareCount = 0;
-	for(size_t i = 0; i < m_magicFlaresMax; i++) {
-		m_flares[i].isValid = false;
+	for(auto &flare : m_flares) {
+		flare.isValid = false;
 	}
 
 	loadTextures();
