@@ -162,7 +162,6 @@ public:
 private:
 	static const size_t m_magicFlaresMax = 500;
 	MagicFlareContainer m_flares;
-	long m_flareCount;
 	short m_currentColor;
 
 	Color3f newFlareColor();
@@ -175,8 +174,7 @@ private:
 static MagicFlareHandler g_magicFlares;
 
 MagicFlareHandler::MagicFlareHandler()
-	: m_flareCount(0)
-	, m_currentColor(0)
+	: m_currentColor(0)
 {}
 
 size_t MagicFlareContainer::validFlareCount() {
@@ -287,7 +285,6 @@ void MagicFlareHandler::addFlare(const Vec2f& pos, float sm, bool useVariedFlare
 	
 	MagicFlare& flare = m_flares.newFlare();
 	flare.isValid = true;
-	m_flareCount++;
 
 	flare.bDrawBitmap = bookDraw;
 
@@ -368,7 +365,7 @@ void MagicFlareHandler::removeEntityPtrFromFlares(const Entity* entity) {
 }
 
 void MagicFlareHandler::init() {
-	m_flareCount = 0;
+	
 	for(auto &flare : m_flares) {
 		flare.isValid = false;
 	}
@@ -381,8 +378,6 @@ void MagicFlareHandler::removeAll() {
 	for(auto& flare : m_flares) {
 		m_flares.removeFlare(flare);
 	}
-
-	m_flareCount = 0;
 }
 
 TextureContainer* MagicFlareHandler::getTexContainerByType(char type) {
