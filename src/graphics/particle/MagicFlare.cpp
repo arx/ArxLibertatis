@@ -193,6 +193,12 @@ size_t MagicFlareContainer::validFlareCount() {
 	}
 	return count;
 }
+void MagicFlareHandler::removeFlare(MagicFlare& flare) {
+
+	flare.clear();
+	m_flareCount--;
+
+}
 
 size_t MagicFlareHandler::findUsableIndex() {
 	
@@ -336,13 +342,6 @@ void MagicFlareHandler::addFlare(const Vec2f& pos, float sm, bool useVariedFlare
 	flare.dynlight = {};
 
 	createParticleDefs(flare, io, bookDraw);
-}
-
-void MagicFlareHandler::removeFlare(MagicFlare& flare) {
-
-	flare.clear();
-	m_flareCount--;
-
 }
 
 long MagicFlareHandler::countWithoutIO() {
