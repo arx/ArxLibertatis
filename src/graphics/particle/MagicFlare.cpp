@@ -136,6 +136,7 @@ public:
 	};
 	MagicFlare& operator[](size_t element);
 	size_t validFlareCount();
+	MagicFlare& newFlare();
 	void removeFlare(MagicFlare& flare);
 	size_t findUsableIndex();
 
@@ -192,6 +193,12 @@ size_t MagicFlareContainer::validFlareCount() {
 		}
 	}
 	return count;
+}
+
+MagicFlare& MagicFlareContainer::newFlare() {
+
+	size_t index = findUsableIndex();
+	return m_flares[index];
 }
 
 void MagicFlareContainer::removeFlare(MagicFlare& flare) {
@@ -283,8 +290,7 @@ void MagicFlareHandler::createParticleDefs(const MagicFlare& flare, Entity *io, 
 
 void MagicFlareHandler::addFlare(const Vec2f& pos, float sm, bool useVariedFlares, Entity* io, bool bookDraw) {
 	
-	size_t index = m_flares.findUsableIndex();
-	MagicFlare& flare = m_flares[index];
+	MagicFlare& flare = m_flares.newFlare();
 	flare.isValid = true;
 	m_flareCount++;
 
