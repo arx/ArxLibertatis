@@ -135,6 +135,7 @@ public:
 		MagicFlare* m_ptr;
 	};
 	MagicFlare& operator[](size_t element);
+	size_t validFlareCount();
 
 	iterator begin() { return iterator(&m_flares[0]); }
 	iterator end() { return iterator(&m_flares[m_magicFlaresMax]); }
@@ -180,6 +181,17 @@ MagicFlareHandler::MagicFlareHandler()
 MagicFlare& MagicFlareContainer::operator[](size_t element) {
 	
 	return m_flares[element];
+}
+
+size_t MagicFlareContainer::validFlareCount() {
+
+	size_t count = 0;
+	for(auto& flare : m_flares) {
+		if(flare.isValid) {
+			count++;
+		}
+	}
+	return count;
 }
 
 size_t MagicFlareHandler::findUsableIndex() {
@@ -334,7 +346,7 @@ void MagicFlareHandler::removeFlare(MagicFlare& flare) {
 }
 
 long MagicFlareHandler::countWithoutIO() {
-	if(!m_flareCount)
+	if(!m_flares.validFlareCount())
 		return 0;
 
 	long count = 0;
@@ -396,7 +408,7 @@ void MagicFlareHandler::cycleShineTexture() {
 
 void MagicFlareHandler::update() {
 
-	if(!m_flareCount)
+	if(!m_flares.validFlareCount())
 		return;
 
 	cycleShineTexture();
