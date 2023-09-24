@@ -118,6 +118,29 @@ void MagicFlare::clear() {
 	isValid = false;
 }
 
+class MagicFlareContainer {
+public:
+	class iterator {
+		using iterator_category = std::forward_iterator_tag;
+	public:
+		iterator(MagicFlare* ptr) : m_ptr(ptr) {}
+		iterator operator++() { ++m_ptr; return *this; } // prefix increment
+		iterator operator++(int a) { a++;  iterator tmp = *this; ++(*this); return tmp; } // postfix increment
+		MagicFlare* operator->() { return m_ptr; }
+		MagicFlare& operator*() const { return *m_ptr; }
+
+		friend bool operator== (const iterator& a, const iterator& b) { return a.m_ptr == b.m_ptr; }
+		friend bool operator!= (const iterator& a, const iterator& b) { return a.m_ptr != b.m_ptr; }
+	private:
+		MagicFlare* m_ptr;
+	};
+	iterator begin() { return iterator(&m_flares[0]); }
+	iterator end() { return iterator(&m_flares[m_magicFlaresMax]); }
+private:
+	static const size_t m_magicFlaresMax = 500;
+	MagicFlare m_flares[m_magicFlaresMax];
+};
+
 class MagicFlareHandler {
 public:
 	MagicFlareHandler();
