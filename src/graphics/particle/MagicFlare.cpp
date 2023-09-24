@@ -138,13 +138,14 @@ public:
 	size_t validFlareCount();
 	MagicFlare& newFlare();
 	void removeFlare(MagicFlare& flare);
-	size_t findUsableIndex();
 
 	iterator begin() { return iterator(&m_flares[0]); }
 	iterator end() { return iterator(&m_flares[m_magicFlaresMax]); }
 private:
 	static const size_t m_magicFlaresMax = 500;
 	MagicFlare m_flares[m_magicFlaresMax];
+
+	size_t findUsableIndex();
 };
 
 class MagicFlareHandler {
