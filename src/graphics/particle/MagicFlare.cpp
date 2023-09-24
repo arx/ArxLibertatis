@@ -384,8 +384,7 @@ void MagicFlareHandler::init() {
 
 void MagicFlareHandler::removeAll() {
 	
-	for(size_t i = 0; i < m_magicFlaresMax; i++) {
-		MagicFlare& flare = m_flares[i];
+	for(auto& flare : m_flares) {
 		m_flares.removeFlare(flare);
 	}
 
