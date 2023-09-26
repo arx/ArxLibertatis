@@ -160,7 +160,6 @@ public:
 
 	short m_currentShineTex = 1;
 private:
-	static const size_t m_magicFlaresMax = 500;
 	MagicFlareContainer m_flares;
 	short m_currentColor;
 
