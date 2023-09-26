@@ -157,11 +157,10 @@ public:
 	void removeAll();
 	void update();
 	void changeColor();
-
-	short m_currentShineTex = 1;
 private:
 	MagicFlareContainer m_flares;
 	short m_currentColor;
+	short m_currentShineTex = 1;
 
 	Color3f newFlareColor();
 	TextureContainer* getTexContainerByType(char type);
