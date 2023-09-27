@@ -1509,51 +1509,53 @@ void ArxGame::updateInput() {
 	// Update input
 	GInput->update(toMsf(g_platformTime.lastFrameDuration()));
 	
-	// Handle double clicks.
-	const ActionKey & button = config.actions[CONTROLS_CUST_ACTION];
-	if((button.key[0] != -1 && (button.key[0] & Mouse::ButtonBase)
-	    && GInput->getMouseButtonDoubleClick(button.key[0]))
-	   || (button.key[1] != -1 && (button.key[1] & Mouse::ButtonBase)
-	    && GInput->getMouseButtonDoubleClick(button.key[1]))) {
-		EERIEMouseButton |= 4;
-		EERIEMouseButton &= ~1;
-	}
-	
-	if(GInput->actionNowPressed(CONTROLS_CUST_ACTION)) {
-		if(EERIEMouseButton & 4) {
+	if(ARXmenu.mode() == Mode_InGame) {
+		
+		// Handle double clicks.
+		const ActionKey & button = config.actions[CONTROLS_CUST_ACTION];
+		if((button.key[0] != -1 && (button.key[0] & Mouse::ButtonBase)
+				&& GInput->getMouseButtonDoubleClick(button.key[0]))
+			|| (button.key[1] != -1 && (button.key[1] & Mouse::ButtonBase)
+				&& GInput->getMouseButtonDoubleClick(button.key[1]))) {
+			EERIEMouseButton |= 4;
 			EERIEMouseButton &= ~1;
-		} else {
-			EERIEMouseButton |= 1;
 		}
 		
-	}
-	if(GInput->actionNowReleased(CONTROLS_CUST_ACTION)) {
-		EERIEMouseButton &= ~1;
-		EERIEMouseButton &= ~4;
-	}
-	
-	if(GInput->actionNowPressed(CONTROLS_CUST_USE)) {
-		EERIEMouseButton |= 2;
-	}
-	if(GInput->actionNowReleased(CONTROLS_CUST_USE)) {
-		EERIEMouseButton &= ~2;
-	}
-	
-	
-	// Overwrite the mouse button status when menu is active
-	if(ARXmenu.mode() != Mode_InGame) {
+		if(GInput->actionNowPressed(CONTROLS_CUST_ACTION)) {
+			if(EERIEMouseButton & 4) {
+				EERIEMouseButton &= ~1;
+			} else {
+				EERIEMouseButton |= 1;
+			}
+			
+		}
+		if(GInput->actionNowReleased(CONTROLS_CUST_ACTION)) {
+			EERIEMouseButton &= ~1;
+			EERIEMouseButton &= ~4;
+		}
+		
+		if(GInput->actionNowPressed(CONTROLS_CUST_USE)) {
+			EERIEMouseButton |= 2;
+		}
+		if(GInput->actionNowReleased(CONTROLS_CUST_USE)) {
+			EERIEMouseButton &= ~2;
+		}
+		
+	} else {
 		
 		EERIEMouseButton = 0;
 		
-		if(GInput->getMouseButtonRepeat(Mouse::Button_0))
+		if(GInput->getMouseButtonRepeat(Mouse::Button_0)) {
 			EERIEMouseButton |= 1;
-		else
+		} else {
 			EERIEMouseButton &= ~1;
+		}
 		
-		if(GInput->getMouseButtonRepeat(Mouse::Button_1))
+		if(GInput->getMouseButtonRepeat(Mouse::Button_1)) {
 			EERIEMouseButton |= 2;
-		else
+		} else {
 			EERIEMouseButton &= ~2;
+		}
 	}
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_TOGGLE_FULLSCREEN)) {
