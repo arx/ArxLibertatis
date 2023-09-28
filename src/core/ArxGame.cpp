@@ -1525,7 +1525,6 @@ void ArxGame::updateInput() {
 			} else {
 				EERIEMouseButton |= 1;
 			}
-			
 		}
 		if(GInput->actionNowReleased(CONTROLS_CUST_ACTION)) {
 			EERIEMouseButton &= ~1;
@@ -1554,6 +1553,7 @@ void ArxGame::updateInput() {
 		} else {
 			EERIEMouseButton &= ~2;
 		}
+		
 	}
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_TOGGLE_FULLSCREEN)) {
