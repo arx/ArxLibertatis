@@ -1513,8 +1513,9 @@ void ArxGame::updateInput() {
 		
 		// Handle double clicks.
 		const ActionKey & button = config.actions[CONTROLS_CUST_ACTION];
-		if((button.key[0] != ActionKey::UNUSED && (button.key[0] & Mouse::ButtonBase) && GInput->getMouseButtonDoubleClick(button.key[0]))
-			|| (button.key[1] != ActionKey::UNUSED && (button.key[1] & Mouse::ButtonBase) && GInput->getMouseButtonDoubleClick(button.key[1]))) {
+		const auto & [baseKey, altKey] = button.key;
+		if((baseKey != ActionKey::UNUSED && (baseKey & Mouse::ButtonBase) && GInput->getMouseButtonDoubleClick(baseKey))
+			|| (altKey != ActionKey::UNUSED && (altKey & Mouse::ButtonBase) && GInput->getMouseButtonDoubleClick(altKey))) {
 			EERIEMouseButton |= 4;
 			EERIEMouseButton &= ~1;
 		}
