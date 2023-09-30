@@ -68,6 +68,7 @@ public:
 
 	void update(bool isMagicCastKeyPressed);
 	void clear();
+	void init3DPos(const Vec2f& pos, bool bookDraw);
 };
 
 void MagicFlare::update(bool isMagicCastKeyPressed) {
@@ -118,6 +119,23 @@ void MagicFlare::clear() {
 	isValid = false;
 	io = nullptr;
 	hasIO = false;
+}
+
+void MagicFlare::init3DPos(const Vec2f& pos, bool bookDraw) {
+
+	if(!bookDraw) {
+		if(io) {
+			float vx = -(pos2D.x - g_size.center().x) * (5.f / 23.f);
+			float vy = (pos2D.y - g_size.center().y) * (5.f / 33.f);
+			pos3D = io->pos;
+			pos3D += angleToVectorXZ(io->angle.getYaw() + vx) * 100.f;
+			pos3D.y += std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() + vy))) * 100.f - 150.f;
+		} else {
+			pos3D = screenToWorldSpace(pos, 75.f);
+		}
+	} else {
+		pos3D = Vec3f(pos2D.x, pos2D.y, 0.001f);
+	}
 }
 
 class MagicFlareContainer {
@@ -299,19 +317,7 @@ void MagicFlareHandler::addFlare(const Vec2f& pos, float sm, bool useVariedFlare
 	flare.pos2D.x = pos.x - Random::getf(0.f, 4.f);
 	flare.pos2D.y = pos.y - Random::getf(0.f, 4.f);
 
-	if(!bookDraw) {
-		if(io) {
-			float vx = -(flare.pos2D.x - g_size.center().x) * (5.f/23.f);
-			float vy = (flare.pos2D.y - g_size.center().y) * (5.f/33.f);
-			flare.pos3D = io->pos;
-			flare.pos3D += angleToVectorXZ(io->angle.getYaw() + vx) * 100.f;
-			flare.pos3D.y += std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() + vy))) * 100.f - 150.f;
-		} else {
-			flare.pos3D = screenToWorldSpace(pos, 75.f);
-		}
-	} else {
-		flare.pos3D = Vec3f(flare.pos2D.x, flare.pos2D.y, 0.001f);
-	}
+	flare.init3DPos(pos, bookDraw);
 
 	flare.color = newFlareColor();
 
