@@ -116,6 +116,8 @@ void MagicFlare::clear() {
 
 	tolive = 0;
 	isValid = false;
+	io = nullptr;
+	hasIO = false;
 }
 
 class MagicFlareContainer {
