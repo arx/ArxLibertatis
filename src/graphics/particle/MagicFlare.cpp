@@ -68,6 +68,7 @@ public:
 
 	void update(bool isMagicCastKeyPressed);
 	void clear();
+	void init2DPos(const Vec2f& pos);
 	void init3DPos(const Vec2f& pos, bool bookDraw);
 };
 
@@ -119,6 +120,12 @@ void MagicFlare::clear() {
 	isValid = false;
 	io = nullptr;
 	hasIO = false;
+}
+
+void MagicFlare::init2DPos(const Vec2f& pos) {
+
+	pos2D.x = pos.x - Random::getf(0.f, 4.f);
+	pos2D.y = pos.y - Random::getf(0.f, 4.f);
 }
 
 void MagicFlare::init3DPos(const Vec2f& pos, bool bookDraw) {
@@ -314,9 +321,7 @@ void MagicFlareHandler::addFlare(const Vec2f& pos, float sm, bool useVariedFlare
 		flare.hasIO = false;
 	}
 
-	flare.pos2D.x = pos.x - Random::getf(0.f, 4.f);
-	flare.pos2D.y = pos.y - Random::getf(0.f, 4.f);
-
+	flare.init2DPos(pos);
 	flare.init3DPos(pos, bookDraw);
 
 	flare.color = newFlareColor();
