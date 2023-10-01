@@ -509,6 +509,14 @@ void AddNPCFlare(const Vec2f& pos, float sm, Entity* io) {
 	g_magicFlares.addFlare(pos, sm, false, io, false);
 }
 
+void AddPlayerCastFlare(const Vec2f& pos, float sm) {
+
+	if(Random::getf() > 0.6f)
+		g_magicFlares.addFlare(pos, sm, true, nullptr, false);
+	else
+		g_magicFlares.addFlare(pos, sm, false, nullptr, false);
+}
+
 //! Helper for FlareLine
 static void AddLFlare(const Vec2f & pos, Entity * io) {
 	AddFlare(pos, 0.45f, false, io);

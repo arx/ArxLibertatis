@@ -515,10 +515,7 @@ void ARX_SPELLS_ManageMagic() {
 						g_LastFlarePosition = pos;
 					}
 					
-					if(Random::getf() > 0.6f)
-						AddFlare(pos, 1.f, true);
-					else
-						AddFlare(pos, 1.f, false);
+					AddPlayerCastFlare(pos, 1.f);
 					
 					g_LastFlareTime = now - std::min(now - g_LastFlareTime - interval, interval);
 				}
