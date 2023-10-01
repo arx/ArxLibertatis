@@ -70,6 +70,11 @@ public:
 	void clear();
 	void init2DPos(const Vec2f& pos);
 	void init3DPos(const Vec2f& pos, bool bookDraw);
+	TextureContainer* getTexContainerByType(char type);
+private:
+	short m_currentShineTex = 1;
+
+	void cycleShineTexture();
 };
 
 void MagicFlare::update(bool isMagicCastKeyPressed) {
@@ -106,6 +111,8 @@ void MagicFlare::update(bool isMagicCastKeyPressed) {
 	}
 
 	currentColor = color * decayRate;
+
+	cycleShineTexture();
 }
 
 void MagicFlare::clear() {
@@ -121,6 +128,7 @@ void MagicFlare::clear() {
 	io = nullptr;
 	hasIO = false;
 	type = -1;
+	m_currentShineTex = 1;
 }
 
 void MagicFlare::init2DPos(const Vec2f& pos) {
@@ -187,12 +195,9 @@ public:
 private:
 	MagicFlareContainer m_flares;
 	short m_currentColor;
-	short m_currentShineTex = 1;
 
 	Color3f newFlareColor();
-	TextureContainer* getTexContainerByType(char type);
 	void loadTextures();
-	void cycleShineTexture();
 	void createParticleDefs(const MagicFlare& flare, Entity* io, bool bookDraw);
 };
 
@@ -375,7 +380,7 @@ void MagicFlareHandler::removeAll() {
 	}
 }
 
-TextureContainer* MagicFlareHandler::getTexContainerByType(char type) {
+TextureContainer* MagicFlare::getTexContainerByType(char type) {
 	
 	TextureContainer* tc = nullptr;
 	switch(type) {
@@ -387,7 +392,7 @@ TextureContainer* MagicFlareHandler::getTexContainerByType(char type) {
 	return tc;
 }
 
-void MagicFlareHandler::cycleShineTexture() {
+void MagicFlare::cycleShineTexture() {
 	m_currentShineTex++;
 	if(m_currentShineTex >= 10) {
 		m_currentShineTex = 1;
@@ -398,8 +403,6 @@ void MagicFlareHandler::update() {
 
 	if(!m_flares.validFlareCount())
 		return;
-
-	cycleShineTexture();
 
 	bool isMagicCastKeyPressed = GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
 
@@ -414,7 +417,7 @@ void MagicFlareHandler::update() {
 			continue;
 		}
 
-		TextureContainer* surf = getTexContainerByType(flare.type);
+		TextureContainer* surf = flare.getTexContainerByType(flare.type);
 
 		mat.setTexture(surf);
 
