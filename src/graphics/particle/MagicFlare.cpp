@@ -217,7 +217,7 @@ private:
 
 	Color3f newFlareColor();
 	void loadTextures();
-	void createParticleDefs(const MagicFlare& flare, Entity* io);
+	void createParticleDefs(const MagicFlare& flare);
 };
 
 static MagicFlareHandler g_magicFlares;
@@ -286,7 +286,7 @@ Color3f MagicFlareHandler::newFlareColor() {
 	return newColor;
 }
 
-void MagicFlareHandler::createParticleDefs(const MagicFlare& flare, Entity *io) {
+void MagicFlareHandler::createParticleDefs(const MagicFlare& flare) {
 	
 	for(unsigned int kk = 0; kk < 3; kk++) {
 
@@ -357,7 +357,7 @@ void MagicFlareHandler::addFlare(const Vec2f& pos, float sm, bool useVariedFlare
 	flare.currentSize = flare.size;
 	flare.dynlight = {};
 
-	createParticleDefs(flare, io);
+	createParticleDefs(flare);
 }
 
 long MagicFlareHandler::countWithoutIO() {
