@@ -120,6 +120,7 @@ void MagicFlare::clear() {
 	isValid = false;
 	io = nullptr;
 	hasIO = false;
+	type = -1;
 }
 
 void MagicFlare::init2DPos(const Vec2f& pos) {
