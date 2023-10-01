@@ -529,17 +529,24 @@ void FlareLine(Vec2f fromPos, Vec2f toPos, Entity * io) {
 	
 	Vec2f dist = toPos - fromPos;
 	Vec2f absDist = glm::abs(dist);
+
+	Vec2f start{};
+	Vec2f end{};
 	
 	if(absDist.x > absDist.y) {
 		
 		if(fromPos.x > toPos.x) {
-			std::swap(fromPos, toPos);
+			start = toPos;
+			end = fromPos;
+		} else {
+			start = fromPos;
+			end = toPos;
 		}
 		
 		float m = dist.y / dist.x;
-		Vec2f currentPos = fromPos;
+		Vec2f currentPos = start;
 		
-		while(currentPos.x < toPos.x) {
+		while(currentPos.x < end.x) {
 			long step = Random::get(0, FLARELINERND);
 			step += FLARELINESTEP;
 			if(!io) {
