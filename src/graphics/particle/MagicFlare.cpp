@@ -557,17 +557,17 @@ void FlareLine(Vec2f fromPos, Vec2f toPos, Entity * io) {
 		}
 		
 		float m = dist.x / dist.y;
-		float currentPos = fromPos.y;
+		Vec2f currentPos = fromPos;
 		
-		while(currentPos < toPos.y) {
+		while(currentPos.y < toPos.y) {
 			long step = Random::get(0, FLARELINERND);
 			step += FLARELINESTEP;
 			if(!io) {
 				step = long(step * g_sizeRatio.y);
 			}
-			currentPos += step;
-			fromPos.x += m * step;
-			AddLFlare(Vec2f(fromPos.x, currentPos), io);
+			currentPos.y += step;
+			currentPos.x += m * step;
+			AddLFlare(currentPos, io);
 		}
 		
 	}
