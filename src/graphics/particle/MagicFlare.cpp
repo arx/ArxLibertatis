@@ -301,7 +301,7 @@ void MagicFlareHandler::createParticleDefs(const MagicFlare& flare, Entity *io) 
 
 		if(!flare.isBookFlare) {
 			pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
-			if(!io) {
+			if(!flare.io) {
 				pd->m_flags |= PARTICLE_NOZBUFFER;
 			}
 		} else {
