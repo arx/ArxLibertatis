@@ -166,6 +166,13 @@ TextureContainer* MagicFlare::getTexContainerByType(char type) {
 	return tc;
 }
 
+void MagicFlare::cycleShineTexture() {
+	m_currentShineTex++;
+	if(m_currentShineTex >= 10) {
+		m_currentShineTex = 1;
+	}
+}
+
 class MagicFlareContainer {
 public:
 	class iterator {
@@ -389,13 +396,6 @@ void MagicFlareHandler::removeAll() {
 	
 	for(auto& flare : m_flares) {
 		flare.clear();
-	}
-}
-
-void MagicFlare::cycleShineTexture() {
-	m_currentShineTex++;
-	if(m_currentShineTex >= 10) {
-		m_currentShineTex = 1;
 	}
 }
 
