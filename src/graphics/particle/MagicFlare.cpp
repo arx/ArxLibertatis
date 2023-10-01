@@ -139,7 +139,7 @@ void MagicFlare::init2DPos(const Vec2f& pos) {
 
 void MagicFlare::init3DPos(const Vec2f& pos, bool bookDraw) {
 
-	if(!bookDraw) {
+	if(!isBookFlare) {
 		if(io) {
 			float vx = -(pos2D.x - g_size.center().x) * (5.f / 23.f);
 			float vy = (pos2D.y - g_size.center().y) * (5.f / 33.f);
@@ -299,7 +299,7 @@ void MagicFlareHandler::createParticleDefs(const MagicFlare& flare, Entity *io, 
 			break;
 		}
 
-		if(!bookDraw) {
+		if(!flare.isBookFlare) {
 			pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 			if(!io) {
 				pd->m_flags |= PARTICLE_NOZBUFFER;
