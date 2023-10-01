@@ -560,13 +560,17 @@ void FlareLine(Vec2f fromPos, Vec2f toPos, Entity * io) {
 	} else {
 		
 		if(fromPos.y > toPos.y) {
-			std::swap(fromPos, toPos);
+			start = toPos;
+			end = fromPos;
+		} else {
+			start = fromPos;
+			end = toPos;
 		}
 		
 		float m = dist.x / dist.y;
-		Vec2f currentPos = fromPos;
+		Vec2f currentPos = start;
 		
-		while(currentPos.y < toPos.y) {
+		while(currentPos.y < end.y) {
 			long step = Random::get(0, FLARELINERND);
 			step += FLARELINESTEP;
 			if(!io) {
