@@ -154,6 +154,18 @@ void MagicFlare::init3DPos(const Vec2f& pos, bool bookDraw) {
 	}
 }
 
+TextureContainer* MagicFlare::getTexContainerByType(char type) {
+
+	TextureContainer* tc = nullptr;
+	switch(type) {
+		case 2:  tc = g_magicFlareTextures.lumignon; break;
+		case 3:  tc = g_magicFlareTextures.lumignon2; break;
+		case 4:  tc = g_magicFlareTextures.plasm; break;
+		default: tc = g_magicFlareTextures.shine[m_currentShineTex]; break;
+	}
+	return tc;
+}
+
 class MagicFlareContainer {
 public:
 	class iterator {
@@ -378,18 +390,6 @@ void MagicFlareHandler::removeAll() {
 	for(auto& flare : m_flares) {
 		flare.clear();
 	}
-}
-
-TextureContainer* MagicFlare::getTexContainerByType(char type) {
-	
-	TextureContainer* tc = nullptr;
-	switch(type) {
-		case 2:  tc = g_magicFlareTextures.lumignon; break;
-		case 3:  tc = g_magicFlareTextures.lumignon2; break;
-		case 4:  tc = g_magicFlareTextures.plasm; break;
-		default: tc = g_magicFlareTextures.shine[m_currentShineTex]; break;
-	}
-	return tc;
 }
 
 void MagicFlare::cycleShineTexture() {
