@@ -31,6 +31,7 @@ void ARX_MAGICAL_FLARES_FirstInit();
 void ARX_MAGICAL_FLARES_KillAll();
 void MagicFlareChangeColor();
 void AddBookFlare(const Vec2f& pos, float sm, Entity* io);
+void AddNPCFlare(const Vec2f& pos, float sm, Entity* io);
 void AddFlare(const Vec2f & pos, float sm, bool useVariedFlares, Entity * io = nullptr, bool bookDraw = false);
 void FlareLine(Vec2f pos0, Vec2f pos1, Entity * io = nullptr);
 void ARX_MAGICAL_FLARES_Update();

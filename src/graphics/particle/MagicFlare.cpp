@@ -504,6 +504,11 @@ void AddBookFlare(const Vec2f& pos, float sm, Entity* io) {
 	g_magicFlares.addFlare(pos, sm, false, io, true);
 }
 
+void AddNPCFlare(const Vec2f& pos, float sm, Entity* io) {
+	
+	g_magicFlares.addFlare(pos, sm, false, io, false);
+}
+
 //! Helper for FlareLine
 static void AddLFlare(const Vec2f & pos, Entity * io) {
 	AddFlare(pos, 0.45f, false, io);

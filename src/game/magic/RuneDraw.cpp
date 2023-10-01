@@ -274,7 +274,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			if(newtime <= ti) {
 				float ratio = newtime / ti;
 				pos1 += Vec2s(Vec2f(vect) * ratio);
-				AddFlare(Vec2f(pos1), 0.1f, false, &entity);
+				AddNPCFlare(Vec2f(pos1), 0.1f, &entity);
 				FlareLine(Vec2f(old_pos), Vec2f(pos1), &entity);
 				break;
 			}
