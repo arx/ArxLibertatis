@@ -164,7 +164,6 @@ public:
 	};
 	size_t validFlareCount();
 	MagicFlare& newFlare();
-	void removeFlare(MagicFlare& flare);
 
 	iterator begin() { return iterator(&m_flares[0]); }
 	iterator end() { return iterator(&m_flares[m_magicFlaresMax]); }
@@ -220,11 +219,6 @@ MagicFlare& MagicFlareContainer::newFlare() {
 	return m_flares[index];
 }
 
-void MagicFlareContainer::removeFlare(MagicFlare& flare) {
-
-	flare.clear();
-}
-
 size_t MagicFlareContainer::findUsableIndex() {
 	
 	size_t oldest = 0;
@@ -238,7 +232,7 @@ size_t MagicFlareContainer::findUsableIndex() {
 		}
 	}
 	if(i >= m_magicFlaresMax) {
-		removeFlare(m_flares[oldest]);
+		m_flares[oldest].clear();
 		i = oldest;
 	}
 	return i;
@@ -377,7 +371,7 @@ void MagicFlareHandler::init() {
 void MagicFlareHandler::removeAll() {
 	
 	for(auto& flare : m_flares) {
-		m_flares.removeFlare(flare);
+		flare.clear();
 	}
 }
 
