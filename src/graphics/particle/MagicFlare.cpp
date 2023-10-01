@@ -361,9 +361,7 @@ void MagicFlareHandler::addFlare(const Vec2f& pos, float sm, bool useVariedFlare
 }
 
 long MagicFlareHandler::countWithoutIO() {
-	if(!m_flares.validFlareCount())
-		return 0;
-
+	
 	long count = 0;
 	for(auto &flare : m_flares) {
 		if(flare.isValid && !flare.io) {
