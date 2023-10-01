@@ -69,7 +69,7 @@ public:
 	void update(bool isMagicCastKeyPressed);
 	void clear();
 	void init2DPos(const Vec2f& pos);
-	void init3DPos(const Vec2f& pos, bool bookDraw);
+	void init3DPos(const Vec2f& pos);
 	TextureContainer* getTexContainer();
 private:
 	short m_currentShineTex = 1;
@@ -137,7 +137,7 @@ void MagicFlare::init2DPos(const Vec2f& pos) {
 	pos2D.y = pos.y - Random::getf(0.f, 4.f);
 }
 
-void MagicFlare::init3DPos(const Vec2f& pos, bool bookDraw) {
+void MagicFlare::init3DPos(const Vec2f& pos) {
 
 	if(!isBookFlare) {
 		if(io) {
@@ -341,7 +341,7 @@ void MagicFlareHandler::addFlare(const Vec2f& pos, float sm, bool useVariedFlare
 	}
 
 	flare.init2DPos(pos);
-	flare.init3DPos(pos, bookDraw);
+	flare.init3DPos(pos);
 
 	flare.color = newFlareColor();
 
