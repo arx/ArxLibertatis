@@ -64,7 +64,7 @@ public:
 	float currentSize;
 	LightHandle dynlight;
 	Entity * io = nullptr;
-	bool bDrawBitmap = false;
+	bool isBookFlare = false;
 
 	void update(bool isMagicCastKeyPressed);
 	void clear();
@@ -330,7 +330,7 @@ void MagicFlareHandler::addFlare(const Vec2f& pos, float sm, bool useVariedFlare
 	MagicFlare& flare = m_flares.newFlare();
 	flare.isValid = true;
 
-	flare.bDrawBitmap = bookDraw;
+	flare.isBookFlare = bookDraw;
 
 	flare.io = io;
 	if(io) {
@@ -433,7 +433,7 @@ void MagicFlareHandler::update() {
 
 		mat.setDepthTest(flare.io != nullptr);
 
-		if(flare.bDrawBitmap) {
+		if(flare.isBookFlare) {
 			Vec3f pos = Vec3f(flare.pos3D.x - flare.currentSize / 2.0f, flare.pos3D.y - flare.currentSize / 2.0f, flare.pos3D.z);
 			EERIEAddBitmap(mat, pos, flare.currentSize, flare.currentSize, surf, Color(flare.currentColor));
 		} else {
