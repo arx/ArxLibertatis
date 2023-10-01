@@ -70,7 +70,7 @@ public:
 	void clear();
 	void init2DPos(const Vec2f& pos);
 	void init3DPos(const Vec2f& pos, bool bookDraw);
-	TextureContainer* getTexContainerByType(char type);
+	TextureContainer* getTexContainerByType();
 private:
 	short m_currentShineTex = 1;
 
@@ -154,7 +154,7 @@ void MagicFlare::init3DPos(const Vec2f& pos, bool bookDraw) {
 	}
 }
 
-TextureContainer* MagicFlare::getTexContainerByType(char type) {
+TextureContainer* MagicFlare::getTexContainerByType() {
 
 	TextureContainer* tc = nullptr;
 	switch(type) {
@@ -417,7 +417,7 @@ void MagicFlareHandler::update() {
 			continue;
 		}
 
-		TextureContainer* surf = flare.getTexContainerByType(flare.type);
+		TextureContainer* surf = flare.getTexContainerByType();
 
 		mat.setTexture(surf);
 
