@@ -205,6 +205,7 @@ class MagicFlareHandler {
 public:
 	MagicFlareHandler();
 	void addFlare(const Vec2f& pos, float sm, bool useVariedFlares, Entity* io, bool bookDraw);
+	void addFlareLine(const Vec2f& fromPos, const Vec2f& toPos, Entity* io);
 	long countWithoutIO();
 	void removeEntityPtrFromFlares(const Entity* entity);
 	void init();
@@ -358,6 +359,43 @@ void MagicFlareHandler::addFlare(const Vec2f& pos, float sm, bool useVariedFlare
 	flare.dynlight = {};
 
 	createParticleDefs(flare);
+}
+
+void MagicFlareHandler::addFlareLine(const Vec2f& fromPos, const Vec2f& toPos, Entity* io) {
+
+	static const int FLARELINESTEP = 7;
+	static const int FLARELINERND = 6;
+
+	Vec2f absDist = glm::abs(toPos - fromPos);
+
+	Vec2f mult = Vec2f(1.f);
+
+	if(absDist.x > absDist.y) {
+		mult.y = absDist.y / absDist.x;
+	} else {
+		mult.x = absDist.x / absDist.y;
+	}
+
+	if(fromPos.x > toPos.x) {
+		mult.x *= -1;
+	}
+	if(fromPos.y > toPos.y) {
+		mult.y *= -1;
+	}
+
+	Vec2f currentPos = fromPos;
+	Vec2f distanceDone = Vec2f(0.f);
+
+	while((distanceDone.x < absDist.x) || (distanceDone.y < absDist.y)) {
+		float step = Random::get(0, FLARELINERND);
+		step += FLARELINESTEP;
+		if(!io) {
+			step = long(step * g_sizeRatio.y);
+		}
+		currentPos += mult * step;
+		distanceDone += glm::abs(mult * step);
+		AddFlare(currentPos, 0.45f, false, io);
+	}
 }
 
 long MagicFlareHandler::countWithoutIO() {
@@ -517,39 +555,7 @@ void AddPlayerCastFlare(const Vec2f& pos, float sm) {
 
 void FlareLine(Vec2f fromPos, Vec2f toPos, Entity* io) {
 
-	static const int FLARELINESTEP = 7;
-	static const int FLARELINERND = 6;
-
-	Vec2f absDist = glm::abs(toPos - fromPos);
-	
-	Vec2f mult = Vec2f(1.f);
-
-	if(absDist.x > absDist.y) {
-		mult.y = absDist.y / absDist.x;
-	} else {
-		mult.x = absDist.x / absDist.y;
-	}
-
-	if(fromPos.x > toPos.x) {
-		mult.x *= -1;
-	}
-	if(fromPos.y > toPos.y) {
-		mult.y *= -1;
-	}
-
-	Vec2f currentPos = fromPos;
-	Vec2f distanceDone = Vec2f(0.f);
-		
-	while((distanceDone.x < absDist.x) || (distanceDone.y < absDist.y)) {
-		float step = Random::get(0, FLARELINERND);
-		step += FLARELINESTEP;
-		if(!io) {
-			step = long(step * g_sizeRatio.y);
-		}
-		currentPos += mult * step;
-		distanceDone += glm::abs(mult * step);
-		AddFlare(currentPos, 0.45f, false, io);
-	}
+	g_magicFlares.addFlareLine(fromPos, toPos, io);
 }
 
 
