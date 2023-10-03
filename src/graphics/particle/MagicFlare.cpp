@@ -515,11 +515,6 @@ void AddPlayerCastFlare(const Vec2f& pos, float sm) {
 		g_magicFlares.addFlare(pos, sm, false, nullptr, false);
 }
 
-//! Helper for FlareLine
-static void AddLFlare(const Vec2f & pos, Entity * io) {
-	AddFlare(pos, 0.45f, false, io);
-}
-
 void FlareLine(Vec2f fromPos, Vec2f toPos, Entity* io) {
 
 	static const int FLARELINESTEP = 7;
@@ -553,7 +548,7 @@ void FlareLine(Vec2f fromPos, Vec2f toPos, Entity* io) {
 		}
 		currentPos += mult * step;
 		distanceDone += glm::abs(mult * step);
-		AddLFlare(currentPos, io);
+		AddFlare(currentPos, 0.45f, false, io);
 	}
 }
 
