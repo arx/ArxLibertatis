@@ -553,7 +553,7 @@ void AddPlayerCastFlare(const Vec2f& pos, float sm) {
 		g_magicFlares.addFlare(pos, sm, false, nullptr, false);
 }
 
-void FlareLine(Vec2f fromPos, Vec2f toPos, Entity* io) {
+void FlareLine(const Vec2f& fromPos, const Vec2f& toPos, Entity* io) {
 
 	g_magicFlares.addFlareLine(fromPos, toPos, io);
 }
