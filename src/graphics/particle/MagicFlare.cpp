@@ -54,7 +54,6 @@ class MagicFlare {
 public:
 	bool isValid;
 	char type = -1;
-	bool hasIO = false;
 	Vec3f pos3D = Vec3f(0.f);
 	Vec2f pos2D = Vec2f(0.f);
 	PlatformDuration tolive;
@@ -82,7 +81,7 @@ void MagicFlare::update(bool isMagicCastKeyPressed) {
 	PlatformDuration lastFrameDuration = g_platformTime.lastFrameDuration();
 	
 	tolive -= lastFrameDuration * 2;
-	if(hasIO) {
+	if(io) {
 		tolive -= lastFrameDuration * 4;
 	} else if(!isMagicCastKeyPressed) {
 		tolive -= lastFrameDuration * 6;
@@ -126,7 +125,6 @@ void MagicFlare::clear() {
 	tolive = 0;
 	isValid = false;
 	io = nullptr;
-	hasIO = false;
 	type = -1;
 	m_currentShineTex = 1;
 }
@@ -335,10 +333,7 @@ void MagicFlareHandler::addFlare(const Vec2f& pos, float sm, bool useVariedFlare
 
 	flare.io = io;
 	if(io) {
-		flare.hasIO = true;
 		io->flarecount++;
-	} else {
-		flare.hasIO = false;
 	}
 
 	flare.init2DPos(pos);
