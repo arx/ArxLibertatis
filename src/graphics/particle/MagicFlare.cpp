@@ -520,65 +520,40 @@ static void AddLFlare(const Vec2f & pos, Entity * io) {
 	AddFlare(pos, 0.45f, false, io);
 }
 
-void FlareLine(Vec2f fromPos, Vec2f toPos, Entity * io) {
-	
+void FlareLine(Vec2f fromPos, Vec2f toPos, Entity* io) {
+
 	static const int FLARELINESTEP = 7;
 	static const int FLARELINERND = 6;
-	
-	Vec2f dist = toPos - fromPos;
-	Vec2f absDist = glm::abs(dist);
 
-	Vec2f start{};
-	Vec2f end{};
+	Vec2f absDist = glm::abs(toPos - fromPos);
 	
+	Vec2f mult = Vec2f(1.f);
+
 	if(absDist.x > absDist.y) {
-		
-		if(fromPos.x > toPos.x) {
-			start = toPos;
-			end = fromPos;
-		} else {
-			start = fromPos;
-			end = toPos;
-		}
-		
-		float m = dist.y / dist.x;
-		Vec2f currentPos = start;
-		
-		while(currentPos.x < end.x) {
-			long step = Random::get(0, FLARELINERND);
-			step += FLARELINESTEP;
-			if(!io) {
-				step = long(step * g_sizeRatio.y);
-			}
-			currentPos.x += step;
-			currentPos.y += m * step;
-			AddLFlare(currentPos, io);
-		}
-		
+		mult.y = absDist.y / absDist.x;
 	} else {
+		mult.x = absDist.x / absDist.y;
+	}
+
+	if(fromPos.x > toPos.x) {
+		mult.x *= -1;
+	}
+	if(fromPos.y > toPos.y) {
+		mult.y *= -1;
+	}
+
+	Vec2f currentPos = fromPos;
+	Vec2f distanceDone = Vec2f(0.f);
 		
-		if(fromPos.y > toPos.y) {
-			start = toPos;
-			end = fromPos;
-		} else {
-			start = fromPos;
-			end = toPos;
+	while((distanceDone.x < absDist.x) || (distanceDone.y < absDist.y)) {
+		float step = Random::get(0, FLARELINERND);
+		step += FLARELINESTEP;
+		if(!io) {
+			step = long(step * g_sizeRatio.y);
 		}
-		
-		float m = dist.x / dist.y;
-		Vec2f currentPos = start;
-		
-		while(currentPos.y < end.y) {
-			long step = Random::get(0, FLARELINERND);
-			step += FLARELINESTEP;
-			if(!io) {
-				step = long(step * g_sizeRatio.y);
-			}
-			currentPos.y += step;
-			currentPos.x += m * step;
-			AddLFlare(currentPos, io);
-		}
-		
+		currentPos += mult * step;
+		distanceDone += glm::abs(mult * step);
+		AddLFlare(currentPos, io);
 	}
 }
 
