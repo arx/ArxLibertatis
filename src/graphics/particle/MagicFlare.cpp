@@ -42,10 +42,10 @@
 #include "math/RandomVector.h"
 
 struct FLARETC {
-	TextureContainer* lumignon;
-	TextureContainer* lumignon2;
-	TextureContainer* plasm;
-	TextureContainer* shine[10];
+	TextureContainer * lumignon;
+	TextureContainer * lumignon2;
+	TextureContainer * plasm;
+	TextureContainer * shine[10];
 };
 
 static FLARETC g_magicFlareTextures;
@@ -67,9 +67,9 @@ public:
 
 	void update(bool isMagicCastKeyPressed);
 	void clear();
-	void init2DPos(const Vec2f& pos);
-	void init3DPos(const Vec2f& pos);
-	TextureContainer* getTexContainer();
+	void init2DPos(const Vec2f & pos);
+	void init3DPos(const Vec2f & pos);
+	TextureContainer * getTexContainer();
 private:
 	short m_currentShineTex = 1;
 
@@ -129,13 +129,13 @@ void MagicFlare::clear() {
 	m_currentShineTex = 1;
 }
 
-void MagicFlare::init2DPos(const Vec2f& pos) {
+void MagicFlare::init2DPos(const Vec2f & pos) {
 
 	pos2D.x = pos.x - Random::getf(0.f, 4.f);
 	pos2D.y = pos.y - Random::getf(0.f, 4.f);
 }
 
-void MagicFlare::init3DPos(const Vec2f& pos) {
+void MagicFlare::init3DPos(const Vec2f & pos) {
 
 	if(!isBookFlare) {
 		if(io) {
@@ -152,9 +152,9 @@ void MagicFlare::init3DPos(const Vec2f& pos) {
 	}
 }
 
-TextureContainer* MagicFlare::getTexContainer() {
+TextureContainer * MagicFlare::getTexContainer() {
 
-	TextureContainer* tc = nullptr;
+	TextureContainer * tc = nullptr;
 	switch(type) {
 		case 2:  tc = g_magicFlareTextures.lumignon; break;
 		case 3:  tc = g_magicFlareTextures.lumignon2; break;
@@ -176,19 +176,19 @@ public:
 	class iterator {
 		using iterator_category = std::forward_iterator_tag;
 	public:
-		iterator(MagicFlare* ptr) : m_ptr(ptr) {}
+		iterator(MagicFlare * ptr) : m_ptr(ptr) {}
 		iterator operator++() { ++m_ptr; return *this; } // prefix increment
 		iterator operator++(int a) { a++;  iterator tmp = *this; ++(*this); return tmp; } // postfix increment
-		MagicFlare* operator->() { return m_ptr; }
-		MagicFlare& operator*() const { return *m_ptr; }
+		MagicFlare * operator->() { return m_ptr; }
+		MagicFlare & operator*() const { return *m_ptr; }
 
-		friend bool operator== (const iterator& a, const iterator& b) { return a.m_ptr == b.m_ptr; }
-		friend bool operator!= (const iterator& a, const iterator& b) { return a.m_ptr != b.m_ptr; }
+		friend bool operator== (const iterator & a, const iterator & b) { return a.m_ptr == b.m_ptr; }
+		friend bool operator!= (const iterator & a, const iterator & b) { return a.m_ptr != b.m_ptr; }
 	private:
-		MagicFlare* m_ptr;
+		MagicFlare * m_ptr;
 	};
 	size_t validFlareCount();
-	MagicFlare& newFlare();
+	MagicFlare & newFlare();
 
 	iterator begin() { return iterator(&m_flares[0]); }
 	iterator end() { return iterator(&m_flares[m_magicFlaresMax]); }
@@ -202,10 +202,10 @@ private:
 class MagicFlareHandler {
 public:
 	MagicFlareHandler();
-	void addFlare(const Vec2f& pos, float sm, bool useVariedFlares, Entity* io, bool bookDraw);
-	void addFlareLine(const Vec2f& fromPos, const Vec2f& toPos, Entity* io);
+	void addFlare(const Vec2f & pos, float sm, bool useVariedFlares, Entity * io, bool bookDraw);
+	void addFlareLine(const Vec2f & fromPos, const Vec2f & toPos, Entity * io);
 	long countWithoutIO();
-	void removeEntityPtrFromFlares(const Entity* entity);
+	void removeEntityPtrFromFlares(const Entity * entity);
 	void init();
 	void removeAll();
 	void update();
@@ -216,7 +216,7 @@ private:
 
 	Color3f newFlareColor();
 	void loadTextures();
-	void createParticleDefs(const MagicFlare& flare);
+	void createParticleDefs(const MagicFlare & flare);
 };
 
 static MagicFlareHandler g_magicFlares;
@@ -228,7 +228,7 @@ MagicFlareHandler::MagicFlareHandler()
 size_t MagicFlareContainer::validFlareCount() {
 
 	size_t count = 0;
-	for(auto& flare : m_flares) {
+	for(auto & flare : m_flares) {
 		if(flare.isValid) {
 			count++;
 		}
@@ -236,7 +236,7 @@ size_t MagicFlareContainer::validFlareCount() {
 	return count;
 }
 
-MagicFlare& MagicFlareContainer::newFlare() {
+MagicFlare & MagicFlareContainer::newFlare() {
 
 	size_t index = findUsableIndex();
 	return m_flares[index];
@@ -285,7 +285,7 @@ Color3f MagicFlareHandler::newFlareColor() {
 	return newColor;
 }
 
-void MagicFlareHandler::createParticleDefs(const MagicFlare& flare) {
+void MagicFlareHandler::createParticleDefs(const MagicFlare & flare) {
 	
 	for(unsigned int kk = 0; kk < 3; kk++) {
 
@@ -293,7 +293,7 @@ void MagicFlareHandler::createParticleDefs(const MagicFlare& flare) {
 			continue;
 		}
 
-		PARTICLE_DEF* pd = createParticle(true);
+		PARTICLE_DEF * pd = createParticle(true);
 		if(!pd) {
 			break;
 		}
@@ -324,9 +324,9 @@ void MagicFlareHandler::createParticleDefs(const MagicFlare& flare) {
 	}
 }
 
-void MagicFlareHandler::addFlare(const Vec2f& pos, float sm, bool useVariedFlares, Entity* io, bool bookDraw) {
+void MagicFlareHandler::addFlare(const Vec2f & pos, float sm, bool useVariedFlares, Entity * io, bool bookDraw) {
 	
-	MagicFlare& flare = m_flares.newFlare();
+	MagicFlare & flare = m_flares.newFlare();
 	flare.isValid = true;
 
 	flare.isBookFlare = bookDraw;
@@ -356,7 +356,7 @@ void MagicFlareHandler::addFlare(const Vec2f& pos, float sm, bool useVariedFlare
 	createParticleDefs(flare);
 }
 
-void MagicFlareHandler::addFlareLine(const Vec2f& fromPos, const Vec2f& toPos, Entity* io) {
+void MagicFlareHandler::addFlareLine(const Vec2f & fromPos, const Vec2f & toPos, Entity * io) {
 
 	static const int FLARELINESTEP = 7;
 	static const int FLARELINERND = 6;
@@ -396,7 +396,7 @@ void MagicFlareHandler::addFlareLine(const Vec2f& fromPos, const Vec2f& toPos, E
 long MagicFlareHandler::countWithoutIO() {
 	
 	long count = 0;
-	for(auto &flare : m_flares) {
+	for(auto & flare : m_flares) {
 		if(flare.isValid && !flare.io) {
 			count++;
 		}
@@ -405,9 +405,9 @@ long MagicFlareHandler::countWithoutIO() {
 	return count;
 }
 
-void MagicFlareHandler::removeEntityPtrFromFlares(const Entity* entity) {
+void MagicFlareHandler::removeEntityPtrFromFlares(const Entity * entity) {
 	
-	for(auto& flare : m_flares) {
+	for(auto & flare : m_flares) {
 		if(flare.isValid && flare.io == entity) {
 			flare.io = nullptr;
 		}
@@ -416,7 +416,7 @@ void MagicFlareHandler::removeEntityPtrFromFlares(const Entity* entity) {
 
 void MagicFlareHandler::init() {
 	
-	for(auto &flare : m_flares) {
+	for(auto & flare : m_flares) {
 		flare.isValid = false;
 	}
 
@@ -425,7 +425,7 @@ void MagicFlareHandler::init() {
 
 void MagicFlareHandler::removeAll() {
 	
-	for(auto& flare : m_flares) {
+	for(auto & flare : m_flares) {
 		flare.clear();
 	}
 }
@@ -440,15 +440,15 @@ void MagicFlareHandler::update() {
 	RenderMaterial mat;
 	mat.setBlendType(RenderMaterial::Additive);
 
-	EERIE_LIGHT* light = lightHandleGet(torchLightHandle);
+	EERIE_LIGHT * light = lightHandleGet(torchLightHandle);
 
-	for(auto& flare : m_flares) {
+	for(auto & flare : m_flares) {
 
 		if(!flare.isValid) {
 			continue;
 		}
 
-		TextureContainer* surf = flare.getTexContainer();
+		TextureContainer * surf = flare.getTexContainer();
 
 		mat.setTexture(surf);
 
@@ -456,7 +456,7 @@ void MagicFlareHandler::update() {
 
 		light->rgb = componentwise_max(light->rgb, flare.currentColor);
 
-		EERIE_LIGHT* el = lightHandleGet(flare.dynlight);
+		EERIE_LIGHT * el = lightHandleGet(flare.dynlight);
 		if(el) {
 			el->pos = flare.pos3D;
 			el->rgb = flare.currentColor;
@@ -530,17 +530,17 @@ void AddFlare(const Vec2f & pos, float sm, bool useVariedFlares, Entity * io, bo
 	g_magicFlares.addFlare(pos, sm, useVariedFlares, io, bookDraw);
 }
 
-void AddBookFlare(const Vec2f& pos, float sm, Entity* io) {
+void AddBookFlare(const Vec2f & pos, float sm, Entity * io) {
 	
 	g_magicFlares.addFlare(pos, sm, false, io, true);
 }
 
-void AddNPCFlare(const Vec2f& pos, float sm, Entity* io) {
+void AddNPCFlare(const Vec2f & pos, float sm, Entity * io) {
 	
 	g_magicFlares.addFlare(pos, sm, false, io, false);
 }
 
-void AddPlayerCastFlare(const Vec2f& pos, float sm) {
+void AddPlayerCastFlare(const Vec2f & pos, float sm) {
 
 	if(Random::getf() > 0.6f)
 		g_magicFlares.addFlare(pos, sm, true, nullptr, false);
@@ -548,7 +548,7 @@ void AddPlayerCastFlare(const Vec2f& pos, float sm) {
 		g_magicFlares.addFlare(pos, sm, false, nullptr, false);
 }
 
-void FlareLine(const Vec2f& fromPos, const Vec2f& toPos, Entity* io) {
+void FlareLine(const Vec2f & fromPos, const Vec2f & toPos, Entity * io) {
 
 	g_magicFlares.addFlareLine(fromPos, toPos, io);
 }
