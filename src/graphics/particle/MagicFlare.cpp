@@ -176,7 +176,7 @@ public:
 	class iterator {
 		using iterator_category = std::forward_iterator_tag;
 	public:
-		iterator(MagicFlare * ptr) : m_ptr(ptr) {}
+		explicit iterator(MagicFlare * ptr) : m_ptr(ptr) {}
 		iterator operator++() { ++m_ptr; return *this; } // prefix increment
 		iterator operator++(int a) { a++;  iterator tmp = *this; ++(*this); return tmp; } // postfix increment
 		MagicFlare * operator->() { return m_ptr; }
