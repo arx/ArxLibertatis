@@ -61,7 +61,11 @@ void SpeedSpell::Launch() {
 		m_target = m_caster;
 	}
 	
-	ARX_SOUND_PlaySFX(g_snd.SPELL_SPEED_START, &entities[m_target]->pos);
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
+		ARX_SOUND_PlaySFX(g_snd.SPELL_SPEED_START, &entities[m_target]->pos);
+	}
 	
 	if(m_target == EntityHandle_Player) {
 		m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_SPEED_LOOP, &entities[m_target]->pos, 1.f);
@@ -95,8 +99,10 @@ void SpeedSpell::End() {
 	ARX_SOUND_Stop(m_snd_loop);
 	m_snd_loop = audio::SourcedSample();
 	
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
 	Entity * target = entities.get(m_target);
-	if(target) {
+	if(target && emitsSound) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_SPEED_END, &target->pos);
 	}
 	
@@ -128,7 +134,11 @@ Vec3f SpeedSpell::getPosition() const {
 
 void DispellIllusionSpell::Launch() {
 	
-	ARX_SOUND_PlaySFX(g_snd.SPELL_DISPELL_ILLUSION);
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
+		ARX_SOUND_PlaySFX(g_snd.SPELL_DISPELL_ILLUSION);
+	}
 	
 	m_duration = 1s;
 	m_hasDuration = true;
@@ -203,7 +213,12 @@ void FireballSpell::Launch() {
 	
 	eMove = angleToVector(Anglef(anglea, angleb, 0.f)) * 80.f;
 	
-	ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_LAUNCH, &m_caster_pos);
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
+		ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_LAUNCH, &m_caster_pos);
+	}
+	
 	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_FIRE_WIND_LOOP, &m_caster_pos, 1.f);
 }
 
@@ -292,7 +307,13 @@ void FireballSpell::Update() {
 		
 		doSphericDamage(Sphere(eCurPos, 30.f * m_level), 3.f * m_level,
 		                DAMAGE_AREA, this, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, caster);
-		ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_HIT, &sphere.origin);
+		
+		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+		
+		if(emitsSound) {
+			ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_HIT, &sphere.origin);
+		}
+		
 		if(caster) {
 			spawnAudibleSound(sphere.origin, *caster);
 		}
@@ -312,7 +333,11 @@ CreateFoodSpell::CreateFoodSpell()
 
 void CreateFoodSpell::Launch() {
 	
-	ARX_SOUND_PlaySFX(g_snd.SPELL_CREATE_FOOD, &m_caster_pos);
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
+		ARX_SOUND_PlaySFX(g_snd.SPELL_CREATE_FOOD, &m_caster_pos);
+	}
 	
 	m_duration = (m_launchDuration >= 0) ? m_launchDuration : 3500ms;
 	m_hasDuration = true;
@@ -368,7 +393,11 @@ IceProjectileSpell::IceProjectileSpell()
 
 void IceProjectileSpell::Launch() {
 	
-	ARX_SOUND_PlaySFX(g_snd.SPELL_ICE_PROJECTILE_LAUNCH, &m_caster_pos);
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
+		ARX_SOUND_PlaySFX(g_snd.SPELL_ICE_PROJECTILE_LAUNCH, &m_caster_pos);
+	}
 	
 	m_duration = 4200ms;
 	m_hasDuration = true;
