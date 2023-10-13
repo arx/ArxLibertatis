@@ -181,7 +181,11 @@ void DetectTrapSpell::Update() {
 	
 	if(m_caster == EntityHandle_Player) {
 		Vec3f pos = ARX_PLAYER_FrontPos();
-		ARX_SOUND_RefreshPosition(m_snd_loop, pos);
+		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+		
+		if(emitsSound) {
+			ARX_SOUND_RefreshPosition(m_snd_loop, pos);
+		}
 	}
 }
 
@@ -253,7 +257,11 @@ void ArmorSpell::Update() {
 		io->halo.radius = 45.f;
 	}
 	
-	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
+		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+	}
 }
 
 Vec3f ArmorSpell::getPosition() const {
@@ -337,7 +345,11 @@ void LowerArmorSpell::Update() {
 		}
 	}
 	
-	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
+		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+	}
 }
 
 Vec3f LowerArmorSpell::getPosition() const {
@@ -414,5 +426,10 @@ void HarmSpell::Update() {
 		casterPos = entities[m_caster]->pos;
 	}
 	Vec3f cabalPos = m_cabal.update(casterPos);
-	ARX_SOUND_RefreshPosition(m_snd_loop, cabalPos);
+	
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
+		ARX_SOUND_RefreshPosition(m_snd_loop, cabalPos);
+	}
 }
