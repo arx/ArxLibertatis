@@ -56,7 +56,11 @@ void MagicSightSpell::Launch() {
 	m_hasDuration = m_launchDuration >= 0;
 	m_duration = m_hasDuration ? m_launchDuration : 0;
 	
-	ARX_SOUND_PlaySFX(g_snd.SPELL_VISION_START, &m_caster_pos);
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
+		ARX_SOUND_PlaySFX(g_snd.SPELL_VISION_START, &m_caster_pos);
+	}
 	
 	if(m_caster == EntityHandle_Player) {
 		player.m_improve = true;
@@ -73,8 +77,10 @@ void MagicSightSpell::End() {
 	ARX_SOUND_Stop(m_snd_loop);
 	m_snd_loop = audio::SourcedSample();
 	
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
 	Entity * caster = entities.get(m_caster);
-	if(caster) {
+	if(caster && emitsSound) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_VISION_START, &caster->pos);
 	}
 }
@@ -87,7 +93,7 @@ void MagicSightSpell::Update() {
 	}
 }
 
-static void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat) {
+static void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat, bool emitsSound) {
 	
 	std::unique_ptr<ParticleSystem> particles = std::make_unique<ParticleSystem>();
 	if(mrCheat) {
@@ -112,7 +118,9 @@ static void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat) {
 		light->duration = 1500ms;
 	}
 	
-	ARX_SOUND_PlaySFX(g_snd.SPELL_MM_HIT, &_ePos);
+	if (emitsSound) {
+		ARX_SOUND_PlaySFX(g_snd.SPELL_MM_HIT, &_ePos);
+	}
 	
 }
 
@@ -223,8 +231,10 @@ void MagicMissileSpell::Launch() {
 		missile.SetDuration(lTime);
 	}
 	
-	ARX_SOUND_PlaySFX(g_snd.SPELL_MM_CREATE, &startPos);
-	ARX_SOUND_PlaySFX(g_snd.SPELL_MM_LAUNCH, &startPos);
+	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
+		ARX_SOUND_PlaySFX(g_snd.SPELL_MM_CREATE, &startPos);
+		ARX_SOUND_PlaySFX(g_snd.SPELL_MM_LAUNCH, &startPos);
+	}
 	snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_MM_LOOP, &startPos, 1.f);
 	
 	m_duration = lMax + 1s;
@@ -244,6 +254,8 @@ void MagicMissileSpell::End() {
 
 void MagicMissileSpell::Update() {
 	
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
 	for(CMagicMissile & missile : util::dereference(m_missiles)) {
 		
 		if(missile.bExplo) {
@@ -255,7 +267,7 @@ void MagicMissileSpell::Update() {
 		Entity * caster = entities.get(m_caster);
 		if(CheckAnythingInSphere(sphere, caster, CAS_NO_SAME_GROUP)) {
 			
-			LaunchMagicMissileExplosion(missile.eCurPos, m_mrCheat);
+			LaunchMagicMissileExplosion(missile.eCurPos, m_mrCheat, emitsSound);
 			if(caster) {
 				spawnAudibleSound(missile.eCurPos, *caster);
 			}
@@ -396,10 +408,14 @@ void IgnitSpell::Launch() {
 
 void IgnitSpell::End() {
 	
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
 	for(T_LINKLIGHTTOFX & entry : m_lights) {
 		EERIE_LIGHT * light = &g_staticLights[entry.m_targetLight];
 		light->m_ignitionStatus = true;
-		ARX_SOUND_PlaySFX(g_snd.SPELL_IGNITE, &light->pos);
+		if(emitsSound) {
+			ARX_SOUND_PlaySFX(g_snd.SPELL_IGNITE, &light->pos);
+		}
 		lightHandleDestroy(entry.m_effectLight);
 	}
 	
@@ -499,10 +515,14 @@ void DouseSpell::Launch() {
 
 void DouseSpell::End() {
 	
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
 	for(size_t index : m_lights) {
 		EERIE_LIGHT * light = &g_staticLights[index];
 		light->m_ignitionStatus = false;
-		ARX_SOUND_PlaySFX(g_snd.SPELL_DOUSE, &light->pos);
+		if(emitsSound) {
+			ARX_SOUND_PlaySFX(g_snd.SPELL_DOUSE, &light->pos);
+		}
 	}
 	
 }
