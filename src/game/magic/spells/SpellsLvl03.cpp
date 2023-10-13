@@ -65,10 +65,9 @@ void SpeedSpell::Launch() {
 	
 	if(emitsSound) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_SPEED_START, &entities[m_target]->pos);
-	}
-	
-	if(m_target == EntityHandle_Player) {
-		m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_SPEED_LOOP, &entities[m_target]->pos, 1.f);
+		if(m_target == EntityHandle_Player) {
+			m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_SPEED_LOOP, &entities[m_target]->pos, 1.f);
+		}
 	}
 	
 	if(m_caster == EntityHandle_Player) {
@@ -96,10 +95,12 @@ void SpeedSpell::End() {
 	
 	m_targets.clear();
 	
-	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop = audio::SourcedSample();
-	
 	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
+		ARX_SOUND_Stop(m_snd_loop);
+		m_snd_loop = audio::SourcedSample();
+	}
 	
 	Entity * target = entities.get(m_target);
 	if(target && emitsSound) {
@@ -217,15 +218,19 @@ void FireballSpell::Launch() {
 	
 	if(emitsSound) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_LAUNCH, &m_caster_pos);
+		m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_FIRE_WIND_LOOP, &m_caster_pos, 1.f);
 	}
 	
-	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_FIRE_WIND_LOOP, &m_caster_pos, 1.f);
 }
 
 void FireballSpell::End() {
 	
-	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop = audio::SourcedSample();
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
+		ARX_SOUND_Stop(m_snd_loop);
+		m_snd_loop = audio::SourcedSample();
+	}
 	
 	endLightDelayed(m_light, 500ms);
 }

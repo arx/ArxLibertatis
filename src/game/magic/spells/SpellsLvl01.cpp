@@ -64,20 +64,24 @@ void MagicSightSpell::Launch() {
 	
 	if(m_caster == EntityHandle_Player) {
 		player.m_improve = true;
-		m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_VISION_LOOP, &m_caster_pos, 1.f);
+		if(emitsSound) {
+			m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_VISION_LOOP, &m_caster_pos, 1.f);
+		}
 	}
 }
 
 void MagicSightSpell::End() {
 	
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
 	if(m_caster == EntityHandle_Player) {
 		player.m_improve = false;
 	}
 	
-	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop = audio::SourcedSample();
-	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	if(emitsSound) {
+		ARX_SOUND_Stop(m_snd_loop);
+		m_snd_loop = audio::SourcedSample();
+	}
 	
 	Entity * caster = entities.get(m_caster);
 	if(caster && emitsSound) {
@@ -231,11 +235,13 @@ void MagicMissileSpell::Launch() {
 		missile.SetDuration(lTime);
 	}
 	
-	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_MM_CREATE, &startPos);
 		ARX_SOUND_PlaySFX(g_snd.SPELL_MM_LAUNCH, &startPos);
+		snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_MM_LOOP, &startPos, 1.f);
 	}
-	snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_MM_LOOP, &startPos, 1.f);
 	
 	m_duration = lMax + 1s;
 }
@@ -248,8 +254,12 @@ void MagicMissileSpell::End() {
 	
 	m_missiles.clear();
 	
-	ARX_SOUND_Stop(snd_loop);
-	snd_loop = audio::SourcedSample();
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
+		ARX_SOUND_Stop(snd_loop);
+		snd_loop = audio::SourcedSample();
+	}
 }
 
 void MagicMissileSpell::Update() {

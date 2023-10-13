@@ -150,7 +150,9 @@ void DetectTrapSpell::Launch() {
 	
 	if(m_caster == EntityHandle_Player) {
 		m_target = m_caster;
-		if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
+		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+		
+		if(emitsSound) {
 			ARX_SOUND_PlayInterface(g_snd.SPELL_DETECT_TRAP);
 			m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_DETECT_TRAP_LOOP, &m_caster_pos, 1.f);
 		}
@@ -165,8 +167,12 @@ void DetectTrapSpell::Launch() {
 
 void DetectTrapSpell::End() {
 	
-	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop = audio::SourcedSample();
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
+		ARX_SOUND_Stop(m_snd_loop);
+		m_snd_loop = audio::SourcedSample();
+	}
 	
 	m_targets.clear();
 }
@@ -195,9 +201,8 @@ void ArmorSpell::Launch()
 	
 	if(emitsSound) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_ARMOR_START, &entities[m_target]->pos);
+		m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_ARMOR_LOOP, &entities[m_target]->pos, 1.f);
 	}
-	
-	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_ARMOR_LOOP, &entities[m_target]->pos, 1.f);
 	
 	if(m_caster == EntityHandle_Player) {
 		m_duration = 0;
@@ -221,13 +226,15 @@ void ArmorSpell::Launch()
 
 void ArmorSpell::End() {
 	
-	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop = audio::SourcedSample();
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
+		ARX_SOUND_Stop(m_snd_loop);
+		m_snd_loop = audio::SourcedSample();
+	}
 	
 	Entity * target = entities.get(m_target);
 	if(target) {
-		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-		
 		if(emitsSound) {
 			ARX_SOUND_PlaySFX(g_snd.SPELL_ARMOR_END, &target->pos);
 		}
@@ -343,9 +350,8 @@ void HarmSpell::Launch() {
 	
 	if(emitsSound) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_HARM, &m_caster_pos);
+		m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_MAGICAL_SHIELD_LOOP, &m_caster_pos, 1.f);
 	}
-	
-	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_MAGICAL_SHIELD_LOOP, &m_caster_pos, 1.f);
 	
 	spells.endByCaster(m_caster, SPELL_LIFE_DRAIN);
 	spells.endByCaster(m_caster, SPELL_MANA_DRAIN);
@@ -382,8 +388,12 @@ void HarmSpell::End() {
 	
 	m_cabal.end();
 	
-	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop = audio::SourcedSample();
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
+		ARX_SOUND_Stop(m_snd_loop);
+		m_snd_loop = audio::SourcedSample();
+	}
 }
 
 void HarmSpell::Update() {
