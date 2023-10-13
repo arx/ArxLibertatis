@@ -93,7 +93,11 @@ void MagicSightSpell::Update() {
 	
 	if(m_caster == EntityHandle_Player) {
 		Vec3f pos = ARX_PLAYER_FrontPos();
-		ARX_SOUND_RefreshPosition(m_snd_loop, pos);
+		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+		
+		if(emitsSound) {
+			ARX_SOUND_RefreshPosition(m_snd_loop, pos);
+		}
 	}
 }
 
@@ -309,7 +313,10 @@ void MagicMissileSpell::Update() {
 	}
 	
 	averageMissilePos /= float(m_missiles.size());
-	ARX_SOUND_RefreshPosition(snd_loop, averageMissilePos);
+	
+	if(emitsSound) {
+		ARX_SOUND_RefreshPosition(snd_loop, averageMissilePos);
+	}
 	
 	arx_assert(m_lights.size() == m_missiles.size());
 	
@@ -543,7 +550,11 @@ void DouseSpell::Update() {
 
 void ActivatePortalSpell::Launch() {
 	
-	ARX_SOUND_PlayInterface(g_snd.SPELL_ACTIVATE_PORTAL);
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
+		ARX_SOUND_PlayInterface(g_snd.SPELL_ACTIVATE_PORTAL);
+	}
 	
 	m_duration = 20ms;
 	m_hasDuration = true;
