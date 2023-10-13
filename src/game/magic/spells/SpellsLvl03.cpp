@@ -113,8 +113,13 @@ void SpeedSpell::End() {
 
 void SpeedSpell::Update() {
 	
-	if(m_caster == EntityHandle_Player)
-		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+	if(m_caster == EntityHandle_Player) {
+		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+		
+		if(emitsSound) {
+			ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+		}
+	}
 	
 	for(SpeedTrail & trail : m_trails) {
 		Vec3f pos = entities[m_target]->obj->vertexWorldPositions[trail.vertexIndex].v;
@@ -301,6 +306,8 @@ void FireballSpell::Update() {
 		}
 	}
 	
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
 	Entity * caster = entities.get(m_caster);
 	if(!bExplo && CheckAnythingInSphere(sphere, caster, CAS_NO_SAME_GROUP)) {
 		spawnFireHitParticle(eCurPos, 0);
@@ -313,8 +320,6 @@ void FireballSpell::Update() {
 		doSphericDamage(Sphere(eCurPos, 30.f * m_level), 3.f * m_level,
 		                DAMAGE_AREA, this, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, caster);
 		
-		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-		
 		if(emitsSound) {
 			ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_HIT, &sphere.origin);
 		}
@@ -325,7 +330,9 @@ void FireballSpell::Update() {
 		requestEnd();
 	}
 	
-	ARX_SOUND_RefreshPosition(m_snd_loop, eCurPos);
+	if(emitsSound) {
+		ARX_SOUND_RefreshPosition(m_snd_loop, eCurPos);
+	}
 }
 
 Vec3f FireballSpell::getPosition() const {
