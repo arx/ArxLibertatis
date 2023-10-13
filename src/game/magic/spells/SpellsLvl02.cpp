@@ -47,7 +47,9 @@ bool HealSpell::CanLaunch() {
 
 void HealSpell::Launch() {
 	
-	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_HEALING, &m_caster_pos);
 	}
 	
@@ -189,7 +191,9 @@ void ArmorSpell::Launch()
 		m_target = m_caster;
 	}
 	
-	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_ARMOR_START, &entities[m_target]->pos);
 	}
 	
@@ -222,7 +226,11 @@ void ArmorSpell::End() {
 	
 	Entity * target = entities.get(m_target);
 	if(target) {
-		ARX_SOUND_PlaySFX(g_snd.SPELL_ARMOR_END, &target->pos);
+		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+		
+		if(emitsSound) {
+			ARX_SOUND_PlaySFX(g_snd.SPELL_ARMOR_END, &target->pos);
+		}
 		ARX_HALO_SetToNative(target);
 	}
 	
@@ -258,7 +266,9 @@ void LowerArmorSpell::Launch() {
 	spells.endByCaster(m_caster, SPELL_FIRE_PROTECTION);
 	spells.endByCaster(m_caster, SPELL_COLD_PROTECTION);
 	
-	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_LOWER_ARMOR, &entities[m_target]->pos);
 	}
 	
@@ -290,7 +300,11 @@ void LowerArmorSpell::Launch() {
 
 void LowerArmorSpell::End() {
 	
-	ARX_SOUND_PlaySFX(g_snd.SPELL_LOWER_ARMOR_END);
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
+		ARX_SOUND_PlaySFX(g_snd.SPELL_LOWER_ARMOR_END);
+	}
 	
 	if(m_haloCreated) {
 		Entity * io = entities.get(m_target);
@@ -325,7 +339,9 @@ Vec3f LowerArmorSpell::getPosition() const {
 
 void HarmSpell::Launch() {
 	
-	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_HARM, &m_caster_pos);
 	}
 	
