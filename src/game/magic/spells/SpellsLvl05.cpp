@@ -58,7 +58,11 @@ void RuneOfGuardingSpell::Launch() {
 	
 	spells.endByCaster(m_caster, SPELL_RUNE_OF_GUARDING);
 	
-	ARX_SOUND_PlaySFX(g_snd.SPELL_RUNE_OF_GUARDING);
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
+		ARX_SOUND_PlaySFX(g_snd.SPELL_RUNE_OF_GUARDING);
+	}
 	
 	m_hasDuration = m_launchDuration >= 0;
 	m_duration = m_hasDuration ? m_launchDuration : 0;
@@ -128,6 +132,8 @@ void RuneOfGuardingSpell::Update() {
 	
 	Draw3DObject(srune.get(), stiteangle, pos, stitescale, stitecolor, mat);
 	
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
 	size_t count = m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 0.12f);
 	for(size_t i = 0; i < count; i++) {
 		PARTICLE_DEF * pd = createParticle(true);
@@ -152,7 +158,9 @@ void RuneOfGuardingSpell::Update() {
 		LaunchFireballBoom(m_pos, m_level);
 		doSphericDamage(Sphere(m_pos, 30.f * m_level), 4.f * m_level,
 		                DAMAGE_AREA, this, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, caster);
-		ARX_SOUND_PlaySFX(g_snd.SPELL_RUNE_OF_GUARDING_END, &m_pos);
+		if(emitsSound) {
+			ARX_SOUND_PlaySFX(g_snd.SPELL_RUNE_OF_GUARDING_END, &m_pos);
+		}
 		requestEnd();
 	}
 	
@@ -175,7 +183,11 @@ void LevitateSpell::Launch() {
 		m_target = EntityHandle_Player;
 	}
 	
-	ARX_SOUND_PlaySFX(g_snd.SPELL_LEVITATE_START, &entities[m_target]->pos);
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
+		ARX_SOUND_PlaySFX(g_snd.SPELL_LEVITATE_START, &entities[m_target]->pos);
+	}
 	
 	m_fManaCostPerSecond = 1.f;
 	
@@ -200,19 +212,25 @@ void LevitateSpell::Launch() {
 	cone2.Init(m_baseRadius, rhaut * 1.5f, hauteur * 0.5f);
 	m_stones.Init(m_baseRadius);
 	
-	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_LEVITATE_LOOP, &entities[m_target]->pos, 0.7f);
+	if(emitsSound) {
+		m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_LEVITATE_LOOP, &entities[m_target]->pos, 0.7f);
+	}
 	
 	m_targets.push_back(m_target);
 }
 
 void LevitateSpell::End() {
 	
-	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop = audio::SourcedSample();
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
 	
-	Entity * target = entities.get(m_target);
-	if(target) {
-		ARX_SOUND_PlaySFX(g_snd.SPELL_LEVITATE_END, &target->pos);
+	if(emitsSound) {
+		ARX_SOUND_Stop(m_snd_loop);
+		m_snd_loop = audio::SourcedSample();
+		
+		Entity * target = entities.get(m_target);
+		if(target) {
+			ARX_SOUND_PlaySFX(g_snd.SPELL_LEVITATE_END, &target->pos);
+		}
 	}
 	
 	m_targets.clear();
@@ -258,7 +276,11 @@ void LevitateSpell::Update() {
 	cone2.Render();
 	m_stones.DrawStone();
 	
-	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
+		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+	}
 }
 
 void LevitateSpell::createDustParticle() {
@@ -294,15 +316,21 @@ void CurePoisonSpell::Launch() {
 		m_target = EntityHandle_Player;
 	}
 	
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
 	float cure = m_level * 10;
 	if(m_target == EntityHandle_Player) {
 		player.poison -= std::min(player.poison, cure);
-		ARX_SOUND_PlaySFX(g_snd.SPELL_CURE_POISON);
+		if(emitsSound) {
+			ARX_SOUND_PlaySFX(g_snd.SPELL_CURE_POISON);
+		}
 	} else if(Entity * io = entities.get(m_target)) {
 		if(io->ioflags & IO_NPC) {
 			io->_npcdata->poisonned -= std::min(io->_npcdata->poisonned, cure);
 		}
-		ARX_SOUND_PlaySFX(g_snd.SPELL_CURE_POISON, &io->pos);
+		if(emitsSound) {
+			ARX_SOUND_PlaySFX(g_snd.SPELL_CURE_POISON, &io->pos);
+		}
 	}
 	
 	m_duration = 3500ms;
@@ -380,9 +408,13 @@ void RepelUndeadSpell::Launch() {
 		m_target = EntityHandle_Player;
 	}
 	
-	ARX_SOUND_PlaySFX(g_snd.SPELL_REPEL_UNDEAD, &entities[m_target]->pos);
-	if(m_target == EntityHandle_Player) {
-		m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_REPEL_UNDEAD_LOOP, &entities[m_target]->pos, 1.f);
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
+		ARX_SOUND_PlaySFX(g_snd.SPELL_REPEL_UNDEAD, &entities[m_target]->pos);
+		if(m_target == EntityHandle_Player) {
+			m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_REPEL_UNDEAD_LOOP, &entities[m_target]->pos, 1.f);
+		}
 	}
 	
 	m_hasDuration = m_launchDuration >= 0;
@@ -396,8 +428,12 @@ void RepelUndeadSpell::Launch() {
 
 void RepelUndeadSpell::End() {
 	
-	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop = audio::SourcedSample();
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
+		ARX_SOUND_Stop(m_snd_loop);
+		m_snd_loop = audio::SourcedSample();
+	}
 	
 	endLightDelayed(m_light, 500ms);
 }
@@ -460,7 +496,11 @@ void RepelUndeadSpell::Update() {
 	}
 	
 	if(m_target == EntityHandle_Player) {
-		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+		if(emitsSound) {
+			ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+		}
 	}
 	
 }
@@ -476,8 +516,11 @@ PoisonProjectileSpell::~PoisonProjectileSpell() {
 
 void PoisonProjectileSpell::Launch() {
 	
-	ARX_SOUND_PlaySFX(g_snd.SPELL_POISON_PROJECTILE_LAUNCH,
-	                  &m_caster_pos);
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound) {
+		ARX_SOUND_PlaySFX(g_snd.SPELL_POISON_PROJECTILE_LAUNCH, &m_caster_pos);
+	}
 	
 	Vec3f srcPos(0.f);
 	float afBeta = 0.f;
