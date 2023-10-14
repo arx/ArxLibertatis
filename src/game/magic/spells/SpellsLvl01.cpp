@@ -126,7 +126,7 @@ static void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat, bool 
 		light->duration = 1500ms;
 	}
 	
-	if (emitsSound) {
+	if(emitsSound) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_MM_HIT, &_ePos);
 	}
 	
