@@ -383,6 +383,7 @@ void MassIncinerateSpell::End() {
 }
 
 void MassIncinerateSpell::Update() {
+	
 	if(emitsSound()) {
 		Entity * caster = entities.get(m_caster);
 		if(caster) {

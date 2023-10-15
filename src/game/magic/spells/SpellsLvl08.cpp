@@ -168,6 +168,7 @@ Vec3f ManaDrainSpell::getPosition() const {
 	return getTargetPosition();
 }
 
+
 void ExplosionSpell::Launch() {
 	
 	if(emitsSound()) {

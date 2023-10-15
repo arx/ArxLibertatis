@@ -172,6 +172,7 @@ void DetectTrapSpell::End() {
 }
 
 void DetectTrapSpell::Update() {
+	
 	if(emitsSound() && m_caster == EntityHandle_Player) {
 		Vec3f pos = ARX_PLAYER_FrontPos();
 		ARX_SOUND_RefreshPosition(m_snd_loop, pos);
