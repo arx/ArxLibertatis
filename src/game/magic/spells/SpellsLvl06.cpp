@@ -213,6 +213,7 @@ void RaiseDeadSpell::Update() {
 			m_light = { };
 			
 		} else {
+			
 			if(emitsSound()) {
 				ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE);
 			}
