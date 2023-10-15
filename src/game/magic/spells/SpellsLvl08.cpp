@@ -53,9 +53,7 @@ void InvisibilitySpell::Launch() {
 	entities[m_target]->gameFlags |= GFLAG_INVISIBILITY;
 	entities[m_target]->invisibility = 0.f;
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_INVISIBILITY_START, &m_caster_pos);
 	}
 	
@@ -66,9 +64,7 @@ void InvisibilitySpell::End() {
 	Entity * target = entities.get(m_target);
 	if(target) {
 		target->gameFlags &= ~GFLAG_INVISIBILITY;
-		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-		
-		if(emitsSound) {
+		if(emitsSound()) {
 			ARX_SOUND_PlaySFX(g_snd.SPELL_INVISIBILITY_END, &target->pos);
 		}
 		m_targets.clear();
@@ -106,9 +102,7 @@ void ManaDrainSpell::Launch() {
 	m_duration = m_hasDuration ? m_launchDuration : 0;
 	m_fManaCostPerSecond = 2.f;
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_MAGICAL_SHIELD_LOOP, &m_caster_pos, 1.2f);
 	}
 	
@@ -138,9 +132,7 @@ void ManaDrainSpell::End() {
 	
 	m_cabal.end();
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_Stop(m_snd_loop);
 		m_snd_loop = audio::SourcedSample();
 	}
@@ -166,9 +158,8 @@ void ManaDrainSpell::Update() {
 	m_cabal.setOffset(offset);
 	
 	Vec3f cabalPos = m_cabal.update(casterPos);
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
 	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_RefreshPosition(m_snd_loop, cabalPos);
 	}
 }
@@ -177,11 +168,9 @@ Vec3f ManaDrainSpell::getPosition() const {
 	return getTargetPosition();
 }
 
-
 void ExplosionSpell::Launch() {
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
 	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_EXPLOSION);
 	}
 	
@@ -229,7 +218,7 @@ void ExplosionSpell::Launch() {
 		}
 	}
 	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_WIND_LOOP);
 	}
 }
@@ -281,9 +270,7 @@ void LifeDrainSpell::Launch() {
 	m_duration = m_hasDuration ? m_launchDuration : 0;
 	m_fManaCostPerSecond = 12.f;
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_MAGICAL_SHIELD_LOOP, &m_caster_pos, 0.8f);
 	}
 	
@@ -311,9 +298,7 @@ void LifeDrainSpell::Launch() {
 void LifeDrainSpell::End() {
 	DamageRequestEnd(m_damage);
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_Stop(m_snd_loop);
 		m_snd_loop = audio::SourcedSample();
 	}
@@ -341,9 +326,8 @@ void LifeDrainSpell::Update() {
 	m_cabal.setOffset(offset);
 	
 	Vec3f cabalPos = m_cabal.update(casterPos);
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
 	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_RefreshPosition(m_snd_loop, cabalPos);
 	}
 }

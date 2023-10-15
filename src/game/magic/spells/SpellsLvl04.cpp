@@ -58,9 +58,7 @@ void BlessSpell::Launch() {
 	
 	spells.endByCaster(m_target, SPELL_BLESS);
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_BLESS);
 	}
 	
@@ -213,9 +211,7 @@ void DispellFieldSpell::Launch() {
 		                     ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
 	}
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		if(dispelled > 0) {
 			ARX_SOUND_PlaySFX(g_snd.SPELL_DISPELL_FIELD);
 		} else {
@@ -244,9 +240,7 @@ void FireProtectionSpell::Launch() {
 		m_target = EntityHandle_Player;
 	}
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_PROTECTION, &entities[m_target]->pos);
 	}
 	
@@ -261,23 +255,21 @@ void FireProtectionSpell::Launch() {
 	
 	m_targets.push_back(m_target);
 	
-	if(emitsSound) {
+	if(emitsSound()) {
 		m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_FIRE_PROTECTION_LOOP, &entities[m_target]->pos, 1.f);
 	}
 }
 
 void FireProtectionSpell::End() {
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_Stop(m_snd_loop);
 		m_snd_loop = audio::SourcedSample();
 	}
 	
 	Entity * target = entities.get(m_target);
 	if(target) {
-		if(emitsSound) {
+		if(emitsSound()) {
 			ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_PROTECTION_END, &target->pos);
 		}
 		ARX_HALO_SetToNative(target);
@@ -294,9 +286,7 @@ void FireProtectionSpell::Update() {
 		io->halo.color = Color3f(0.5f, 0.3f, 0.f);
 		io->halo.radius = 45.f;
 		
-		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-		if(emitsSound) {
+		if(emitsSound()) {
 			ARX_SOUND_RefreshPosition(m_snd_loop, io->pos);
 		}
 	}
@@ -317,9 +307,7 @@ void ColdProtectionSpell::Launch() {
 		m_target = EntityHandle_Player;
 	}
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_COLD_PROTECTION_START, &entities[m_target]->pos);
 	}
 	
@@ -340,7 +328,7 @@ void ColdProtectionSpell::Launch() {
 		io->halo.radius = 45.f;
 	}
 	
-	if(emitsSound) {
+	if(emitsSound()) {
 		m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_COLD_PROTECTION_LOOP, &entities[m_target]->pos, 1.f);
 	}
 	
@@ -349,16 +337,14 @@ void ColdProtectionSpell::Launch() {
 
 void ColdProtectionSpell::End() {
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_Stop(m_snd_loop);
 		m_snd_loop = audio::SourcedSample();
 	}
 	
 	Entity * target = entities.get(m_target);
 	if(target) {
-		if(emitsSound) {
+		if(emitsSound()) {
 			ARX_SOUND_PlaySFX(g_snd.SPELL_COLD_PROTECTION_END, &target->pos);
 		}
 		ARX_HALO_SetToNative(target);
@@ -375,9 +361,7 @@ void ColdProtectionSpell::Update() {
 		io->halo.color = Color3f(0.2f, 0.2f, 0.45f);
 		io->halo.radius = 45.f;
 		
-		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-		if(emitsSound) {
+		if(emitsSound()) {
 			ARX_SOUND_RefreshPosition(m_snd_loop, io->pos);
 		}
 	}
@@ -401,23 +385,22 @@ void TelekinesisSpell::Launch() {
 		player.m_telekinesis = true;
 	}
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_TELEKINESIS_START, &m_caster_pos);
 	}
 }
 
 void TelekinesisSpell::End() {
 	
-	if(m_caster == EntityHandle_Player)
+	if(m_caster == EntityHandle_Player) {
 		player.m_telekinesis = false;
+	}
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	Entity * caster = entities.get(m_caster);
-	if(caster && emitsSound) {
-		ARX_SOUND_PlaySFX(g_snd.SPELL_TELEKINESIS_END, &caster->pos);
+	if(emitsSound()) {
+		Entity * caster = entities.get(m_caster);
+		if(caster) {
+			ARX_SOUND_PlaySFX(g_snd.SPELL_TELEKINESIS_END, &caster->pos);
+		}
 	}
 }
 
@@ -431,9 +414,7 @@ void CurseSpell::Launch() {
 	
 	spells.endByCaster(m_target, SPELL_CURSE);
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_CURSE, &entities[m_target]->pos);
 	}
 	

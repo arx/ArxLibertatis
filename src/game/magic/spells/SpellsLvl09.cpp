@@ -68,9 +68,7 @@ bool SummonCreatureSpell::CanLaunch() {
 	GetTargetAndBeta(target, beta);
 	
 	if(!ARX_INTERACTIVE_ConvertToValidPosForIO(nullptr, &target)) {
-		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-		
-		if(emitsSound) {
+		if(emitsSound()) {
 			ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE);
 		}
 		return false;
@@ -93,9 +91,8 @@ void SummonCreatureSpell::Launch() {
 	
 	m_megaCheat = (m_caster == EntityHandle_Player && cur_mega == 10);
 	m_targetPos = target;
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
 	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_SUMMON_CREATURE, &m_targetPos);
 	}
 	
@@ -122,9 +119,7 @@ void SummonCreatureSpell::End() {
 	
 	Entity * io = entities.get(m_summonedEntity);
 	if(io) {
-		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-		
-		if(emitsSound) {
+		if(emitsSound()) {
 			ARX_SOUND_PlaySFX(g_snd.SPELL_ELECTRIC, &io->pos);
 		}
 		
@@ -174,9 +169,8 @@ void SummonCreatureSpell::Update() {
 		lightHandleDestroy(m_light);
 		
 		m_requestSummon = false;
-		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
 		
-		if(emitsSound) {
+		if(emitsSound()) {
 			ARX_SOUND_PlaySFX(g_snd.SPELL_ELECTRIC, &m_targetPos);
 		}
 		
@@ -283,9 +277,8 @@ void FakeSummonSpell::Launch() {
 		target.y += player.baseHeight();
 	}
 	m_targetPos = target;
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
 	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_SUMMON_CREATURE, &m_targetPos);
 	}
 	
@@ -306,9 +299,8 @@ void FakeSummonSpell::Launch() {
 }
 
 void FakeSummonSpell::End() {
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
 	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_ELECTRIC, &m_targetPos);
 	}
 	
@@ -340,9 +332,7 @@ void NegateMagicSpell::Launch() {
 		m_target = EntityHandle_Player;
 	}
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_NEGATE_MAGIC, &entities[m_target]->pos);
 	}
 	
@@ -444,9 +434,7 @@ void IncinerateSpell::Launch() {
 	
 	Entity * tio = entities[m_target];
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_INCINERATE, &tio->pos);
 		m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_INCINERATE_LOOP, &tio->pos, 1.f);
 	}
@@ -464,9 +452,7 @@ void IncinerateSpell::End() {
 	
 	m_targets.clear();
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_Stop(m_snd_loop);
 		m_snd_loop = audio::SourcedSample();
 		
@@ -476,9 +462,7 @@ void IncinerateSpell::End() {
 
 void IncinerateSpell::Update() {
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-		
-	if(emitsSound) {
+	if(emitsSound()) {
 		Entity * target = entities.get(m_target);
 		if(target) {
 			ARX_SOUND_RefreshPosition(m_snd_loop, target->pos);
@@ -494,9 +478,7 @@ Vec3f IncinerateSpell::getPosition() const {
 
 void MassParalyseSpell::Launch() {
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_MASS_PARALYSE);
 	}
 	
@@ -530,9 +512,7 @@ void MassParalyseSpell::End() {
 	
 	m_targets.clear();
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_PARALYSE_END);
 	}
 }

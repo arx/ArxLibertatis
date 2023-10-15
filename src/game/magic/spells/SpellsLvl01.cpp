@@ -56,15 +56,13 @@ void MagicSightSpell::Launch() {
 	m_hasDuration = m_launchDuration >= 0;
 	m_duration = m_hasDuration ? m_launchDuration : 0;
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_VISION_START, &m_caster_pos);
 	}
 	
 	if(m_caster == EntityHandle_Player) {
 		player.m_improve = true;
-		if(emitsSound) {
+		if(emitsSound()) {
 			m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_VISION_LOOP, &m_caster_pos, 1.f);
 		}
 	}
@@ -72,13 +70,11 @@ void MagicSightSpell::Launch() {
 
 void MagicSightSpell::End() {
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
 	if(m_caster == EntityHandle_Player) {
 		player.m_improve = false;
 	}
 	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_Stop(m_snd_loop);
 		m_snd_loop = audio::SourcedSample();
 		
@@ -90,8 +86,7 @@ void MagicSightSpell::End() {
 }
 
 void MagicSightSpell::Update() {
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	if(emitsSound && m_caster == EntityHandle_Player) {
+	if(emitsSound() && m_caster == EntityHandle_Player) {
 		Vec3f pos = ARX_PLAYER_FrontPos();
 		ARX_SOUND_RefreshPosition(m_snd_loop, pos);
 	}
@@ -235,9 +230,7 @@ void MagicMissileSpell::Launch() {
 		missile.SetDuration(lTime);
 	}
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_MM_CREATE, &startPos);
 		ARX_SOUND_PlaySFX(g_snd.SPELL_MM_LAUNCH, &startPos);
 		snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_MM_LOOP, &startPos, 1.f);
@@ -254,17 +247,13 @@ void MagicMissileSpell::End() {
 	
 	m_missiles.clear();
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_Stop(snd_loop);
 		snd_loop = audio::SourcedSample();
 	}
 }
 
 void MagicMissileSpell::Update() {
-	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
 	
 	for(CMagicMissile & missile : util::dereference(m_missiles)) {
 		
@@ -277,7 +266,7 @@ void MagicMissileSpell::Update() {
 		Entity * caster = entities.get(m_caster);
 		if(CheckAnythingInSphere(sphere, caster, CAS_NO_SAME_GROUP)) {
 			
-			LaunchMagicMissileExplosion(missile.eCurPos, m_mrCheat, emitsSound);
+			LaunchMagicMissileExplosion(missile.eCurPos, m_mrCheat, emitsSound());
 			if(caster) {
 				spawnAudibleSound(missile.eCurPos, *caster);
 			}
@@ -310,7 +299,7 @@ void MagicMissileSpell::Update() {
 	
 	averageMissilePos /= float(m_missiles.size());
 	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_RefreshPosition(snd_loop, averageMissilePos);
 	}
 	
@@ -421,12 +410,10 @@ void IgnitSpell::Launch() {
 
 void IgnitSpell::End() {
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
 	for(T_LINKLIGHTTOFX & entry : m_lights) {
 		EERIE_LIGHT * light = &g_staticLights[entry.m_targetLight];
 		light->m_ignitionStatus = true;
-		if(emitsSound) {
+		if(emitsSound()) {
 			ARX_SOUND_PlaySFX(g_snd.SPELL_IGNITE, &light->pos);
 		}
 		lightHandleDestroy(entry.m_effectLight);
@@ -528,12 +515,10 @@ void DouseSpell::Launch() {
 
 void DouseSpell::End() {
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
 	for(size_t index : m_lights) {
 		EERIE_LIGHT * light = &g_staticLights[index];
 		light->m_ignitionStatus = false;
-		if(emitsSound) {
+		if(emitsSound()) {
 			ARX_SOUND_PlaySFX(g_snd.SPELL_DOUSE, &light->pos);
 		}
 	}
@@ -546,9 +531,7 @@ void DouseSpell::Update() {
 
 void ActivatePortalSpell::Launch() {
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlayInterface(g_snd.SPELL_ACTIVATE_PORTAL);
 	}
 	

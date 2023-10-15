@@ -69,9 +69,7 @@ bool RaiseDeadSpell::CanLaunch() {
 	GetTargetAndBeta(target, beta);
 
 	if(!ARX_INTERACTIVE_ConvertToValidPosForIO(nullptr, &target)) {
-		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-		if(emitsSound) {
+		if(emitsSound()) {
 			ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE);
 		}
 		return false;
@@ -88,9 +86,8 @@ void RaiseDeadSpell::Launch() {
 	GetTargetAndBeta(target, beta);
 	
 	m_targetPos = target;
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
 	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_RAISE_DEAD, &m_targetPos);
 	}
 	
@@ -125,9 +122,7 @@ void RaiseDeadSpell::End() {
 	
 	Entity * entity = entities.get(m_entity);
 	if(entity) {
-		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-		
-		if(emitsSound) {
+		if(emitsSound()) {
 			ARX_SOUND_PlaySFX(g_snd.SPELL_ELECTRIC, &entity->pos);
 		}
 		
@@ -180,9 +175,7 @@ void RaiseDeadSpell::Update() {
 	GameDuration tim = m_fissure.m_elapsed;
 	
 	if(tim > 3s && m_entity == EntityHandle()) {
-		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-		
-		if(emitsSound) {
+		if(emitsSound()) {
 			ARX_SOUND_PlaySFX(g_snd.SPELL_ELECTRIC, &m_targetPos);
 		}
 		
@@ -220,7 +213,7 @@ void RaiseDeadSpell::Update() {
 			m_light = { };
 			
 		} else {
-			if(emitsSound) {
+			if(emitsSound()) {
 				ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE);
 			}
 			m_creationFailed = true;
@@ -238,9 +231,7 @@ void RaiseDeadSpell::Update() {
 
 void ParalyseSpell::Launch() {
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_PARALYSE, &entities[m_target]->pos);
 	}
 	
@@ -272,9 +263,7 @@ void ParalyseSpell::End() {
 		target->ioflags &= ~IO_FREEZESCRIPT;
 	}
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_PARALYSE_END);
 	}
 }
@@ -318,12 +307,8 @@ void CreateFieldSpell::Launch() {
 	}
 	
 	// Don't play sound for persistent fields
-	if(!(m_flags & SPELLCAST_FLAG_RESTORE)) {
-		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-		
-		if(emitsSound) {
-			ARX_SOUND_PlaySFX(g_snd.SPELL_CREATE_FIELD, &target);
-		}
+	if(!(m_flags & SPELLCAST_FLAG_RESTORE) && emitsSound()) {
+		ARX_SOUND_PlaySFX(g_snd.SPELL_CREATE_FIELD, &target);
 	}
 	
 	res::path cls = "graph/obj3d/interactive/fix_inter/blue_cube/blue_cube";
@@ -389,9 +374,7 @@ Vec3f CreateFieldSpell::getPosition() const {
 
 void DisarmTrapSpell::Launch() {
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_DISARM_TRAP);
 	}
 	
@@ -430,9 +413,7 @@ bool SlowDownSpell::CanLaunch() {
 
 void SlowDownSpell::Launch() {
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_SLOW_DOWN, &entities[m_target]->pos);
 	}
 	
@@ -451,9 +432,7 @@ void SlowDownSpell::Launch() {
 
 void SlowDownSpell::End() {
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_SLOW_DOWN_END);
 	}
 	

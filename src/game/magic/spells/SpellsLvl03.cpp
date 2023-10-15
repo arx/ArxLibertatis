@@ -61,9 +61,7 @@ void SpeedSpell::Launch() {
 		m_target = m_caster;
 	}
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_SPEED_START, &entities[m_target]->pos);
 		if(m_target == EntityHandle_Player) {
 			m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_SPEED_LOOP, &entities[m_target]->pos, 1.f);
@@ -95,9 +93,7 @@ void SpeedSpell::End() {
 	
 	m_targets.clear();
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_Stop(m_snd_loop);
 		m_snd_loop = audio::SourcedSample();
 		
@@ -113,9 +109,7 @@ void SpeedSpell::End() {
 
 void SpeedSpell::Update() {
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound && m_caster == EntityHandle_Player) {
+	if(emitsSound() && m_caster == EntityHandle_Player) {
 		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 	}
 	
@@ -138,9 +132,7 @@ Vec3f SpeedSpell::getPosition() const {
 
 void DispellIllusionSpell::Launch() {
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_DISPELL_ILLUSION);
 	}
 	
@@ -217,9 +209,7 @@ void FireballSpell::Launch() {
 	
 	eMove = angleToVector(Anglef(anglea, angleb, 0.f)) * 80.f;
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_LAUNCH, &m_caster_pos);
 		m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_FIRE_WIND_LOOP, &m_caster_pos, 1.f);
 	}
@@ -228,9 +218,7 @@ void FireballSpell::Launch() {
 
 void FireballSpell::End() {
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_Stop(m_snd_loop);
 		m_snd_loop = audio::SourcedSample();
 	}
@@ -304,8 +292,6 @@ void FireballSpell::Update() {
 		}
 	}
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
 	Entity * caster = entities.get(m_caster);
 	if(!bExplo && CheckAnythingInSphere(sphere, caster, CAS_NO_SAME_GROUP)) {
 		spawnFireHitParticle(eCurPos, 0);
@@ -318,7 +304,7 @@ void FireballSpell::Update() {
 		doSphericDamage(Sphere(eCurPos, 30.f * m_level), 3.f * m_level,
 		                DAMAGE_AREA, this, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, caster);
 		
-		if(emitsSound) {
+		if(emitsSound()) {
 			ARX_SOUND_PlaySFX(g_snd.SPELL_FIRE_HIT, &sphere.origin);
 		}
 		
@@ -328,7 +314,7 @@ void FireballSpell::Update() {
 		requestEnd();
 	}
 	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_RefreshPosition(m_snd_loop, eCurPos);
 	}
 }
@@ -343,9 +329,7 @@ CreateFoodSpell::CreateFoodSpell()
 
 void CreateFoodSpell::Launch() {
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_CREATE_FOOD, &m_caster_pos);
 	}
 	
@@ -403,9 +387,7 @@ IceProjectileSpell::IceProjectileSpell()
 
 void IceProjectileSpell::Launch() {
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_ICE_PROJECTILE_LAUNCH, &m_caster_pos);
 	}
 	

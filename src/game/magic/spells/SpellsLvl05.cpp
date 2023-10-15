@@ -58,9 +58,7 @@ void RuneOfGuardingSpell::Launch() {
 	
 	spells.endByCaster(m_caster, SPELL_RUNE_OF_GUARDING);
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_RUNE_OF_GUARDING);
 	}
 	
@@ -132,8 +130,6 @@ void RuneOfGuardingSpell::Update() {
 	
 	Draw3DObject(srune.get(), stiteangle, pos, stitescale, stitecolor, mat);
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
 	size_t count = m_quantizer.update(toMsf(g_gameTime.lastFrameDuration()) * 0.12f);
 	for(size_t i = 0; i < count; i++) {
 		PARTICLE_DEF * pd = createParticle(true);
@@ -158,7 +154,7 @@ void RuneOfGuardingSpell::Update() {
 		LaunchFireballBoom(m_pos, m_level);
 		doSphericDamage(Sphere(m_pos, 30.f * m_level), 4.f * m_level,
 		                DAMAGE_AREA, this, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, caster);
-		if(emitsSound) {
+		if(emitsSound()) {
 			ARX_SOUND_PlaySFX(g_snd.SPELL_RUNE_OF_GUARDING_END, &m_pos);
 		}
 		requestEnd();
@@ -183,9 +179,7 @@ void LevitateSpell::Launch() {
 		m_target = EntityHandle_Player;
 	}
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_LEVITATE_START, &entities[m_target]->pos);
 	}
 	
@@ -212,7 +206,7 @@ void LevitateSpell::Launch() {
 	cone2.Init(m_baseRadius, rhaut * 1.5f, hauteur * 0.5f);
 	m_stones.Init(m_baseRadius);
 	
-	if(emitsSound) {
+	if(emitsSound()) {
 		m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_LEVITATE_LOOP, &entities[m_target]->pos, 0.7f);
 	}
 	
@@ -221,9 +215,7 @@ void LevitateSpell::Launch() {
 
 void LevitateSpell::End() {
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_Stop(m_snd_loop);
 		m_snd_loop = audio::SourcedSample();
 		
@@ -276,9 +268,7 @@ void LevitateSpell::Update() {
 	cone2.Render();
 	m_stones.DrawStone();
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 	}
 }
@@ -316,19 +306,17 @@ void CurePoisonSpell::Launch() {
 		m_target = EntityHandle_Player;
 	}
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
 	float cure = m_level * 10;
 	if(m_target == EntityHandle_Player) {
 		player.poison -= std::min(player.poison, cure);
-		if(emitsSound) {
+		if(emitsSound()) {
 			ARX_SOUND_PlaySFX(g_snd.SPELL_CURE_POISON);
 		}
 	} else if(Entity * io = entities.get(m_target)) {
 		if(io->ioflags & IO_NPC) {
 			io->_npcdata->poisonned -= std::min(io->_npcdata->poisonned, cure);
 		}
-		if(emitsSound) {
+		if(emitsSound()) {
 			ARX_SOUND_PlaySFX(g_snd.SPELL_CURE_POISON, &io->pos);
 		}
 	}
@@ -408,9 +396,7 @@ void RepelUndeadSpell::Launch() {
 		m_target = EntityHandle_Player;
 	}
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_REPEL_UNDEAD, &entities[m_target]->pos);
 		if(m_target == EntityHandle_Player) {
 			m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_REPEL_UNDEAD_LOOP, &entities[m_target]->pos, 1.f);
@@ -428,9 +414,7 @@ void RepelUndeadSpell::Launch() {
 
 void RepelUndeadSpell::End() {
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_Stop(m_snd_loop);
 		m_snd_loop = audio::SourcedSample();
 	}
@@ -495,12 +479,8 @@ void RepelUndeadSpell::Update() {
 		light->creationTime = g_gameTime.now();
 	}
 	
-	if(m_target == EntityHandle_Player) {
-		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-		if(emitsSound) {
-			ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
-		}
+	if(emitsSound() && m_target == EntityHandle_Player) {
+		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 	}
 	
 }
@@ -516,9 +496,7 @@ PoisonProjectileSpell::~PoisonProjectileSpell() {
 
 void PoisonProjectileSpell::Launch() {
 	
-	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-	
-	if(emitsSound) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_POISON_PROJECTILE_LAUNCH, &m_caster_pos);
 	}
 	
