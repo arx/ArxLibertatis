@@ -460,9 +460,7 @@ void SlowDownSpell::End() {
 	m_targets.clear();
 }
 
-void SlowDownSpell::Update() {
-	
-}
+void SlowDownSpell::Update() {}
 
 Vec3f SlowDownSpell::getPosition() const {
 	return getTargetPosition();

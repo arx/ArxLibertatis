@@ -81,23 +81,19 @@ void MagicSightSpell::End() {
 	if(emitsSound) {
 		ARX_SOUND_Stop(m_snd_loop);
 		m_snd_loop = audio::SourcedSample();
-	}
-	
-	Entity * caster = entities.get(m_caster);
-	if(caster && emitsSound) {
-		ARX_SOUND_PlaySFX(g_snd.SPELL_VISION_START, &caster->pos);
+		
+		Entity * caster = entities.get(m_caster);
+		if(caster) {
+			ARX_SOUND_PlaySFX(g_snd.SPELL_VISION_START, &caster->pos);
+		}
 	}
 }
 
 void MagicSightSpell::Update() {
-	
-	if(m_caster == EntityHandle_Player) {
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	if(emitsSound && m_caster == EntityHandle_Player) {
 		Vec3f pos = ARX_PLAYER_FrontPos();
-		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-		
-		if(emitsSound) {
-			ARX_SOUND_RefreshPosition(m_snd_loop, pos);
-		}
+		ARX_SOUND_RefreshPosition(m_snd_loop, pos);
 	}
 }
 

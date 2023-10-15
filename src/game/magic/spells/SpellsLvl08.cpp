@@ -269,7 +269,6 @@ void EnchantWeaponSpell::End() { }
 
 void EnchantWeaponSpell::Update() { }
 
-
 bool LifeDrainSpell::CanLaunch() {
 	return spells.getSpellByCaster(m_caster, m_type) == nullptr;
 }

@@ -476,11 +476,11 @@ void IncinerateSpell::End() {
 
 void IncinerateSpell::Update() {
 	
-	Entity * target = entities.get(m_target);
-	if(target) {
-		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
 		
-		if(emitsSound) {
+	if(emitsSound) {
+		Entity * target = entities.get(m_target);
+		if(target) {
 			ARX_SOUND_RefreshPosition(m_snd_loop, target->pos);
 		}
 	}

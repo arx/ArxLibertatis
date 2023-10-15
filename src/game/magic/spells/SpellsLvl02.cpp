@@ -178,14 +178,10 @@ void DetectTrapSpell::End() {
 }
 
 void DetectTrapSpell::Update() {
-	
-	if(m_caster == EntityHandle_Player) {
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	if(emitsSound && m_caster == EntityHandle_Player) {
 		Vec3f pos = ARX_PLAYER_FrontPos();
-		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-		
-		if(emitsSound) {
-			ARX_SOUND_RefreshPosition(m_snd_loop, pos);
-		}
+		ARX_SOUND_RefreshPosition(m_snd_loop, pos);
 	}
 }
 

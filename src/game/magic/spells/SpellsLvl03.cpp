@@ -100,11 +100,11 @@ void SpeedSpell::End() {
 	if(emitsSound) {
 		ARX_SOUND_Stop(m_snd_loop);
 		m_snd_loop = audio::SourcedSample();
-	}
-	
-	Entity * target = entities.get(m_target);
-	if(target && emitsSound) {
-		ARX_SOUND_PlaySFX(g_snd.SPELL_SPEED_END, &target->pos);
+		
+		Entity * target = entities.get(m_target);
+		if(target) {
+			ARX_SOUND_PlaySFX(g_snd.SPELL_SPEED_END, &target->pos);
+		}
 	}
 	
 	m_trails.clear();
@@ -113,12 +113,10 @@ void SpeedSpell::End() {
 
 void SpeedSpell::Update() {
 	
-	if(m_caster == EntityHandle_Player) {
-		bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
-		
-		if(emitsSound) {
-			ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
-		}
+	bool emitsSound = !(m_flags & SPELLCAST_FLAG_NOSOUND);
+	
+	if(emitsSound && m_caster == EntityHandle_Player) {
+		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 	}
 	
 	for(SpeedTrail & trail : m_trails) {
