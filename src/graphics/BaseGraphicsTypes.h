@@ -52,7 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 typedef util::HandleType<struct ObjSelectionTag, u16> VertexSelectionId;
 typedef util::HandleType<struct ObjVertGroupTag, u16> VertexGroupId;
-typedef util::HandleType<struct VertexIdtag, u16> VertexId;
+typedef util::HandleType<struct VertexIdTag, u16> VertexId;
 typedef util::HandleType<struct MaterialIdTag, u16> MaterialId;
 typedef util::HandleType<struct RoomHandleTag, u32> RoomHandle;
 typedef util::HandleType<struct PortalHandleTag, u32> PortalHandle;
