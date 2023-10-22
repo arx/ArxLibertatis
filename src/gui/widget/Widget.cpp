@@ -79,7 +79,7 @@ Widget * Widget::getWidgetAt(const Vec2f & mousePos) {
 	return m_rect.contains(mousePos) ? this : nullptr;
 }
 
-void Widget::setShortcut(int key) {
+void Widget::setShortcut(InputKeyId key) {
 	m_shortcut = key;
 }
 

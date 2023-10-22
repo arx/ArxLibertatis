@@ -82,7 +82,7 @@ public:
 	void setTargetPage(MENUSTATE page) { m_targetPage = page; }
 	
 	InputKeyId shortcut() const { return m_shortcut; }
-	void setShortcut(int key);
+	void setShortcut(InputKeyId key);
 	
 	virtual void setEnabled(bool enable);
 	bool isEnabled() const { return m_enabled; }
