@@ -54,6 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Hud.h"
 #include "gui/Interface.h"
+#include "gui/hud/PlayerInventory.h"
 #include "gui/hud/SecondaryInventory.h"
 #include "io/resource/ResourcePath.h"
 #include "scene/Interactive.h"
@@ -145,6 +146,8 @@ public:
 				PutInFrontOfPlayer(slot.entity);
 			}
 		}
+		g_playerInventoryHud.setCurrentBag(0);
+		
 		
 		ARX_PLAYER_MakeFreshHero();
 		
