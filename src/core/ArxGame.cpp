@@ -1544,14 +1544,10 @@ void ArxGame::updateInput() {
 		
 		if(GInput->getMouseButtonRepeat(Mouse::Button_0)) {
 			EERIEMouseButton |= 1;
-		} else {
-			EERIEMouseButton &= ~1;
 		}
 		
 		if(GInput->getMouseButtonRepeat(Mouse::Button_1)) {
 			EERIEMouseButton |= 2;
-		} else {
-			EERIEMouseButton &= ~2;
 		}
 		
 	}
