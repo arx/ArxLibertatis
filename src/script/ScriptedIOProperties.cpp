@@ -447,7 +447,7 @@ public:
 		
 		Entity * io = context.getEntity();
 		
-		HandleFlags("ofnlcs") {
+		HandleFlags("ofncs") {
 		
 			if(flg & flag('o')) {
 				io->halo_native.flags |= HALO_ACTIVE;
