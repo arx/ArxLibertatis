@@ -147,7 +147,6 @@ extern long COLLIDED_CLIMB_POLY;
 static const float ARX_PLAYER_SKILL_STEALTH_MAX = 100.f;
 
 ARXCHARACTER player;
-EERIE_3DOBJ * hero = nullptr;
 float currentdistance = 0.f;
 float CURRENT_PLAYER_COLOR = 0;
 AnimationDuration PLAYER_ROTATION = 0;
@@ -1083,9 +1082,6 @@ void ARX_PLAYER_Restore_Skin() {
  */
 void ARX_PLAYER_LoadHeroAnimsAndMesh() {
 	
-	hero = loadObject("graph/obj3d/interactive/npc/human_base/human_base.teo", false).release();
-	PLAYER_SKIN_TC = TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero_head");
-	
 	herowaitbook = EERIE_ANIMMANAGER_Load("graph/obj3d/anims/npc/human_wait_book.tea");
 	EERIE_ANIMMANAGER_Load("graph/obj3d/anims/npc/human_normal_wait.tea");
 	herowait_2h = EERIE_ANIMMANAGER_Load("graph/obj3d/anims/npc/human_wait_book_2handed.tea");
@@ -1095,7 +1091,9 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh() {
 	arx_assert(entities.player() == io);
 	arx_assert(io->idString() == "player");
 	
-	io->obj = hero;
+	arx_assert(!io->obj);
+	io->obj = loadObject("graph/obj3d/interactive/npc/human_base/human_base.teo", false).release();
+	PLAYER_SKIN_TC = TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero_head");
 	
 	player.skin = 0;
 	ARX_PLAYER_Restore_Skin();

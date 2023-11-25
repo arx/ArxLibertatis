@@ -221,8 +221,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 	arx_assert(entities.player());
 	Entity * io = entities.player();
 	
-	if(io->obj != hero)
-		delete io->obj;
+	delete io->obj;
 	
 	io->obj = loadObject("graph/obj3d/interactive/npc/human_base/human_base.teo", false).release();
 	
@@ -250,7 +249,6 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 	ARX_INTERACTIVE_Show_Hide_1st(entities.player(), !EXTERNALVIEW);
 	ARX_INTERACTIVE_HideGore(entities.player(), false);
 	
-	EERIE_Object_Precompute_Fast_Access(hero);
 	EERIE_Object_Precompute_Fast_Access(entities.player()->obj);
 	
 	ARX_INTERACTIVE_RemoveGoreOnIO(entities.player());

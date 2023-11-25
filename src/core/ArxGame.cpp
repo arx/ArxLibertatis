@@ -905,10 +905,7 @@ bool ArxGame::addPaks() {
 
 static void ReleaseSystemObjects() {
 	
-	delete hero, hero = nullptr;
-	
 	if(entities.size() > 0 && entities.player() != nullptr) {
-		entities.player()->obj = nullptr; // already deleted above (hero)
 		delete entities.player();
 		arx_assert(entities.size() > 0 && entities.player() == nullptr);
 	}

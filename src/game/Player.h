@@ -408,7 +408,6 @@ struct ARXCHARACTER {
 extern float CURRENT_PLAYER_COLOR;
 
 extern ARXCHARACTER player;
-extern EERIE_3DOBJ * hero;
 extern ANIM_HANDLE * herowaitbook;
 extern ANIM_HANDLE * herowait_2h;
 extern std::vector<std::string> g_playerQuestLogEntries;
