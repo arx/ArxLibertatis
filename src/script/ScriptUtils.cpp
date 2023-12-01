@@ -54,7 +54,18 @@ Context::Context(const EERIE_SCRIPT * script, size_t pos, Entity * sender, Entit
 	, m_entity(entity)
 	, m_message(msg)
 	, m_parameters(std::move(parameters))
-{ }
+{
+	size_t posNL=0;
+	while(true){
+		posNL = m_script->data.find('\n', posNL);
+		if(posNL == std::string::npos) {
+			break;
+		}else{
+			m_vNewLineAt.push_back(posNL);
+			posNL++;
+		}
+	}
+}
 
 std::string Context::getStringVar(std::string_view name) const {
 	
