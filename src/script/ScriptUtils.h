@@ -90,6 +90,7 @@ class Context {
 	ScriptMessage m_message;
 	ScriptParameters m_parameters;
 	std::vector<size_t> m_stack;
+	std::vector<size_t> m_vNewLineAt;
 	
 public:
 	
@@ -131,7 +132,7 @@ public:
 	
 	size_t getPosition() const { return m_pos; }
 	
-	
+	std::string getPositionAndLineNumber() const;
 };
 
 class Command {
@@ -181,7 +182,7 @@ bool isBlockEndSuprressed(const Context & context, std::string_view command);
 
 size_t initSuppressions();
 
-#define ScriptContextPrefix(context) '[' << ((context).getEntity() ? (((context).getScript() == &(context).getEntity()->script) ? (context).getEntity()->className() : (context).getEntity()->idString()) : "unknown") << ':' << (context).getPosition() << "] "
+#define ScriptContextPrefix(context) '[' << ((context).getEntity() ? (((context).getScript() == &(context).getEntity()->script) ? (context).getEntity()->className() : (context).getEntity()->idString()) : "unknown") << ':' << (context).getPositionAndLineNumber() << "] "
 #define ScriptPrefix ScriptContextPrefix(context) << getName() <<
 #define DebugScript(args) LogDebug(ScriptPrefix args)
 #define ScriptInfo(args) LogInfo << ScriptPrefix args

@@ -125,6 +125,27 @@ std::string Context::getCommand(bool skipNewlines) {
 	return word;
 }
 
+std::string Context::getPositionAndLineNumber() const {
+	std::stringstream s;
+	s << m_pos;
+	
+	int iLine=0;
+	int iColumn=1;
+	for(size_t i=0;i<m_vNewLineAt.size();i++) {
+		if(m_pos > m_vNewLineAt[i]){
+			iLine=i+1;
+			iColumn = m_pos - m_vNewLineAt[i];
+      iLine++;
+      iColumn--;
+		}else{
+			break;
+		}
+	}
+	
+	s << ", Line " << iLine << ", Column " << iColumn << "";
+	return s.str(); 
+}
+
 std::string Context::getWord() {
 	
 	std::string_view esdat = m_script->data;
