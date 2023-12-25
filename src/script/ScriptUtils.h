@@ -90,6 +90,9 @@ class Context {
 	ScriptMessage m_message;
 	ScriptParameters m_parameters;
 	std::vector<size_t> m_stack;
+	std::vector<size_t> m_stackCallFrom;
+	std::vector<std::string> m_stackId;
+	std::vector<size_t> m_vNewLineAt;
 	
 public:
 	
@@ -131,6 +134,8 @@ public:
 	
 	size_t getPosition() const { return m_pos; }
 	
+	std::string getPositionAndLineNumber(bool compact = false, size_t pos = static_cast<size_t>(-1)) const;
+	std::string getGoToGoSubCallStack(std::string_view prepend, std::string_view append) const;
 	
 };
 
@@ -181,7 +186,7 @@ bool isBlockEndSuprressed(const Context & context, std::string_view command);
 
 size_t initSuppressions();
 
-#define ScriptContextPrefix(context) '[' << ((context).getEntity() ? (((context).getScript() == &(context).getEntity()->script) ? (context).getEntity()->className() : (context).getEntity()->idString()) : "unknown") << ':' << (context).getPosition() << "] "
+#define ScriptContextPrefix(context) '[' << ((context).getEntity() ? (((context).getScript() == &(context).getEntity()->script) ? (context).getEntity()->className() : (context).getEntity()->idString()) : "unknown") << ':' << (context).getPositionAndLineNumber() << (context).getGoToGoSubCallStack(" (CallStack:", ")") << "] "
 #define ScriptPrefix ScriptContextPrefix(context) << getName() <<
 #define DebugScript(args) LogDebug(ScriptPrefix args)
 #define ScriptInfo(args) LogInfo << ScriptPrefix args
