@@ -221,7 +221,7 @@ static std::string getEventAndStackInfo(Context & context) {
 		s << ")";
 	}
 	
-	s << context.getGoToGoSubCallStack(" at GoTo/GoSub callStack ", ", " + context.getPositionAndLineNumber());
+	s << context.getGoSubCallStack(" at GoSub callStack ", ", " + context.getPositionAndLineNumber());
 	
 	return s.str();
 }
