@@ -89,7 +89,7 @@ class Context {
 	Entity * m_entity;
 	ScriptMessage m_message;
 	ScriptParameters m_parameters;
-	std::vector<size_t> m_stack;
+	std::vector<std::pair<size_t, std::string>> m_stackIdCalledFromPos;
 	std::vector<size_t> m_vNewLineAt;
 	
 public:
@@ -105,6 +105,7 @@ public:
 	std::string getCommand(bool skipNewlines = true);
 	
 	void skipWhitespace(bool skipNewlines = false, bool warnNewlines = false);
+	void updateNewLinesList();
 	
 	Entity * getSender() const { return m_sender; }
 	Entity * getEntity() const { return m_entity; }
@@ -131,8 +132,12 @@ public:
 	const EERIE_SCRIPT * getScript() const { return m_script; }
 	
 	size_t getPosition() const { return m_pos; }
+	void getLineColumn(size_t & iLine, size_t & iColumn, size_t pos = static_cast<size_t>(-1)) const;
+	std::string getPositionAndLineNumber(bool compact = false, size_t pos = static_cast<size_t>(-1)) const;
 	
-	std::string getPositionAndLineNumber() const;
+	size_t getGoSubCallFromPos(size_t  indexFromLast) const;
+	std::string getGoSubCallStack(std::string_view prepend, std::string_view append, std::string_view between = " -> ") const;
+	
 };
 
 class Command {

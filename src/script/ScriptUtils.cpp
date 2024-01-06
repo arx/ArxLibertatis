@@ -55,8 +55,12 @@ Context::Context(const EERIE_SCRIPT * script, size_t pos, Entity * sender, Entit
 	, m_message(msg)
 	, m_parameters(std::move(parameters))
 {
-	size_t posNL=0;
-	while(true){
+	updateNewLinesList();
+}
+
+void Context::updateNewLinesList() {
+	size_t posNL = 0;
+	while(true) {
 		posNL = m_script->data.find('\n', posNL);
 		if(posNL == std::string::npos) {
 			break;
@@ -136,25 +140,70 @@ std::string Context::getCommand(bool skipNewlines) {
 	return word;
 }
 
-std::string Context::getPositionAndLineNumber() const {
+std::string Context::getPositionAndLineNumber(bool compact, size_t pos) const {
 	std::stringstream s;
-	s << "Position " << m_pos;
 	
-	int iLine=0;
-	int iColumn=1;
-	for(size_t i=0;i<m_vNewLineAt.size();i++) {
-		if(m_pos > m_vNewLineAt[i]){
-			iLine=i+1;
-			iColumn = m_pos - m_vNewLineAt[i];
-      iLine++;
-      iColumn--;
-		}else{
+	if(pos == static_cast<size_t>(-1)) {
+		pos = m_pos;
+	}
+	
+	s << "(" << (compact ? "p=" : "Position ") << pos;
+	
+	size_t iLine, iColumn;
+	getLineColumn(iLine, iColumn, pos);
+	
+	s << (compact ? ",l=" : ", Line ") << iLine << (compact ? ",c=" : ", Column ") << iColumn << ")";
+	return s.str();
+}
+
+void Context::getLineColumn(size_t & iLine, size_t & iColumn, size_t pos) const {
+	if(pos == static_cast<size_t>(-1)) {
+		pos = m_pos;
+	}
+	
+	iLine = 0;
+	iColumn = 1;
+	for(size_t i = 0; i < m_vNewLineAt.size(); i++) {
+		if(pos > m_vNewLineAt[i]) {
+			iLine = i + 1;
+			iColumn = pos - m_vNewLineAt[i];
+			iLine++;
+			iColumn--;
+		} else {
 			break;
 		}
 	}
+}
+
+size_t Context::getGoSubCallFromPos(size_t indexFromLast) const {
+	if(m_stackIdCalledFromPos.size() == 0) {
+		return static_cast<size_t>(-1); // means invalid
+	}
 	
-	s << ", Line " << iLine << ", Column " << iColumn << "";
-	return s.str(); 
+	if(indexFromLast >= m_stackIdCalledFromPos.size()) {
+		indexFromLast = m_stackIdCalledFromPos.size() - 1;
+	}
+	
+	return m_stackIdCalledFromPos[m_stackIdCalledFromPos.size() - indexFromLast - 1].first;
+}
+
+std::string Context::getGoSubCallStack(std::string_view prepend, std::string_view append, std::string_view between) const {
+	std::stringstream ss;
+	
+	if(m_stackIdCalledFromPos.size() > 0) {
+		ss << prepend;
+		
+		size_t index = 0;
+		for(auto pair : m_stackIdCalledFromPos) {
+			if(index >= 1) ss << between;
+			ss << pair.second << getPositionAndLineNumber(true, m_stackIdCalledFromPos[index].first);
+			index++;
+		}
+		
+		ss << append;
+	}
+	
+	return ss.str();
 }
 
 std::string Context::getWord() {
@@ -374,7 +423,7 @@ size_t Context::skipCommand() {
 bool Context::jumpToLabel(std::string_view target, bool substack) {
 	
 	if(substack) {
-		m_stack.push_back(m_pos);
+		m_stackIdCalledFromPos.push_back(std::make_pair(m_pos, std::string() += target));
 	}
 	
 	size_t targetpos = FindScriptPos(m_script, std::string(">>") += target);
@@ -388,12 +437,13 @@ bool Context::jumpToLabel(std::string_view target, bool substack) {
 
 bool Context::returnToCaller() {
 	
-	if(m_stack.empty()) {
+	if(m_stackIdCalledFromPos.empty()) {
 		return false;
 	}
 	
-	m_pos = m_stack.back();
-	m_stack.pop_back();
+	m_pos = m_stackIdCalledFromPos.back().first;
+	m_stackIdCalledFromPos.pop_back();
+	
 	return true;
 }
 
