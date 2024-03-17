@@ -42,7 +42,12 @@ jobs:
     - name: Update
       run: brew update
 
+    - name: Workaround for Python install isssues - https://github.com/actions/runner-images/issues/8838
+      run: brew install python@3 || brew link --overwrite python@3
+
     - name: Dependencies
+      env:
+        HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
       run: brew install boost freetype sdl2 libepoxy qt5 cppunit glm openal-soft
 
     - name: Configure
