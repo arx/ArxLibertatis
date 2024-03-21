@@ -159,6 +159,10 @@ public:
 		m_duration = 0;
 	}
 	
+	bool emitsSound() {
+		return (m_flags & SPELLCAST_FLAG_NOSOUND) == 0;
+	}
+	
 	[[nodiscard]] std::string_view className() const noexcept;
 	[[nodiscard]] std::string idString() const noexcept;
 	

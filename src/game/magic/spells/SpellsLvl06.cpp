@@ -69,7 +69,9 @@ bool RaiseDeadSpell::CanLaunch() {
 	GetTargetAndBeta(target, beta);
 
 	if(!ARX_INTERACTIVE_ConvertToValidPosForIO(nullptr, &target)) {
-		ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE);
+		if(emitsSound()) {
+			ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE);
+		}
 		return false;
 	}
 
@@ -84,7 +86,10 @@ void RaiseDeadSpell::Launch() {
 	GetTargetAndBeta(target, beta);
 	
 	m_targetPos = target;
-	ARX_SOUND_PlaySFX(g_snd.SPELL_RAISE_DEAD, &m_targetPos);
+	
+	if(emitsSound()) {
+		ARX_SOUND_PlaySFX(g_snd.SPELL_RAISE_DEAD, &m_targetPos);
+	}
 	
 	m_hasDuration = m_launchDuration >= 0;
 	m_duration = m_hasDuration ? m_launchDuration : 0;
@@ -117,7 +122,9 @@ void RaiseDeadSpell::End() {
 	
 	Entity * entity = entities.get(m_entity);
 	if(entity) {
-		ARX_SOUND_PlaySFX(g_snd.SPELL_ELECTRIC, &entity->pos);
+		if(emitsSound()) {
+			ARX_SOUND_PlaySFX(g_snd.SPELL_ELECTRIC, &entity->pos);
+		}
 		
 		if(entity->scriptload && (entity->ioflags & IO_NOSAVE)) {
 			AddRandomSmoke(*entity, 100);
@@ -168,7 +175,9 @@ void RaiseDeadSpell::Update() {
 	GameDuration tim = m_fissure.m_elapsed;
 	
 	if(tim > 3s && m_entity == EntityHandle()) {
-		ARX_SOUND_PlaySFX(g_snd.SPELL_ELECTRIC, &m_targetPos);
+		if(emitsSound()) {
+			ARX_SOUND_PlaySFX(g_snd.SPELL_ELECTRIC, &m_targetPos);
+		}
 		
 		Cylinder phys = Cylinder(m_targetPos, 50, -200);
 		
@@ -205,7 +214,9 @@ void RaiseDeadSpell::Update() {
 			
 		} else {
 			
-			ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE);
+			if(emitsSound()) {
+				ARX_SOUND_PlaySFX(g_snd.MAGIC_FIZZLE);
+			}
 			m_creationFailed = true;
 			requestEnd();
 			
@@ -221,7 +232,9 @@ void RaiseDeadSpell::Update() {
 
 void ParalyseSpell::Launch() {
 	
-	ARX_SOUND_PlaySFX(g_snd.SPELL_PARALYSE, &entities[m_target]->pos);
+	if(emitsSound()) {
+		ARX_SOUND_PlaySFX(g_snd.SPELL_PARALYSE, &entities[m_target]->pos);
+	}
 	
 	m_duration = (m_launchDuration >= 0) ? m_launchDuration : 5s;
 	m_hasDuration = true;
@@ -251,7 +264,9 @@ void ParalyseSpell::End() {
 		target->ioflags &= ~IO_FREEZESCRIPT;
 	}
 	
-	ARX_SOUND_PlaySFX(g_snd.SPELL_PARALYSE_END);
+	if(emitsSound()) {
+		ARX_SOUND_PlaySFX(g_snd.SPELL_PARALYSE_END);
+	}
 }
 
 Vec3f ParalyseSpell::getPosition() const {
@@ -293,7 +308,7 @@ void CreateFieldSpell::Launch() {
 	}
 	
 	// Don't play sound for persistent fields
-	if(!(m_flags & SPELLCAST_FLAG_RESTORE)) {
+	if(!(m_flags & SPELLCAST_FLAG_RESTORE) && emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_CREATE_FIELD, &target);
 	}
 	
@@ -360,7 +375,9 @@ Vec3f CreateFieldSpell::getPosition() const {
 
 void DisarmTrapSpell::Launch() {
 	
-	ARX_SOUND_PlaySFX(g_snd.SPELL_DISARM_TRAP);
+	if(emitsSound()) {
+		ARX_SOUND_PlaySFX(g_snd.SPELL_DISARM_TRAP);
+	}
 	
 	m_duration = 1ms;
 	m_hasDuration = true;
@@ -397,7 +414,9 @@ bool SlowDownSpell::CanLaunch() {
 
 void SlowDownSpell::Launch() {
 	
-	ARX_SOUND_PlaySFX(g_snd.SPELL_SLOW_DOWN, &entities[m_target]->pos);
+	if(emitsSound()) {
+		ARX_SOUND_PlaySFX(g_snd.SPELL_SLOW_DOWN, &entities[m_target]->pos);
+	}
 	
 	if(m_caster == EntityHandle_Player) {
 		m_duration = 0;
@@ -414,7 +433,10 @@ void SlowDownSpell::Launch() {
 
 void SlowDownSpell::End() {
 	
-	ARX_SOUND_PlaySFX(g_snd.SPELL_SLOW_DOWN_END);
+	if(emitsSound()) {
+		ARX_SOUND_PlaySFX(g_snd.SPELL_SLOW_DOWN_END);
+	}
+	
 	m_targets.clear();
 }
 
