@@ -24,16 +24,17 @@
 
 class Entity;
 
-void MagicFlareLoadTextures();
-
 void MagicFlareReleaseEntity(const Entity * entity);
-long MagicFlareCountNonFlagged();
+long MagicFlareCountWithoutEntity();
 
 void ARX_MAGICAL_FLARES_FirstInit();
 void ARX_MAGICAL_FLARES_KillAll();
 void MagicFlareChangeColor();
-void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io = nullptr, bool bookDraw = false);
-void FlareLine(Vec2f pos0, Vec2f pos1, Entity * io = nullptr);
+void AddBookFlare(const Vec2f & pos, float sm, Entity * io);
+void AddNPCFlare(const Vec2f & pos, float sm, Entity * io);
+void AddPlayerCastFlare(const Vec2f & pos, float sm);
+void AddFlare(const Vec2f & pos, float sm, bool useVariedFlares, Entity * io = nullptr, bool bookDraw = false);
+void FlareLine(const Vec2f & pos0, const Vec2f & pos1, Entity * io = nullptr);
 void ARX_MAGICAL_FLARES_Update();
 
 #endif // ARX_GRAPHICS_PARTICLE_MAGICFLARE_H
