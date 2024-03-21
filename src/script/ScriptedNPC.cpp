@@ -71,7 +71,7 @@ public:
 		Entity * io = context.getEntity();
 		
 		Behaviour behavior = 0;
-		HandleFlags("lsdmfa012") {
+		HandleFlags("lsdmfa") {
 			behavior |= (flg & flag('l')) ? BEHAVIOUR_LOOK_AROUND : Behaviour(0);
 			behavior |= (flg & flag('s')) ? BEHAVIOUR_SNEAK : Behaviour(0);
 			behavior |= (flg & flag('d')) ? BEHAVIOUR_DISTANT : Behaviour(0);
