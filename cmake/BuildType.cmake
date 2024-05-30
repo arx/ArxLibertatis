@@ -233,6 +233,9 @@ else(MSVC)
 		add_ldflag("-Wl,--gc-sections")
 		add_ldflag("-Wl,--icf=all")
 		add_cxxflag("-fmerge-all-constants")
+		if(NOT DEBUG AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+			add_cxxflag("-fomit-frame-pointer")
+		endif()
 		
 	endif()
 	
