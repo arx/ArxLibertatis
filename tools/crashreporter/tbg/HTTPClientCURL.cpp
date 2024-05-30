@@ -54,6 +54,7 @@ public:
 		if(m_curl) {
 			// Enable cookies
 			curl_easy_setopt(m_curl, CURLOPT_COOKIEFILE, "");
+			curl_easy_setopt(m_curl, CURLOPT_COOKIEJAR, "");
 		}
 	}
 	
