@@ -4,6 +4,11 @@ if(CMAKE_VERSION VERSION_LESS 3.12)
 	cmake_policy(VERSION ${CMAKE_VERSION})
 endif()
 
+# CMake 30
+if(POLICY CMP0167)
+	cmake_policy(SET CMP0167 NEW)
+endif()
+
 project(arx-libertatis)
 
 
