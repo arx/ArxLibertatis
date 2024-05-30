@@ -5,9 +5,12 @@ if(NOT MSVC AND NOT CMAKE_VERSION VERSION_LESS 2.8.6)
 	include(CheckCXXSymbolExists)
 	check_cxx_symbol_exists(_LIBCPP_VERSION "cstddef" IS_LIBCXX)
 	if(IS_LIBCXX AND (DEBUG OR DEBUG_EXTRA))
-		check_cxx_symbol_exists(_LIBCPP_ENABLE_HARDENED_MODE "version" ARX_HAVE_LIBCPP_ENABLE_HARDENED_MODE)
-		if(NOT ARX_HAVE_LIBCPP_ENABLE_HARDENED_MODE)
-			check_cxx_symbol_exists(_LIBCPP_ENABLE_ASSERTIONS "version" ARX_HAVE_LIBCPP_ENABLE_ASSERTIONS)
+		check_cxx_symbol_exists(_LIBCPP_HARDENING_MODE "version" ARX_HAVE_LIBCPP_HARDENING_MODE)
+		if(NOT ARX_HAVE_LIBCPP_HARDENING_MODE)
+			check_cxx_symbol_exists(_LIBCPP_ENABLE_HARDENED_MODE "version" ARX_HAVE_LIBCPP_ENABLE_HARDENED_MODE)
+			if(NOT ARX_HAVE_LIBCPP_ENABLE_HARDENED_MODE)
+				check_cxx_symbol_exists(_LIBCPP_ENABLE_ASSERTIONS "version" ARX_HAVE_LIBCPP_ENABLE_ASSERTIONS)
+			endif()
 		endif()
 	endif()
 else()
@@ -422,12 +425,15 @@ else(MSVC)
 		# add_cxxflag("-fsanitize=thread") does not work together with -fsanitize=address
 		add_cxxflag("-fsanitize=leak")
 		add_cxxflag("-fsanitize=undefined")
-		if(ARX_HAVE_LIBCPP_ENABLE_HARDENED_MODE)
-			# libc++ 17+ - Full debug mode is now a compile-time option and all -D_LIBCPP_DEBUG=1 does is
+		if(ARX_HAVE_LIBCPP_HARDENING_MODE)
+			# libc++ 18+
+			add_definitions(-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_DEBUG)
+		elseif(ARX_HAVE_LIBCPP_ENABLE_HARDENED_MODE)
+			# libc++ 17 - Full debug mode is now a compile-time option and all -D_LIBCPP_DEBUG=1 does is
 			# generate an #error if the library was not built in debug mode :|
 			add_definitions(-D_LIBCPP_ENABLE_HARDENED_MODE=1)
 		elseif(ARX_HAVE_LIBCPP_ENABLE_ASSERTIONS)
-			# libc++ 15+ - Full debug mode is now a compile-time option and all -D_LIBCPP_DEBUG=1 does is
+			# libc++ 15-16 - Full debug mode is now a compile-time option and all -D_LIBCPP_DEBUG=1 does is
 			# generate an #error if the library was not built in debug mode :|
 			add_definitions(-D_LIBCPP_ENABLE_ASSERTIONS=1)
 		elseif(IS_LIBCXX)
@@ -439,11 +445,14 @@ else(MSVC)
 			set(disable_libstdcxx_debug "-U_GLIBCXX_DEBUG -U_GLIBCXX_DEBUG_PEDANTIC")
 		endif()
 	elseif(DEBUG)
-		if(ARX_HAVE_LIBCPP_ENABLE_HARDENED_MODE)
-			# libc++ 17+
+		if(ARX_HAVE_LIBCPP_HARDENING_MODE)
+			#libc++ 18+
+			add_definitions(-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE)
+		elseif(ARX_HAVE_LIBCPP_ENABLE_HARDENED_MODE)
+			# libc++ 17
 			add_definitions(-D_LIBCPP_ENABLE_HARDENED_MODE=1)
 		elseif(ARX_HAVE_LIBCPP_ENABLE_ASSERTIONS)
-			# libc++ 15+
+			# libc++ 15-16
 			add_definitions(-D_LIBCPP_ENABLE_ASSERTIONS=1)
 		elseif(IS_LIBCXX)
 			# older libc++ - 0 means light checks only, it does not mean no checks
@@ -453,11 +462,14 @@ else(MSVC)
 			add_definitions(-D_GLIBCXX_ASSERTIONS=1)
 		endif()
 	elseif(SET_OPTIMIZATION_FLAGS)
-		if(ARX_HAVE_LIBCPP_ENABLE_HARDENED_MODE)
-			# libc++ 17+
+		if(ARX_HAVE_LIBCPP_HARDENING_MODE)
+			# libc++ 18+
+			add_cxxflag("-Wp,-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE")
+		elseif(ARX_HAVE_LIBCPP_ENABLE_HARDENED_MODE)
+			# libc++ 17
 			add_cxxflag("-Wp,-D_LIBCPP_ENABLE_HARDENED_MODE=0")
 		elseif(ARX_HAVE_LIBCPP_ENABLE_ASSERTIONS)
-			# libc++ 15+
+			# libc++ 15-16
 			add_cxxflag("-Wp,-D_LIBCPP_ENABLE_ASSERTIONS=0")
 		elseif(IS_LIBCXX)
 			# older libc++
