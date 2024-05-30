@@ -193,14 +193,14 @@ public:
 			
 			if(offset != 0) {
 				if(offset + count - 1 <= std::numeric_limits<GLushort>::max()) {
-					glShortIndexBuffer.resize(std::max(glShortIndexBuffer.size(), size_t(nbindices)));
+					glShortIndexBuffer.resize(std::max(glShortIndexBuffer.size(), nbindices));
 					for(size_t i = 0; i < nbindices; i++) {
 						glShortIndexBuffer[i] = GLushort(indices[i] + offset);
 					}
 					type = GL_UNSIGNED_SHORT;
 					data = glShortIndexBuffer.data();
 				} else {
-					glIntIndexBuffer.resize(std::max(glIntIndexBuffer.size(), size_t(nbindices)));
+					glIntIndexBuffer.resize(std::max(glIntIndexBuffer.size(), nbindices));
 					for(size_t i = 0; i < nbindices; i++) {
 						glIntIndexBuffer[i] = GLuint(indices[i] + offset);
 					}
