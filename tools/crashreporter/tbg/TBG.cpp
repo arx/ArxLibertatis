@@ -110,11 +110,19 @@ std::unique_ptr<http::Response> Server::wait(const QFuture<http::Response *> & f
 }
 
 std::unique_ptr<http::Response> Server::get(const http::Request & request) {
+	#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+	return wait(QtConcurrent::run(&http::Session::get, m_session, request));
+	#else
 	return wait(QtConcurrent::run(m_session, &http::Session::get, request));
+	#endif
 }
 
 std::unique_ptr<http::Response> Server::post(const http::POSTRequest & request) {
+	#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+	return wait(QtConcurrent::run(&http::Session::post, m_session, request));
+	#else
 	return wait(QtConcurrent::run(m_session, &http::Session::post, request));
+	#endif
 }
 
 bool Server::login(const QString & username, const QString & password) {

@@ -87,7 +87,7 @@ option(USE_WAYLAND "Check for Wayland support in used libraries" OFF)
 
 # Alternative dependencies
 set(WITH_SDL CACHE STRING "The SDL version to use: 1 or 2 or empty (use any)")
-set(WITH_QT CACHE STRING "The Qt version to use: 4 or 5 or empty (use any)")
+set(WITH_QT CACHE STRING "The Qt version to use: 4, 5, 6 or empty (use any)")
 set(WITH_OPENGL CACHE STRING "The OpenGL wrangler to use: epoxy or glew or empty (use any)")
 
 # Build types
@@ -2023,6 +2023,7 @@ print_configuration("Audio features"
 print_configuration("Windowing"
 	ARX_HAVE_SDL2 "SDL 2"
 	ARX_HAVE_SDL1 "SDL 1.2"
+	HAVE_QT6      "Qt 6"
 	HAVE_QT5      "Qt 5"
 	HAVE_QT4      "Qt 4"
 )

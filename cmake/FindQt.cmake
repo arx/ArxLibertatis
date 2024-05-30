@@ -26,6 +26,129 @@ else()
 	endif()
 endif()
 
+# Try to find Qt 6 modules
+if(NOT HAVE_QT AND (NOT WITH_QT OR WITH_QT EQUAL 6))
+	
+	set(HAVE_QT6 1)
+	foreach(lib IN LISTS _Qt_COMPONENTS)
+		find_package(Qt6${lib} ${_Qt_FIND_ARGS})
+		if(NOT Qt6${lib}_FOUND)
+			set(HAVE_QT6 0)
+			break()
+		endif()
+		set(Qt${lib}_LIBRARIES ${Qt6${lib}_LIBRARIES})
+		set(Qt${lib}_DEFINITIONS ${Qt6${lib}_DEFINITIONS})
+		set(Qt${lib}_INCLUDE_DIRS ${Qt6${lib}_INCLUDE_DIRS})
+		set(Qt${lib}_EXECUTABLE_COMPILE_FLAGS ${Qt6${lib}_EXECUTABLE_COMPILE_FLAGS})
+		set(Qt${lib}_SOURCES)
+	endforeach()
+	
+	if(HAVE_QT6)
+		
+		set(QtCore_QTMAIN_LIBRARIES ${Qt6Core_QTMAIN_LIBRARIES})
+		
+		macro(qt_wrap_ui)
+			qt6_wrap_ui(${ARGV})
+		endmacro()
+		macro(qt_wrap_cpp)
+			qt6_wrap_cpp(${ARGV})
+		endmacro()
+		macro(qt_add_resources output)
+			set(_Qt_resource)
+			qt6_add_resources(_Qt_resource ${ARGN})
+			list(APPEND ${output} ${_Qt_resource})
+		endmacro()
+		
+		set(Qt_VERSION ${Qt6Core_VERSION})
+		set(HAVE_QT 1)
+		
+		# Handle static Qt 6 windows builds
+		# Even though Qt ships it's own CMake configuration files, they do not add
+		# all the required dependencies for their imported static library targets
+		# - and those they do add are set with the wrong property :/
+		if(WIN32)
+			foreach(lib IN LISTS _Qt_COMPONENTS)
+				
+				if(TARGET Qt6::${lib})
+					
+					get_property(_Qt_lib TARGET Qt6::${lib} PROPERTY IMPORTED_LOCATION_RELEASE)
+					if(NOT _Qt_lib)
+						get_property(_Qt_lib TARGET Qt6::${lib} PROPERTY IMPORTED_LOCATION)
+					endif()
+					get_property(_Qt_implib TARGET Qt6::${lib} PROPERTY IMPORTED_IMPLIB_RELEASE)
+					if(NOT _Qt_implib)
+						get_property(_Qt_implib TARGET Qt6::${lib} PROPERTY IMPORTED_IMPLIB)
+					endif()
+					
+					if(_Qt_implib OR NOT _Qt_lib OR NOT _Qt_lib MATCHES ".(lib|a)$")
+						# Does not look like a static library
+					else()
+						
+						set(_Qt_extra_libs)
+						
+						# Qt sets this for Qt6::Gui on either ANGLE or opengl
+						foreach(var IN ITEMS DEPENDENT_LIBRARIES_RELEASE DEPENDENT_LIBRARIES)
+							get_property(_Qt_deps TARGET Qt6::${lib} PROPERTY IMPORTED_LINK_${var})
+							if(_Qt_deps)
+								list(APPEND _Qt_extra_libs ${_Qt_deps})
+							endif()
+						endforeach()
+						
+						if(lib STREQUAL "Core")
+							get_filename_component(_Qt_libdir ${_Qt_lib} PATH)
+							foreach(ext IN ITEMS lib a)
+								if(EXISTS "${_Qt_libdir}/qtpcre.lib")
+									list(APPEND _Qt_extra_libs "${_Qt_libdir}/qtpcre.lib")
+									break()
+								endif()
+							endforeach()
+							list(APPEND _Qt_extra_libs kernel32 user32 shell32 uuid ole32 advapi32 ws2_32)
+						elseif(lib STREQUAL "Concurrent")
+							list(APPEND _Qt_extra_libs ${QtCore_LIBRARIES})
+						elseif(lib STREQUAL "Gui")
+							get_filename_component(_Qt_libdir ${_Qt_lib} PATH)
+							foreach(ext IN ITEMS lib a)
+								if(EXISTS "${_Qt_libdir}/Qt6PlatformSupport.lib")
+									list(APPEND _Qt_extra_libs "${_Qt_libdir}/Qt6PlatformSupport.lib")
+									break()
+								endif()
+							endforeach()
+							if(TARGET Qt6::QWindowsIntegrationPlugin)
+								list(APPEND _Qt_extra_libs Qt6::QWindowsIntegrationPlugin)
+							endif()
+							# Just statically linking the plugin is not enough
+							set(_Qt_usewinplugin "${PROJECT_BINARY_DIR}/QtUseWindowsIntegration.cpp")
+							file(WRITE ${_Qt_usewinplugin} "#include <QtPlugin>\n")
+							file(APPEND ${_Qt_usewinplugin} "Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin)\n")
+							list(APPEND QtGui_SOURCES ${_Qt_usewinplugin})
+							list(APPEND _Qt_extra_libs gdi32 comdlg32 oleaut32 imm32 winmm ws2_32 ole32
+							                           user32 advapi32 ${Qt6Core_LIBRARIES})
+						elseif(lib STREQUAL "Widgets")
+							list(APPEND _Qt_extra_libs gdi32 comdlg32 oleaut32 imm32 winmm ws2_32 ole32
+							                           user32 advapi32 ${Qt6Core_LIBRARIES}
+							                           ${Qt6Gui_LIBRARIES})
+						elseif(lib STREQUAL "Network")
+							list(APPEND _Qt_extra_libs ws2_32 ${Qt6Core_LIBRARIES})
+						else()
+							message(WARNING "Don't know how to statically link Qt${lib}: ${_Qt_lib}")
+						endif()
+						
+						if(_Qt_extra_libs)
+							set_property(TARGET Qt6::${lib} APPEND PROPERTY INTERFACE_LINK_LIBRARIES
+							                    ${_Qt_extra_libs})
+						endif()
+						
+					endif()
+					
+				endif()
+				
+			endforeach()
+		endif()
+		
+	endif()
+	
+endif()
+
 # Try to find Qt 5 modules
 if(NOT HAVE_QT AND (NOT WITH_QT OR WITH_QT EQUAL 5))
 	

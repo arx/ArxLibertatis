@@ -25,7 +25,6 @@
 
 #include <QApplication>
 #include <QMessageBox>
-#include <QDesktopWidget>
 #include <QDir>
 #include <QProcess>
 #include <QTime>
