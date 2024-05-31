@@ -547,7 +547,7 @@ static bool isPlayerLookingAtEnemy() {
 	const float maxLookAtAngle = glm::radians(45.f);
 	const float maxNearByDistance = 300.f;
 	
-	float closestNPCInFrontDistance = std::numeric_limits<float>::infinity();
+	float closestNPCInFrontDistance = std::numeric_limits<float>::max();
 	Entity * closestNPCInFront = nullptr;
 	bool isEnemyNearBy = false;
 	
@@ -563,7 +563,7 @@ static bool isPlayerLookingAtEnemy() {
 		float cangle = glm::dot(dir, angleToVectorXZ(player.angle.getYaw()));
 		
 		if(cangle > glm::cos(maxLookAtAngle)) {
-			if(distance < closestNPCInFrontDistance) {
+			if(distance <= closestNPCInFrontDistance) {
 				closestNPCInFrontDistance = distance;
 				closestNPCInFront = &npc;
 			}
