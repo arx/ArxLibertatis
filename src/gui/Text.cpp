@@ -219,7 +219,7 @@ long ARX_UNICODE_DrawTextInRect(Font * font, const Vec2f & pos, float maxx, std:
 	}
 
 	Rect rect(Rect::Num(pos.x), Rect::Num(pos.y), Rect::Num(maxx), Rect::Limits::max());
-	if(maxx == std::numeric_limits<float>::infinity()) {
+	if(maxx >= std::numeric_limits<float>::max()) {
 		rect.right = Rect::Limits::max();
 	}
 

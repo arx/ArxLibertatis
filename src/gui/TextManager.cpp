@@ -73,10 +73,10 @@ bool TextManager::AddText(Font * font, std::string && text, const Rect & bounds,
 	entry.text = std::move(text);
 	entry.bounds = Rectf(bounds);
 	if(bounds.right == Rect::Limits::max()) {
-		entry.bounds.right = std::numeric_limits<float>::infinity();
+		entry.bounds.right = std::numeric_limits<float>::max();
 	}
 	if(bounds.bottom == Rect::Limits::max()) {
-		entry.bounds.bottom = std::numeric_limits<float>::infinity();
+		entry.bounds.bottom = std::numeric_limits<float>::max();
 	}
 	entry.color = color;
 	entry.scrollDelay = scrollDelay;
