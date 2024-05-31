@@ -148,7 +148,7 @@ function(check_builtin RESULT EXPR)
 		file(WRITE ${compile_test_file}
 			"__attribute__((const)) int main(){ (void)(${EXPR}); return 0; }\n"
 		)
-		string(REGEX MATCH "[a-zA-Z_][a-zA-Z_0-9]*" type "${EXPR}")
+		string(REGEX MATCH "[#a-zA-Z_][a-zA-Z_0-9 ]*" type "${EXPR}")
 	endif()
 	set(old_CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 	set(old_CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
