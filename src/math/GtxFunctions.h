@@ -25,11 +25,14 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef ARX_MATH_GTXFUNCTIONS_H
 #define ARX_MATH_GTXFUNCTIONS_H
 
+#include <cmath>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/epsilon.hpp>
 #include <glm/gtc/quaternion.hpp>
 
 #include "math/Types.h"
+#include "platform/Platform.h"
 
 namespace arx {
 
@@ -225,6 +228,21 @@ GLM_FUNC_QUALIFIER float pitch(glm::quat const & q) {
 GLM_FUNC_QUALIFIER float yaw(glm::quat const & q) {
 	return glm::asin(glm::clamp(-2.f * (q.x * q.z - q.w * q.y), -1.f, 1.f));
 }
+
+#if ARX_HAVE_PRAGMA_FLOAT_CONTROL_PRECISE
+#pragma float_control(precise, on, push)
+#endif
+
+#if ARX_HAVE_ATTRIBUTE_OPTIMIZE_FNO_FINITE_MATH_ONLY
+__attribute__((optimize("-fno-finite-math-only")))
+#endif
+inline bool safe_isfinite(float f) {
+	return (std::isfinite)(f);
+}
+
+#if ARX_HAVE_PRAGMA_FLOAT_CONTROL_PRECISE
+#pragma float_control(pop)
+#endif
 
 } // namespace arx
 

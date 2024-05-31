@@ -31,6 +31,12 @@
 #cmakedefine01 ARX_HAVE_BUILTIN_UNREACHABLE
 // __builtin_expect(e, v)
 #cmakedefine01 ARX_HAVE_BUILTIN_EXPECT
+// __attribute__((optimize("-fno-finite-math-only")))
+#cmakedefine01 ARX_HAVE_ATTRIBUTE_OPTIMIZE_FNO_FINITE_MATH_ONLY
+
+// Clang/MSVC extensions
+// #pragma float_control(precise, on, push)
+#cmakedefine01 ARX_HAVE_PRAGMA_FLOAT_CONTROL_PRECISE
 
 // Code generation options
 #cmakedefine01 BUILD_PROFILER_INSTRUMENT

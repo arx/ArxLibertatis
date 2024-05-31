@@ -676,6 +676,7 @@ if(MSVC)
 	
 	set(ARX_HAVE_XMMINTRIN 1)
 	set(ARX_HAVE_PMMINTRIN 1)
+	set(ARX_HAVE_PRAGMA_FLOAT_CONTROL_PRECISE 1)
 	
 else(MSVC)
 	
@@ -733,6 +734,11 @@ else(MSVC)
 		check_builtin(ARX_HAVE_BUILTIN_UNREACHABLE      "__builtin_unreachable")
 	endif()
 	check_builtin(ARX_HAVE_BUILTIN_EXPECT           "__builtin_expect")
+	
+	check_builtin(ARX_HAVE_ATTRIBUTE_OPTIMIZE_FNO_FINITE_MATH_ONLY  "__attribute__((optimize(\"-fno-finite-math-only\")))")
+	if(NOT ARX_HAVE_ATTRIBUTE_OPTIMIZE_FNO_FINITE_MATH_ONLY)
+		check_builtin(ARX_HAVE_PRAGMA_FLOAT_CONTROL_PRECISE  "#pragma float_control(precise, ...)")
+	endif()
 	
 	set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_DL_LIBS})
 	check_symbol_exists(dlsym "dlfcn.h" ARX_HAVE_DLSYM)

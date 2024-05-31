@@ -507,7 +507,7 @@ aalError OpenALBackend::setUnitFactor(float factor) {
 	
 	float speedOfSoundInUnits = speedOfSoundInMetersPerSecond / factor;
 	
-	if(!(std::isfinite)(speedOfSoundInUnits)) {
+	if(!arx::safe_isfinite(speedOfSoundInUnits)) {
 		return AAL_ERROR; // OpenAL soft will lock up if given NaN or +-Inf here
 	}
 	
