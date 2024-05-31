@@ -83,7 +83,7 @@ void TileData::computeIntersectingPolygons() {
 			}
 		}
 		
-		tile.maxY() = -std::numeric_limits<float>::infinity();
+		tile.maxY() = -std::numeric_limits<float>::max();
 		for(EERIEPOLY * ep : polygons) {
 			tile.maxY() = std::max(tile.maxY(), ep->max.y);
 		}
