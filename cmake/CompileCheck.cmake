@@ -30,6 +30,7 @@ function(check_compile RESULT FILE FLAG TYPE)
 		"unrecognized .*option"                        # GNU
 		"${escaped_flag}.* not supported"              # GNU
 		"unknown .*option"                             # Clang
+		"warning:.*unknown pragma"                     # Clang
 		"ignoring unknown option"                      # MSVC
 		"warning D9002"                                # MSVC, any lang
 		"warning #[0-9]*:"                             # Intel
