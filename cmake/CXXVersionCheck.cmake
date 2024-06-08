@@ -71,7 +71,11 @@ function(enable_cxx_version version)
 	# - This feature is new in CMake 3.1
 	# - Not all CMake versions know how to check for all C++ versions
 	# - CMake doesn't tell us what versions are available
-	if(NOT CMAKE_VERSION VERSION_LESS 3.12)
+	if(NOT CMAKE_VERSION VERSION_LESS 3.25)
+		set(max_cxx_standard 26)
+	elseif(NOT CMAKE_VERSION VERSION_LESS 3.20)
+		set(max_cxx_standard 23)
+	elseif(NOT CMAKE_VERSION VERSION_LESS 3.12)
 		set(max_cxx_standard 20)
 	elseif(NOT CMAKE_VERSION VERSION_LESS 3.8)
 		set(max_cxx_standard 17)
