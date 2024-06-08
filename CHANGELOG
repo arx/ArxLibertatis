@@ -79,6 +79,7 @@ Other Fixes:
 
 Technical Changes:
 
+* Added support for Qt 6 in the crash reporter
 * The lld linker is now used when available (for non-LTO builds)
 
 ################################################################################
