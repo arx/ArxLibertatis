@@ -653,11 +653,11 @@ endif()
 # Check for optional functionality and system configuration
 
 if(NOT CXX_STD_VERSION LESS 2020 AND Boost_VERSION_MACRO LESS 107400)
-	message("STATUS Not using C++20 mode with Boost ${Boost_VERSION}")
+	message(STATUS "Not using C++20 mode with Boost ${Boost_VERSION}")
 	set(CXX_STD_VERSION 2017)
 endif()
 if(NOT CXX_STD_VERSION LESS 2020 AND HAVE_QT AND Qt_VERSION VERSION_LESS 5.4)
-	message("STATUS Not using C++20 mode with Qt ${Qt_VERSION}")
+	message(STATUS "Not using C++20 mode with Qt ${Qt_VERSION}")
 	set(CXX_STD_VERSION 2017)
 endif()
 enable_cxx_version(${CXX_STD_VERSION})
