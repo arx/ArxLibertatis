@@ -157,10 +157,10 @@ function(process_resource_files BINARY SOURCE_VARIABLE_NAME)
 	set(rc_files)
 	set(generated_rc_files)
 	
-	# Older CMake versions and MinGW do not support manifest files - manually create the resource file
+	# MinGW does not support manifest files - manually create the resource file
 	foreach(source_file IN LISTS ${SOURCE_VARIABLE_NAME})
 		
-		if(source_file MATCHES "\\.manifest" AND (NOT MSVC OR CMAKE_VERSION VERSION_LESS 3.4))
+		if(source_file MATCHES "\\.manifest" AND NOT MSVC)
 			get_filename_component(manifest_filename "${source_file}" NAME)
 			set(manifest_rc_file "${CMAKE_CURRENT_BINARY_DIR}/${manifest_filename}.rc")
 			add_custom_command(
@@ -414,11 +414,7 @@ function(_shared_build_helper LIB LIST BINARIES FIRST)
 		endforeach()
 		
 		# Add a new library for the common sources
-		if(CMAKE_VERSION VERSION_LESS 2.8.8)
-			add_library(${lib} STATIC ${common_src})
-		else()
-			add_library(${lib} OBJECT ${common_src})
-		endif()
+		add_library(${lib} OBJECT ${common_src})
 		
 		_add_dependencies_for_shared_generated_files(${lib} "${common_src}")
 		
@@ -438,29 +434,16 @@ function(_shared_build_helper LIB LIST BINARIES FIRST)
 			endforeach()
 			set(SHARED_BUILD_${bin}_SOURCES "${uncommon_src}" CACHE INTERNAL "")
 			
-			if(CMAKE_VERSION VERSION_LESS 2.8.8)
-				set(SHARED_BUILD_${bin}_LIBS ${lib} "${SHARED_BUILD_${bin}_LIBS}" CACHE INTERNAL "")
-			else()
-				set(SHARED_BUILD_${bin}_EXTRA $<TARGET_OBJECTS:${lib}>
-				    "${SHARED_BUILD_${bin}_EXTRA}" CACHE INTERNAL "")
-			endif()
+			set(SHARED_BUILD_${bin}_EXTRA $<TARGET_OBJECTS:${lib}>
+			    "${SHARED_BUILD_${bin}_EXTRA}" CACHE INTERNAL "")
 			
 		endforeach()
 		
 		if(is_shared_lib)
-			if(CMAKE_VERSION VERSION_LESS 2.8.9)
-				set(pic_flags "${CMAKE_SHARED_LIBRARY_CXX_FLAGS}")
-				set_target_properties(${lib} PROPERTIES COMPILE_FLAGS "${pic_flags}")
-			else()
-				set_target_properties(${lib} PROPERTIES POSITION_INDEPENDENT_CODE ON)
-			endif()
+			set_target_properties(${lib} PROPERTIES POSITION_INDEPENDENT_CODE ON)
 		endif()
 		
-		if(CMAKE_VERSION VERSION_LESS 2.8.12)
-			# these will be included globally later on
-		else()
-			target_include_directories(${lib} SYSTEM PRIVATE ${common_inc})
-		endif()
+		target_include_directories(${lib} SYSTEM PRIVATE ${common_inc})
 		
 	endif()
 	
@@ -558,12 +541,7 @@ function(_shared_build_add_binary bin)
 	endif()
 	
 	if(NOT SHARED_BUILD_${bin}_INCLUDES STREQUAL "")
-		if(CMAKE_VERSION VERSION_LESS 2.8.12)
-			# Cannot set per-target (SYSTEM) includes
-			include_directories(SYSTEM ${SHARED_BUILD_${bin}_INCLUDES})
-		else()
-			target_include_directories(${bin} SYSTEM PRIVATE ${SHARED_BUILD_${bin}_INCLUDES})
-		endif()
+		target_include_directories(${bin} SYSTEM PRIVATE ${SHARED_BUILD_${bin}_INCLUDES})
 	endif()
 	
 	if(NOT SHARED_BUILD_${bin}_INSTALL STREQUAL "")
@@ -610,11 +588,6 @@ function(_shared_build_add_binary bin)
 	
 	set(bindir "$<TARGET_FILE_DIR:${bin}>")
 	set(binfile "$<TARGET_FILE_NAME:${bin}>")
-	if(CMAKE_VERSION VERSION_LESS 2.8.12)
-		get_property(location TARGET ${bin} PROPERTY LOCATION_${CMAKE_BUILD_TYPE})
-		get_filename_component(bindir ${location} PATH)
-		get_filename_component(binfile ${location} NAME)
-	endif()
 	
 	foreach(symlink IN LISTS SHARED_BUILD_${bin}_SYMLINKS)
 		if(build_type STREQUAL "SHARED")

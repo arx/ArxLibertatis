@@ -1,8 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3...3.29)
-
-if(CMAKE_VERSION VERSION_LESS 3.12)
-	cmake_policy(VERSION ${CMAKE_VERSION})
-endif()
+cmake_minimum_required(VERSION 3.12...3.29)
 
 # CMake 30
 if(POLICY CMP0167)
@@ -177,36 +173,7 @@ endif()
 suboption(RUN_TESTS "Run tests as part of the default build target" BOOL ${default_RUN_TESTS})
 
 # Install destinations
-if(CMAKE_VERSION VERSION_LESS 2.8.5)
-	set(CMAKE_INSTALL_DATAROOTDIR "share" CACHE
-	    STRING "read-only architecture-independent data root (share) (relative to prefix).")
-	set(CMAKE_INSTALL_BINDIR "bin" CACHE
-	    STRING "user executables (bin) (relative to prefix).")
-	set(CMAKE_INSTALL_LIBDIR "lib" CACHE
-	    STRING "libraries (lib) (relative to prefix).")
-	set(CMAKE_INSTALL_LIBEXECDIR "libexec" CACHE
-	    STRING "program executables (libexec) (relative to prefix).")
-	set(CMAKE_INSTALL_MANDIR "${CMAKE_INSTALL_DATAROOTDIR}/man" CACHE
-	    STRING "man documentation (DATAROOTDIR/man) (relative to prefix).")
-	set(CMAKE_INSTALL_INCLUDEDIR "include" CACHE
-	    STRING "C header files (include) (relative to prefix).")
-	foreach(dir BINDIR LIBDIR LIBEXECDIR DATAROOTDIR MANDIR INCLUDEDIR)
-		if(NOT IS_ABSOLUTE ${CMAKE_INSTALL_${dir}})
-			set(CMAKE_INSTALL_FULL_${dir} "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_${dir}}")
-		else()
-			set(CMAKE_INSTALL_FULL_${dir} "${CMAKE_INSTALL_${dir}}")
-		endif()
-	endforeach()
-	mark_as_advanced(
-		CMAKE_INSTALL_DATAROOTDIR
-		CMAKE_INSTALL_BINDIR
-		CMAKE_INSTALL_LIBEXECDIR
-		CMAKE_INSTALL_MANDIR
-		CMAKE_INSTALL_INCLUDEDIR
-	)
-else()
-	include(GNUInstallDirs)
-endif()
+include(GNUInstallDirs)
 set(ICONDIR "${CMAKE_INSTALL_DATAROOTDIR}/pixmaps" CACHE
     STRING "Install location for icons (relative to prefix).")
 set(ICONTHEMEDIR "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor" CACHE
@@ -1857,12 +1824,7 @@ endif()
 
 if(BUILD_TESTS)
 	
-	if(CMAKE_VERSION VERSION_LESS 2.8.11)
-		# Cannot set per-target includes
-		include_directories(tests)
-	else()
-		target_include_directories(arxtest PRIVATE tests)
-	endif()
+	target_include_directories(arxtest PRIVATE tests)
 	
 	set(run_tests)
 	if(RUN_TESTS)
@@ -1870,9 +1832,6 @@ if(BUILD_TESTS)
 	endif()
 	
 	set(arxtest_binary "$<TARGET_FILE:arxtest>")
-	if(CMAKE_VERSION VERSION_LESS 2.8.12)
-		get_property(arxtest_binary TARGET arxtest PROPERTY LOCATION_${CMAKE_BUILD_TYPE})
-	endif()
 	
 	add_test(NAME arxtest
 		COMMAND ${CMAKE_COMMAND} -E chdir "${PROJECT_BINARY_DIR}" ${RUN_TARGET} "${arxtest_binary}"
@@ -1942,15 +1901,7 @@ install(DIRECTORY data/core/ DESTINATION "${INSTALL_DATADIR}")
 set(arx_core_dir "${PROJECT_SOURCE_DIR}/data/core")
 get_filename_component(arx_core_dir "${arx_core_dir}" ABSOLUTE)
 file(TO_NATIVE_PATH "${arx_core_dir}" arx_core_dir)
-if(CMAKE_VERSION VERSION_LESS 2.8.12)
-	foreach(config IN LISTS BUILD_TYPES)
-		get_property(arx_location TARGET arx PROPERTY LOCATION_${config})
-		get_filename_component(arx_location "${arx_location}" PATH)
-		file(WRITE "${arx_location}/data.dirs" "${arx_core_dir}\n")
-	endforeach()
-else()
-	file(GENERATE OUTPUT "$<TARGET_FILE_DIR:arx>/data.dirs" CONTENT "${arx_core_dir}\n")
-endif()
+file(GENERATE OUTPUT "$<TARGET_FILE_DIR:arx>/data.dirs" CONTENT "${arx_core_dir}\n")
 
 # Install the data install script
 if(INSTALL_SCRIPTS AND NOT WIN32)

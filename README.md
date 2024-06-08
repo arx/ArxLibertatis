@@ -26,7 +26,7 @@ Reddit: [/r/ArxFatalis/](https://old.reddit.com/r/ArxFatalis/)
 ## Dependencies
 
 * A **C++ 17** compiler (GCC 7+, Clang 5+, MSVC 19.15+ aka Visual Studio 2017 15.8+)
-* **[CMake](https://cmake.org/) 2.8.3**+ (compile-time only)
+* **[CMake](https://cmake.org/) 3.12**+ (compile-time only)
 * **[zlib](https://zlib.net/)**
 * **[Boost](https://www.boost.org/) 1.58**+ (headers only¹)
 * **[GLM](https://glm.g-truc.net/) 0.9.9.7**+

@@ -1,13 +1,5 @@
 
-if(NOT CMAKE_VERSION VERSION_LESS 3.12)
-	find_package(Python COMPONENTS Interpreter)
-else()
-	find_package(PythonInterp)
-	if(PYTHONINTERP_FOUND)
-		set(Python_Interpreter_FOUND ON)
-		set(Python_EXECUTABLE ${PYTHON_EXECUTABLE})
-	endif()
-endif()
+find_package(Python COMPONENTS Interpreter)
 
 set(STYLE_FILTER)
 
