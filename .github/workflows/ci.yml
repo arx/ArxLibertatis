@@ -24,7 +24,7 @@ jobs:
       run: sudo apt-get install build-essential cmake zlib1g-dev libfreetype6-dev libopenal1 libopenal-dev mesa-common-dev libgl1-mesa-dev libboost-dev libsdl2-dev libepoxy-dev libglm-dev qtbase5-dev libcurl4-gnutls-dev libcppunit-dev
 
     - name: Configure
-      run: cmake -B ${{github.workspace}}/build -Werror=dev -Werror=deprecated -DCONTINUOUS_INTEGRATION=1 -DICON_TYPE=none
+      run: cmake --version && cmake -B ${{github.workspace}}/build -Werror=dev -Werror=deprecated -DCONTINUOUS_INTEGRATION=1 -DICON_TYPE=none
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build
@@ -51,7 +51,7 @@ jobs:
       run: brew install boost freetype sdl2 libepoxy qt@5 cppunit glm openal-soft
 
     - name: Configure
-      run: cmake -B ${{github.workspace}}/build -Werror=dev -Werror=deprecated -DCONTINUOUS_INTEGRATION=1 -DICON_TYPE=none -DOPENAL_LIBRARY=/opt/homebrew/opt/openal-soft/lib/libopenal.dylib -DOPENAL_INCLUDE_DIR=/opt/homebrew/opt/openal-soft/include/AL -DCMAKE_PREFIX_PATH=/opt/homebrew/opt/qt@5
+      run: cmake --version && cmake -B ${{github.workspace}}/build -Werror=dev -Werror=deprecated -DCONTINUOUS_INTEGRATION=1 -DICON_TYPE=none -DOPENAL_LIBRARY=/opt/homebrew/opt/openal-soft/lib/libopenal.dylib -DOPENAL_INCLUDE_DIR=/opt/homebrew/opt/openal-soft/include/AL -DCMAKE_PREFIX_PATH=/opt/homebrew/opt/qt@5
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build
