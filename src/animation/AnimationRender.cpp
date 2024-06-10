@@ -117,7 +117,7 @@ static void PopOneTriangleList(RenderState baseState, TextureContainer * materia
 	baseState.setAlphaCutout(material->m_pTexture && material->m_pTexture->hasAlpha());
 	
 	UseRenderState state(baseState);
-	UseTextureState textureState(TextureStage::FilterLinear, TextureStage::WrapClamp);
+	UseTextureState textureState(TextureStage::FilterLinear, TextureStage::WrapRepeat);
 	
 	if(material->userflags & POLY_LATE_MIP) {
 		const float GLOBAL_NPC_MIPMAP_BIAS = -2.2f;
@@ -149,7 +149,7 @@ static void PopOneTriangleListTransparency(TextureContainer * material) {
 	}
 	
 	RenderState baseState = render3D().depthWrite(false);
-	UseTextureState textureState(TextureStage::FilterLinear, TextureStage::WrapClamp);
+	UseTextureState textureState(TextureStage::FilterLinear, TextureStage::WrapRepeat);
 	
 	GRenderer->SetTexture(0, material);
 	baseState.setAlphaCutout(material->m_pTexture && material->m_pTexture->hasAlpha());
