@@ -41,226 +41,273 @@
 #include "graphics/data/TextureContainer.h"
 #include "math/RandomVector.h"
 
-struct MagicFlare {
-	unsigned char exist;
-	char type;
-	short flags;
-	Vec3f p;
-	Vec2f pos;
-	PlatformDuration tolive;
-	Color3f rgb;
-	float size;
-	LightHandle dynlight;
-	Entity * io;
-	bool bDrawBitmap;
-};
-
-static const size_t g_magicFlaresMax = 500;
-static MagicFlare g_magicFlares[g_magicFlaresMax];
-static long g_magicFlaresCount = 0;
-
-struct FLARETC
-{
+struct FLARETC {
 	TextureContainer * lumignon;
 	TextureContainer * lumignon2;
 	TextureContainer * plasm;
-	TextureContainer * shine[11];
+	TextureContainer * shine[10];
 };
 
 static FLARETC g_magicFlareTextures;
 
-void MagicFlareLoadTextures() {
+class MagicFlare {
+public:
+	bool isValid;
+	char type = -1;
+	Vec3f pos3D = Vec3f(0.f);
+	Vec2f pos2D = Vec2f(0.f);
+	PlatformDuration tolive;
+	Color3f color;
+	Color3f currentColor;
+	float size = 0.f;
+	float currentSize;
+	LightHandle dynlight;
+	Entity * io = nullptr;
+	bool isBookFlare = false;
+
+	void update(bool isMagicCastKeyPressed);
+	void clear();
+	void init2DPos(const Vec2f & pos);
+	void init3DPos(const Vec2f & pos);
+	TextureContainer * getTexContainer();
+private:
+	short m_currentShineTex = 1;
+
+	void cycleShineTexture();
+};
+
+void MagicFlare::update(bool isMagicCastKeyPressed) {
+
+	PlatformDuration lastFrameDuration = g_platformTime.lastFrameDuration();
 	
-	TextureContainer::TCFlags flags = TextureContainer::NoColorKey;
-	
-	g_magicFlareTextures.lumignon = TextureContainer::LoadUI("graph/particles/lumignon", flags);
-	g_magicFlareTextures.lumignon2 = TextureContainer::LoadUI("graph/particles/lumignon2", flags);
-	g_magicFlareTextures.plasm = TextureContainer::LoadUI("graph/particles/plasm", flags);
-	
-	std::ostringstream oss;
-	for(size_t i = 1; i < 10; i++) {
-		oss.str(std::string());
-		oss << "graph/particles/shine" << i;
-		g_magicFlareTextures.shine[i] = TextureContainer::LoadUI(oss.str(), flags);
+	tolive -= lastFrameDuration * 2;
+	if(io) {
+		tolive -= lastFrameDuration * 4;
+	} else if(!isMagicCastKeyPressed) {
+		tolive -= lastFrameDuration * 6;
 	}
-	
+
+	float decayRate = tolive / 4s;
+	switch(type) {
+		case 1:
+			currentSize = size * 2 * decayRate;
+			break;
+		case 4:
+			currentSize = size * 2.f * decayRate * (4.0f / 3.0f);
+			break;
+		default:
+			currentSize = size;
+			break;
+	}
+
+	if(tolive <= 0 || pos2D.y < -64.f || currentSize < 3.f) {
+		clear();
+		return;
+	}
+
+	if(type == 1 && decayRate < 0.6f) {
+		decayRate = 0.6f;
+	}
+
+	currentColor = color * decayRate;
+
+	cycleShineTexture();
 }
 
-static short shinum = 1;
+void MagicFlare::clear() {
 
-void MagicFlareReleaseEntity(const Entity * entity) {
-	for(size_t i = 0; i < g_magicFlaresMax; i++) {
-		if(g_magicFlares[i].exist && g_magicFlares[i].io == entity) {
-			g_magicFlares[i].io = nullptr;
+	if(io && ValidIOAddress(io)) {
+		io->flarecount--;
+	}
+
+	lightHandleDestroy(dynlight);
+
+	tolive = 0;
+	isValid = false;
+	io = nullptr;
+	type = -1;
+	m_currentShineTex = 1;
+}
+
+void MagicFlare::init2DPos(const Vec2f & pos) {
+
+	pos2D.x = pos.x - Random::getf(0.f, 4.f);
+	pos2D.y = pos.y - Random::getf(0.f, 4.f);
+}
+
+void MagicFlare::init3DPos(const Vec2f & pos) {
+
+	if(!isBookFlare) {
+		if(io) {
+			float vx = -(pos2D.x - g_size.center().x) * (5.f / 23.f);
+			float vy = (pos2D.y - g_size.center().y) * (5.f / 33.f);
+			pos3D = io->pos;
+			pos3D += angleToVectorXZ(io->angle.getYaw() + vx) * 100.f;
+			pos3D.y += std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() + vy))) * 100.f - 150.f;
+		} else {
+			pos3D = screenToWorldSpace(pos, 75.f);
 		}
+	} else {
+		pos3D = Vec3f(pos2D.x, pos2D.y, 0.001f);
 	}
 }
 
-long MagicFlareCountNonFlagged() {
-	
-	if(!g_magicFlaresCount)
-		return 0;
-	
-	long count = 0;
-	for(size_t i = 0; i < g_magicFlaresMax; i++) {
-		if(g_magicFlares[i].exist && g_magicFlares[i].flags == 0) {
+TextureContainer * MagicFlare::getTexContainer() {
+
+	TextureContainer * tc = nullptr;
+	switch(type) {
+		case 2:  tc = g_magicFlareTextures.lumignon; break;
+		case 3:  tc = g_magicFlareTextures.lumignon2; break;
+		case 4:  tc = g_magicFlareTextures.plasm; break;
+		default: tc = g_magicFlareTextures.shine[m_currentShineTex]; break;
+	}
+	return tc;
+}
+
+void MagicFlare::cycleShineTexture() {
+	m_currentShineTex++;
+	if(m_currentShineTex >= 10) {
+		m_currentShineTex = 1;
+	}
+}
+
+class MagicFlareContainer {
+public:
+	class iterator {
+		using iterator_category = std::forward_iterator_tag;
+	public:
+		explicit iterator(MagicFlare * ptr) : m_ptr(ptr) {}
+		iterator operator++() { ++m_ptr; return *this; } // prefix increment
+		iterator operator++(int a) { a++;  iterator tmp = *this; ++(*this); return tmp; } // postfix increment
+		MagicFlare * operator->() { return m_ptr; }
+		MagicFlare & operator*() const { return *m_ptr; }
+
+		friend bool operator== (const iterator & a, const iterator & b) { return a.m_ptr == b.m_ptr; }
+		friend bool operator!= (const iterator & a, const iterator & b) { return a.m_ptr != b.m_ptr; }
+	private:
+		MagicFlare * m_ptr;
+	};
+	size_t validFlareCount();
+	MagicFlare & newFlare();
+
+	iterator begin() { return iterator(&m_flares[0]); }
+	iterator end() { return iterator(&m_flares[m_magicFlaresMax]); }
+private:
+	static const size_t m_magicFlaresMax = 500;
+	MagicFlare m_flares[m_magicFlaresMax];
+
+	size_t findUsableIndex();
+};
+
+class MagicFlareHandler {
+public:
+	MagicFlareHandler();
+	void addFlare(const Vec2f & pos, float sm, bool useVariedFlares, Entity * io, bool bookDraw);
+	void addFlareLine(const Vec2f & fromPos, const Vec2f & toPos, Entity * io);
+	long countWithoutIO();
+	void removeEntityPtrFromFlares(const Entity * entity);
+	void init();
+	void removeAll();
+	void update();
+	void changeColor();
+private:
+	MagicFlareContainer m_flares;
+	short m_currentColor;
+
+	Color3f newFlareColor();
+	void loadTextures();
+	void createParticleDefs(const MagicFlare & flare);
+};
+
+static MagicFlareHandler g_magicFlares;
+
+MagicFlareHandler::MagicFlareHandler()
+	: m_currentColor(0)
+{}
+
+size_t MagicFlareContainer::validFlareCount() {
+
+	size_t count = 0;
+	for(auto & flare : m_flares) {
+		if(flare.isValid) {
 			count++;
 		}
 	}
-
 	return count;
 }
 
-void ARX_MAGICAL_FLARES_FirstInit() {
-	g_magicFlaresCount = 0;
-	for(size_t i = 0; i < g_magicFlaresMax; i++) {
-		g_magicFlares[i].exist = 0;
-	}
+MagicFlare & MagicFlareContainer::newFlare() {
+
+	size_t index = findUsableIndex();
+	return m_flares[index];
 }
 
-static void removeFlare(MagicFlare & flare) {
-	
-	if(flare.io && ValidIOAddress(flare.io)) {
-		flare.io->flarecount--;
-	}
-
-	lightHandleDestroy(flare.dynlight);
-	
-	flare.tolive = 0;
-	flare.exist = 0;
-	g_magicFlaresCount--;
-	
-}
-
-void ARX_MAGICAL_FLARES_KillAll() {
-	
-	for(size_t i = 0; i < g_magicFlaresMax; i++) {
-		MagicFlare & flare = g_magicFlares[i];
-		if(flare.exist) {
-			removeFlare(flare);
-		}
-	}
-	
-	g_magicFlaresCount = 0;
-}
-
-static short g_magicFlareCurrentColor = 0;
-
-void MagicFlareChangeColor() {
-	g_magicFlareCurrentColor++;
-
-	if(g_magicFlareCurrentColor > 2)
-		g_magicFlareCurrentColor = 0;
-}
-
-void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw) {
+size_t MagicFlareContainer::findUsableIndex() {
 	
 	size_t oldest = 0;
 	size_t i;
-	for(i = 0; i < g_magicFlaresMax; i++) {
-		if(!g_magicFlares[i].exist) {
+	for(i = 0; i < m_magicFlaresMax; i++) {
+		if(!m_flares[i].isValid) {
 			break;
 		}
-		if(g_magicFlares[i].tolive < g_magicFlares[oldest].tolive) {
+		if(m_flares[i].tolive < m_flares[oldest].tolive) {
 			oldest = i;
 		}
 	}
-	if(i >= g_magicFlaresMax) {
-		removeFlare(g_magicFlares[oldest]);
+	if(i >= m_magicFlaresMax) {
+		m_flares[oldest].clear();
 		i = oldest;
 	}
+	return i;
+}
 
-	MagicFlare & flare = g_magicFlares[i];
-	flare.exist = 1;
-	g_magicFlaresCount++;
+Color3f MagicFlareHandler::newFlareColor() {
 	
-	flare.bDrawBitmap = bookDraw;
-	
-	flare.io = io;
-	if(io) {
-		flare.flags = 1;
-		io->flarecount++;
-	} else {
-		flare.flags = 0;
-	}
-
-	flare.pos.x = pos.x - Random::getf(0.f, 4.f);
-	flare.pos.y = pos.y - Random::getf(0.f, 4.f);
-
-	if(!bookDraw) {
-		if(io) {
-			float vx = -(flare.pos.x - g_size.center().x) * 0.2173913f;
-			float vy = (flare.pos.y - g_size.center().y) * 0.1515151515151515f;
-			flare.p = io->pos;
-			flare.p += angleToVectorXZ(io->angle.getYaw() + vx) * 100.f;
-			flare.p.y += std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() + vy))) * 100.f - 150.f;
-		} else {
-			flare.p = screenToWorldSpace(pos, 75.f);
-		}
-	} else {
-		flare.p = Vec3f(flare.pos.x, flare.pos.y, 0.001f);
-	}
-
-	switch(g_magicFlareCurrentColor) {
-		case 0: {
-			flare.rgb = Color3f(0.4f, 0.f, 0.4f) + Color3f(2.f / 3, 2.f / 3, 2.f / 3) * randomColor3f();
+	Color3f newColor;
+	switch(m_currentColor) {
+		case 0:
+		{
+			newColor = Color3f(0.4f, 0.f, 0.4f) + Color3f(2.f / 3, 2.f / 3, 2.f / 3) * randomColor3f();
 			break;
 		}
-		case 1: {
-			flare.rgb = Color3f(0.5f, 0.5f, 0.f) + Color3f(0.625f, 0.625f, 0.55f) * randomColor3f();
+		case 1:
+		{
+			newColor = Color3f(0.5f, 0.5f, 0.f) + Color3f(0.625f, 0.625f, 0.55f) * randomColor3f();
 			break;
 		}
-		case 2: {
-			flare.rgb = Color3f(0.4f, 0.f, 0.f) + Color3f(2.f / 3, 0.55f, 0.55f) * randomColor3f();
+		case 2:
+		{
+			newColor = Color3f(0.4f, 0.f, 0.f) + Color3f(2.f / 3, 0.55f, 0.55f) * randomColor3f();
 			break;
 		}
 		default: arx_unreachable();
 	}
-	
-	if(typ == -1) {
-		float zz = eeMousePressed1() ? 0.29f : ((sm > 0.5f) ? Random::getf() : 1.f);
-		if(zz < 0.2f) {
-			flare.type = 2;
-			flare.size = Random::getf(42.f, 84.f);
-			flare.tolive = Random::get(1600000us, 3200000us);
-		} else if(zz < 0.5f) {
-			flare.type = 3;
-			flare.size = Random::getf(16.f, 68.f);
-			flare.tolive = Random::get(1600000us, 3200000us);
-		} else {
-			flare.type = 1;
-			flare.size = Random::getf(32.f, 56.f) * sm;
-			flare.tolive = Random::get(3400000us, 4400000us);
-		}
-	} else {
-		flare.type = (Random::getf() > 0.8f) ? 1 : 4;
-		flare.size = Random::getf(64.f, 102.f) * sm;
-		flare.tolive = Random::get(3400000us, 4400000us);
-	}
-	
-	flare.dynlight = { };
+	return newColor;
+}
+
+void MagicFlareHandler::createParticleDefs(const MagicFlare & flare) {
 	
 	for(unsigned int kk = 0; kk < 3; kk++) {
-		
+
 		if(Random::getf() < 0.5f) {
 			continue;
 		}
-		
+
 		PARTICLE_DEF * pd = createParticle(true);
 		if(!pd) {
 			break;
 		}
-		
-		if(!bookDraw) {
+
+		if(!flare.isBookFlare) {
 			pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
-			if(!io) {
+			if(!flare.io) {
 				pd->m_flags |= PARTICLE_NOZBUFFER;
 			}
 		} else {
 			pd->m_flags = FADE_IN_AND_OUT | PARTICLE_2D;
 		}
-		
-		pd->ov = flare.p + arx::randomVec(-5.f, 5.f);
+
+		pd->ov = flare.pos3D + arx::randomVec(-5.f, 5.f);
 		pd->move = Vec3f(0.f, 5.f, 0.f);
 		pd->sizeDelta = -2.f;
 		pd->duration = 1300ms + kk * 100ms + Random::get(0ms, 800ms);
@@ -271,156 +318,243 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 		} else {
 			pd->size = Random::getf(1.f, 2.f);
 		}
-		pd->rgb = flare.rgb * (2.f / 3);
+		pd->rgb = flare.color * (2.f / 3);
 		pd->m_rotation = 1.2f;
-		
+
 	}
-	
 }
 
-//! Helper for FlareLine
-static void AddLFlare(const Vec2f & pos, Entity * io) {
-	AddFlare(pos, 0.45f, 1, io);
+void MagicFlareHandler::addFlare(const Vec2f & pos, float sm, bool useVariedFlares, Entity * io, bool bookDraw) {
+	
+	MagicFlare & flare = m_flares.newFlare();
+	flare.isValid = true;
+
+	flare.isBookFlare = bookDraw;
+
+	flare.io = io;
+	if(io) {
+		io->flarecount++;
+	}
+
+	flare.init2DPos(pos);
+	flare.init3DPos(pos);
+
+	flare.color = newFlareColor();
+
+	if(useVariedFlares) {
+		flare.type = 3;
+		flare.size = Random::getf(16.f, 68.f);
+		flare.tolive = Random::get(1600000us, 3200000us);
+	} else {
+		flare.type = (Random::getf() > 0.8f) ? 1 : 4;
+		flare.size = Random::getf(64.f, 102.f) * sm;
+		flare.tolive = Random::get(3400000us, 4400000us);
+	}
+	flare.currentSize = flare.size;
+	flare.dynlight = {};
+
+	createParticleDefs(flare);
 }
 
-void FlareLine(Vec2f tmpPos0, Vec2f tmpPos1, Entity * io) {
-	
+void MagicFlareHandler::addFlareLine(const Vec2f & fromPos, const Vec2f & toPos, Entity * io) {
+
 	static const int FLARELINESTEP = 7;
 	static const int FLARELINERND = 6;
-	
-	Vec2f d = tmpPos1 - tmpPos0;
-	Vec2f ad = glm::abs(d);
-	
-	if(ad.x > ad.y) {
-		
-		if(tmpPos0.x > tmpPos1.x) {
-			std::swap(tmpPos0, tmpPos1);
-		}
-		
-		float m = d.y / d.x;
-		float i = tmpPos0.x;
-		
-		while(i < tmpPos1.x) {
-			long z = Random::get(0, FLARELINERND);
-			z += FLARELINESTEP;
-			if(!io) {
-				z = long(z * g_sizeRatio.y);
-			}
-			i += z;
-			tmpPos0.y += m * z;
-			AddLFlare(Vec2f(i, tmpPos0.y), io);
-		}
-		
+
+	Vec2f absDist = glm::abs(toPos - fromPos);
+
+	Vec2f mult = Vec2f(1.f);
+
+	if(absDist.x > absDist.y) {
+		mult.y = absDist.y / absDist.x;
 	} else {
-		
-		if(tmpPos0.y > tmpPos1.y) {
-			std::swap(tmpPos0, tmpPos1);
-		}
-		
-		float m = d.x / d.y;
-		float i = tmpPos0.y;
-		
-		while(i < tmpPos1.y) {
-			long z = Random::get(0, FLARELINERND);
-			z += FLARELINESTEP;
-			if(!io) {
-				z = long(z * g_sizeRatio.y);
-			}
-			i += z;
-			tmpPos0.x += m * z;
-			AddLFlare(Vec2f(tmpPos0.x, i), io);
-		}
-		
+		mult.x = absDist.x / absDist.y;
 	}
+
+	if(fromPos.x > toPos.x) {
+		mult.x *= -1;
+	}
+	if(fromPos.y > toPos.y) {
+		mult.y *= -1;
+	}
+
+	Vec2f currentPos = fromPos;
+	Vec2f distanceDone = Vec2f(0.f);
+
+	while((distanceDone.x < absDist.x) || (distanceDone.y < absDist.y)) {
+		float step = Random::get(0, FLARELINERND);
+		step += FLARELINESTEP;
+		if(!io) {
+			step = long(step * g_sizeRatio.y);
+		}
+		currentPos += mult * step;
+		distanceDone += glm::abs(mult * step);
+		AddFlare(currentPos, 0.45f, false, io);
+	}
+}
+
+long MagicFlareHandler::countWithoutIO() {
+	
+	long count = 0;
+	for(auto & flare : m_flares) {
+		if(flare.isValid && !flare.io) {
+			count++;
+		}
+	}
+
+	return count;
+}
+
+void MagicFlareHandler::removeEntityPtrFromFlares(const Entity * entity) {
+	
+	for(auto & flare : m_flares) {
+		if(flare.isValid && flare.io == entity) {
+			flare.io = nullptr;
+		}
+	}
+}
+
+void MagicFlareHandler::init() {
+	
+	for(auto & flare : m_flares) {
+		flare.isValid = false;
+	}
+
+	loadTextures();
+}
+
+void MagicFlareHandler::removeAll() {
+	
+	for(auto & flare : m_flares) {
+		flare.clear();
+	}
+}
+
+void MagicFlareHandler::update() {
+
+	if(!m_flares.validFlareCount())
+		return;
+
+	bool isMagicCastKeyPressed = GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
+
+	RenderMaterial mat;
+	mat.setBlendType(RenderMaterial::Additive);
+
+	EERIE_LIGHT * light = lightHandleGet(torchLightHandle);
+
+	for(auto & flare : m_flares) {
+
+		if(!flare.isValid) {
+			continue;
+		}
+
+		TextureContainer * surf = flare.getTexContainer();
+
+		mat.setTexture(surf);
+
+		flare.update(isMagicCastKeyPressed);
+
+		light->rgb = componentwise_max(light->rgb, flare.currentColor);
+
+		EERIE_LIGHT * el = lightHandleGet(flare.dynlight);
+		if(el) {
+			el->pos = flare.pos3D;
+			el->rgb = flare.currentColor;
+		}
+
+		mat.setDepthTest(flare.io != nullptr);
+
+		if(flare.isBookFlare) {
+			Vec3f pos = Vec3f(flare.pos3D.x - flare.currentSize / 2.0f, flare.pos3D.y - flare.currentSize / 2.0f, flare.pos3D.z);
+			EERIEAddBitmap(mat, pos, flare.currentSize, flare.currentSize, surf, Color(flare.currentColor));
+		} else {
+			EERIEAddSprite(mat, flare.pos3D, flare.currentSize * 0.025f + 1.f, Color(flare.currentColor), 2.f);
+		}
+	}
+
+	light->rgb = componentwise_min(light->rgb, Color3f::white);
+}
+
+void MagicFlareHandler::changeColor() {
+
+	m_currentColor++;
+
+	if(m_currentColor > 2)
+		m_currentColor = 0;
+}
+
+void MagicFlareHandler::loadTextures() {
+	
+	TextureContainer::TCFlags flags = TextureContainer::NoColorKey;
+	
+	g_magicFlareTextures.lumignon = TextureContainer::LoadUI("graph/particles/lumignon", flags);
+	g_magicFlareTextures.lumignon2 = TextureContainer::LoadUI("graph/particles/lumignon2", flags);
+	g_magicFlareTextures.plasm = TextureContainer::LoadUI("graph/particles/plasm", flags);
+	
+	std::ostringstream oss;
+	for(size_t i = 0; i < 10; i++) {
+		oss.str(std::string());
+		oss << "graph/particles/shine" << i;
+		g_magicFlareTextures.shine[i] = TextureContainer::LoadUI(oss.str(), flags);
+	}
+	
+}
+
+void MagicFlareReleaseEntity(const Entity * entity) {
+	
+	g_magicFlares.removeEntityPtrFromFlares(entity);
+}
+
+long MagicFlareCountWithoutEntity() {
+	
+	return g_magicFlares.countWithoutIO();
+}
+
+void ARX_MAGICAL_FLARES_FirstInit() {
+	
+	g_magicFlares.init();
+}
+
+void ARX_MAGICAL_FLARES_KillAll() {
+	
+	g_magicFlares.removeAll();
+}
+
+void MagicFlareChangeColor() {
+	
+	g_magicFlares.changeColor();
+}
+
+void AddFlare(const Vec2f & pos, float sm, bool useVariedFlares, Entity * io, bool bookDraw) {
+	
+	g_magicFlares.addFlare(pos, sm, useVariedFlares, io, bookDraw);
+}
+
+void AddBookFlare(const Vec2f & pos, float sm, Entity * io) {
+	
+	g_magicFlares.addFlare(pos, sm, false, io, true);
+}
+
+void AddNPCFlare(const Vec2f & pos, float sm, Entity * io) {
+	
+	g_magicFlares.addFlare(pos, sm, false, io, false);
+}
+
+void AddPlayerCastFlare(const Vec2f & pos, float sm) {
+
+	if(Random::getf() > 0.6f)
+		g_magicFlares.addFlare(pos, sm, true, nullptr, false);
+	else
+		g_magicFlares.addFlare(pos, sm, false, nullptr, false);
+}
+
+void FlareLine(const Vec2f & fromPos, const Vec2f & toPos, Entity * io) {
+
+	g_magicFlares.addFlareLine(fromPos, toPos, io);
 }
 
 
 void ARX_MAGICAL_FLARES_Update() {
 
-	if(!g_magicFlaresCount)
-		return;
-
-	shinum++;
-	if(shinum >= 10) {
-		shinum = 1;
-	}
-	
-	PlatformDuration diff = g_platformTime.lastFrameDuration();
-	
-	bool key = !GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
-
-	RenderMaterial mat;
-	mat.setBlendType(RenderMaterial::Additive);
-	
-	EERIE_LIGHT * light = lightHandleGet(torchLightHandle);
-	
-	for(long j = 1; j < 5; j++) {
-
-		TextureContainer * surf;
-		switch(j) {
-			case 2:  surf = g_magicFlareTextures.lumignon; break;
-			case 3:  surf = g_magicFlareTextures.lumignon2; break;
-			case 4:  surf = g_magicFlareTextures.plasm; break;
-			default: surf = g_magicFlareTextures.shine[shinum]; break;
-		}
-
-		mat.setTexture(surf);
-
-		for(size_t i = 0; i < g_magicFlaresMax; i++) {
-
-			MagicFlare & flare = g_magicFlares[i];
-
-			if(!flare.exist || flare.type != j) {
-				continue;
-			}
-			
-			flare.tolive -= diff * 2;
-			if(flare.flags & 1) {
-				flare.tolive -= diff * 4;
-			} else if(key) {
-				flare.tolive -= diff * 6;
-			}
-			
-			float z = flare.tolive / 4s;
-			float size;
-			if(flare.type == 1) {
-				size = flare.size * 2 * z;
-			} else if(flare.type == 4) {
-				size = flare.size * 2.f * z * (4.0f / 3.0f);
-			} else {
-				size = flare.size;
-			}
-
-			if(flare.tolive <= 0 || flare.pos.y < -64.f || size < 3.f) {
-				removeFlare(flare);
-				continue;
-			}
-
-			if(flare.type == 1 && z < 0.6f)  {
-				z = 0.6f;
-			}
-
-			Color3f color = flare.rgb * z;
-
-			light->rgb = componentwise_max(light->rgb, color);
-			
-			EERIE_LIGHT * el = lightHandleGet(flare.dynlight);
-			if(el) {
-				el->pos = flare.p;
-				el->rgb = color;
-			}
-
-			mat.setDepthTest(flare.io != nullptr);
-			
-			if(flare.bDrawBitmap) {
-				Vec3f pos = Vec3f(flare.p.x - size / 2.0f, flare.p.y - size / 2.0f, flare.p.z);
-				EERIEAddBitmap(mat, pos, size, size, surf, Color(color));
-			} else {
-				EERIEAddSprite(mat, flare.p, size * 0.025f + 1.f, Color(color), 2.f);
-			}
-
-		}
-	}
-
-	light->rgb = componentwise_min(light->rgb, Color3f::white);
+	g_magicFlares.update();
 }
