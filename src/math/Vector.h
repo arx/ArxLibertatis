@@ -40,7 +40,7 @@ template <class V>
 [[nodiscard]] bool isallfinite(const V & vec) noexcept {
 	
 	for(size_t i = 0; i < size_t(vec.length()); i++) {
-		if(arx::safe_isfinite(vec[i])) {
+		if(!arx::safe_isfinite(vec[i])) {
 			return false;
 		}
 	}
