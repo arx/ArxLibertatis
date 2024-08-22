@@ -47,7 +47,7 @@ bool HealSpell::CanLaunch() {
 
 void HealSpell::Launch() {
 	
-	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_HEALING, &m_caster_pos);
 	}
 	
@@ -148,7 +148,7 @@ void DetectTrapSpell::Launch() {
 	
 	if(m_caster == EntityHandle_Player) {
 		m_target = m_caster;
-		if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
+		if(emitsSound()) {
 			ARX_SOUND_PlayInterface(g_snd.SPELL_DETECT_TRAP);
 			m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_DETECT_TRAP_LOOP, &m_caster_pos, 1.f);
 		}
@@ -163,15 +163,17 @@ void DetectTrapSpell::Launch() {
 
 void DetectTrapSpell::End() {
 	
-	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop = audio::SourcedSample();
+	if(emitsSound()) {
+		ARX_SOUND_Stop(m_snd_loop);
+		m_snd_loop = audio::SourcedSample();
+	}
 	
 	m_targets.clear();
 }
 
 void DetectTrapSpell::Update() {
 	
-	if(m_caster == EntityHandle_Player) {
+	if(emitsSound() && m_caster == EntityHandle_Player) {
 		Vec3f pos = ARX_PLAYER_FrontPos();
 		ARX_SOUND_RefreshPosition(m_snd_loop, pos);
 	}
@@ -189,11 +191,10 @@ void ArmorSpell::Launch()
 		m_target = m_caster;
 	}
 	
-	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_ARMOR_START, &entities[m_target]->pos);
+		m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_ARMOR_LOOP, &entities[m_target]->pos, 1.f);
 	}
-	
-	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_ARMOR_LOOP, &entities[m_target]->pos, 1.f);
 	
 	if(m_caster == EntityHandle_Player) {
 		m_duration = 0;
@@ -217,12 +218,16 @@ void ArmorSpell::Launch()
 
 void ArmorSpell::End() {
 	
-	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop = audio::SourcedSample();
+	if(emitsSound()) {
+		ARX_SOUND_Stop(m_snd_loop);
+		m_snd_loop = audio::SourcedSample();
+	}
 	
 	Entity * target = entities.get(m_target);
 	if(target) {
-		ARX_SOUND_PlaySFX(g_snd.SPELL_ARMOR_END, &target->pos);
+		if(emitsSound()) {
+			ARX_SOUND_PlaySFX(g_snd.SPELL_ARMOR_END, &target->pos);
+		}
 		ARX_HALO_SetToNative(target);
 	}
 	
@@ -238,7 +243,9 @@ void ArmorSpell::Update() {
 		io->halo.radius = 45.f;
 	}
 	
-	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+	if(emitsSound()) {
+		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+	}
 }
 
 Vec3f ArmorSpell::getPosition() const {
@@ -258,7 +265,7 @@ void LowerArmorSpell::Launch() {
 	spells.endByCaster(m_caster, SPELL_FIRE_PROTECTION);
 	spells.endByCaster(m_caster, SPELL_COLD_PROTECTION);
 	
-	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_LOWER_ARMOR, &entities[m_target]->pos);
 	}
 	
@@ -290,7 +297,9 @@ void LowerArmorSpell::Launch() {
 
 void LowerArmorSpell::End() {
 	
-	ARX_SOUND_PlaySFX(g_snd.SPELL_LOWER_ARMOR_END);
+	if(emitsSound()) {
+		ARX_SOUND_PlaySFX(g_snd.SPELL_LOWER_ARMOR_END);
+	}
 	
 	if(m_haloCreated) {
 		Entity * io = entities.get(m_target);
@@ -316,7 +325,9 @@ void LowerArmorSpell::Update() {
 		}
 	}
 	
-	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+	if(emitsSound()) {
+		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+	}
 }
 
 Vec3f LowerArmorSpell::getPosition() const {
@@ -325,11 +336,10 @@ Vec3f LowerArmorSpell::getPosition() const {
 
 void HarmSpell::Launch() {
 	
-	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
+	if(emitsSound()) {
 		ARX_SOUND_PlaySFX(g_snd.SPELL_HARM, &m_caster_pos);
+		m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_MAGICAL_SHIELD_LOOP, &m_caster_pos, 1.f);
 	}
-	
-	m_snd_loop = ARX_SOUND_PlaySFX_loop(g_snd.SPELL_MAGICAL_SHIELD_LOOP, &m_caster_pos, 1.f);
 	
 	spells.endByCaster(m_caster, SPELL_LIFE_DRAIN);
 	spells.endByCaster(m_caster, SPELL_MANA_DRAIN);
@@ -366,8 +376,10 @@ void HarmSpell::End() {
 	
 	m_cabal.end();
 	
-	ARX_SOUND_Stop(m_snd_loop);
-	m_snd_loop = audio::SourcedSample();
+	if(emitsSound()) {
+		ARX_SOUND_Stop(m_snd_loop);
+		m_snd_loop = audio::SourcedSample();
+	}
 }
 
 void HarmSpell::Update() {
@@ -388,5 +400,8 @@ void HarmSpell::Update() {
 		casterPos = entities[m_caster]->pos;
 	}
 	Vec3f cabalPos = m_cabal.update(casterPos);
-	ARX_SOUND_RefreshPosition(m_snd_loop, cabalPos);
+	
+	if(emitsSound()) {
+		ARX_SOUND_RefreshPosition(m_snd_loop, cabalPos);
+	}
 }
