@@ -956,8 +956,10 @@ void TreatBackgroundActions() {
 			if(Random::getf() < light.ex_frequency) {
 				PARTICLE_DEF * pd = createParticle(true);
 				if(pd) {
-					float t = Random::getf() * glm::pi<float>();
-					Vec3f s = Vec3f(std::sin(t), std::sin(t), std::cos(t)) * arx::randomVec();
+					float tX = Random::getf() * glm::pi<float>();
+					float tY = Random::getf() * glm::pi<float>();
+					float tZ = Random::getf() * glm::pi<float>();
+					Vec3f s = Vec3f(std::cos(tX), std::cos(tY), std::cos(tZ)) * arx::randomVec();
 					pd->ov = light.pos + s * light.ex_radius;
 					pd->move = Vec3f(2.f, 2.f, 2.f) - Vec3f(4.f, 22.f, 4.f) * arx::randomVec3f();
 					pd->move *= light.ex_speed;
