@@ -138,8 +138,8 @@ def arx_get_material_node_group():
 
     group = bpy.data.node_groups.new(arx_material_node_group_name, 'ShaderNodeTree')
 
-    group.outputs.new('NodeSocketShader', 'Shader')
-    group.inputs.new('NodeSocketColor', 'Color')
+    group.interface.new_socket("Shader", in_out='OUTPUT', socket_type="NodeSocketShader")
+    group.interface.new_socket("Color", in_out='INPUT', socket_type="NodeSocketColor")
 
     n_out = group.nodes.new('NodeGroupOutput')
     n_out.name = 'n_out'

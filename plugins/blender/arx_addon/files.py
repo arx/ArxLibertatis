@@ -382,6 +382,11 @@ class ArxFiles(object):
                 relFile = os.path.join(relRoot, f)
                 self.allFiles.add(relFile)
 
+        for handler in self.handlers:
+            for path in handler.paths:
+                root = os.path.join(self.rootPath, path)
+                handler.update(root)
+
         for root, dirs, files in os.walk(self.rootPath):
             relRoot = os.path.relpath(root, self.rootPath)
 
