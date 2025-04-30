@@ -274,6 +274,6 @@ class ArxSceneManager(object):
         cam_obj.location = Vector((8000.0, 8000.0, 5000.0))
         scene.collection.objects.link(cam_obj)
 
-        scene.render.engine = 'BLENDER_EEVEE'
+        scene.render.engine = 'BLENDER_EEVEE_NEXT'
         scene.render.resolution_x = 1000
         scene.render.resolution_y = 1000
