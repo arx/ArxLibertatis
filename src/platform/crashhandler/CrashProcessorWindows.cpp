@@ -221,6 +221,14 @@ void CrashHandlerWindows::processCrashTrace() {
 	stackFrame.AddrFrame.Mode = AddrModeFlat;
 	stackFrame.AddrStack.Offset = context->Rsp;
 	stackFrame.AddrStack.Mode = AddrModeFlat;
+	#elif ARX_ARCH = ARX_ARCH_ARM64
+	imageType = IMAGE_FILE_MACHINE_ARM64;
+	stackFrame.AddrPC.Offset = context->Pc;
+    stackFrame.AddrPC.Mode = AddrModeFlat;
+    stackFrame.AddrFrame.Offset = context->Fp;
+    stackFrame.AddrFrame.Mode = AddrModeFlat;
+    stackFrame.AddrStack.Offset = context->Sp;
+    stackFrame.AddrStack.Mode = AddrModeFlat;
 	#else
 	#error "Unsupported architecture"
 	#endif
