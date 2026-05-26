@@ -201,7 +201,7 @@ class ExportFTL(bpy.types.Operator, ExportHelper):
 
     def execute(self, context):
         try:
-            getAddon(context).objectManager.saveFile(self.filepath)
+            getAddon(context).objectManager.saveFile(self.filepath, context.object)
             return {'FINISHED'}
         except ArxException as e:
             self.report({'ERROR'}, str(e))

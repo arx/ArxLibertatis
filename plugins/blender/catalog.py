@@ -220,7 +220,7 @@ if args.data and args.out:
         bpy.context.scene.render.filepath = os.path.join(outPath, renderFile)
         bpy.ops.render.render(write_still=True)
 
-        arxAddon.objectManager.saveFile(fileName + ".test.ftl")
+        arxAddon.objectManager.saveFile(fileName + ".test.ftl", obj)
 
         obj.select = True
         bpy.ops.object.delete()

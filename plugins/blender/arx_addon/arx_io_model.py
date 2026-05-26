@@ -509,9 +509,9 @@ class ArxObjectManager(object):
             sels=sels
         )
 
-    def saveFile(self, path):
+    def saveFile(self, path, obj):
 
-        data = self.toFtlData()
+        data = self.toFtlData(obj)
 
         binData = self.ftlSerializer.write(data)
 
