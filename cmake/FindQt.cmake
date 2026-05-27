@@ -3,6 +3,17 @@ set(WITH_QT CACHE STRING "The Qt version to use: 4 or 5 or empty (use any)")
 
 unset(HAVE_QT)
 
+# Fix AppVeyor VS2019 builds where CMAKE_PREFIX_PATH still points to the old
+# Qt 5.15.2 image path, which is missing while Qt 6.5.3 is available.
+set(_Qt_APPVEYOR_VS2019_PREFIX "C:/Qt/6.5.3/msvc2019_64")
+if(WIN32 AND MSVC AND DEFINED ENV{APPVEYOR_BUILD_WORKER_IMAGE}
+   AND "$ENV{APPVEYOR_BUILD_WORKER_IMAGE}" STREQUAL "Visual Studio 2019"
+   AND NOT EXISTS "$ENV{CMAKE_PREFIX_PATH}"
+   AND EXISTS "${_Qt_APPVEYOR_VS2019_PREFIX}")
+	list(PREPEND CMAKE_PREFIX_PATH "${_Qt_APPVEYOR_VS2019_PREFIX}")
+endif()
+unset(_Qt_APPVEYOR_VS2019_PREFIX)
+
 set(_Qt_COMPONENTS Core)
 foreach(lib IN LISTS Qt_FIND_COMPONENTS)
 	if(lib STREQUAL "Widgets")

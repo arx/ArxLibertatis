@@ -495,8 +495,20 @@ if(NOT ARX_HAVE_SDL AND (NOT WITH_SDL OR WITH_SDL EQUAL 1))
 	endif(SDL_FOUND)
 endif()
 
-# Boost
-find_package(Boost 1.58 REQUIRED)
+# Boost: use CMake's FindBoost compatibility path on Windows because ArxWindows
+# and some package-manager layouts provide headers/libraries without BoostConfig.cmake.
+macro(arx_find_boost)
+	if(WIN32 AND POLICY CMP0167)
+		cmake_policy(PUSH)
+		cmake_policy(SET CMP0167 OLD)
+		find_package(Boost ${ARGV})
+		cmake_policy(POP)
+	else()
+		find_package(Boost ${ARGV})
+	endif()
+endmacro()
+
+arx_find_boost(1.58 REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 add_definitions(-DBOOST_ALL_NO_LIB)
 add_definitions(-DBOOST_EXCEPTION_DISABLE)
@@ -1331,7 +1343,7 @@ elseif(USE_NATIVE_FS AND WIN32)
 	set(ARX_HAVE_WIN32_FILESYSTEM 1)
 else()
 	
-	find_package(Boost 1.48 REQUIRED COMPONENTS filesystem system)
+	arx_find_boost(1.48 REQUIRED COMPONENTS filesystem system)
 	set(ARX_HAVE_BOOST_FILESYSTEM_V3 1)
 	add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
 	add_definitions(-DBOOST_FILESYSTEM_NO_DEPRECATED)
