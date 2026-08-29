@@ -36,6 +36,10 @@ from .arx_ui_area import (
     arx_ui_area_register,
     arx_ui_area_unregister
 )
+from .arx_ui_model import (
+    arx_ui_model_register,
+    arx_ui_model_unregister
+)
 from .managers import arxAddonReload, getAddon
 
 import logging
@@ -290,6 +294,7 @@ def register():
         bpy.utils.register_class(cls)
     arx_ui_area_register()
     bpy.types.TOPBAR_MT_file_import.append(menu_func_import_ftl)
+    arx_ui_model_register()
     bpy.types.TOPBAR_MT_file_export.append(menu_func_export_ftl)
     bpy.types.TOPBAR_MT_file_import.append(menu_func_import_tea)
     bpy.types.TOPBAR_MT_file_export.append(menu_func_export_tea)
@@ -297,6 +302,7 @@ def register():
 def unregister():
     log.debug("unregister")
     bpy.types.TOPBAR_MT_file_import.remove(menu_func_import_ftl)
+    arx_ui_model_unregister()
     bpy.types.TOPBAR_MT_file_export.remove(menu_func_export_ftl)
     bpy.types.TOPBAR_MT_file_import.remove(menu_func_import_tea)
     bpy.types.TOPBAR_MT_file_export.remove(menu_func_export_tea)
