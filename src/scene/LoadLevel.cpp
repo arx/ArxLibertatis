@@ -194,12 +194,16 @@ static void loadLights(const char * dat, size_t & pos, size_t count, const Vec3f
 }
 
 static void loadLighting(const char * dat, size_t & pos, bool compact, bool skip = false) {
-	
+
 	const DANAE_LS_LIGHTINGHEADER * dll = reinterpret_cast<const DANAE_LS_LIGHTINGHEADER *>(dat + pos);
 	pos += sizeof(DANAE_LS_LIGHTINGHEADER);
-	
+
 	size_t count = dll->nb_values;
-	
+
+	LogInfo << "loadLighting: nb_values=" << count << " ViewMode=" << dll->ViewMode
+	        << " ModeLight=" << dll->ModeLight << " compact=" << compact
+	        << " pos=" << pos;
+
 	if(!skip) {
 		g_levelLighting.resize(count);
 	}
@@ -491,12 +495,22 @@ bool DanaeLoadLevel(AreaId area, bool loadEntities) {
 	progressBarAdvance(4.f);
 	LoadLevelScreen();
 	
+	LogInfo << "LLF header: nb_lights=" << llh->nb_lights << " version=" << llh->version;
+	LogInfo << "LLF header continued: nb_bkgpolys=" << llh->nb_bkgpolys
+	        << " nb_Shadow_Polys=" << llh->nb_Shadow_Polys
+	        << " nb_IGNORED_Polys=" << llh->nb_IGNORED_Polys;
+	LogInfo << "LLF size: " << buffer.size() << " bytes, pos before lights: " << pos;
+
 	loadLights(dat, pos, size_t(llh->nb_lights), trans);
-	
+
+	LogInfo << "LLF pos after lights: " << pos << " (" << llh->nb_lights << " lights loaded)";
+
 	progressBarAdvance(2.f);
 	LoadLevelScreen();
-	
+
+	LogInfo << "LLF calling loadLighting at pos=" << pos << " with version check: " << (dlh.version > 1.001f);
 	loadLighting(dat, pos, dlh.version > 1.001f);
+	LogInfo << "LLF pos after loadLighting: " << pos;
 	
 	ARX_UNUSED(pos);
 	arx_assert(pos <= buffer.size());
@@ -555,27 +569,72 @@ void DanaeClearLevel() {
 }
 
 void RestoreLastLoadedLightning() {
-	
+
 	if(g_levelLighting.empty()) {
+		LogInfo << "RestoreLastLoadedLightning: g_levelLighting is empty, skipping";
 		return;
 	}
-	
-	if(g_levelLighting.size() != g_tiles->countVertices()) {
+
+	size_t expectedVertices = g_tiles->countVertices();
+	LogInfo << "RestoreLastLoadedLightning: g_levelLighting.size()=" << g_levelLighting.size()
+	        << " g_tiles->countVertices()=" << expectedVertices;
+
+	if(g_levelLighting.size() != expectedVertices) {
+		LogWarning << "Lighting vertex count mismatch! LLF has " << g_levelLighting.size()
+		           << " vertices but FTS expects " << expectedVertices;
+
+		// Debug: Show details about polygon counts
+		size_t quadCount = 0;
+		size_t triCount = 0;
+		for(auto tile : g_tiles->tiles<util::GridYXIterator>()) {
+			for(EERIEPOLY & ep : tile.polygons()) {
+				if(ep.type & POLY_QUAD) {
+					quadCount++;
+				} else {
+					triCount++;
+				}
+			}
+		}
+		LogWarning << "FTS has " << quadCount << " quads and " << triCount << " triangles";
+		LogWarning << "Expected: " << quadCount * 4 + triCount * 3 << " vertices";
+		LogWarning << "But LLF has: " << g_levelLighting.size() << " vertices";
+		LogWarning << "Difference: " << static_cast<long>(expectedVertices) - static_cast<long>(g_levelLighting.size()) << " vertices";
+
+		// Analyze vertex distribution
+		size_t firstCellPolys = 0;
+		size_t firstCellVerts = 0;
+		bool foundFirst = false;
+		for(auto tile : g_tiles->tiles<util::GridYXIterator>()) {
+			if(!foundFirst && !tile.polygons().empty()) {
+				for(EERIEPOLY & ep : tile.polygons()) {
+					firstCellPolys++;
+					firstCellVerts += (ep.type & POLY_QUAD) ? 4 : 3;
+					if(firstCellPolys >= 10) break;
+				}
+				foundFirst = true;
+			}
+		}
+		LogWarning << "First non-empty cell has " << firstCellPolys << " polygons needing " << firstCellVerts << " vertices";
+
 		g_levelLighting.clear();
 		return;
 	}
-	
+
 	size_t i = 0;
+	size_t polyIndex = 0;
 	for(auto tile : g_tiles->tiles<util::GridYXIterator>()) {
 		for(EERIEPOLY & ep : tile.polygons()) {
 			size_t nbvert = (ep.type & POLY_QUAD) ? 4 : 3;
 			for(size_t k = 0; k < nbvert; k++) {
 				if(i >= g_levelLighting.size()) {
+					LogError << "Ran out of lighting data at polygon " << polyIndex << " vertex " << k;
+					LogError << "Polygon type: " << ((ep.type & POLY_QUAD) ? "QUAD" : "TRIANGLE");
 					g_levelLighting.clear();
 					return;
 				}
 				ep.color[k] = ep.v[k].color = Color::fromBGRA(g_levelLighting[i++]).toRGB();
 			}
+			polyIndex++;
 		}
 	}
 	

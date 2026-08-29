@@ -19,6 +19,62 @@ import os
 import logging
 from pathlib import Path
 
+#: Where LOADANIM looks for its file, decided by the entity's kind rather than by
+#: anything in the name (ScriptedAnimation.cpp: the player and NPCs read from
+#: anims/npc, everything else from anims/fix_inter).
+ANIM_ROOT_NPC = 'graph/obj3d/anims/npc'
+ANIM_ROOT_FIX = 'graph/obj3d/anims/fix_inter'
+
+
+def split_asl_words(line):
+    """Split an ASL line into words, keeping quoted strings whole."""
+    words = []
+    current = ''
+    quoted = False
+    for char in line:
+        if char == '"':
+            quoted = not quoted
+            continue
+        if char.isspace() and not quoted:
+            if current:
+                words.append(current)
+                current = ''
+            continue
+        current += char
+    if current:
+        words.append(current)
+    return words
+
+
+def parse_loadanim(text):
+    """Every animation a script binds, as {slot: file stem}.
+
+    LOADANIM is what actually associates an animation with an entity; matching
+    file names against a model name only ever guesses. A later declaration of the
+    same slot replaces an earlier one, which is how an instance script overrides
+    one animation without restating the rest. A file of "none" clears the slot,
+    exactly as the command does.
+    """
+    animations = {}
+    for raw in text.splitlines():
+        line = raw.split('//', 1)[0]
+        words = split_asl_words(line)
+        if not words or words[0].lower() != 'loadanim':
+            continue
+
+        # Skip the option flags, for example the -p that targets the player.
+        rest = [word for word in words[1:] if not word.startswith('-')]
+        if len(rest) < 2:
+            continue
+
+        slot, target = rest[0].upper(), rest[1]
+        if target.lower() == 'none':
+            animations.pop(slot, None)
+        else:
+            animations[slot] = target
+    return animations
+
+
 class ASLReader:
     """Module for reading ASL (Arx Scripting Language) files with ISO-8559-15 encoding"""
     
@@ -26,140 +82,130 @@ class ASLReader:
         self.data_path = Path(data_path)
         self.log = logging.getLogger('ASLReader')
         
-    def get_asl_file_path(self, entity_ident, object_id=None):
-        """Get the ASL file path for a given entity identifier"""
-        # If object_id is provided, use it to construct the direct path
-        if object_id:
-            direct_path = self._construct_direct_path(object_id, entity_ident)
-            if direct_path and direct_path.exists():
-                return direct_path
-            
-            # Try root/global script in parent folder if specific numbered version doesn't exist
-            root_path = self._construct_root_path(object_id)
-            if root_path and root_path.exists():
-                return root_path
-        
-        # No fallback search - return None if specific path not found
-        return None
-    
-    def _construct_direct_path(self, object_id, entity_ident):
-        """Construct direct ASL file path from object_id and entity_ident"""
-        # object_id is the full path like "npc/human_base" or "items/provisions/bone"
-        # The last part is the base name, everything before is the directory structure
-        
-        object_parts = object_id.split('/')
-        if len(object_parts) >= 1:
-            base_name = object_parts[-1]  # Last part is the base name (e.g., "bone", "human_base")
-            dir_path = '/'.join(object_parts)  # Full directory path (e.g., "items/provisions/bone")
-            
-            folder_name = f"{base_name}_{entity_ident:04d}"
-            asl_filename = f"{base_name}.asl"
-            
-            # Construct: /build/graph/obj3d/interactive/{full_dir_path}/{base_name}_{entity_ident:04d}/{base_name}.asl
-            asl_path = (self.data_path / "graph" / "obj3d" / "interactive" / 
-                       dir_path / folder_name / asl_filename)
-            
-            return asl_path
-        
-        return None
-    
-    def _construct_root_path(self, object_id):
-        """Construct path to root/global ASL script for entity type"""
-        object_parts = object_id.split('/')
-        if len(object_parts) >= 1:
-            base_name = object_parts[-1]  # Last part is the base name
-            dir_path = '/'.join(object_parts)  # Full directory path
-            
-            # Try root script in base folder: /build/graph/obj3d/interactive/{full_dir_path}/{base_name}.asl
-            root_asl_path = (self.data_path / "graph" / "obj3d" / "interactive" / 
-                           dir_path / f"{base_name}.asl")
-            
-            return root_asl_path
-        
-        return None
-    
-    def _search_entity_folders(self, entity_ident):
-        """Search for ASL files in entity-specific folders"""
-        interactive_path = self.data_path / "graph" / "obj3d" / "interactive"
-        
-        if not interactive_path.exists():
-            self.log.warning(f"Interactive path does not exist: {interactive_path}")
-            return None
-            
-        # Search in npc, items, and fix_inter directories
-        search_dirs = ["npc", "items", "fix_inter"]
-        
-        for search_dir in search_dirs:
-            base_path = interactive_path / search_dir
-            if not base_path.exists():
+    @staticmethod
+    def class_path_from_name(entity_name):
+        """The class path the engine derives from the name stored in the DLF.
+
+        LoadLevel lowercases the string, keeps everything from "graph" onwards and
+        drops the extension. Doing the same here is what makes an entity's scripts
+        findable wherever it lives, rather than only under graph/obj3d/interactive.
+        """
+        text = entity_name.replace('\\', '/').lower()
+        if text.endswith('.teo') or text.endswith('.ftl') or text.endswith('.asl'):
+            text = text.rsplit('.', 1)[0]
+        marker = text.find('graph')
+        if marker != -1:
+            text = text[marker:]
+        return text.strip('/')
+
+    def class_script_path(self, class_path):
+        """The script shared by every instance of this class."""
+        return self.data_path / (class_path + '.asl')
+
+    def instance_script_path(self, class_path, entity_ident):
+        """The script belonging to one placed entity, which overrides the class one.
+
+        LoadInter_Ex looks it up as <class directory>/<id>/<class name>.asl, where
+        the id is the class name and the four digit instance number.
+        """
+        parts = class_path.split('/')
+        name = parts[-1]
+        folder = f"{name}_{entity_ident:04d}"
+        return self.data_path.joinpath(*parts[:-1], folder, name + '.asl')
+
+    def resolve(self, class_path, entity_ident, scope='auto'):
+        """Locate a script. Returns (path, scope, exists).
+
+        `scope` is 'instance', 'class' or 'auto'. Auto prefers the instance script
+        and falls back to the class one, which is right for reading. Saving must
+        never do that: silently redirecting an edit of one entity onto the script
+        shared by every entity of its type is how a change to a single marker ends
+        up rewriting all of them.
+        """
+        instance = self.instance_script_path(class_path, entity_ident)
+        klass = self.class_script_path(class_path)
+
+        if scope == 'instance':
+            return instance, 'instance', instance.exists()
+        if scope == 'class':
+            return klass, 'class', klass.exists()
+
+        if instance.exists():
+            return instance, 'instance', True
+        if klass.exists():
+            return klass, 'class', True
+        return instance, 'instance', False
+
+    def get_asl_file_path(self, entity_ident, object_id=None, class_path=None,
+                          scope='auto'):
+        """Backwards compatible lookup; prefer resolve() with a real class path."""
+        if class_path is None:
+            if not object_id:
+                return None
+            # Older scenes stored only the fragment below graph/obj3d/interactive.
+            class_path = 'graph/obj3d/interactive/' + object_id.strip('/')
+            class_path = class_path + '/' + class_path.rsplit('/', 1)[-1]
+
+        path, _scope, exists = self.resolve(class_path, entity_ident, scope)
+        return path if exists else None
+
+    def animation_set(self, class_path, entity_ident=None, npc=True):
+        """The animations an entity actually uses, as {slot: absolute tea path}.
+
+        The class script is read first and the instance script layered over it, so
+        an instance that rebinds one slot keeps the rest.
+        """
+        declared = {}
+        for scope in ('class', 'instance'):
+            if scope == 'instance' and entity_ident is None:
                 continue
-                
-            # Look for entity folders in format: {entity_type}_{entity_id:04d}
-            for entity_dir in base_path.iterdir():
-                if not entity_dir.is_dir():
-                    continue
-                    
-                # Check if this directory contains the entity we're looking for
-                if self._is_entity_folder(entity_dir, entity_ident):
-                    # Look for ASL files in this directory
-                    asl_files = list(entity_dir.glob("*.asl"))
-                    if asl_files:
-                        return asl_files[0]  # Return first ASL file found
-        
-        return None
-    
-    def _is_entity_folder(self, entity_dir, entity_ident):
-        """Check if a directory contains the entity we're looking for"""
-        dir_name = entity_dir.name
-        
-        # Check if directory name ends with the entity identifier
-        entity_suffix = f"_{entity_ident:04d}"
-        if dir_name.endswith(entity_suffix):
-            return True
-            
-        # Also check if there's a subdirectory with the entity identifier
-        entity_subdir = entity_dir / f"{dir_name}_{entity_ident:04d}"
-        if entity_subdir.exists():
-            return True
-            
-        return False
-    
-    def find_asl_by_name(self, entity_name):
-        """Find ASL file by entity name (without specific ID)"""
-        interactive_path = self.data_path / "graph" / "obj3d" / "interactive"
-        
-        if not interactive_path.exists():
-            return None
-            
-        # Search in all interactive subdirectories
-        for subdir in interactive_path.iterdir():
-            if not subdir.is_dir():
+            path, _scope, exists = self.resolve(class_path, entity_ident or 0, scope)
+            if not exists:
                 continue
-                
-            # Look for entity folders that match the name
-            for entity_dir in subdir.iterdir():
-                if not entity_dir.is_dir():
-                    continue
-                    
-                # Check if directory name starts with the entity name
-                if entity_dir.name.lower().startswith(entity_name.lower()):
-                    # Look for ASL files in this directory
-                    asl_files = list(entity_dir.glob("*.asl"))
-                    if asl_files:
-                        return asl_files[0]
-                    
-                    # Also check subdirectories (for numbered instances)
-                    for subdir in entity_dir.iterdir():
-                        if subdir.is_dir() and subdir.name.startswith(entity_dir.name + "_"):
-                            asl_files = list(subdir.glob("*.asl"))
-                            if asl_files:
-                                return asl_files[0]
-        
-        return None
-    
-    def read_asl_file(self, entity_ident, object_id=None):
+            text = self.read_path(path)
+            if text:
+                declared.update(parse_loadanim(text))
+
+        root = ANIM_ROOT_NPC if npc else ANIM_ROOT_FIX
+        return {slot: self.data_path / root / (name + '.tea')
+                for slot, name in declared.items()}
+
+    def find_animation_sets(self):
+        """Every script in the data that binds animations, as {class path: {slot: file}}.
+
+        Useful because the set a mesh should use is not always declared by that
+        mesh's own script: the human animations live in the player's script, and a
+        new humanoid borrowing them wants to start from that list.
+        """
+        sets = {}
+        interactive = self.data_path / 'graph' / 'obj3d' / 'interactive'
+        if not interactive.exists():
+            return sets
+
+        for script in interactive.rglob('*.asl'):
+            text = self.read_path(script)
+            if not text:
+                continue
+            declared = parse_loadanim(text)
+            if not declared:
+                continue
+            relative = script.relative_to(self.data_path).as_posix()
+            sets[relative[:-4]] = declared
+
+        return sets
+
+    def read_path(self, asl_path):
+        """Read one script file, or None if it cannot be read."""
+        try:
+            with open(asl_path, 'r', encoding='iso-8859-15') as handle:
+                return handle.read()
+        except OSError as error:
+            self.log.error(f"Error reading ASL file {asl_path}: {error}")
+            return None
+
+    def read_asl_file(self, entity_ident, object_id=None, class_path=None, scope='auto'):
         """Read and return the contents of an ASL file for the given entity identifier"""
-        asl_path = self.get_asl_file_path(entity_ident, object_id)
+        asl_path = self.get_asl_file_path(entity_ident, object_id, class_path, scope)
         
         if not asl_path:
             self.log.warning(f"ASL file not found for entity {entity_ident:04d}")

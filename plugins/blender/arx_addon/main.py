@@ -91,6 +91,12 @@ class ArxLevelsPanel(bpy.types.Panel):
             col.operator("arx.area_export_fts", text="Export FTS (Geometry)")
             col.operator("arx.area_export_llf", text="Export LLF (Lighting)")
             col.operator("arx.area_export_dlf", text="Export DLF (Entities/Zones)")
+
+            # NPCs cannot move without a navigation graph, and geometry built in
+            # Blender arrives without one. Export generates it when the level has
+            # none at all; this is how you rebuild one after reshaping a level.
+            layout.separator()
+            layout.operator("arx.generate_anchors", text="Generate Anchors (Navmesh)")
             
             # All export button
             layout.separator()

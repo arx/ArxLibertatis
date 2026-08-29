@@ -20,7 +20,8 @@ import bpy
 import re
 from mathutils import Vector, Quaternion, Matrix
 from .arx_io_util import arx_pos_to_blender_for_model, arx_transform_to_blender, blender_pos_to_arx, ArxException
-from .dataTea import TeaSerializer, TeaFrame, THEO_GROUPANIM
+from .dataTea import (TeaSerializer, TeaFrame, THEO_GROUPANIM, compute_voidgroups,
+                      compute_protected_groups)
 from .dataCommon import SavedVec3, ArxQuat
 
 logging.basicConfig(level=logging.DEBUG)
@@ -463,6 +464,82 @@ def blender_to_arx_transform(location, rotation, scale, scale_factor=0.1, flip_w
     return arx_loc, arx_rot, arx_scale
 
 
+#: The engine's animation clock. Animation.cpp derives every time from this: a
+#: keyframe sits at num_frame / 24 seconds and the whole animation lasts
+#: nb_frames / 24. Nothing else in the file affects playback speed.
+TEA_FRAME_RATE = 24.0
+
+
+#: How close a component has to be to count as exactly identity on the way out.
+#: Anything a Blender round trip produces is far tighter than this.
+VOID_EPSILON = 1e-4
+
+
+def snap_identity_quaternion(w, x, y, z, epsilon=VOID_EPSILON):
+    """Round a near identity rotation back to exactly identity, keeping its sign.
+
+    The engine decides a bone is a "void group" - one carrying no animation, which
+    a lower layer is then free to drive - by comparing its quaternion to identity
+    exactly (Animation.cpp). A bone that went through Blender comes back as
+    0.99999994 rather than 1.0, which is the same rotation but no longer compares
+    equal, so the group stops being void and starts claiming the bone away from
+    the layer underneath it.
+
+    The sign is deliberately preserved. -1,0,0,0 is the same rotation as 1,0,0,0
+    but is not identity, so authors use it to keep a bone out of the void groups
+    on purpose. Normalising it away would silently remove that protection.
+    """
+    if abs(x) > epsilon or abs(y) > epsilon or abs(z) > epsilon:
+        return w, x, y, z
+    if abs(abs(w) - 1.0) > epsilon:
+        return w, x, y, z
+    return (1.0 if w >= 0.0 else -1.0), 0.0, 0.0, 0.0
+
+
+def snap_zero_vector(x, y, z, epsilon=VOID_EPSILON):
+    """Round a near zero translation to exactly zero, for the same reason."""
+    if abs(x) > epsilon or abs(y) > epsilon or abs(z) > epsilon:
+        return x, y, z
+    return 0.0, 0.0, 0.0
+
+
+def bone_rest_rotation(pose_bone):
+    """The rest orientation we gave this bone, in armature axes.
+
+    Arx bones have no orientation of their own: EERIE_CreateCedricData gives a
+    bone only a translation from its parent and lets the animation quaternion
+    supply the whole of its rotation. Any orientation a Blender bone has is
+    therefore ours, chosen so the armature reads as a skeleton and can be posed
+    by hand, and it has to be divided back out of every pose.
+    """
+    return pose_bone.bone.matrix_local.to_quaternion()
+
+
+def engine_transform_to_pose_basis(pose_bone, location, rotation, scale):
+    """Express an engine space bone transform in the bone's own rest space.
+
+    What has to agree between the two programs is the deformation, not the raw
+    matrix: Blender deforms a vertex by pose matrix times inverse rest, the engine
+    by its world transform times the inverse of the bone's rest position. Equating
+    those and cancelling the parent terms leaves a purely local conversion,
+
+        basis = R inverse * translate(t) * rotate(q) * R
+
+    for R the bone's rest rotation. With a rest orientation of identity this is
+    just t and q unchanged, which is why bones laid out along one axis needed no
+    conversion at all - and why anatomically placed bones do.
+    """
+    rest = bone_rest_rotation(pose_bone)
+    inverse = rest.inverted()
+    return inverse @ location, inverse @ rotation @ rest, scale
+
+
+def pose_basis_to_engine_transform(pose_bone, location, rotation):
+    """The inverse of the above, for export."""
+    rest = bone_rest_rotation(pose_bone)
+    return rest @ location, rest @ rotation @ rest.inverted()
+
+
 def parse_group_index(name):
     """
     Parse the group index from vertex group or bone names.
@@ -519,49 +596,52 @@ class ArxAnimationManager(object):
         return bone_map, vg_map, animatable_indices
 
     def calculate_frame_timing(self, data, frame_rate):
+        """Place each keyframe where the engine plays it.
+
+        A TEA keyframe carries num_frame, its position on a timeline running at 24
+        frames per second, and the keyframes are deliberately unevenly spaced - a
+        walk cycle holds some poses longer than others. The duration field the
+        format also carries is not used by the engine at all, and in the shipped
+        animations it is mostly zero, so laying the keyframes out end to end at one
+        24th of a second each both compresses the animation and flattens its
+        rhythm. human_normal_walk comes out 2.6 times too fast that way, and
+        human_normal_wait nearly four times.
+
+        Returns times in seconds, the Blender frame for each keyframe, the total
+        duration and the total frame count, all on the 24 fps timeline.
         """
-        Calculate Blender frame numbers from TEA frame durations.
-        Args:
-            data: List of TeaFrame objects.
-            frame_rate: Target frame rate (frames per second).
-        Returns:
-            frame_times: List of cumulative times (seconds) for each frame.
-            blender_frames: List of corresponding Blender frame numbers.
-            total_duration: Total animation duration in seconds.
-            total_blender_frames: Total number of Blender frames.
-        """
-        current_time = 0.0
-        frame_times = []
         blender_frames = []
-        min_frame_duration = 1.0 / frame_rate
-        
-        for frame_index, frame in enumerate(data):
-            frame_times.append(current_time)
-            blender_frame_float = (current_time * frame_rate) + 1.0
-            blender_frame = max(1, round(blender_frame_float))
-            blender_frames.append(blender_frame)
-            
-            duration_seconds = max(frame.duration, min_frame_duration)
-            current_time += duration_seconds
-            
-            self.log.debug("TEA frame %d: time=%.3fs -> Blender frame %d (duration=%dms)", 
-                           frame_index, frame_times[-1], blender_frame, frame.duration * 1000)
-        
-        total_duration = current_time
-        total_blender_frames = max(len(data), round(total_duration * frame_rate))
-        
-        if total_blender_frames < len(data):
-            self.log.warning("Animation too short (%d frames), adjusting to %d frames", 
-                             total_blender_frames, len(data))
-            blender_frames = list(range(1, len(data) + 1))
-            total_blender_frames = len(data)
-        
-        self.log.info("Total animation duration: %.3fs (%d TEA frames) -> %d Blender frames at %.1f fps", 
-                      total_duration, len(data), total_blender_frames, frame_rate)
-        
+        frame_times = []
+
+        previous = -1
+        for index, frame in enumerate(data):
+            position = getattr(frame, 'num_frame', None)
+            if position is None:
+                # A frame from somewhere that predates num_frame being kept.
+                position = index
+            # Keyframes must stay in order; a file with a bad num_frame should not
+            # be able to make later keyframes land before earlier ones.
+            if position <= previous:
+                position = previous + 1
+            previous = position
+
+            frame_times.append(position / TEA_FRAME_RATE)
+            blender_frames.append(position + 1)  # Blender counts from one
+
+        total_blender_frames = (blender_frames[-1] if blender_frames else 1)
+        total_duration = total_blender_frames / TEA_FRAME_RATE
+
+        if abs(frame_rate - TEA_FRAME_RATE) > 0.01:
+            self.log.warning("Scene is %.1f fps but Arx animations are authored at "
+                             "%.0f; playback in Blender will not match the game",
+                             frame_rate, TEA_FRAME_RATE)
+
+        self.log.info("Animation spans %d frames (%.3fs at %.0f fps) over %d keyframes",
+                      total_blender_frames, total_duration, TEA_FRAME_RATE, len(data))
+
         return frame_times, blender_frames, total_duration, total_blender_frames
 
-    def apply_frame_transforms(self, frame, frame_index, blender_frame, obj, armature_obj, bone_map, animatable_indices, scale_factor, flip_w, flip_x, flip_y, flip_z):
+    def apply_frame_transforms(self, frame, frame_index, blender_frame, obj, armature_obj, bone_map, animatable_indices, scale_factor, flip_w, flip_x, flip_y, flip_z, voidgroups=None):
         """
         Apply transformations for a single TEA frame to Blender objects and bones.
         Args:
@@ -574,9 +654,10 @@ class ArxAnimationManager(object):
             animatable_indices: Set of indices that can be animated.
             scale_factor: Scaling factor for positions.
             flip_w, flip_x, flip_y, flip_z: Boolean flags for quaternion component flipping.
+            voidgroups: Optional list of booleans indicating which groups are void (should not be keyframed).
         """
         bpy.context.scene.frame_set(blender_frame)
-        self.log.debug("Processing TEA frame %d -> Blender frame %d: duration=%dms", 
+        self.log.debug("Processing TEA frame %d -> Blender frame %d: duration=%dms",
                        frame_index, blender_frame, frame.duration * 1000)
 
         if frame.translation or frame.rotation:
@@ -606,21 +687,38 @@ class ArxAnimationManager(object):
             bpy.ops.object.mode_set(mode='POSE')
 
         for group_index in animatable_indices:
-            group = frame.groups[group_index]
-            bone = bone_map[group_index]
-            
-            if group.key_group == -1:
+            # Skip void groups - they have identity transforms and should not be keyframed
+            # This allows layered animations (e.g., combat overlay on walk cycle) to work correctly
+            if voidgroups is not None and group_index < len(voidgroups) and voidgroups[group_index]:
+                if frame_index == 0:
+                    self.log.debug("Frame %d, Group %d: SKIPPED (void group)", frame_index, group_index)
                 continue
 
-            self.log.debug("Frame %d, Group %d, Bone %s: translate=%s, Quaternion=%s, zoom=%s",
-                           frame_index, group_index, bone.name, group.translate, group.Quaternion, group.zoom)
+            group = frame.groups[group_index]
+            bone = bone_map[group_index]
+
+            # Note: key_group == -1 check is kept for backwards compatibility but is rarely triggered
+            # since TEA files typically use the group index in this field, not -1 for void groups
+            if group.key_group == -1:
+                if frame_index == 0:
+                    self.log.debug("Frame %d, Group %d: SKIPPED (key_group == -1)", frame_index, group_index)
+                continue
+
+            # Log raw TEA data for first frame to help debug transform issues
+            if frame_index == 0:
+                self.log.info("Frame %d, Group %d, Bone %s: RAW TEA data - quat(w=%.4f,x=%.4f,y=%.4f,z=%.4f), trans(%.4f,%.4f,%.4f), zoom(%.4f,%.4f,%.4f)",
+                              frame_index, group_index, bone.name,
+                              group.Quaternion.w, group.Quaternion.x, group.Quaternion.y, group.Quaternion.z,
+                              group.translate.x, group.translate.y, group.translate.z,
+                              group.zoom.x, group.zoom.y, group.zoom.z)
 
             location = Vector((group.translate.x, group.translate.y, group.translate.z))
             rotation = Quaternion((group.Quaternion.w, group.Quaternion.x, group.Quaternion.y, group.Quaternion.z))
             scale = Vector((group.zoom.x, group.zoom.y, group.zoom.z))
             
             loc, rot, scl = arx_transform_to_blender(location, rotation, scale, scale_factor, flip_w, flip_x, flip_y, flip_z)
-            
+            loc, rot, scl = engine_transform_to_pose_basis(bone, loc, rot, scl)
+
             bone.location = loc
             bone.rotation_mode = 'QUATERNION'
             bone.rotation_quaternion = rot
@@ -708,13 +806,48 @@ class ArxAnimationManager(object):
 
         frame_times, blender_frames, total_duration, total_blender_frames = self.calculate_frame_timing(data, frame_rate)
 
+        # Compute voidgroups to determine which bones should NOT be keyframed
+        # This matches engine behavior (Animation.cpp:431-449) and enables proper
+        # animation layering (e.g., combat animations on top of walk cycles)
+        num_groups = len(data[0].groups) if data else 0
+        voidgroups = compute_voidgroups(data, num_groups)
+
+        # Remember which groups were held out of the void groups on purpose, so
+        # exporting writes the negated identity back rather than tidying it into a
+        # plain one and quietly handing the bone to a lower layer.
+        protected = compute_protected_groups(data, num_groups)
+        for group_index, is_protected in enumerate(protected):
+            bone = bone_map.get(group_index)
+            if bone is not None and is_protected:
+                bone["arx_never_void"] = True
+        if any(protected):
+            self.log.info("%d groups are marked never void by negated identity: %s",
+                          sum(protected), [i for i, v in enumerate(protected) if v])
+
+        # Log animation layer info
+        animated_groups = [i for i in range(num_groups) if not voidgroups[i]]
+        void_group_indices = [i for i in range(num_groups) if voidgroups[i]]
+        self.log.info("Animation layer analysis: %d animated groups, %d void groups",
+                      len(animated_groups), len(void_group_indices))
+        if animated_groups:
+            self.log.debug("Animated groups: %s", animated_groups)
+        if void_group_indices:
+            self.log.debug("Void groups (will not be keyframed): %s", void_group_indices)
+
         for frame_index, frame in enumerate(data):
             self.apply_frame_transforms(
                 frame, frame_index, blender_frames[frame_index], obj, armature_obj,
-                bone_map, animatable_indices, scale_factor, flip_w, flip_x, flip_y, flip_z
+                bone_map, animatable_indices, scale_factor, flip_w, flip_x, flip_y, flip_z,
+                voidgroups=voidgroups
             )
 
         bpy.ops.object.mode_set(mode='OBJECT')
+        # Arx animations are authored at 24 fps and the engine plays them at that
+        # rate regardless of anything in the file, so pin the scene to match or
+        # Blender's playback speed will disagree with the game's.
+        bpy.context.scene.render.fps = int(TEA_FRAME_RATE)
+        bpy.context.scene.render.fps_base = 1.0
+        bpy.context.scene.frame_start = 1
         bpy.context.scene.frame_end = total_blender_frames
 
         for fcurve in action.fcurves:
@@ -785,12 +918,20 @@ class ArxAnimationManager(object):
         action["arx_frame_durations"] = ",".join(frame_durations)
         action["arx_frame_info_strings"] = ";".join(frame_info_strings)
         action["arx_keyframe_flags"] = ",".join(keyframe_flags)
-        
-        self.log.info("Stored comprehensive TEA metadata: version=%d, frames=%d, groups=%d", 
+
+        # Store voidgroups information for layered animation support
+        # Animated groups are the ones that have actual animation data
+        # Void groups have identity transforms and were NOT keyframed
+        action["arx_animated_groups"] = ",".join(map(str, animated_groups))
+        action["arx_void_groups"] = ",".join(map(str, void_group_indices))
+
+        self.log.info("Stored comprehensive TEA metadata: version=%d, frames=%d, groups=%d",
                      2015, len(data), len(data[0].groups) if data else 0)
 
-        self.log.info("Animation loaded successfully: %d TEA frames -> %d Blender frames (%.2fs at %dfps), %d animated bones",
-                      len(data), total_blender_frames, total_duration, frame_rate, len(animatable_indices))
+        # Update log to show actual animated bone count (excluding void groups)
+        actual_animated = len([g for g in animatable_indices if not voidgroups[g]])
+        self.log.info("Animation loaded successfully: %d TEA frames -> %d Blender frames (%.2fs at %dfps), %d animated bones (%d void/skipped)",
+                      len(data), total_blender_frames, total_duration, frame_rate, actual_animated, len(void_group_indices))
 
         return action
         
@@ -1014,7 +1155,10 @@ class ArxAnimationManager(object):
                     key_morph=key_morph,
                     master_key_frame=master_key_frame,
                     key_frame=key_frame,
-                    info_frame=info_frame
+                    info_frame=info_frame,
+                    # Position on the engine's 24 fps timeline, which is the only
+                    # timing it reads back. Blender counts frames from one.
+                    num_frame=frame_num - frame_start
                 )
                 
                 frames.append(frame)
@@ -1141,6 +1285,12 @@ class ArxAnimationManager(object):
                     rotation = bone.rotation_quaternion.copy()
                 else:
                     rotation = bone.rotation_euler.to_quaternion()
+
+                # Undo the rest orientation the armature was laid out with, so what
+                # is written is the engine's own local transform rather than one
+                # expressed in Blender bone space.
+                location, rotation = pose_basis_to_engine_transform(
+                    bone, location, rotation)
                 scale = bone.scale.copy()
                 
                 # Use inverse coordinate conversion
@@ -1150,14 +1300,26 @@ class ArxAnimationManager(object):
                 )
                 
                 group.key_group = i
-                group.translate.x = arx_loc.x
-                group.translate.y = arx_loc.y
-                group.translate.z = arx_loc.z
-                
-                group.Quaternion.w = arx_rot.w
-                group.Quaternion.x = arx_rot.x
-                group.Quaternion.y = arx_rot.y
-                group.Quaternion.z = arx_rot.z
+
+                tx, ty, tz = snap_zero_vector(arx_loc.x, arx_loc.y, arx_loc.z)
+                group.translate.x = tx
+                group.translate.y = ty
+                group.translate.z = tz
+
+                qw, qx, qy, qz = snap_identity_quaternion(
+                    arx_rot.w, arx_rot.x, arx_rot.y, arx_rot.z)
+
+                # A bone flagged this way keeps itself out of the void groups by
+                # writing the negated identity, which is the same rotation but not
+                # equal to it. Without that a bone that happens to hold still for a
+                # whole animation would be handed to whatever layer is underneath.
+                if bone.get("arx_never_void") and (qw, qx, qy, qz) == (1.0, 0.0, 0.0, 0.0):
+                    qw = -1.0
+
+                group.Quaternion.w = qw
+                group.Quaternion.x = qx
+                group.Quaternion.y = qy
+                group.Quaternion.z = qz
                 
                 # Handle scale - use 0.0 as default like original TEA files
                 if abs(scale.x - 1.0) > 0.001 or abs(scale.y - 1.0) > 0.001 or abs(scale.z - 1.0) > 0.001:
@@ -1182,7 +1344,240 @@ class ArxAnimationManager(object):
                 group.zoom.x = 0.0  # Default scale like original TEA files
                 group.zoom.y = 0.0
                 group.zoom.z = 0.0
-                
+
             groups.append(group)
-            
+
         return groups
+
+
+class ArxLayerCompositor:
+    """
+    Composites multiple animation layers exactly like the Arx engine does.
+
+    Engine logic (AnimationRender.cpp:1191-1249):
+    - Process layers 3 → 2 → 1 → 0 (highest priority first)
+    - For each bone, use the HIGHEST layer that has non-void data
+    - Base layer (0) LOOPS to fill full duration
+    - Overlay layers play once over the looping base
+
+    This bypasses Blender's NLA system entirely for accurate preview.
+    """
+
+    def __init__(self):
+        self.log = logging.getLogger(__name__)
+        self.teaSerializer = TeaSerializer()
+
+    def load_animation_data(self, tea_path):
+        """Load raw animation data from TEA file."""
+        try:
+            frames = self.teaSerializer.read(tea_path)
+            if not frames:
+                return None, None
+
+            num_groups = len(frames[0].groups) if frames else 0
+            voidgroups = compute_voidgroups(frames, num_groups)
+
+            return frames, voidgroups
+        except Exception as e:
+            self.log.error("Failed to load TEA file %s: %s", tea_path, str(e))
+            return None, None
+
+    def composite_layers(self, armature_obj, layer_data, frame_rate=24.0, scale_factor=0.1,
+                         flip_w=False, flip_x=False, flip_y=False, flip_z=False,
+                         negate_overlay_quat=False):
+        """
+        Composite multiple animation layers into a single baked animation.
+
+        Args:
+            armature_obj: Blender armature object
+            layer_data: List of tuples [(layer_index, tea_frames, voidgroups), ...]
+                        Sorted by layer index (0-3)
+            frame_rate: Target frame rate
+            scale_factor: Position scaling
+            flip_*: Quaternion flip flags
+            negate_overlay_quat: Legacy workaround, off by default. It negated the
+                                 quaternion of overlay layers to try to correct
+                                 arms that played their action pointing the wrong
+                                 way. A quaternion and its negation are the same
+                                 rotation, so this never actually corrected
+                                 anything; the real cause was bones being given a
+                                 rest orientation the format does not have, which
+                                 is fixed in the model importer.
+
+        Returns:
+            Blender action with composited animation
+        """
+        if not armature_obj or not layer_data:
+            return None
+
+        # Build bone mapping
+        bone_map = {}
+        for bone in armature_obj.pose.bones:
+            group_index = parse_group_index(bone.name)
+            if group_index is not None:
+                bone_map[group_index] = bone
+
+        if not bone_map:
+            self.log.error("No bones with parseable group indices found")
+            return None
+
+        # Determine frame range (use longest animation)
+        max_frames = 0
+        layer_frame_counts = {}
+        for layer_idx, frames, voidgroups in layer_data:
+            if frames:
+                # Length on the 24 fps timeline, not the number of keyframes. A
+                # layer's keyframes are spread unevenly across it, so counting them
+                # both shortens the animation and evens out its rhythm.
+                span = max(getattr(f, 'num_frame', i) for i, f in enumerate(frames)) + 1
+                layer_frame_counts[layer_idx] = span
+                if span > max_frames:
+                    max_frames = span
+
+        if max_frames == 0:
+            self.log.error("No animation frames to composite")
+            return None
+
+        self.log.info("Layer frame counts: %s, max=%d", layer_frame_counts, max_frames)
+
+        # Create or get action
+        action_name = f"{armature_obj.name}_composited"
+        if action_name in bpy.data.actions:
+            bpy.data.actions.remove(bpy.data.actions[action_name])
+
+        action = bpy.data.actions.new(action_name)
+
+        if not armature_obj.animation_data:
+            armature_obj.animation_data_create()
+        armature_obj.animation_data.action = action
+
+        # Key each bone at the positions its own source animation uses, rather
+        # than sampling every bone at every frame. The engine picks, per bone, the
+        # highest numbered layer that has real data for it (Cedric_AnimateObject
+        # walks the layers from the top down and the first to claim a bone wins),
+        # and that layer's keyframes are what actually describe the motion.
+        bpy.context.view_layer.objects.active = armature_obj
+        bpy.ops.object.mode_set(mode='POSE')
+
+        self.log.info("Compositing %d layers over %d frames (%.3fs) for %d bones",
+                      len(layer_data), max_frames, max_frames / TEA_FRAME_RATE,
+                      len(bone_map))
+
+        # Highest layer first, matching the engine's claim order.
+        sorted_layers = sorted(layer_data, key=lambda entry: entry[0], reverse=True)
+
+        unclaimed = []
+        for group_idx, bone in bone_map.items():
+            winner = None
+            for layer_idx, frames, voidgroups in sorted_layers:
+                if not frames:
+                    continue
+                if group_idx < len(voidgroups) and voidgroups[group_idx]:
+                    continue  # nothing but identity here, so it does not claim the bone
+                winner = (layer_idx, frames)
+                break
+
+            if winner is None:
+                unclaimed.append(group_idx)
+                continue
+
+            layer_idx, frames = winner
+            span = layer_frame_counts.get(layer_idx) or 1
+
+            # Repeat the layer's own cycle until the output timeline is covered,
+            # which is what the engine does with a looping animation underneath a
+            # shorter one.
+            offset = 0
+            while offset < max_frames:
+                for frame in frames:
+                    if group_idx >= len(frame.groups):
+                        continue
+                    position = getattr(frame, 'num_frame', 0) + offset
+                    if position >= max_frames and offset > 0:
+                        break
+
+                    group = frame.groups[group_idx]
+                    location = Vector((group.translate.x, group.translate.y, group.translate.z))
+                    rotation = Quaternion((group.Quaternion.w, group.Quaternion.x,
+                                           group.Quaternion.y, group.Quaternion.z))
+                    scale = Vector((group.zoom.x, group.zoom.y, group.zoom.z))
+
+                    if negate_overlay_quat and layer_idx > 0:
+                        rotation = Quaternion((-rotation.w, -rotation.x,
+                                               -rotation.y, -rotation.z))
+
+                    loc, rot, scl = arx_transform_to_blender(
+                        location, rotation, scale, scale_factor,
+                        flip_w, flip_x, flip_y, flip_z)
+
+                    blender_frame = position + 1
+                    bone.location = loc
+                    bone.rotation_mode = 'QUATERNION'
+                    bone.rotation_quaternion = rot
+                    bone.scale = scl
+                    bone.keyframe_insert(data_path="location", frame=blender_frame)
+                    bone.keyframe_insert(data_path="rotation_quaternion", frame=blender_frame)
+                    bone.keyframe_insert(data_path="scale", frame=blender_frame)
+                offset += span
+
+        if unclaimed:
+            self.log.info("%d bones had no non void layer and keep their rest pose: %s",
+                          len(unclaimed), unclaimed[:12])
+
+        bpy.ops.object.mode_set(mode='OBJECT')
+
+        # Set linear interpolation
+        for fcurve in action.fcurves:
+            for keyframe in fcurve.keyframe_points:
+                keyframe.interpolation = 'LINEAR'
+
+        # Store metadata
+        action["arx_composited"] = True
+        action["arx_layer_count"] = len(layer_data)
+        action["arx_negate_overlay_quat"] = negate_overlay_quat
+        action["arx_frame_rate"] = TEA_FRAME_RATE
+
+        bpy.context.scene.render.fps = int(TEA_FRAME_RATE)
+        bpy.context.scene.render.fps_base = 1.0
+        bpy.context.scene.frame_start = 1
+        bpy.context.scene.frame_end = max(1, max_frames)
+
+        self.log.info("Layer composition complete: %d frames, %d bones",
+                      max_frames, len(bone_map))
+
+        return action
+
+    def composite_from_paths(self, armature_obj, layer_paths, **kwargs):
+        """
+        Convenience method to composite from TEA file paths.
+
+        Args:
+            armature_obj: Blender armature object
+            layer_paths: Dict mapping layer index to TEA file path
+                         e.g., {0: "/path/to/walk.tea", 1: "/path/to/attack.tea"}
+            **kwargs: Passed to composite_layers()
+
+        Returns:
+            Composited Blender action
+        """
+        layer_data = []
+
+        for layer_idx in sorted(layer_paths.keys()):
+            tea_path = layer_paths[layer_idx]
+            if not tea_path:
+                continue
+
+            frames, voidgroups = self.load_animation_data(tea_path)
+            if frames:
+                layer_data.append((layer_idx, frames, voidgroups))
+                self.log.info("Layer %d: Loaded %d frames from %s (void groups: %d/%d)",
+                             layer_idx, len(frames), tea_path,
+                             sum(voidgroups), len(voidgroups))
+            else:
+                self.log.warning("Layer %d: Failed to load %s", layer_idx, tea_path)
+
+        if not layer_data:
+            self.log.error("No valid animation data loaded for any layer")
+            return None
+
+        return self.composite_layers(armature_obj, layer_data, **kwargs)

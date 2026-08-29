@@ -185,6 +185,85 @@ import logging
 from ctypes import sizeof
 from .lib import ArxIO
 
+def portal_centre(portal):
+    """Centre of a portal quad, from either a parsed struct or raw bytes."""
+    if isinstance(portal, bytes):
+        portal = EERIE_SAVE_PORTALS.from_buffer_copy(portal)
+    poly = portal.poly
+    return (sum(poly.v[i].pos.x for i in range(4)) / 4.0,
+            sum(poly.v[i].pos.y for i in range(4)) / 4.0,
+            sum(poly.v[i].pos.z for i in range(4)) / 4.0), portal.room_1, portal.room_2
+
+
+def compute_room_distances(portals, room_count):
+    """Shortest route between every pair of rooms, in the form the engine wants.
+
+    SP_GetRoomDist does not use the stored distance by itself. It returns
+
+        fdist(from, startpos) + distance + fdist(endpos, to)
+
+    so startpos and endpos have to be real waypoints on the route - the centres of
+    the first and last doorway along it - and distance the length of the run
+    between those doorways. Zeroed waypoints make every cross room measurement as
+    large as the level's distance from the world origin, which pushes entities out
+    of the treat zone (PrepareIOTreatZone) and freezes them: no physics, no
+    drawing, until the player walks into the same room.
+
+    Returns {(start, end): (distance, startpos, endpos)}. Pairs with no route are
+    absent, and the caller should leave those at distance 0, which the engine
+    reads as "no route" and answers with straight line distance instead.
+    """
+    import heapq
+    import math
+
+    centres = []
+    links = []
+    for portal in portals:
+        centre, room_1, room_2 = portal_centre(portal)
+        centres.append(centre)
+        links.append({room_1, room_2})
+
+    def gap(a, b):
+        return math.sqrt(sum((centres[a][i] - centres[b][i]) ** 2 for i in range(3)))
+
+    result = {}
+    for start in range(1, room_count + 1):
+        best = [math.inf] * len(portals)
+        entry = [None] * len(portals)
+        queue = []
+        for i, rooms in enumerate(links):
+            if start in rooms:
+                best[i] = 0.0
+                entry[i] = i
+                heapq.heappush(queue, (0.0, i))
+
+        while queue:
+            cost, i = heapq.heappop(queue)
+            if cost > best[i]:
+                continue
+            for j, rooms in enumerate(links):
+                if i == j or not (links[i] & rooms):
+                    continue
+                step = cost + gap(i, j)
+                if step < best[j]:
+                    best[j] = step
+                    entry[j] = entry[i]
+                    heapq.heappush(queue, (step, j))
+
+        for end in range(1, room_count + 1):
+            if end == start:
+                continue
+            reachable = [(best[i], entry[i], i) for i, rooms in enumerate(links)
+                         if end in rooms and best[i] < math.inf]
+            if not reachable:
+                continue
+            cost, first, last = min(reachable)
+            # Adjacent rooms come out at zero, which the engine reads as no route.
+            result[(start, end)] = (max(cost, 1.0), centres[first], centres[last])
+
+    return result
+
+
 class FtsSerializer(object):
     def __init__(self, ioLib):
         self.log = logging.getLogger('FtsSerializer')
@@ -361,10 +440,16 @@ class FtsSerializer(object):
             self.log.debug("Header2 path: %s" % h.path.decode('iso-8859-1'))
         
         self.log.debug(f"About to unpack from position {pos} (0x{pos:x}), remaining data: {len(data) - pos} bytes")
-        uncompressed = self.ioLib.unpack(data[pos:])
-        
-        if primaryHeader.uncompressedsize != len(uncompressed):
-            self.log.warn("Uncompressed size mismatch, expected %i actual %i" % (primaryHeader.uncompressedsize, len(uncompressed)))
+        if primaryHeader.uncompressedsize:
+            uncompressed = self.ioLib.unpack(data[pos:])
+            if primaryHeader.uncompressedsize != len(uncompressed):
+                self.log.warn("Uncompressed size mismatch, expected %i actual %i" % (primaryHeader.uncompressedsize, len(uncompressed)))
+        else:
+            # An uncompressedsize of 0 means the payload was never imploded. The
+            # engine reads it as is (FastSceneLoad only calls blast when the field
+            # is set), so hand written scenes are allowed to skip compression.
+            self.log.debug("Container reports no compression, reading payload as is")
+            uncompressed = data[pos:]
         
         # Store header for use in write operations
         ftsHeader, fts_data = self.read_fts(uncompressed)
@@ -666,13 +751,14 @@ class FtsSerializer(object):
                             # Convert dict to ctypes for serialization
                             poly_struct = FAST_EERIEPOLY()
                             
-                            # Set vertices - engine expects all 4 vertices to be valid
+                            # Set vertices - only first 3 for triangles, all 4 for quads
+                            num_verts = 3 if not poly.get('is_quad', False) else 4
                             for i in range(4):
                                 if i < len(poly['vertices']):
                                     vert = poly['vertices'][i]
                                 else:
-                                    # For triangles, duplicate the last vertex as the 4th vertex
-                                    vert = poly['vertices'][-1]
+                                    # Padding vertex for unused slot
+                                    vert = {'ssx': 0, 'sy': 0, 'ssz': 0, 'stu': 0, 'stv': 0}
                                 
                                 poly_struct.v[i].ssx = vert['ssx']
                                 poly_struct.v[i].sy = vert['sy']
@@ -697,13 +783,13 @@ class FtsSerializer(object):
                             poly_struct.norm2.y = norm2['y']
                             poly_struct.norm2.z = norm2['z']
                             
-                            # Set vertex normals - engine expects all 4 vertex normals to be valid
+                            # Set vertex normals - only first 3 for triangles, all 4 for quads
                             for i in range(4):
                                 if i < len(poly['vertex_normals']):
                                     vnorm = poly['vertex_normals'][i]
                                 else:
-                                    # For triangles, duplicate the last vertex normal as the 4th normal
-                                    vnorm = poly['vertex_normals'][-1]
+                                    # Padding normal for unused slot
+                                    vnorm = {'x': 0, 'y': 1, 'z': 0}
                                 
                                 poly_struct.nrml[i].x = vnorm['x']
                                 poly_struct.nrml[i].y = vnorm['y']
@@ -712,17 +798,19 @@ class FtsSerializer(object):
                             # Set polygon type
                             from .dataCommon import PolyTypeFlag
                             poly_struct.type = PolyTypeFlag()
-                            
+
                             # Handle both integer and PolyTypeFlag values
-                            poly_type_value = poly['poly_type']
+                            poly_type_value = poly.get('poly_type', 0)
                             if hasattr(poly_type_value, 'asUInt'):
                                 # It's already a PolyTypeFlag instance
                                 poly_struct.type.asUInt = poly_type_value.asUInt
                             else:
                                 # It's an integer value
                                 poly_struct.type.asUInt = int(poly_type_value)
-                            
-                            poly_struct.type.POLY_QUAD = poly['is_quad']
+
+                            # Ensure POLY_QUAD flag matches actual vertex count
+                            is_quad = poly.get('is_quad', False)
+                            poly_struct.type.POLY_QUAD = is_quad
                             
                             data.extend(bytes(poly_struct))
                         else:
@@ -767,7 +855,69 @@ class FtsSerializer(object):
         
         if hasattr(fts_data, 'room_data') and fts_data.room_data:
             room_data_list, room_distances = fts_data.room_data
-            
+
+            # The engine reads exactly nb_rooms + 1 room structures followed by an
+            # (nb_rooms + 1)^2 distance matrix. nb_rooms above is derived from the room
+            # ids actually referenced by polygons and portals, while room_data_list is
+            # built from polygon room ids alone, so the two can disagree - and any
+            # disagreement desynchronises the rest of the read. Force both to match the
+            # header before writing anything.
+            required_rooms = nb_rooms + 1
+
+            room_data_list = list(room_data_list)
+            if len(room_data_list) > required_rooms:
+                self.log.warning(f"Truncating room data from {len(room_data_list)} to {required_rooms} entries")
+                room_data_list = room_data_list[:required_rooms]
+            while len(room_data_list) < required_rooms:
+                room_data_list.append(({'nb_portals': 0, 'nb_polys': 0, 'padd': [0] * 6}, [], []))
+
+            # Routes derived from the portal graph, used to fill in any entry the
+            # caller could not supply. A room added in Blender used to get a
+            # distance of 999999 with the waypoints left on the world origin,
+            # which puts every entity in it permanently outside the treat zone.
+            routes = compute_room_distances(fts_data.portals, nb_rooms)
+
+            def _computed_distance(i, j):
+                dist_data = ROOM_DIST_DATA_SAVE()
+                route = routes.get((i, j))
+                if route and i != j:
+                    dist_data.distance = route[0]
+                    dist_data.startpos.x, dist_data.startpos.y, dist_data.startpos.z = route[1]
+                    dist_data.endpos.x, dist_data.endpos.y, dist_data.endpos.z = route[2]
+                else:
+                    # A room to itself, or two rooms no chain of portals connects.
+                    # Zero tells the engine to fall back to straight line distance.
+                    dist_data.distance = 0.0
+                return bytes(dist_data)
+
+            def _unusable(cell):
+                entry = ROOM_DIST_DATA_SAVE.from_buffer_copy(cell) if isinstance(cell, bytes) else cell
+                if entry.distance >= 999999.0:
+                    return True
+                # Real data always names waypoints; all zeroes means it was invented.
+                return (entry.distance > 0.0
+                        and entry.startpos.x == 0.0 and entry.startpos.y == 0.0
+                        and entry.startpos.z == 0.0 and entry.endpos.x == 0.0
+                        and entry.endpos.y == 0.0 and entry.endpos.z == 0.0)
+
+            old_distances = room_distances or []
+            room_distances = []
+            replaced = 0
+            for i in range(required_rooms):
+                row = []
+                for j in range(required_rooms):
+                    if i < len(old_distances) and j < len(old_distances[i]) \
+                            and not _unusable(old_distances[i][j]):
+                        row.append(old_distances[i][j])
+                    else:
+                        row.append(_computed_distance(i, j))
+                        replaced += 1
+                room_distances.append(row)
+
+            self.log.info(f"Writing {len(room_data_list)} room structures and a "
+                          f"{required_rooms}x{required_rooms} room distance matrix "
+                          f"({replaced} entries computed from the portal graph)")
+
             # Write room structures and their portal/polygon references
             for room_info, room_portal_indices, room_poly_refs in room_data_list:
                 # Handle both ctypes structures and dict-based structures

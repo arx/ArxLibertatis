@@ -5,3 +5,8 @@
 !/.travis.yml
 !/.github
 /build
+
+# Byte-compiled Python, and the original DANAE sources kept locally for reference
+__pycache__/
+*.pyc
+/src/DANAE_OLD/

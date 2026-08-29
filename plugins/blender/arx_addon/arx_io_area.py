@@ -22,6 +22,7 @@ import bmesh
 from math import radians
 from mathutils import Vector, Matrix, Quaternion, Euler
 
+from .arx_asl_reader import ASLReader
 from .dataDlf import DlfSerializer, DlfData
 from .dataFts import FtsSerializer
 from .dataLlf import LlfSerializer
@@ -45,22 +46,44 @@ class ArxSceneManager(object):
 
     def importScene(self, context, scene, area_id):
         self.log.info('Importing Area: {}'.format(area_id))
-        
+
+        if area_id not in self.arxFiles.levels.levels:
+            self.log.error(f"Area {area_id} not found in level data")
+            self.log.error(f"Available areas: {list(self.arxFiles.levels.levels.keys())}")
+            raise RuntimeError(f"Area {area_id} not found. Check that level{area_id} directory exists in extraction path.")
+
         area_files = self.arxFiles.levels.levels[area_id]
-        
+
+        # Check for required files (DLF and FTS are required, LLF is optional)
+        missing_files = []
         if area_files.dlf is None:
-            self.log.error("dlf file not found")
-            return
+            self.log.error(f"DLF file not found for area {area_id}")
+            missing_files.append("DLF")
         if area_files.fts is None:
-            self.log.error("fts file not found")
-            return
+            self.log.error(f"FTS file not found for area {area_id}")
+            missing_files.append("FTS")
+
+        # LLF is optional - just warn if missing
         if area_files.llf is None:
-            self.log.error("llf file not found")
-            return
-        
+            self.log.info(f"LLF file not found for area {area_id} - will use default lighting")
+
+        # Only fail if required files are missing
+        if missing_files:
+            self.log.error(f"Missing required files for area {area_id}: {', '.join(missing_files)}")
+            self.log.error("Check that your extraction path contains:")
+            self.log.error(f"  - graph/levels/level{area_id}/level{area_id}.dlf")
+            self.log.error(f"  - game/graph/levels/level{area_id}/fast.fts")
+            self.log.error("Note: On Windows, directory names might be in different cases (GRAPH, Graph, etc.)")
+            raise RuntimeError(f"Missing required files for area {area_id}: {', '.join(missing_files)}")
+
         dlfData = self.dlfSerializer.readContainer(area_files.dlf)
         ftsData = self.ftsSerializer.read_fts_container(area_files.fts)
-        llfData = self.llfSerializer.read(area_files.llf)
+
+        # Read LLF if available, otherwise use None
+        if area_files.llf:
+            llfData = self.llfSerializer.read(area_files.llf)
+        else:
+            llfData = None
 
         # bpy.types.Material.Shader_Name = bpy.props.StringProperty(name='Group Name')
 
@@ -78,7 +101,9 @@ class ArxSceneManager(object):
             idx += 1
 
         # Create mesh preserving quads
-        bm, total_faces_imported = self.AddSceneBackground(ftsData.cells, llfData.levelLighting, mappedMaterials)
+        # Pass levelLighting if available, otherwise None
+        levelLighting = llfData.levelLighting if llfData else None
+        bm, total_faces_imported = self.AddSceneBackground(ftsData.cells, levelLighting, mappedMaterials)
         mesh = bpy.data.meshes.new(scene.name + "-mesh")
         
         # Ensure bmesh face indices are valid before conversion
@@ -117,7 +142,9 @@ class ArxSceneManager(object):
         
         self.AddScenePathfinderAnchors(scene, ftsData.anchors)
         self.AddScenePortals(scene, ftsData)
-        self.AddSceneLights(scene, llfData, ftsData.sceneOffset)
+        # Only add lights if LLF data is available
+        if llfData:
+            self.AddSceneLights(scene, llfData, ftsData.sceneOffset)
         self.AddSceneObjects(scene, dlfData, ftsData.sceneOffset)
         
         # Add new DLF content as editable Blender objects
@@ -148,6 +175,10 @@ class ArxSceneManager(object):
         # Add cell coordinate preservation for exact round-trip
         arxCellX = bm.faces.layers.int.new('arx_cell_x')             # original cell X coordinate
         arxCellZ = bm.faces.layers.int.new('arx_cell_z')             # original cell Z coordinate
+        # Set to 1 on every imported face. Faces modelled in Blender inherit the
+        # layers above but read back as 0, which is a real cell, so the export has
+        # to be told which coordinates are meaningful rather than guessing.
+        arxCellValid = bm.faces.layers.int.new('arx_cell_valid')
         
         # Add original vertex data preservation (binary serialized)
         arxOriginalVerts = bm.faces.layers.string.new('arx_original_vertices')  # serialized original vertex data
@@ -177,15 +208,38 @@ class ArxSceneManager(object):
                         to = 3
 
                     tempVerts = []
+                    # Collect lighting colors for all vertices first
+                    lighting_colors = []
+                    for i in range(to):
+                        if levelLighting is not None:
+                            # Use LLF lighting data if available
+                            # Add bounds check to prevent IndexError
+                            if vertexIndex < len(levelLighting):
+                                intCol = levelLighting[vertexIndex]
+                                floatCol = (intCol.r / 255.0, intCol.g / 255.0, intCol.b / 255.0, intCol.a / 255.0)
+                            else:
+                                print(f"WARNING: Lighting index {vertexIndex} out of bounds (max: {len(levelLighting)}), using white")
+                                floatCol = (1.0, 1.0, 1.0, 1.0)  # Default to white if out of bounds
+                            vertexIndex += 1
+                        else:
+                            # No LLF data - use default white lighting
+                            floatCol = (1.0, 1.0, 1.0, 1.0)
+                        lighting_colors.append(floatCol)
+
+                    # For quads, the FTS file stores vertices in order 0,1,2,3
+                    # But we need to swap 2 and 3 for Blender, so the lighting must follow
+                    if face.type.POLY_QUAD and len(lighting_colors) == 4:
+                        # Swap the lighting colors to match the vertex swap we're about to do
+                        lighting_colors[2], lighting_colors[3] = lighting_colors[3], lighting_colors[2]
+
+                    # Now build vertex data with correctly swapped lighting
                     for i in range(to):
                         pos = [face.v[i].ssx, face.v[i].sy, face.v[i].ssz]
                         uv = [face.v[i].stu, 1 - face.v[i].stv]
-                        intCol = levelLighting[vertexIndex]
-                        floatCol = (intCol.r / 255.0, intCol.g / 255.0, intCol.b / 255.0, intCol.a / 255.0)
+                        floatCol = lighting_colors[i]
                         tempVerts.append((pos, uv, floatCol))
-                        vertexIndex += 1
 
-                    # Switch the vertex order
+                    # Switch the vertex order for quads (positions and UVs, lighting already swapped)
                     if face.type.POLY_QUAD:
                         tempVerts[2], tempVerts[3] = tempVerts[3], tempVerts[2]
 
@@ -221,6 +275,7 @@ class ArxSceneManager(object):
                     # Store original cell coordinates for exact round-trip
                     bmFace[arxCellX] = x
                     bmFace[arxCellZ] = z
+                    bmFace[arxCellValid] = 1
                     
                     # Serialize vertex normals as binary data (4 normals × 3 floats = 12 floats)
                     import struct
@@ -241,6 +296,8 @@ class ArxSceneManager(object):
         return bm, total_faces_imported
     
     def AddScenePathfinderAnchors(self, scene, anchors):
+        from .anchor_generation import (ANCHOR_RADIUS as ANCHOR_RADIUS_DEFAULT,
+                                        ANCHOR_HEIGHT as ANCHOR_HEIGHT_DEFAULT)
         
         bm = bmesh.new()
         
@@ -262,6 +319,20 @@ class ArxSceneManager(object):
         mesh = bpy.data.meshes.new(scene.name + '-anchors-mesh')
         bm.to_mesh(mesh)
         bm.free()
+        # Each anchor's own cylinder, which the export needs back. Dropping it
+        # here used to leave the export guessing at radius 50 and height +100,
+        # and a positive height is rejected by AnchorData_GetNearest for every
+        # NPC there is - the graph survived the round trip looking intact and
+        # was ignored by the pathfinder.
+        #
+        # Imported at call time: arx_ui_area reaches this module through
+        # managers, so importing it up top would close a cycle.
+        from .arx_ui_area import store_anchor_attributes
+        store_anchor_attributes(mesh, [
+            {'radius': anchor[2] if len(anchor) >= 5 else ANCHOR_RADIUS_DEFAULT,
+             'height': anchor[3] if len(anchor) >= 5 else ANCHOR_HEIGHT_DEFAULT,
+             'flags': anchor[4] if len(anchor) >= 5 else 0}
+            for anchor in anchors])
         obj = bpy.data.objects.new(scene.name + '-anchors', mesh)
         # obj.draw_type = 'WIRE'
         # obj.show_x_ray = True
@@ -316,6 +387,10 @@ class ArxSceneManager(object):
             #obj.parent = groupObject
             portals_col.objects.link(obj)
 
+    # src/scene/Light.h: EXTRAS_NOCASTED - lights the original bake does not trace
+    # shadow rays for.
+    EXTRAS_NOCASTED = 0x00000080
+
     def AddSceneLights(self, scene, llfData, sceneOffset):
         lights_col = bpy.data.collections.new(scene.name + '-lights')
         scene.collection.children.link(lights_col)
@@ -325,14 +400,31 @@ class ArxSceneManager(object):
 
             lampData = bpy.data.lights.new(name=light_name, type='POINT')
             lampData.color = (light.rgb.r, light.rgb.g, light.rgb.b)
+
+            # Arx uses linear falloff, not inverse square
+            # In Blender 4.x, we need to use nodes for custom falloff
+            # For now, approximate with linear falloff
             lampData.use_custom_distance = True
-            lampData.cutoff_distance = light.fallend * 0.1  # Scale falloff distance consistently
-            lampData.energy = light.intensity * 1000 # TODO this is a guessed factor
+            lampData.cutoff_distance = light.fallend * 0.1  # Scale falloff distance (Arx units * 0.1 = Blender units)
+
+            # Arx intensity is a simple multiplier (usually 0.5-2.0)
+            # Blender energy is in Watts. A torch is ~40W, a campfire ~200W
+            # Since Arx intensity 1.0 = normal brightness, map to ~50W as baseline
+            lampData.energy = light.intensity * 50  # 50W per unit intensity
 
             obj = bpy.data.objects.new(name=light_name, object_data=lampData)
             lights_col.objects.link(obj)
             abs_loc = Vector(sceneOffset) + Vector([light.pos.x, light.pos.y, light.pos.z])
             obj.location = arx_pos_to_blender_for_model(abs_loc) * 0.1
+
+            # Keep the Arx light parameters on the object. Blender energy and cutoff
+            # are only there to make the viewport readable - the DANAE lightmap bake
+            # works from these values, and they are what the .llf file stores.
+            obj['arx_intensity'] = light.intensity
+            obj['arx_fallstart'] = light.fallstart
+            obj['arx_fallend'] = light.fallend
+            obj['arx_extras'] = light.extras
+            obj['arx_nocasted'] = bool(light.extras & self.EXTRAS_NOCASTED)
 
 
     def AddSceneObjects(self, scene, dlfData: DlfData, sceneOffset):
@@ -342,7 +434,16 @@ class ArxSceneManager(object):
         for e in dlfData.entities:
             
             legacyPath = e.name.decode('iso-8859-1').replace("\\", "/").lower().split('/')
-            objectId = '/'.join(legacyPath[legacyPath.index('interactive') + 1 : -1])
+            if 'interactive' in legacyPath:
+                objectId = '/'.join(legacyPath[legacyPath.index('interactive') + 1 : -1])
+            elif 'graph' in legacyPath:
+                # An entity does not have to live under graph/obj3d/interactive.
+                # The engine builds its class path from this same string and only
+                # requires that it name one of items, npc, fix, camera or marker,
+                # so a level is free to keep its own entities in its own folder.
+                objectId = '/'.join(legacyPath[legacyPath.index('graph') + 1 : -1])
+            else:
+                objectId = '/'.join(legacyPath[:-1])
 
             entityId = objectId + "_" + str(e.ident).zfill(4)
             #self.log.info("Creating entity [{}]".format(entityId))
@@ -355,6 +456,12 @@ class ArxSceneManager(object):
             proxyObject["arx_entity_ident"] = e.ident
             proxyObject["arx_entity_flags"] = e.flags
             proxyObject["arx_object_id"] = objectId
+            # The class path exactly as the engine derives it, which is what every
+            # script lookup should key on. Deriving it from a fragment instead
+            # assumes the entity lives under graph/obj3d/interactive, and picks the
+            # wrong file for anything that does not.
+            proxyObject["arx_class_path"] = ASLReader.class_path_from_name(
+                e.name.decode('iso-8859-1'))
 
             object_col = bpy.data.collections.get(objectId)
             if object_col:
@@ -545,6 +652,7 @@ class ArxSceneManager(object):
         tex_index_layer = bm.faces.layers.int.get('arx_tex_index')
         cell_x_layer = bm.faces.layers.int.get('arx_cell_x')
         cell_z_layer = bm.faces.layers.int.get('arx_cell_z')
+        cell_valid_layer = bm.faces.layers.int.get('arx_cell_valid')
         
         # Check face count
         if len(mesh.polygons) != len(bm.faces):
@@ -591,6 +699,11 @@ class ArxSceneManager(object):
             attr = mesh.attributes.new(name="arx_cell_z", type='INT', domain='FACE')
             for i, bm_face in enumerate(bm.faces):
                 attr.data[i].value = bm_face[cell_z_layer]
+
+        if cell_valid_layer:
+            attr = mesh.attributes.new(name="arx_cell_valid", type='INT', domain='FACE')
+            for i, bm_face in enumerate(bm.faces):
+                attr.data[i].value = bm_face[cell_valid_layer]
                 
         # Store vector and binary data as float arrays and byte colors
         if norm_layer:
@@ -730,29 +843,36 @@ class ArxSceneManager(object):
             zone_abs_pos = Vector(sceneOffset) + Vector([zone_data.pos.x, zone_data.pos.y, zone_data.pos.z])
             zone_obj.location = arx_pos_to_blender_for_model(zone_abs_pos) * 0.1
             
-            # Create child empty objects for zone boundary waypoints (discrete points)
+            # The outline as a closed loop of edges rather than a scatter of child
+            # empties. A zone is a polygon in XZ that the engine point-in-polygon
+            # tests (ARX_PATH_IsPosInZone), so the loop is the thing worth editing,
+            # and one vertex per pathway keeps the mapping exact both ways.
             if pathways:
+                mesh = bpy.data.meshes.new(f'{zone_name}-outline')
+                verts = []
+                for pathway in pathways:
+                    local = arx_pos_to_blender_for_model(
+                        Vector([pathway.rpos.x, pathway.rpos.y, pathway.rpos.z])) * 0.1
+                    verts.append(local)
+                edges = [(i, (i + 1) % len(verts)) for i in range(len(verts))] \
+                    if len(verts) > 2 else [(i, i + 1) for i in range(len(verts) - 1)]
+                mesh.from_pydata(verts, edges, [])
+                mesh.update()
+
+                flag_attr = mesh.attributes.new(name="arx_pathway_flag", type='INT',
+                                                domain='POINT')
+                time_attr = mesh.attributes.new(name="arx_pathway_time", type='INT',
+                                                domain='POINT')
                 for i, pathway in enumerate(pathways):
-                    waypoint_name = f"{zone_name}_waypoint_{i:03d}"
-                    waypoint_obj = bpy.data.objects.new(f'zone_waypoint:{waypoint_name}', None)
-                    waypoint_obj.empty_display_type = 'CONE'
-                    waypoint_obj.empty_display_size = 0.5
-                    
-                    # Position waypoint in local coordinates relative to zone object
-                    # pathway.rpos is relative to zone.pos, so convert directly to Blender coordinates
-                    local_pos = arx_pos_to_blender_for_model(Vector([pathway.rpos.x, pathway.rpos.y, pathway.rpos.z])) * 0.1
-                    waypoint_obj.location = local_pos
-                    
-                    # Store pathway properties as custom properties
-                    waypoint_obj["arx_pathway_flag"] = pathway.flag
-                    waypoint_obj["arx_pathway_time"] = int(pathway.time)
-                    waypoint_obj["arx_pathway_index"] = i
-                    
-                    # Parent waypoint to zone for organization (sets local coordinate space)
-                    waypoint_obj.parent = zone_obj
-                    
-                    zones_col.objects.link(waypoint_obj)
-            
+                    flag_attr.data[i].value = pathway.flag
+                    time_attr.data[i].value = int(pathway.time)
+
+                outline = bpy.data.objects.new(f'zone_outline:{zone_name}', mesh)
+                outline.display_type = 'WIRE'
+                outline.show_in_front = True
+                outline.parent = zone_obj
+                zones_col.objects.link(outline)
+
             # Store zone properties as custom properties
             zone_obj["arx_zone_idx"] = zone_data.idx
             zone_obj["arx_zone_flags"] = zone_data.flags
@@ -761,6 +881,9 @@ class ArxSceneManager(object):
             zone_obj["arx_zone_reverb"] = zone_data.reverb
             zone_obj["arx_zone_farclip"] = zone_data.farclip
             zone_obj["arx_zone_amb_max_vol"] = zone_data.amb_max_vol
+            # Used by the engine when the zone carries PATH_RGB. Without this the
+            # colour is lost on the way out and every tinted zone exports black.
+            zone_obj["arx_zone_rgb"] = (zone_data.rgb.r, zone_data.rgb.g, zone_data.rgb.b)
             
             zones_col.objects.link(zone_obj)
             pathway_count = len(pathways) if pathways else 0

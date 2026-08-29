@@ -30,6 +30,11 @@ from .dataFtl import FtlMetadata, FtlVertex, FtlFace, FtlGroup, FtlSelection, Ft
 
 logging.basicConfig(level=logging.DEBUG)
 
+#: Bone length in Blender units. Cosmetic only: Arx bones have no length,
+#: just an origin, so this exists purely so they can be seen and picked.
+BONE_DISPLAY_LENGTH = 4.0
+
+
 class ArxObjectManager(object):
     def __init__(self, ioLib, dataPath):
         self.log = logging.getLogger(__name__)
@@ -114,29 +119,35 @@ class ArxObjectManager(object):
             else:
                 self.log.warning("Invalid origin index %d for group '%s', using (0,0,0)", group.origin, bGrpName)
                 bone.head = Vector((0, 0, 0))
+            # Bones point at their first child so the armature reads as a skeleton
+            # and can actually be posed by hand.
+            #
+            # Arx bones have no orientation of their own - EERIE_CreateCedricData
+            # gives a bone only a translation from its parent and treats the
+            # animation quaternion as its entire local rotation - so this rest
+            # orientation is ours, not the format's. The animation importer and
+            # exporter cancel it out through the bone's rest matrix rather than
+            # letting it rotate every pose, which is what arx_io_animation's
+            # engine_transform_to_pose_basis and its inverse are for.
             tail_set = False
             children = [j for j, child_group in enumerate(groups) if child_group.parentIndex == i]
             if children:
                 child_group = groups[children[0]]
                 if child_group.origin >= 0 and child_group.origin < len(bm.verts):
-                    bone.tail = bm.verts[child_group.origin].co * scale_factor
-                    tail_set = True
+                    candidate = bm.verts[child_group.origin].co * scale_factor
+                    if (candidate - bone.head).length > 1e-4:
+                        bone.tail = candidate
+                        tail_set = True
+            if not tail_set and group.parentIndex >= 0 and group.parentIndex < len(groups):
+                parent_group = groups[group.parentIndex]
+                if parent_group.origin >= 0 and parent_group.origin < len(bm.verts):
+                    direction = bone.head - bm.verts[parent_group.origin].co * scale_factor
+                    if direction.length > 1e-4:
+                        bone.tail = bone.head + direction.normalized() * (
+                            BONE_DISPLAY_LENGTH * scale_factor)
+                        tail_set = True
             if not tail_set:
-                if group.parentIndex >= 0 and group.parentIndex < len(groups):
-                    parent_group = groups[group.parentIndex]
-                    if parent_group.origin >= 0 and parent_group.origin < len(bm.verts):
-                        parent_pos = bm.verts[parent_group.origin].co * scale_factor
-                        direction = bone.head - parent_pos
-                        if direction.length > 0.001:
-                            bone.tail = bone.head + direction.normalized() * (0.1 * scale_factor)
-                        else:
-                            bone.tail = bone.head + Vector((0, 0, 0.1 * scale_factor))
-                    else:
-                        bone.tail = bone.head + Vector((0, 0, 0.1 * scale_factor))
-                else:
-                    bone.tail = bone.head + Vector((0, 0, 0.1 * scale_factor))
-            if (bone.tail - bone.head).length < 0.001 * scale_factor:
-                bone.tail = bone.head + Vector((0, 0, 0.1 * scale_factor))
+                bone.tail = bone.head + Vector((0.0, BONE_DISPLAY_LENGTH * scale_factor, 0.0))
             bone["OriginVertex"] = group.origin
             bone["ParentIndex"] = group.parentIndex
             if group.origin >= 0 and group.origin < len(bm.verts):
@@ -361,7 +372,7 @@ class ArxObjectManager(object):
             if child.type == 'EMPTY' and child.parent == obj:
                 nameParts = child.name.split(".")
                 name = nameParts[0].lower()
-                if name not in ("hit_", "view_attach", "primary_attach", "left_attach", "weapon_attach", "secondary_attach", "fire") and not name.startswith("origin:"):
+                if name not in ("hit_", "view_attach", "primary_attach", "left_attach", "weapon_attach", "secondary_attach", "shield_attach", "head2chest", "chest2leggings", "u_right", "v_right", "fire") and not name.startswith("origin:"):
                     self.log.warning("Unexpected child empty: %s", nameParts)
 
     def create_vertices(self, bm, scale_factor=0.1):
@@ -397,13 +408,74 @@ class ArxObjectManager(object):
             verts.append(FtlVertex((0.0, 0.0, 0.0), (0.0, 0.0, 0.0)))
         return FtlMetadata(name=obj.get('arx.ftl.name', ''), org=originVertexIndex), verts
 
+    def action_bone(self, obj, empty, mesh_verts):
+        """Which bone drives an attach point.
+
+        This is not cosmetic. AnimationRender.cpp positions a linked object at
+        the attach vertex and then rotates it by that bone's animation
+        quaternion, whole and entire - there is no rotation stored on the slot
+        and no normal involved. Pick the wrong bone and the sword hangs at the
+        wrong angle, which is exactly what "the back slot is messed up" looks
+        like. getGroupForVertex scans groups in reverse, so of the groups
+        holding the vertex the engine uses the highest numbered one.
+
+        An 'arx_action_group' property on the empty names the bone outright, by
+        group name or by index. Without it, fall back to the deepest group of the
+        nearest vertex - which is right for anything held in a hand, and wrong
+        for anything hanging off a bone that carries no geometry of its own.
+        human_base's WEAPON_ATTACH is the case in point: it rides on
+        secondary_weapon, a bone that exists for nothing else, and no amount of
+        looking at nearby vertices will find it.
+        """
+        requested = empty.get('arx_action_group')
+        if requested is not None:
+            if isinstance(requested, str):
+                for vertex_group in obj.vertex_groups:
+                    parts = vertex_group.name.split(':', 2)
+                    if parts[0] == 'grp' and requested in (parts[2], vertex_group.name):
+                        return int(parts[1])
+                self.log.warning("Action '%s' asks for unknown group '%s'", empty.name, requested)
+            else:
+                return int(requested)
+
+        if not mesh_verts:
+            return None
+        nearest = min(range(len(mesh_verts)),
+                      key=lambda i: (mesh_verts[i].co - empty.location).length_squared)
+        deepest = None
+        for group in mesh_verts[nearest].groups:
+            parts = obj.vertex_groups[group.group].name.split(':', 2)
+            if parts[0] == 'grp' and (deepest is None or int(parts[1]) > deepest):
+                deepest = int(parts[1])
+        return deepest
+
     def create_actions(self, obj, verts, scale_factor=0.1):
-        """Create FtlAction objects from empty objects."""
+        """Create FtlAction objects from empty objects.
+
+        An action is a named vertex: primary_attach is where a drawn weapon
+        hangs, weapon_attach where a sheathed one does. linkObjects looks the
+        vertex up and then asks getGroupForVertex which bone drives it, and
+        gives up silently if the answer is none - the weapon is created, owned,
+        and never appears. A vertex in no group is not animated either, so even
+        without the link it would sit where the model was built.
+
+        A VERTEX parented empty reuses an existing vertex and inherits its
+        groups, which is what the importer writes and why a stock model survives
+        a round trip. An OBJECT parented one, which is how a model gets authored
+        from scratch, appends a new vertex that belongs to nothing - so note
+        which vertex it sits on and let create_groups_and_selections put it in
+        the same bone.
+        """
         actions = []
+        self.action_vertex_group = {}
+        mesh_verts = obj.data.vertices
         for o in bpy.data.objects:
             if o.type == 'EMPTY' and o.parent == obj:
                 nameParts = o.name.split(".")
                 name = nameParts[0]
+                if name.startswith("origin:"):
+                    # Bone origins, not actions - they are rebuilt from the groups.
+                    continue
                 if o.parent_type == 'VERTEX':
                     actionVertexIndex = o.parent_vertices[0]
                     if 0 <= actionVertexIndex < len(obj.data.vertices):
@@ -413,8 +485,15 @@ class ArxObjectManager(object):
                 elif o.parent_type == 'OBJECT':
                     actionVertexIndex = len(verts)
                     scaled_location = [coord / scale_factor for coord in o.location]
-                    verts.append(FtlVertex(tuple(scaled_location), (0.0, 0.0, 0.0)))
+                    verts.append(FtlVertex(blender_pos_to_arx(scaled_location), (0.0, 0.0, 0.0)))
                     actions.append(FtlAction(name, actionVertexIndex))
+                    group = self.action_bone(obj, o, mesh_verts)
+                    if group is not None:
+                        self.action_vertex_group[actionVertexIndex] = group
+                        self.log.debug("Action '%s' driven by group %d", name, group)
+                    else:
+                        self.log.warning("Action '%s' belongs to no group, so it will not "
+                                         "animate and nothing can be linked to it", name)
                 else:
                     self.log.warning("Unhandled empty parent type %s for '%s'", o.parent_type, name)
         return actions, verts
@@ -479,7 +558,9 @@ class ArxObjectManager(object):
                 if grp.index in dvert:
                     v.append(bmesh_to_verts[vert])
                     vertex_to_groups[bmesh_to_verts[vert]].append(grp.index)
-            s = grp.name.split(":")
+            # maxsplit, because a group name may itself contain a colon -
+            # human_base really does ship one called "28: right_hand_fingers_root".
+            s = grp.name.split(":", 2)
             if s[0] == "grp":
                 group_index = int(s[1])
                 group_name = s[2]
@@ -527,6 +608,13 @@ class ArxObjectManager(object):
                             parent_parts = bone.parent.name.split(":")
                             parent_index = int(parent_parts[1])
                             parentIndex = parent_index
+                # Attach points assigned to this bone join its vertex list, which
+                # is what makes getGroupForVertex answer with this bone and so what
+                # decides the orientation of anything linked there.
+                for action_vertex, target in getattr(self, 'action_vertex_group', {}).items():
+                    if target == group_index and action_vertex not in v:
+                        v.append(action_vertex)
+
                 ftl_group = FtlGroup(s[2], origin, v, parentIndex)
                 ftl_group.sortIndex = group_index
                 grps.append(ftl_group)

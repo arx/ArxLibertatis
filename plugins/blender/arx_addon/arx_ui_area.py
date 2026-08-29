@@ -17,13 +17,15 @@
 
 import bpy
 import os
-from bpy.props import IntProperty, BoolProperty, StringProperty, CollectionProperty, PointerProperty, EnumProperty, FloatProperty
+import struct
+from bpy.props import IntProperty, BoolProperty, StringProperty, CollectionProperty, PointerProperty, EnumProperty, FloatProperty, FloatVectorProperty
 from bpy.types import Operator, Panel, PropertyGroup, UIList
 from mathutils import Matrix, Vector, Quaternion
 from .arx_io_util import ArxException, arx_pos_to_blender_for_model, arx_transform_to_blender, blender_pos_to_arx
 from .managers import getAddon
 from .arx_asl_reader import ASLReader
 from .arx_asl_syntax import ASLSyntaxHighlighter, ASLNavigator
+from . import anchor_generation
 import math
 
 # Global ASL navigator instance
@@ -56,6 +58,11 @@ def parse_asl_text_name(text_name):
             return entity_ident, object_id
     except ValueError:
         return None, None
+
+#: Level file version the exporter writes. The engine implodes both the .dlf body
+#: and the .llf from 1.44 onwards (DanaeLoadLevel), and _writeDlfFile always
+#: implodes, so this is not a free choice.
+DLF_WRITE_VERSION = 1.44
 
 g_areaToLevel = {
     0:0, 8:0, 11:0, 12:0,
@@ -108,22 +115,46 @@ class ARX_lighting_properties(PropertyGroup):
     )
     
     regenerate_lighting: BoolProperty(
-        name="Regenerate Lighting", 
+        name="Regenerate Lighting",
         description="Calculate new vertex lighting when exporting",
-        default=False
+        default=True  # Default to True since this is a full level editor
     )
     
     lighting_method: EnumProperty(
         name="Lighting Method",
         description="Method to use for lighting calculation",
         items=[
+            ('DANAE', 'DANAE (original)', 'Bake exactly the way the original DANAE editor did'),
             ('CYCLES', 'Cycles Renderer', 'Use Blender Cycles for realistic lighting'),
             ('SIMPLE', 'Simple Calculation', 'Fast basic lighting calculation'),
             ('PRESERVE', 'Preserve Original', 'Keep existing vertex colors from Blender'),
             ('SKIP', 'Skip Lighting', 'Skip lighting update entirely (fast export)')
         ],
-        default='CYCLES'
+        default='DANAE'
     )
+
+    # DANAE bake settings. The defaults reproduce the original editor; they are
+    # exposed because real levels were tuned by eye against this bake.
+    danae_use_normals: BoolProperty(
+        name="Use Vertex Normals",
+        description="MODE_NORMALS: modulate each vertex by the angle to the light",
+        default=True
+    )
+
+    danae_raylaunch: BoolProperty(
+        name="Cast Shadows",
+        description="MODE_RAYLAUNCH: trace a shadow ray from each light to each vertex",
+        default=True
+    )
+
+    danae_ambient: FloatProperty(
+        name="Ambient Floor",
+        description="Minimum value per channel, 0.09 in the original DANAE",
+        default=0.09,
+        min=0.0,
+        max=1.0
+    )
+
     
     # Cycles settings
     cycles_samples: IntProperty(
@@ -131,9 +162,65 @@ class ARX_lighting_properties(PropertyGroup):
         description="Number of samples for Cycles lighting calculation",
         default=64,
         min=1,
-        max=1024
+        max=4096
     )
-    
+
+    cycles_use_denoising: BoolProperty(
+        name="Use Denoising",
+        description="Enable denoising for cleaner results",
+        default=True
+    )
+
+    cycles_bake_type: EnumProperty(
+        name="Bake Type",
+        description="Type of lighting to bake",
+        items=[
+            ('DIFFUSE', 'Diffuse', 'Diffuse lighting only'),
+            ('COMBINED', 'Combined', 'All lighting effects combined'),
+            ('AO', 'Ambient Occlusion', 'Ambient occlusion only'),
+        ],
+        default='DIFFUSE'
+    )
+
+    cycles_use_direct_light: BoolProperty(
+        name="Direct Lighting",
+        description="Include direct lighting from light sources",
+        default=True
+    )
+
+    cycles_use_indirect_light: BoolProperty(
+        name="Indirect Lighting",
+        description="Include indirect (bounced) lighting",
+        default=True
+    )
+
+    cycles_use_color: BoolProperty(
+        name="Include Material Color",
+        description="Multiply by material diffuse color",
+        default=False
+    )
+
+    cycles_ao_distance: FloatProperty(
+        name="AO Distance",
+        description="Distance for ambient occlusion rays",
+        default=1.0,
+        min=0.0,
+        max=100.0
+    )
+
+    # Export settings
+    export_intensity_multiplier: FloatProperty(
+        name="Export Intensity Multiplier",
+        description="Multiplier for lightmap brightness when exporting to LLF. Only "
+                    "applies to the renderer based methods; the DANAE bake needs no "
+                    "correction and ignores this",
+        default=1.0,
+        min=0.0,
+        max=2.0,
+        soft_min=0.1,
+        soft_max=1.0
+    )
+
     # Simple lighting parameters
     ambient_strength: FloatProperty(
         name="Ambient Strength",
@@ -193,6 +280,123 @@ class ArxOperatorImportAllLevels(Operator):
                 return {'CANCELLED'}
         return {'FINISHED'}
 
+def gather_danae_lights(scene):
+    """Collect the Arx lights to bake with, in Arx world coordinates.
+
+    Light objects created by the importer carry the original Arx parameters as
+    custom properties, so moving or retuning a light in Blender is picked up here.
+    Anything without those properties is not an Arx light and is ignored - Blender
+    wattage has no meaning in this model.
+    """
+    from .danae_lighting import DanaeLight
+
+    lights = []
+    # EERIE_LIGHT_Apply only accumulates lights that exist, are switched on and are
+    # not semi-dynamic - the semi-dynamic ones are recomputed by the engine at run
+    # time, and baking them in as well is double lighting. src/scene/Light.h has the
+    # flag values.
+    EXTRAS_SEMIDYNAMIC = 0x00000001
+    EXTRAS_STARTEXTINGUISHED = 0x00000004
+    EXTRAS_OFF = 0x00000020
+    EXCLUDED_FROM_BAKE = EXTRAS_SEMIDYNAMIC | EXTRAS_STARTEXTINGUISHED | EXTRAS_OFF
+
+    skipped = 0
+    excluded = 0
+    for obj in scene.objects:
+        if obj.type != 'LIGHT':
+            continue
+        if 'arx_intensity' not in obj:
+            skipped += 1
+            continue
+        if int(obj.get('arx_extras', 0)) & EXCLUDED_FROM_BAKE:
+            excluded += 1
+            continue
+
+        arx_pos = Vector(blender_pos_to_arx(obj.matrix_world.translation)) * 10.0
+        color = obj.data.color
+
+        lights.append(DanaeLight(
+            pos=(arx_pos.x, arx_pos.y, arx_pos.z),
+            rgb=(color[0], color[1], color[2]),
+            intensity=obj['arx_intensity'],
+            fallstart=obj['arx_fallstart'],
+            fallend=obj['arx_fallend'],
+            # EXTRAS_NOCASTED lights are skipped by the ray launch pass.
+            casts_shadow=not bool(obj.get('arx_nocasted', False)),
+        ))
+
+    if skipped:
+        print(f"DEBUG: Ignored {skipped} light objects without Arx light properties")
+    if excluded:
+        print(f"DEBUG: Excluded {excluded} semi-dynamic or switched off lights from the bake")
+    print(f"DEBUG: Baking with {len(lights)} Arx lights")
+    return lights
+
+
+# ComputePortalVertexBuffer gives up on a scene with more than 255 rooms and
+# builds no vertex buffers at all, which renders the whole level black.
+MAX_ROOMS = 255
+
+
+def portal_plane_normal(corners):
+    """The plane normal the engine will derive from a portal's stored corners.
+
+    createNormalizedPlane in Math.cpp uses cross(p1 - p0, p2 - p0) over the first
+    three, so anything that wants to reason about which way a portal faces has to
+    use those same three and in that order.
+    """
+    if len(corners) < 3:
+        return Vector((0.0, 0.0, 1.0))
+    normal = (corners[1] - corners[0]).cross(corners[2] - corners[0])
+    return normal.normalized() if normal.length > 1e-9 else Vector((0.0, 0.0, 1.0))
+
+
+def build_danae_occluder(polygons):
+    """BVH over the given polygons, in Arx coordinates, for the shadow rays.
+
+    `polygons` is a sequence of 3 or 4 vertex position tuples in perimeter order,
+    indexed to match the polygon list handed to the bake. Returns the
+    `visible(origin, target, index)` callable, or None when there is nothing to
+    cast shadows onto.
+
+    This follows Visible() in src/DANAE_OLD/EERIE/EERIEPoly.cpp: keep the nearest
+    thing the ray meets over its whole length, and treat it as no obstruction when
+    it is the polygon being lit. That single exception is what lets a surface be
+    lit at all, since every vertex lies on its own polygon. Nothing is filtered
+    out of the tree - the original walks every polygon in the tiles it crosses,
+    water and transparent ones included - so face i is polygon i.
+    """
+    from mathutils.bvhtree import BVHTree
+
+    verts = []
+    faces = []
+    for vertices in polygons:
+        base = len(verts)
+        verts.extend(vertices)
+        faces.append(tuple(range(base, base + len(vertices))))
+
+    if not faces:
+        return None
+
+    tree = BVHTree.FromPolygons(verts, faces, all_triangles=False, epsilon=0.0)
+
+    def visible(origin, target, index=None):
+        dx = target[0] - origin[0]
+        dy = target[1] - origin[1]
+        dz = target[2] - origin[2]
+        distance = math.sqrt(dx * dx + dy * dy + dz * dz)
+        if distance <= 0.0:
+            return True
+        direction = (dx / distance, dy / distance, dz / distance)
+        hit = tree.ray_cast(origin, direction, distance)
+        if hit[0] is None:
+            return True
+        return hit[2] == index
+
+    return visible
+
+
+
 class ArxAreaExportHelper:
     """Shared utility methods for area export operations"""
     
@@ -246,8 +450,63 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
         return {'FINISHED'}
     
     def _map_room_id_to_index(self, room_id):
-        """No room mapping needed - FTS format supports actual room count from data"""
-        return room_id
+        """Room id as the engine wants it: a dense index, not the author's label."""
+        if room_id < 0:
+            # Negative means the polygon belongs to no room at all.
+            return room_id
+        return getattr(self, '_room_map', {}).get(room_id, room_id)
+
+    def _buildRoomMap(self, fts_data):
+        """Compact the room ids in use down to a contiguous range.
+
+        The engine sizes its room array from the highest id it sees and indexes
+        straight into it, so ids are positions, not names. A single room numbered
+        420 therefore costs 421 room entries and a 421 by 421 distance matrix, and
+        past 255 rooms ComputePortalVertexBuffer bails out before building a single
+        vertex buffer, leaving the whole level black. Renumbering keeps whatever
+        ids an author finds convenient while giving the engine what it needs.
+        """
+        from .dataFts import EERIE_SAVE_PORTALS
+
+        used = set()
+        for face in self.converted_faces:
+            room = face.get('room', 0)
+            if room > 0:
+                used.add(room)
+        for portal in fts_data.portals:
+            data = (EERIE_SAVE_PORTALS.from_buffer_copy(portal)
+                    if isinstance(portal, bytes) else portal)
+            for room in (data.room_1, data.room_2):
+                if room > 0:
+                    used.add(room)
+
+        # Room 0 is the engine's unused first slot and always maps to itself.
+        self._room_map = {0: 0}
+        for index, room in enumerate(sorted(used), start=1):
+            self._room_map[room] = index
+
+        renumbered = sum(1 for room, index in self._room_map.items() if room != index)
+        if renumbered:
+            highest = max(self._room_map)
+            print(f"DEBUG: Compacted {len(used)} rooms into ids 1-{len(used)} "
+                  f"(highest author id was {highest}, {renumbered} renumbered)")
+
+        if len(used) + 1 > MAX_ROOMS:
+            self.report({'ERROR'},
+                        f"{len(used)} rooms is more than the engine's limit of "
+                        f"{MAX_ROOMS - 1}; it will refuse to build any room "
+                        f"geometry and the level will render black")
+
+        # Portal room ids have to move with the polygons.
+        portals = []
+        for portal in fts_data.portals:
+            data = (EERIE_SAVE_PORTALS.from_buffer_copy(portal)
+                    if isinstance(portal, bytes) else portal)
+            data.room_1 = self._map_room_id_to_index(data.room_1)
+            data.room_2 = self._map_room_id_to_index(data.room_2)
+            portals.append(bytes(data))
+
+        return fts_data._replace(portals=portals)
     
     def exportArea(self, context, scene, area_id, export_fts=True, export_llf=True, export_dlf=True):
         """Export area data based on flags"""
@@ -323,6 +582,12 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
         
         # Convert Blender mesh back to FTS cells with current material assignments
         fts_data = self.convertMeshToFtsCells(background_obj, fts_data)
+
+        # Faces just changed, so the shared cell grid from any previous export is stale.
+        self._cell_grid = None
+        self._ordered_polys = None
+        self._normals_prepared = False
+        self._room_map = {}
         
         # Detect if geometry has been modified and rebuild portal/room system completely
         original_face_count = current_scene.get("arx_original_face_count", len(self.converted_faces))
@@ -355,7 +620,20 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
             fts_data = self._rebuildAnchorNetworkFromBlender(fts_data, current_scene)
         else:
             print("DEBUG: No anchor objects found - keeping original anchor data")
+
+        # A level with no anchors has no pathfinding at all and says nothing about
+        # it, so build one rather than ship that. Only when there is nothing to
+        # keep: an existing graph, hand edited or not, is the author's.
+        if not fts_data.anchors:
+            print("DEBUG: No anchors anywhere - generating a navmesh from the geometry")
+            generated = generate_anchors_for_scene(current_scene, self.report)
+            if generated:
+                fts_data = self._rebuildAnchorNetworkFromBlender(fts_data, current_scene)
         
+        # Renumber rooms before anything is written, so polygons, portals and the
+        # room references all agree on the new ids.
+        fts_data = self._buildRoomMap(fts_data)
+
         # Only rebuild room polygon references if geometry was modified or new portals added
         if geometry_modified or portal_count > 0:
             if geometry_modified:
@@ -383,10 +661,20 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
         # Update LLF file with new vertex lighting data
         scene = bpy.context.scene
         lighting_props = scene.arx_lighting
-        
-        if export_llf and area_files.llf and lighting_props.regenerate_lighting and lighting_props.lighting_method != 'SKIP':
+
+        # Generate LLF path if it doesn't exist
+        llf_path = area_files.llf
+        if export_llf and not llf_path:
+            # Create LLF path in the correct directory (graph/levels/levelX/levelX.llf)
+            import os
+            # Build the correct path based on area_id
+            addon_path = addon.sceneManager.dataPath
+            llf_path = os.path.join(addon_path, "graph", "levels", f"level{area_id}", f"level{area_id}.llf")
+            print(f"INFO: Generated LLF path for area {area_id}: {llf_path}")
+
+        if export_llf and llf_path and lighting_props.regenerate_lighting and lighting_props.lighting_method != 'SKIP':
             try:
-                self.updateLlfFile(area_files.llf, self.converted_faces)
+                self.updateLlfFile(llf_path, self.converted_faces, fts_data)
                 self.report({'INFO'}, f"Successfully updated LLF lighting data using {lighting_props.lighting_method}")
             except Exception as e:
                 self.report({'ERROR'}, f"LLF update failed: {str(e)}")
@@ -394,7 +682,17 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
         elif lighting_props.lighting_method == 'SKIP':
             self.report({'INFO'}, "Skipped LLF lighting update (fast export mode)")
         else:
-            self.report({'INFO'}, "LLF lighting update disabled")
+            # Debug why lighting wasn't exported
+            reasons = []
+            if not export_llf:
+                reasons.append("export_llf=False")
+            if not llf_path:
+                reasons.append("no LLF path")
+            if not lighting_props.regenerate_lighting:
+                reasons.append("regenerate_lighting=False")
+            if lighting_props.lighting_method == 'SKIP':
+                reasons.append("method=SKIP")
+            self.report({'INFO'}, f"LLF lighting update disabled ({', '.join(reasons)})")
         
         # Update DLF file with entity data
         if export_dlf and area_files.dlf:
@@ -436,22 +734,21 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
         # Get preserved cell coordinate layers for exact round-trip
         cell_x_layer = bm.faces.layers.int.get('arx_cell_x')
         cell_z_layer = bm.faces.layers.int.get('arx_cell_z')
-        
-        # FORCE CLEARING of old cell coordinates to ensure recalculation
-        if cell_x_layer:
-            print("DEBUG: Clearing old arx_cell_x data to force recalculation")
-            bm.faces.layers.int.remove(cell_x_layer)
-            cell_x_layer = None
-        if cell_z_layer:
-            print("DEBUG: Clearing old arx_cell_z data to force recalculation")
-            bm.faces.layers.int.remove(cell_z_layer)
-            cell_z_layer = None
+        cell_valid_layer = bm.faces.layers.int.get('arx_cell_valid')
+
+        # DO NOT remove cell coordinate layers - they contain critical preserved data!
+        # These coordinates are essential for maintaining the original FTS structure
         
         if not uv_layer:
             raise ArxException("Background mesh missing UV coordinates")
         
         # Check for preserved FTS data - warn but don't fail if missing
         has_preserved_data = bool(transval_layer and cell_x_layer and cell_z_layer)
+        if not cell_valid_layer:
+            print("WARNING: Mesh has no arx_cell_valid layer, so no cell coordinate is "
+                  "trusted and every polygon is binned from its centre. Reimport the "
+                  "level to restore exact cell placement.")
+
         if not has_preserved_data:
             print(f"WARNING: Mesh missing FTS polygon properties - will use defaults for new/modified faces")
             print(f"  transval_layer: {transval_layer is not None}")
@@ -462,6 +759,11 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
         converted_faces = []
         quad_count = 0
         triangle_count = 0
+        fallback_normal = 0
+        fallback_vertex_normals = 0
+        fallback_area = 0
+        fallback_cell = 0
+        tiny_area = 0
         for face in bm.faces:
             # Validate face geometry
             if len(face.verts) < 3:
@@ -473,6 +775,7 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
                 
             # Convert face vertices back to Arx coordinates
             arx_vertices = []
+            loop_normals = []
             for loop in face.loops:
                 # Convert position back to Arx coordinates (reverse the 0.1 scaling and coordinate transform)
                 blender_pos = loop.vert.co
@@ -490,90 +793,119 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
                     color = loop[color_layer]
                     arx_color = (int(color[0] * 255), int(color[1] * 255), int(color[2] * 255), int(color[3] * 255))
                 else:
-                    # Calculate lighting from scratch for all faces when recalculation is enabled
-                    # Convert face normal from Blender to Arx coordinates
-                    if hasattr(face, 'normal'):
-                        blender_normal = face.normal
-                        arx_normal = Vector(blender_pos_to_arx(blender_normal))
-                    else:
-                        arx_normal = Vector((0, 1, 0))  # Default upward normal
-                    arx_color = self._calculateVertexLighting(arx_pos, arx_normal)
-                    
-                    # Debug first few lighting calculations
-                    if len(converted_faces) < 3:
-                        print(f"DEBUG: Vertex lighting for face {len(converted_faces)}: pos={arx_pos} → color={arx_color}")
+                    # For LLF export, skip lighting calculation here - it will be done via Cycles baking
+                    # Use neutral gray as placeholder (will be replaced by Cycles baking)
+                    arx_color = (128, 128, 128, 255)
+
+                    # Debug: Only show message once
+                    if not hasattr(self, '_skip_lighting_message_shown'):
+                        print("DEBUG: Skipping manual lighting calculation during conversion (will use Cycles baking for LLF)")
+                        self._skip_lighting_message_shown = True
                 
                 arx_vertices.append({
                     'pos': arx_pos,
                     'uv': arx_uv,
                     'color': arx_color
                 })
-            
+                # Blender's own vertex normal, in Arx space, kept in loop order.
+                # Used for faces that were modelled here rather than imported.
+                loop_normals.append(Vector(blender_pos_to_arx(loop.vert.normal)))
+
+            # Preserved geometry data only exists on faces that came from an FTS
+            # file. A face modelled in Blender still has the layers - joining an
+            # object into the background mesh gives it every existing attribute -
+            # but they read back as zero, so test the value, not the layer.
+            # A zero normal is not cosmetic: the engine plane-tests against it in
+            # IntersectLinePlane, so such a face is unlit AND has no collision.
+            preserved_normal = Vector(face[norm_layer]) if norm_layer else Vector((0.0, 0.0, 0.0))
+            preserved_normal2 = Vector(face[norm2_layer]) if norm2_layer else Vector((0.0, 0.0, 0.0))
+
+            if preserved_normal.length > 1e-6:
+                # Use preserved original normals
+                arx_normal = preserved_normal
+                arx_normal2 = preserved_normal2 if preserved_normal2.length > 1e-6 else preserved_normal
+            else:
+                fallback_normal += 1
+                # For new geometry, calculate normal from ORIGINAL vertex order (before swap)
+                # The engine expects normals calculated from the un-swapped vertex order
+                if len(arx_vertices) >= 3:
+                    v0 = Vector(arx_vertices[0]['pos'])
+                    v1 = Vector(arx_vertices[1]['pos'])
+                    # For quads, we need to use the ORIGINAL vertex order for normal calculation
+                    # Since we're about to swap vertices 2 and 3, we calculate before the swap
+                    if len(face.verts) == 4 and len(arx_vertices) == 4:
+                        # Use original vertex 3 (which will become vertex 2 after swap)
+                        v2 = Vector(arx_vertices[3]['pos'])
+                    else:
+                        v2 = Vector(arx_vertices[2]['pos'])
+
+                    edge1 = v1 - v0
+                    edge2 = v2 - v0
+                    calculated_normal = edge1.cross(edge2).normalized()
+                    arx_normal = calculated_normal
+
+                    if len(converted_faces) < 3:
+                        print(f"DEBUG: Face {len(converted_faces)} normal calculated from original vertex order: {calculated_normal}")
+                else:
+                    # Fallback to Blender normal
+                    blender_normal = face.normal
+                    arx_normal = Vector(blender_pos_to_arx(blender_normal))
+
+                arx_normal2 = arx_normal
+
             # Reverse the vertex order swap that was done during import for quads
+            # During import, FTS vertices [0,1,2,3] were swapped to Blender [0,1,3,2]
+            # Now we need to swap back: Blender [0,1,3,2] -> FTS [0,1,2,3]
             vertex_order_swapped = False
             if len(face.verts) == 4 and len(arx_vertices) == 4:
-                # During import: tempVerts[2], tempVerts[3] = tempVerts[3], tempVerts[2]
-                # So during export, swap them back
+                # Swap vertices 2 and 3 to restore FTS order
                 arx_vertices[2], arx_vertices[3] = arx_vertices[3], arx_vertices[2]
+                loop_normals[2], loop_normals[3] = loop_normals[3], loop_normals[2]
                 vertex_order_swapped = True
-            
-            # Get preserved geometric data or fallback to Blender-calculated
-            if norm_layer and norm2_layer:
-                # Use preserved original normals
-                arx_normal = Vector(face[norm_layer])
-                arx_normal2 = Vector(face[norm2_layer])
-            else:
-                # Fallback: calculate from Blender geometry
-                blender_normal = face.normal
-                arx_normal = Vector(blender_pos_to_arx(blender_normal))
-                
-                # If we swapped vertex order for quads, the normal direction may be wrong
-                # For new custom geometry, recalculate normal from actual vertex positions
-                if vertex_order_swapped or not (norm_layer and norm2_layer):
-                    # Calculate normal from the actual vertex order we're using
-                    if len(arx_vertices) >= 3:
-                        v0 = Vector(arx_vertices[0]['pos'])
-                        v1 = Vector(arx_vertices[1]['pos']) 
-                        v2 = Vector(arx_vertices[2]['pos'])
-                        edge1 = v1 - v0
-                        edge2 = v2 - v0
-                        calculated_normal = edge1.cross(edge2).normalized()
-                        arx_normal = calculated_normal
-                        
-                        if len(converted_faces) < 3:
-                            print(f"DEBUG: Face {len(converted_faces)} normal: blender={blender_normal} → calculated={calculated_normal}")
-                
-                arx_normal2 = arx_normal
             
             # Get preserved vertex normals
             vertex_normals = []
             if vertex_norms_layer:
                 import struct
                 vertex_norm_data = face[vertex_norms_layer]
-                if len(vertex_norm_data) >= 36:  # 4 normals × 3 floats × 4 bytes = 48 bytes
+                if len(vertex_norm_data) >= 48:  # 4 normals × 3 floats × 4 bytes
                     for i in range(4):
                         offset = i * 12  # 3 floats × 4 bytes
                         x, y, z = struct.unpack('<fff', vertex_norm_data[offset:offset+12])
                         vertex_normals.append(Vector((x, y, z)))
-            
-            # Fallback if not enough vertex normals preserved
+
+            # Nothing preserved, so fall back to Blender's vertex normals, which
+            # are the closest thing to what DANAE stored per vertex. They are
+            # already in FTS order because they followed the swap above.
+            if not vertex_normals:
+                vertex_normals = list(loop_normals)
+                fallback_vertex_normals += 1
+
+            # Pad any remaining slot with the face normal
             while len(vertex_normals) < 4:
                 vertex_normals.append(arx_normal)
             
             # Get stored FTS properties or calculate from geometry
             transval = face[transval_layer] if transval_layer else 0.0
-            if area_layer:
-                stored_area = face[area_layer]
-            else:
+            # Same trap as the normals: the layer exists on faces modelled in Blender
+            # but reads back as 0. Area is not decoration - the collision walker
+            # rejects any polygon under 100 square units outright
+            # (Collisions.cpp, IsPolyInSphere and the CFLAG_EXTRA_PRECISION gate),
+            # so a zero here means the face is drawn but cannot be walked into.
+            stored_area = face[area_layer] if area_layer else 0.0
+            if stored_area <= 0.0:
                 # Calculate area in Arx units (Blender area × scale factor²)
                 blender_area = face.calc_area()
                 stored_area = blender_area * (10.0 * 10.0)  # Scale factor is 10.0, area scales by square
+                fallback_area += 1
+                if stored_area < 100.0:
+                    tiny_area += 1
+            # A negative room id means "belongs to no room" and is what the original
+            # data uses for polygons outside the portal system. The engine reads it as
+            # an empty RoomHandle (Mesh.cpp, loadFastScene) and only rejects ids at or
+            # above nb_rooms + 1, so it must be preserved: forcing it to 0 moves those
+            # polygons into room 0 and corrupts that room's contents.
             room_id = face[room_layer] if room_layer else 0
-            # Clamp room ID to valid range (engine crashes on negative room IDs)
-            if room_id < 0:
-                room_id = 0
-                if len(converted_faces) < 10:
-                    print(f"WARNING: Face {len(converted_faces)} had negative room ID, clamped to 0")
             # Use current material assignment instead of preserved texture index
             # This ensures texture changes in Blender are reflected in the export
             blender_mat_index = face.material_index
@@ -587,21 +919,32 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
                 poly_type = face[polytype_layer]
             else:
                 # Default polygon type - calculate flag value directly to avoid ctypes
-                # POLY_QUAD flag is bit 0, so value is 1 if quad, 0 if triangle
-                poly_type = 1 if is_quad else 0
+                # POLY_QUAD flag is bit 6 (value 64), POLY_DOUBLESIDED is bit 1 (value 2)
+                # If faces have backface culling issues, set POLY_DOUBLESIDED flag (poly_type |= 2)
+                poly_type = 64 if is_quad else 0
             
-            # Get preserved cell coordinates (only store if they exist in mesh data)
-            has_preserved_cell_coords = cell_x_layer and cell_z_layer
-            if has_preserved_cell_coords:
-                cell_x = face[cell_x_layer]
-                cell_z = face[cell_z_layer]
-            else:
-                # No preserved coordinates - let cell grid generation calculate them later
-                cell_x = None
-                cell_z = None
-                
-                if len(converted_faces) < 5:
-                    print(f"DEBUG: No preserved cell coordinates for face {len(converted_faces)} - will calculate during grid generation")
+            # Get preserved cell coordinates. arx_cell_valid marks the faces that
+            # actually came out of an FTS cell; a face modelled in Blender inherits
+            # the coordinate layers but reads 0 from them, which is a real cell, so
+            # without the flag all new geometry piles into cell (0, 0).
+            cell_x = None
+            cell_z = None
+            if cell_x_layer and cell_z_layer:
+                # Try to get preserved coordinates
+                try:
+                    if cell_valid_layer and face[cell_valid_layer]:
+                        cell_x = face[cell_x_layer]
+                        cell_z = face[cell_z_layer]
+                except:
+                    # Layer exists but face doesn't have value
+                    pass
+
+            has_preserved_cell_coords = (cell_x is not None and cell_z is not None)
+            if not has_preserved_cell_coords:
+                fallback_cell += 1
+
+            if not has_preserved_cell_coords and len(converted_faces) < 5:
+                print(f"DEBUG: No preserved cell coordinates for face {len(converted_faces)} - will calculate during grid generation")
             
             # Debug: log room values from Blender face data
             if len(converted_faces) < 5:
@@ -617,6 +960,10 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
             fts_polygon = {
                 'vertices': arx_vertices,
                 'material_index': face.material_index,
+                # Faces with an unsupported vertex count are skipped above, so the
+                # position in converted_faces is not the bmesh face index. Record the
+                # real one for anything that has to read back off the mesh.
+                'bmesh_index': face.index,
                 'is_quad': is_quad,
                 # FTS-specific polygon properties (preserved from original)
                 'transval': transval,
@@ -642,6 +989,13 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
         self.converted_faces = converted_faces
         
         print(f"QUAD/TRIANGLE COUNT: {quad_count} quads, {triangle_count} triangles, {len(converted_faces)} total faces")
+        print(f"FALLBACKS: {fallback_normal} face normals, {fallback_vertex_normals} vertex normal sets, "
+              f"{fallback_area} areas, {fallback_cell} cell coordinates computed from geometry")
+        if tiny_area:
+            print(f"WARNING: {tiny_area} faces are under 100 square Arx units. The engine's "
+                  f"collision walker rejects those outright, so they will be drawn but not "
+                  f"solid. Arx level polygons are around 100 units across - scale imported "
+                  f"models up, or expect to walk through them.")
         self.report({'INFO'}, f"Converted {len(converted_faces)} faces from Blender mesh ({quad_count} quads, {triangle_count} triangles)")
         
         bm.free()
@@ -1040,49 +1394,36 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
     def _rebuildRoomPolygonReferences(self, fts_data):
         """Rebuild room polygon references (EP_DATA) efficiently to fix topology changes"""
         print("DEBUG: Rebuilding room polygon references to fix topology changes")
-        
+
         if not hasattr(fts_data, 'room_data') or not fts_data.room_data:
             print("DEBUG: No room data to rebuild - disabling room system entirely")
             # Can't modify namedtuple directly - return without room data
             return
-        
+
         room_data_list, room_distances = fts_data.room_data
-        
-        # Build cell polygon mapping efficiently in a single pass
-        cell_polygons = {}  # (cell_x, cell_z) -> [(room_id, poly_idx_in_cell), ...]
-        
-        for face_data in self.converted_faces:
-            # Calculate cell coordinates using same logic as grid reconstruction
-            vertices = face_data.get('vertices', [])
-            if vertices:
-                center_x = sum(v['pos'][0] for v in vertices) / len(vertices)
-                center_z = sum(v['pos'][2] for v in vertices) / len(vertices)
-                cell_x = int(center_x / 100)
-                cell_z = int(center_z / 100)
-                # Clamp to valid range
-                cell_x = max(0, min(159, cell_x))
-                cell_z = max(0, min(159, cell_z))
-            else:
-                cell_x = 80  # Center fallback
-                cell_z = 80
-            room_id = face_data.get('room', 0)
-            
-            cell_key = (cell_x, cell_z)
-            if cell_key not in cell_polygons:
-                cell_polygons[cell_key] = []
-            
-            # Polygon index within this cell is just the current count
-            poly_idx_in_cell = len(cell_polygons[cell_key])
-            cell_polygons[cell_key].append((room_id, poly_idx_in_cell))
-        
-        # Create room polygon mapping
+
+        # EP_DATA addresses a polygon as (cell x, cell z, index within that cell), so
+        # it has to be derived from the very grid the FTS writer emits. Building a
+        # second grid here drifted from the real one, because that one drops faces
+        # that fall outside the 160x160 world and this one used to clamp them in.
+        cell_grid = self._reconstructCellGrid(self.converted_faces, fts_data)
+
+        # Now build room polygon references with correct indices
         room_polygon_refs = {}  # room_id -> [(cell_x, cell_z, poly_idx), ...]
-        
-        for (cell_x, cell_z), polys in cell_polygons.items():
-            for room_id, poly_idx in polys:
-                if room_id not in room_polygon_refs:
-                    room_polygon_refs[room_id] = []
-                room_polygon_refs[room_id].append((cell_x, cell_z, poly_idx))
+
+        for cell_z in range(160):
+            for cell_x in range(160):
+                if cell_grid[cell_z][cell_x] is not None:
+                    # For each polygon in this cell
+                    for poly_idx_in_cell, poly in enumerate(cell_grid[cell_z][cell_x]):
+                        room_id = poly.get('room', 0)
+                        if room_id < 0:
+                            # No room, so it gets no EP_DATA entry anywhere.
+                            continue
+                        if room_id not in room_polygon_refs:
+                            room_polygon_refs[room_id] = []
+                        # poly_idx_in_cell is the actual index within the cell's polygon list
+                        room_polygon_refs[room_id].append((cell_x, cell_z, poly_idx_in_cell))
         
         # Find the maximum room ID actually used
         max_room_id = max(room_polygon_refs.keys()) if room_polygon_refs else 0
@@ -1237,23 +1578,42 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
             
             # Reverse vertex order to match original import order swap
             portal_vertices[2], portal_vertices[3] = portal_vertices[3], portal_vertices[2]
-            
+
             # Read room connections from custom properties
             room_1 = portal_obj.get('arx_room_1', 0)
             room_2 = portal_obj.get('arx_room_2', 1)
+
+            # The plane the engine uses comes from the first three stored corners,
+            # not from anything written into norm, so compute it the same way.
+            normal = portal_plane_normal(portal_vertices)
+
+            # ARX_PORTALS_Frustrum_ComputeRoom travels from room_1 when the camera
+            # is on the side the normal points into, and from room_2 otherwise, so
+            # a portal whose winding disagrees with its room ids connects
+            # backwards. Reversing a Z order quad is a swap of the middle two
+            # corners, which keeps it a valid quad.
+            towards = self._roomDirection(room_1, portal_vertices)
+            if towards is not None and normal.dot(towards) < 0.0:
+                portal_vertices[1], portal_vertices[2] = portal_vertices[2], portal_vertices[1]
+                normal = portal_plane_normal(portal_vertices)
+                print(f"DEBUG: Flipped portal winding so its normal faces room {room_1}")
             useportal = portal_obj.get('arx_useportal', 1)
-            
+
             print(f"DEBUG: Portal {len(new_portals)}: connects room {room_1} ↔ room {room_2}")
-            
+
             # Create portal data as dictionary (compatible with FTS serializer)
-            
-            # Calculate face normal from first 3 vertices
-            normal = Vector((0, 0, 1))
-            if len(portal_vertices) >= 3:
-                v1 = portal_vertices[1] - portal_vertices[0]
-                v2 = portal_vertices[2] - portal_vertices[0]
-                normal = v1.cross(v2).normalized()
-            
+
+            # Bounding sphere for the portal. The engine reads this straight out of
+            # v[0].rhw (Mesh.cpp, portal.bounds.radius) and never recomputes it, unlike
+            # background polys. It is used for the portal visibility test in
+            # ARX_PORTALS_Frustrum_ComputeRoom, so a wrong value hides the portal and
+            # the room behind it never gets drawn.
+            portal_center = Vector((0.0, 0.0, 0.0))
+            for pv in portal_vertices:
+                portal_center += pv
+            portal_center /= len(portal_vertices)
+            portal_radius = max((pv - portal_center).length for pv in portal_vertices)
+
             # Build vertex data
             vertices = []
             vertex_normals = []
@@ -1262,7 +1622,7 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
                     pos = portal_vertices[i]
                     vertices.append({
                         'x': pos.x, 'y': pos.y, 'z': pos.z,
-                        'rhw': 1.0, 'color': 0xFFFFFFFF, 'specular': 0,
+                        'rhw': portal_radius, 'color': 0xFFFFFFFF, 'specular': 0,
                         'tu': 0.0 if i % 2 == 0 else 1.0,
                         'tv': 0.0 if i < 2 else 1.0
                     })
@@ -1357,10 +1717,98 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
             new_portals.append(bytes(portal_struct))
         
         print(f"DEBUG: Rebuilt {len(new_portals)} portals from Blender scene")
-        
+        self._validatePortals(new_portals)
+
         # Update FTS data with new portals
         return fts_data._replace(portals=new_portals)
+
+    def _validatePortals(self, portals):
+        """Report portals whose room links cannot be right.
+
+        Rooms and portals are authored by hand, so nothing here changes the data.
+        The point is that a mistake shows up at export instead of as an unlit hole
+        in the level: duplicating a portal in Blender copies its room ids along
+        with everything else, which silently leaves the room it was moved to
+        unreachable and therefore never drawn.
+        """
+        from .dataFts import EERIE_SAVE_PORTALS
+
+        rooms_in_use = {face.get('room', 0) for face in self.converted_faces
+                        if face.get('room', 0) > 0}
+
+        linked = set()
+        seen = {}
+        problems = []
+
+        for index, portal in enumerate(portals):
+            data = (EERIE_SAVE_PORTALS.from_buffer_copy(portal)
+                    if isinstance(portal, bytes) else portal)
+            room_1, room_2 = data.room_1, data.room_2
+            linked.update((room_1, room_2))
+
+            centre = tuple(sum(data.poly.v[k].pos.__getattribute__(axis)
+                               for k in range(4)) / 4.0 for axis in ('x', 'y', 'z'))
+            where = f"({centre[0]:.0f}, {centre[1]:.0f}, {centre[2]:.0f})"
+
+            if room_1 == room_2:
+                problems.append(f"portal {index} at {where} joins room {room_1} to itself")
+            for room in (room_1, room_2):
+                if room > 0 and room not in rooms_in_use:
+                    problems.append(f"portal {index} at {where} names room {room}, "
+                                    f"which no polygon belongs to")
+
+            # Two portals joining the same pair of rooms is perfectly normal - a
+            # room can have several doorways to its neighbour, and level 1 has six
+            # such pairs. What gives a copy away is that it is the same size to the
+            # last decimal while sitting somewhere else entirely.
+            key = (min(room_1, room_2), max(room_1, room_2))
+            radius = data.poly.v[0].rhw
+            for other, other_centre, other_radius in seen.get(key, []):
+                gap = math.sqrt(sum((centre[i] - other_centre[i]) ** 2 for i in range(3)))
+                if gap > 1.0 and abs(radius - other_radius) < 1e-3:
+                    problems.append(f"portals {other} and {index} join rooms {key[0]} "
+                                    f"and {key[1]}, are exactly the same size and sit "
+                                    f"{gap:.0f} units apart; one looks like a copy that "
+                                    f"kept the original's rooms")
+            seen.setdefault(key, []).append((index, centre, radius))
+
+        unreachable = sorted(rooms_in_use - linked)
+        if unreachable:
+            problems.append(f"rooms {unreachable} have no portal, so nothing can open "
+                            f"them and they will never be drawn")
+
+        for problem in problems:
+            print(f"WARNING: {problem}")
+        if problems:
+            self.report({'WARNING'}, f"{len(problems)} portal problem(s), see the console")
     
+    def _roomDirection(self, room, portal_vertices):
+        """Direction from a portal towards the middle of one of its rooms.
+
+        Returns None when that room has no geometry to average, in which case the
+        caller has nothing to check the portal's facing against and should leave
+        the winding as the author built it.
+        """
+        total = Vector((0.0, 0.0, 0.0))
+        count = 0
+        for face in self.converted_faces:
+            if face.get('room', 0) != room:
+                continue
+            for vertex in face['vertices']:
+                total += Vector(vertex['pos'])
+                count += 1
+
+        if not count:
+            return None
+
+        centre = Vector((0.0, 0.0, 0.0))
+        for corner in portal_vertices:
+            centre += corner
+        centre /= len(portal_vertices)
+
+        direction = (total / count) - centre
+        return direction.normalized() if direction.length > 1e-9 else None
+
     def _rebuildAnchorNetworkFromBlender(self, fts_data, scene):
         """Read anchor network from Blender anchor mesh and rebuild anchor system"""
         from mathutils import Vector
@@ -1398,6 +1846,8 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
             if not mesh.vertices:
                 continue
             
+            cylinders = read_anchor_attributes(mesh)
+
             # Get anchor positions from vertices
             anchor_positions = []
             for vertex in mesh.vertices:
@@ -1420,10 +1870,10 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
             for i, pos in enumerate(anchor_positions):
                 global_index = base_anchor_index + i
                 
-                # Get anchor properties from custom properties or use defaults
-                radius = anchor_obj.get('arx_anchor_radius', 50.0)
-                height = anchor_obj.get('arx_anchor_height', 100.0)
-                flags = anchor_obj.get('arx_anchor_flags', 0)
+                # Each anchor's own cylinder, as measured when it was generated.
+                radius = cylinders['radius'][i]
+                height = cylinders['height'][i]
+                flags = int(cylinders['flags'][i])
                 
                 # Convert local links to global indices
                 global_links = [base_anchor_index + link for link in anchor_links[i]]
@@ -1510,17 +1960,30 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
         
         return closest_room
     
-    def updateLlfFile(self, llf_path, converted_faces):
+    def updateLlfFile(self, llf_path, converted_faces, fts_data):
         """Update LLF file with new vertex lighting data using Cycles renderer"""
         from .dataLlf import DANAE_LLF_HEADER, DANAE_LS_LIGHTINGHEADER, SavedColorBGRA
         from ctypes import sizeof
         import struct
         
         print(f"DEBUG: Updating LLF file with Cycles lighting for {len(converted_faces)} faces")
-        
-        # Read original LLF file
+
+        # Try to read original LLF file, or create default if it doesn't exist
         addon = getAddon(bpy.context)
-        original_llf_data = addon.sceneManager.llfSerializer.read(llf_path)
+        try:
+            original_llf_data = addon.sceneManager.llfSerializer.read(llf_path)
+        except FileNotFoundError:
+            print(f"INFO: LLF file doesn't exist, creating new one: {llf_path}")
+            # Create minimal default LLF data structure
+            from .dataLlf import LlfData
+            from ctypes import c_ubyte
+
+            # LlfData only has two fields: lights and levelLighting
+            # Create empty arrays for now - they'll be replaced with calculated colors
+            original_llf_data = LlfData(
+                lights=[],           # No lights to preserve
+                levelLighting=[]     # Will be replaced with our calculated vertex colors
+            )
         
         # Get the background mesh object for Cycles lighting calculation
         scene = bpy.context.scene
@@ -1532,34 +1995,130 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
         
         if not background_obj:
             print("ERROR: Could not find background mesh for Cycles lighting")
-            # Fall back to simple calculation
-            return self._updateLlfFileSimple(llf_path, converted_faces, original_llf_data)
+            self.report({'ERROR'}, "Cannot calculate lighting without background mesh")
+            return
         
-        print(f"DEBUG: Using Cycles lighting calculation on mesh: {background_obj.name}")
-        
-        # Calculate vertex lighting using Cycles
+        print(f"DEBUG: Using {scene.arx_lighting.lighting_method} lighting calculation on mesh: {background_obj.name}")
+
+        # Every method has to emit colours in FTS write order, because that is the
+        # order the engine reads them back in RestoreLastLoadedLightning. Walking
+        # converted_faces instead produces a scrambled lightmap and, once any face
+        # falls outside the grid, the wrong number of values as well.
+        ordered_polys = self._orderedPolygons(fts_data)
+
+        # Calculate vertex lighting based on selected method
         try:
-            vertex_lighting_colors = self._calculateCyclesVertexLighting(converted_faces, background_obj, scene)
-            print(f"DEBUG: Cycles calculated {len(vertex_lighting_colors)} vertex colors")
+            if scene.arx_lighting.lighting_method == 'DANAE':
+                vertex_lighting_colors = self._calculateDanaeVertexLighting(ordered_polys, scene)
+                print(f"DEBUG: DANAE lighting calculated {len(vertex_lighting_colors)} vertex colors")
+            elif scene.arx_lighting.lighting_method == 'CYCLES':
+                vertex_lighting_colors = self._calculateCyclesVertexLighting(converted_faces, background_obj, scene, fts_data)
+                print(f"DEBUG: Cycles calculated {len(vertex_lighting_colors)} vertex colors")
+            elif scene.arx_lighting.lighting_method == 'SIMPLE':
+                # Simple lighting calculation
+                vertex_lighting_colors = []
+                for poly in ordered_polys:
+                    vertex_count = 4 if poly.get('is_quad', False) else 3
+
+                    # Simple top-down lighting
+                    # Only output the actual number of vertices (3 for triangles, 4 for quads)
+                    for i in range(vertex_count):
+                        brightness = int(scene.arx_lighting.ambient_strength * 255)
+                        vertex_lighting_colors.append((brightness, brightness, brightness, 255))
+                print(f"DEBUG: Simple lighting applied to {len(vertex_lighting_colors)} vertices")
+            elif scene.arx_lighting.lighting_method == 'PRESERVE':
+                # Preserve existing vertex colors from mesh
+                vertex_lighting_colors = []
+                mesh = background_obj.data
+                vcol_layer = None
+                for vcol in mesh.vertex_colors:
+                    if vcol.name == "light-color":
+                        vcol_layer = vcol
+                        break
+
+                if not vcol_layer:
+                    raise Exception("No light-color vertex color layer found for PRESERVE mode")
+
+                # Read existing colors in face order
+                import bmesh
+                bm = bmesh.new()
+                bm.from_mesh(mesh)
+                bm.faces.ensure_lookup_table()
+
+                color_layer = None
+                for layer in bm.loops.layers.color:
+                    if layer.name == "light-color":
+                        color_layer = layer
+                        break
+
+                for poly in ordered_polys:
+                    is_quad = poly.get('is_quad', False)
+                    vertex_count = 4 if is_quad else 3
+                    face_idx = poly.get('bmesh_index', -1)
+
+                    if 0 <= face_idx < len(bm.faces):
+                        blender_face = bm.faces[face_idx]
+                        # Read colors in standard order for triangles
+                        loop_indices = [0, 1, 2] if not is_quad else [0, 1, 3, 2]
+
+                        colors_for_face = []
+                        for idx in loop_indices[:vertex_count]:
+                            if idx < len(blender_face.loops) and color_layer:
+                                loop = blender_face.loops[idx]
+                                color = loop[color_layer]
+                                colors_for_face.append((
+                                    int(color[0] * 255),
+                                    int(color[1] * 255),
+                                    int(color[2] * 255),
+                                    255
+                                ))
+                            else:
+                                colors_for_face.append((128, 128, 128, 255))
+
+                        # Don't duplicate colors for triangles - only output actual vertex count
+                        vertex_lighting_colors.extend(colors_for_face)
+                    else:
+                        # Output correct number of colors based on face type
+                        vertex_count = 4 if is_quad else 3
+                        for i in range(vertex_count):
+                            vertex_lighting_colors.append((128, 128, 128, 255))
+
+                bm.free()
+                print(f"DEBUG: Preserved {len(vertex_lighting_colors)} existing vertex colors")
+            else:  # SKIP
+                raise Exception("SKIP mode should not reach updateLlfFile")
             
-            # Convert to SavedColorBGRA format for LLF
+            # Convert to SavedColorBGRA format for LLF with intensity multiplier.
+            # The DANAE bake already produces exactly what the engine expects, so it
+            # is written through untouched; the multiplier only trims the renderer
+            # based methods, whose output is in a different scale to begin with.
+            lighting_props = scene.arx_lighting
+            if scene.arx_lighting.lighting_method == 'DANAE':
+                intensity_mult = 1.0
+            else:
+                intensity_mult = lighting_props.export_intensity_multiplier
+                print(f"DEBUG: Applying export intensity multiplier: {intensity_mult}")
+
             new_lighting_data = []
             for color in vertex_lighting_colors:
                 bgra_color = SavedColorBGRA()
-                bgra_color.r = color[0]
-                bgra_color.g = color[1] 
-                bgra_color.b = color[2]
-                bgra_color.a = color[3]
+                # Apply the multiplier to RGB values (not alpha)
+                bgra_color.r = min(255, int(color[0] * intensity_mult))
+                bgra_color.g = min(255, int(color[1] * intensity_mult))
+                bgra_color.b = min(255, int(color[2] * intensity_mult))
+                bgra_color.a = color[3]  # Keep alpha unchanged
                 new_lighting_data.append(bgra_color)
             
         except Exception as e:
-            print(f"ERROR: Cycles lighting failed: {e}")
-            # Fall back to simple calculation
-            return self._updateLlfFileSimple(llf_path, converted_faces, original_llf_data)
+            print(f"ERROR: {scene.arx_lighting.lighting_method} lighting failed: {e}")
+            import traceback
+            traceback.print_exc()
+            self.report({'ERROR'}, f"Lighting calculation failed: {str(e)}")
+            return
         
         # Write updated LLF file
         self._writeLlfFile(llf_path, original_llf_data.lights, new_lighting_data)
-        print(f"DEBUG: Updated LLF with {len(new_lighting_data)} Cycles-calculated vertex colors")
+        print(f"DEBUG: Updated LLF with {len(new_lighting_data)} vertex colors")
     
     def updateDlfFile(self, dlf_path, scene, area_id):
         """Update DLF file with entity data from Blender scene"""
@@ -1744,6 +2303,9 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
                     zone.reverb = obj.get("arx_zone_reverb", 0.0)
                     zone.farclip = obj.get("arx_zone_farclip", 0.0)
                     zone.amb_max_vol = obj.get("arx_zone_amb_max_vol", 0.0)
+
+                    rgb = obj.get("arx_zone_rgb", (0.0, 0.0, 0.0))
+                    zone.rgb.r, zone.rgb.g, zone.rgb.b = rgb[0], rgb[1], rgb[2]
                     
                     # Convert position (same transformation as entities)
                     blender_pos = obj.location
@@ -1755,36 +2317,47 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
                     zone.initpos.y = arx_pos.y
                     zone.initpos.z = arx_pos.z
                     
-                    # Find child zone waypoint objects and convert to pathways
+                    # The outline mesh is the current shape of the zone; the older
+                    # scatter of child empties is still read so scenes built before
+                    # the mesh outline existed keep working.
                     zone_pathways = []
-                    zone_waypoint_objects = []
-                    
-                    # Collect zone waypoint children
-                    for child in obj.children:
-                        if child.name.startswith('zone_waypoint:'):
-                            zone_waypoint_objects.append(child)
-                    
-                    # Sort by pathway index to maintain order
-                    zone_waypoint_objects.sort(key=lambda w: w.get("arx_pathway_index", 0))
-                    
-                    for waypoint_obj in zone_waypoint_objects:
-                        pathway = DANAE_LS_PATHWAYS()
-                        
-                        # Convert waypoint position to relative Arx coordinates
-                        # Since waypoint_obj is a child of zone obj, waypoint_obj.location is already in local coordinates
-                        # Just convert the local position to Arx coordinates
-                        arx_relative_pos = Vector(blender_pos_to_arx(waypoint_obj.location / 0.1))
-                        
-                        pathway.rpos.x = arx_relative_pos.x
-                        pathway.rpos.y = arx_relative_pos.y
-                        pathway.rpos.z = arx_relative_pos.z
-                        
-                        # Get pathway properties from waypoint object
-                        pathway.flag = waypoint_obj.get("arx_pathway_flag", 0)
-                        pathway.time = waypoint_obj.get("arx_pathway_time", 0)
-                        
-                        zone_pathways.append(pathway)
-                    
+                    outline = next((child for child in obj.children
+                                    if child.name.startswith('zone_outline:')
+                                    and child.type == 'MESH'), None)
+
+                    if outline is not None:
+                        mesh = outline.data
+                        flags = mesh.attributes.get("arx_pathway_flag")
+                        times = mesh.attributes.get("arx_pathway_time")
+                        # Vertex order is the polygon winding, so it has to be kept.
+                        for index, vertex in enumerate(mesh.vertices):
+                            pathway = DANAE_LS_PATHWAYS()
+                            local = outline.matrix_local @ vertex.co
+                            arx_relative_pos = Vector(blender_pos_to_arx(local / 0.1))
+                            pathway.rpos.x = arx_relative_pos.x
+                            pathway.rpos.y = arx_relative_pos.y
+                            pathway.rpos.z = arx_relative_pos.z
+                            pathway.flag = flags.data[index].value if flags else 0
+                            pathway.time = times.data[index].value if times else 0
+                            zone_pathways.append(pathway)
+                    else:
+                        waypoints = [child for child in obj.children
+                                     if child.name.startswith('zone_waypoint:')]
+                        waypoints.sort(key=lambda w: w.get("arx_pathway_index", 0))
+                        for waypoint_obj in waypoints:
+                            pathway = DANAE_LS_PATHWAYS()
+                            arx_relative_pos = Vector(blender_pos_to_arx(waypoint_obj.location / 0.1))
+                            pathway.rpos.x = arx_relative_pos.x
+                            pathway.rpos.y = arx_relative_pos.y
+                            pathway.rpos.z = arx_relative_pos.z
+                            pathway.flag = waypoint_obj.get("arx_pathway_flag", 0)
+                            pathway.time = waypoint_obj.get("arx_pathway_time", 0)
+                            zone_pathways.append(pathway)
+
+                    if len(zone_pathways) < 3:
+                        print(f"WARNING: Zone '{zone_name}' has {len(zone_pathways)} "
+                              f"points; a zone needs at least three to enclose anything")
+
                     zone.nb_pathways = len(zone_pathways)
                     new_zones.append((zone, zone_pathways))
                     
@@ -1877,7 +2450,7 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
         
         # Create DLF header
         header = DANAE_LS_HEADER()
-        header.version = 1.44  # Use same version as originals
+        header.version = DLF_WRITE_VERSION
         header.ident = b"DANAE_FILE\x00\x00\x00\x00\x00\x00"
         header.lastuser = b"Blender Export\x00" + b"\x00" * (256 - 15)
         header.time = int(time.time())
@@ -1966,68 +2539,6 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
         
         print(f"DEBUG: Wrote DLF file with {len(new_entities)} entities, {len(new_lights)} lights, {len(new_fogs)} fogs, {len(new_paths)} paths, {len(new_zones)} zones to {dlf_path}")
     
-    def _updateLlfFileSimple(self, llf_path, converted_faces, original_llf_data):
-        """Fallback LLF update using simple lighting calculation"""
-        from .dataLlf import SavedColorBGRA
-        
-        print(f"DEBUG: Using fallback lighting for {len(converted_faces)} faces")
-        
-        # Calculate vertex count using FTS traversal order (matches engine countVertices)
-        total_vertices = 0
-        for face_data in converted_faces:
-            # Count vertices per face: 4 for quads, 3 for triangles (matching FTS poly type)
-            is_quad = face_data.get('is_quad', False)
-            face_vertex_count = 4 if is_quad else 3
-            total_vertices += face_vertex_count
-        
-        print(f"DEBUG: Regenerating lighting data for {total_vertices} vertices (FTS traversal order)")
-        
-        # Build new vertex lighting array matching exact FTS vertex order
-        new_lighting_data = []
-        vertex_index = 0
-        
-        for face_data in converted_faces:
-            # Get face properties for lighting calculation
-            if 'norm' in face_data and isinstance(face_data['norm'], dict):
-                norm = face_data['norm']
-                face_normal = Vector((float(norm['x']), float(norm['y']), float(norm['z'])))
-            else:
-                face_normal = Vector((0, 1, 0))  # Default upward
-            
-            # Process vertices in FTS order (quad=4 verts, triangle=3 verts)
-            vertices = face_data.get('vertices', [])
-            is_quad = face_data.get('is_quad', False)
-            face_vertex_count = 4 if is_quad else 3
-            
-            for i in range(face_vertex_count):
-                if i < len(vertices):
-                    pos = vertices[i]['pos']
-                    vertex_pos = Vector((float(pos[0]), float(pos[1]), float(pos[2])))
-                else:
-                    # For triangles stored as quads, 4th vertex duplicates the last one
-                    if vertices:
-                        pos = vertices[-1]['pos']
-                        vertex_pos = Vector((float(pos[0]), float(pos[1]), float(pos[2])))
-                    else:
-                        vertex_pos = Vector((0.0, 0.0, 0.0))
-                
-                # Calculate lighting for this vertex
-                vertex_color = self._calculateVertexLighting(vertex_pos, face_normal)
-                
-                # Convert to SavedColorBGRA format (BGRA order)
-                bgra_color = SavedColorBGRA()
-                bgra_color.b = vertex_color[2]  # Blue
-                bgra_color.g = vertex_color[1]  # Green  
-                bgra_color.r = vertex_color[0]  # Red
-                bgra_color.a = vertex_color[3]  # Alpha
-                
-                new_lighting_data.append(bgra_color)
-                vertex_index += 1
-        
-        print(f"DEBUG: Generated {len(new_lighting_data)} vertex colors")
-        
-        # Write updated LLF file
-        self._writeLlfFile(llf_path, original_llf_data.lights, new_lighting_data)
     
     def _writeLlfFile(self, llf_path, lights, vertex_lighting):
         """Write LLF file with updated lighting data using PKWare compression"""
@@ -2035,9 +2546,21 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
         from ctypes import sizeof
         import time
         
-        # Create LLF header - use version 1.44 for compressed format
+        # The engine decides whether to decompress the .llf from the version in the
+        # matching .dlf, not from anything in the .llf itself (DanaeLoadLevel), so
+        # the two have to agree. Reading the version off the .dlf on disk does not
+        # give that: exportArea writes the .llf first, so on a 1.43 level it read
+        # 1.43, wrote the lightmap raw, and _writeDlfFile then replaced the .dlf
+        # with a 1.44 one - and the engine blasted the raw lightmap and lost every
+        # vertex colour. _writeDlfFile always implodes its payload and so can only
+        # ever declare 1.44; the lightmap beside it follows that unconditionally.
+        dlf_version = DLF_WRITE_VERSION
+        compress = True
+        print(f"DEBUG: writing compressed llf for dlf version {dlf_version:.2f}")
+
+        # Create LLF header
         header = DANAE_LLF_HEADER()
-        header.version = 1.44  # Version 1.44+ = compressed format
+        header.version = dlf_version
         header.ident = b"DANAE_LLH_FILE\x00\x00"  # Correct identifier from original file
         header.lastuser = b"Blender Export\x00" + b"\x00" * (256 - 15)
         header.time = int(time.time())
@@ -2050,7 +2573,7 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
         lighting_header = DANAE_LS_LIGHTINGHEADER()
         lighting_header.nb_values = len(vertex_lighting)
         lighting_header.ViewMode = 0
-        lighting_header.ModeLight = 0
+        lighting_header.ModeLight = 63  # Match original file's ModeLight value
         lighting_header.pad = 0
         
         # Build uncompressed binary data
@@ -2082,15 +2605,19 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
                 # Fallback: use existing vertex_color as-is
                 uncompressed_data.extend(bytes(vertex_color))
         
-        # Compress using PKWare format (same as FTS compression)
-        compressed_data = self._encode_pkware_llf(uncompressed_data)
-        
-        # Write compressed LLF file
+        if compress:
+            # Compress using PKWare format (same as FTS compression)
+            output = self._encode_pkware_llf(uncompressed_data)
+            print(f"DEBUG: Compression: {len(uncompressed_data)} -> {len(output)} bytes")
+        else:
+            output = bytes(uncompressed_data)
+
         with open(llf_path, 'wb') as f:
-            f.write(compressed_data)
-        
-        print(f"DEBUG: Wrote PKWare compressed LLF file (v1.44) with {len(vertex_lighting)} vertex colors to {llf_path}")
-        print(f"DEBUG: Compression: {len(uncompressed_data)} → {len(compressed_data)} bytes")
+            f.write(output)
+
+        print(f"DEBUG: Wrote LLF file (v{dlf_version:.2f}, "
+              f"{'compressed' if compress else 'uncompressed'}) with "
+              f"{len(vertex_lighting)} vertex colors to {llf_path}")
     
     def _encode_pkware_llf(self, data):
         """PKWare encoding for LLF files using proper header format"""
@@ -2262,8 +2789,10 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
         # Validate FTS properties
         self._validateFtsProperties(converted_faces)
         
-        # Convert faces back to FTS polygon structures  
-        updated_cells = self._reconstructCellGrid(converted_faces, fts_data)
+        # Convert faces back to FTS polygon structures. Go through _orderedPolygons
+        # so the DANAE normal pass has run before the polygons are serialised.
+        self._orderedPolygons(fts_data)
+        updated_cells = self._cell_grid
         
         # Write FTS file using the serializer  
         import bpy
@@ -2290,7 +2819,17 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
             raise ArxException(f"Missing required FTS properties: {set(missing_props)}")
     
     def _reconstructCellGrid(self, converted_faces, fts_data):
-        """Reconstruct FTS cell grid from converted face data with spatial partitioning"""
+        """Reconstruct FTS cell grid from converted face data with spatial partitioning.
+
+        The result is cached for the duration of one export. Everything that has to
+        agree on polygon order - the FTS writer, the room EP_DATA references and the
+        LLF vertex colours - reads this one grid, because the engine addresses
+        polygons by (cell, index within cell) and reads lighting in cell order. Two
+        independently built grids drift apart as soon as a single face is skipped.
+        """
+        if getattr(self, '_cell_grid', None) is not None:
+            return self._cell_grid
+
         import math
         
         # Get scene offset for proper cell grid alignment
@@ -2333,41 +2872,33 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
             
             # Build vertices array as Python dicts
             poly_vertices = []
-            for i in range(4):
-                if i < num_verts:
-                    vert = vertices[i]
-                    poly_vertices.append({
-                        'ssx': vert['pos'][0],
-                        'sy': vert['pos'][1],
-                        'ssz': vert['pos'][2],
-                        'stu': vert['uv'][0],
-                        'stv': vert['uv'][1]
-                    })
-                else:
-                    # For triangles, duplicate the last vertex to make a degenerate quad
-                    # This preserves the triangle geometry while fitting FTS quad format
-                    if vertices:
-                        vert = vertices[-1]  # Use last vertex
-                        poly_vertices.append({
-                            'ssx': vert['pos'][0],
-                            'sy': vert['pos'][1],
-                            'ssz': vert['pos'][2],
-                            'stu': vert['uv'][0],
-                            'stv': vert['uv'][1]
-                        })
-                    else:
-                        # Fallback zero vertex
-                        poly_vertices.append({
-                            'ssx': 0.0, 'sy': 0.0, 'ssz': 0.0,
-                            'stu': 0.0, 'stv': 0.0
-                        })
-            
+            # Only store the actual vertices - don't create degenerate quads
+            for i in range(num_verts):
+                vert = vertices[i]
+                poly_vertices.append({
+                    'ssx': vert['pos'][0],
+                    'sy': vert['pos'][1],
+                    'ssz': vert['pos'][2],
+                    'stu': vert['uv'][0],
+                    'stv': vert['uv'][1]
+                })
+
+            # Pad with zero vertices if needed for the FTS format (which expects 4 vertex slots)
+            # But mark it properly as a triangle via poly_type flag
+            while len(poly_vertices) < 4:
+                # Add padding vertices for FTS format compatibility
+                poly_vertices.append({
+                    'ssx': 0.0, 'sy': 0.0, 'ssz': 0.0,
+                    'stu': 0.0, 'stv': 0.0
+                })
+
             # Create polygon as Python dict
             room_id = face_data.get('room', 0)
             mapped_room = self._map_room_id_to_index(room_id)
-            
+
             poly_dict = {
                 'vertices': poly_vertices,
+                'bmesh_index': face_data.get('bmesh_index', -1),
                 'tex': face_data.get('tex', 0),
                 'transval': face_data.get('transval', 0.0),
                 'area': face_data.get('area', 1.0),
@@ -2391,6 +2922,11 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
             
             # Set poly type flags - ensure POLY_QUAD flag matches actual vertex count
             poly_type = face_data.get('poly_type', 0)
+            # Clear POLY_QUAD flag if this is a triangle
+            if num_verts == 3:
+                poly_type = poly_type & ~64  # Remove POLY_QUAD flag (bit 6)
+            elif num_verts == 4:
+                poly_type = poly_type | 64   # Ensure POLY_QUAD flag is set
             poly_dict['poly_type'] = poly_type
             poly_dict['is_quad'] = (num_verts == 4)
             
@@ -2399,6 +2935,8 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
                 print(f"DEBUG: Face {len(fts_polygons)}: room_id={room_id} → mapped_room={mapped_room}")
                 print(f"DEBUG: FTS polygon {len(fts_polygons)}: {num_verts} vertices, is_quad={poly_dict['is_quad']}")
             
+            # Store the original face index in poly_dict for later matching
+            poly_dict['original_face_index'] = len(fts_polygons)
             fts_polygons.append((poly_dict, face_data))
         
         if degenerate_faces > 0:
@@ -2415,37 +2953,50 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
         for poly, face_data in fts_polygons:
             faces_processed += 1
             
-            # Force recalculation of cell coordinates for all faces
-            # Clear any preserved cell coordinates that might be wrong
-            if 'cell_x' in face_data:
-                del face_data['cell_x']
-            if 'cell_z' in face_data:
-                del face_data['cell_z']
-            cell_x = None
-            cell_z = None
+            # Try to use preserved cell coordinates first
+            cell_x = face_data.get('cell_x', None)
+            cell_z = face_data.get('cell_z', None)
             
-            # Calculate center of polygon vertices
-            vertices = face_data.get('vertices', [])
-            if vertices:
-                center_x = sum(v['pos'][0] for v in vertices) / len(vertices)
-                center_z = sum(v['pos'][2] for v in vertices) / len(vertices)
-                
-                # Convert to cell coordinates (160x160 grid, each cell is 100 units)
-                # Based on analysis: scene_offset should NOT be used for grid calculation
-                # Grid cells are simply: cell = int(coordinate / 100)
-                
-                cell_x = int(center_x / 100)  
-                cell_z = int(center_z / 100)
-                
-                # Validate bounds - if out of bounds, skip the face
+            # Only calculate if we don't have preserved coordinates
+            if cell_x is None or cell_z is None:
+                vertices = face_data.get('vertices', [])
+                if vertices:
+                    center_x = sum(v['pos'][0] for v in vertices) / len(vertices)
+                    center_z = sum(v['pos'][2] for v in vertices) / len(vertices)
+
+                    # Convert to cell coordinates (160x160 grid, each cell is 100 units)
+                    # Engine formula: cell = int(pos / 100)
+                    # No offset applied - grid is in world coordinates
+
+                    cell_x = int(center_x / 100)
+                    cell_z = int(center_z / 100)
+                    faces_calculated += 1
+                else:
+                    # No vertices to calculate from
+                    continue
+
+            # Validate bounds - if out of bounds, skip the face
+            if cell_x is not None and cell_z is not None:
                 if cell_x < 0 or cell_x >= 160 or cell_z < 0 or cell_z >= 160:
                     if faces_processed < 10:  # Log first few out-of-bounds faces
-                        print(f"DEBUG: Skipping out-of-bounds face at cell ({cell_x}, {cell_z}) - center: ({center_x:.1f}, {center_z:.1f})")
+                        # Calculate center for debug message if needed
+                        vertices = face_data.get('vertices', [])
+                        if vertices:
+                            debug_center_x = sum(v['pos'][0] for v in vertices) / len(vertices)
+                            debug_center_z = sum(v['pos'][2] for v in vertices) / len(vertices)
+                        else:
+                            debug_center_x = 0
+                            debug_center_z = 0
+                        print(f"DEBUG: Skipping out-of-bounds face at cell ({cell_x}, {cell_z}) - center: ({debug_center_x:.1f}, {debug_center_z:.1f})")
                     continue
-                faces_calculated += 1
-                
+
                 if faces_processed <= 5:
-                    print(f"DEBUG: Face {faces_processed}: calculated cell=({cell_x}, {cell_z}) from center=({center_x:.1f}, {center_z:.1f})")
+                    # Calculate center for debug message if needed
+                    vertices = face_data.get('vertices', [])
+                    if vertices:
+                        debug_center_x = sum(v['pos'][0] for v in vertices) / len(vertices)
+                        debug_center_z = sum(v['pos'][2] for v in vertices) / len(vertices)
+                        print(f"DEBUG: Face {faces_processed}: cell=({cell_x}, {cell_z}) from center=({debug_center_x:.1f}, {debug_center_z:.1f})")
             else:
                 # Fallback to center cell if no vertices
                 cell_x, cell_z = 80, 80
@@ -2472,8 +3023,58 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
         
         print(f"DEBUG: Processed {faces_processed} faces, {faces_placed} placed in cells ({faces_calculated} calculated, {faces_processed - faces_calculated} preserved), {total_polys} total in grid")
         self.report({'INFO'}, f"Reconstructed cell grid: {total_polys} polygons in {populated_cells} cells ({faces_calculated} new coordinates calculated)")
-        
+
+        # Flat list in exactly the order write_fts emits polygons and the engine
+        # reads them back: cell rows along Z, cells along X, polygons within a cell.
+        self._cell_grid = updated_cells
+        self._ordered_polys = []
+        for z in range(160):
+            for x in range(160):
+                if updated_cells[z][x] is not None:
+                    self._ordered_polys.extend(updated_cells[z][x])
+
         return updated_cells
+
+    def _orderedPolygons(self, fts_data):
+        """Polygons in FTS write order, building the shared cell grid if needed."""
+        if self._reconstructCellGrid(self.converted_faces, fts_data) is not None \
+                and not getattr(self, '_normals_prepared', False):
+            self._prepareVertexNormals()
+            self._normals_prepared = True
+        return self._ordered_polys
+
+    def _prepareVertexNormals(self):
+        """Rebuild every per vertex normal the way DANAE did before baking.
+
+        The editor never trusted the normals it had loaded: ARX_PrepareBackgroundNRMLs
+        recomputed the lot from the face normals, welding across polygons that share
+        a position. Doing the same here means geometry modelled in Blender gets the
+        normals the engine expects instead of whatever the mesh attributes happened
+        to hold, and it fixes runtime lighting too, since ApplyTileLights dots
+        against these same values every frame.
+        """
+        from .danae_lighting import prepare_vertex_normals
+
+        faces = []
+        for poly in self._ordered_polys:
+            count = 4 if poly.get('is_quad', False) else 3
+            vertices = [(v['ssx'], v['sy'], v['ssz']) for v in poly['vertices'][:count]]
+            norm = poly['norm']
+            norm2 = poly.get('norm2', norm)
+            faces.append((vertices,
+                          (norm['x'], norm['y'], norm['z']),
+                          (norm2['x'], norm2['y'], norm2['z'])))
+
+        computed = prepare_vertex_normals(faces)
+
+        for poly, normals in zip(self._ordered_polys, computed):
+            padded = list(normals)
+            while len(padded) < 4:
+                padded.append(normals[-1])
+            poly['vertex_normals'] = [{'x': n[0], 'y': n[1], 'z': n[2]} for n in padded]
+
+        print(f"DEBUG: Recomputed vertex normals for {len(computed)} polygons "
+              f"(ARX_PrepareBackgroundNRMLs)")
     
     def _calculateVertexLighting(self, vertex_pos, vertex_normal):
         """Calculate vertex lighting from scene lights with tunable parameters"""
@@ -2548,84 +3149,487 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
         
         return (final_r, final_g, final_b, 255)
     
-    def _calculateCyclesVertexLighting(self, converted_faces, mesh_obj, scene):
-        """Calculate vertex lighting using Blender Cycles renderer for export geometry"""
+    def _bakeLightingToCyclesVertexColors(self, mesh_obj, scene, lighting_props):
+        """Core Cycles baking function used by both export and regenerate
+        Returns True if successful, False otherwise
+        This modifies the vertex colors in place on the mesh"""
+        import bpy
+        from mathutils import Vector
+
+        mesh = mesh_obj.data
+
+        # Ensure we have the light-color layer
+        vcol_layer = None
+        for vcol in mesh.vertex_colors:
+            if vcol.name == "light-color":
+                vcol_layer = vcol
+                break
+
+        if not vcol_layer:
+            print("ERROR: No 'light-color' vertex color layer found!")
+            return False
+
+        mesh.vertex_colors.active = vcol_layer
+        print("DEBUG: Using 'light-color' vertex color layer for baking")
+
+        # Clear to black before baking
+        print(f"DEBUG: Initializing {len(mesh.polygons)} polygons with black vertex colors...")
+        for poly in mesh.polygons:
+            for loop_idx in poly.loop_indices:
+                vcol_layer.data[loop_idx].color = (0, 0, 0, 1)
+
+        mesh.update()
+
+        # Ensure UVs exist (required for baking)
+        if len(mesh.uv_layers) == 0:
+            print("WARNING: Mesh has no UV layers, creating one for baking")
+            mesh.uv_layers.new(name="BakeUV")
+
+        # CRITICAL: Disconnect vertex colors in materials to prevent circular dependency
+        # The materials multiply texture * vertex_color, so during baking we need to disconnect
+        # the vertex colors to bake pure lighting only
+        disconnected_links = []
+        for mat in mesh.materials:
+            if mat and mat.use_nodes:
+                # Find the Arx Material node group
+                for node in mat.node_tree.nodes:
+                    if node.type == 'GROUP' and node.node_tree:
+                        # Check inside the node group for vertex color nodes
+                        for group_node in node.node_tree.nodes:
+                            if group_node.type == 'VERTEX_COLOR' and group_node.layer_name == 'light-color':
+                                # Disconnect the Color output
+                                for link in node.node_tree.links:
+                                    if link.from_node == group_node and link.from_socket.name == 'Color':
+                                        to_node = link.to_node
+                                        to_socket = link.to_socket
+                                        from_socket = link.from_socket
+
+                                        # Set multiply node to white so we get texture only
+                                        if to_node.type == 'MIX_RGB':
+                                            to_socket.default_value = (1, 1, 1, 1)
+
+                                        disconnected_links.append((node.node_tree, from_socket, to_socket))
+                                        node.node_tree.links.remove(link)
+                                        print(f"DEBUG: Disconnected vertex color in {mat.name}")
+                                        break
+
+        # Configure bake settings
+        scene.render.bake.target = 'VERTEX_COLORS'
+        scene.render.bake.use_clear = True
+        scene.render.bake.margin = 0
+        scene.render.bake.margin_type = 'EXTEND'
+        scene.render.bake.use_cage = False
+        scene.render.bake.cage_extrusion = 0.0
+        scene.render.bake.max_ray_distance = 0.01
+
+        # Use user-defined bake type and settings
+        bake_type = lighting_props.cycles_bake_type
+
+        # Configure passes based on user settings
+        if bake_type == 'DIFFUSE' and hasattr(scene.render.bake, 'use_pass_direct'):
+            scene.render.bake.use_pass_direct = lighting_props.cycles_use_direct_light
+            scene.render.bake.use_pass_indirect = lighting_props.cycles_use_indirect_light
+            scene.render.bake.use_pass_color = lighting_props.cycles_use_color
+        elif bake_type == 'AO':
+            if hasattr(scene.world.light_settings, 'distance'):
+                scene.world.light_settings.distance = lighting_props.cycles_ao_distance
+
+        print(f"DEBUG: Starting Cycles bake operation...")
+        print(f"  - Bake type: {bake_type}")
+        print(f"  - Mesh: {mesh_obj.name}")
+        print(f"  - Materials: {len(mesh.materials)}")
+
+        # Perform the actual bake
+        try:
+            override = bpy.context.copy()
+            override['object'] = mesh_obj
+            override['active_object'] = mesh_obj
+            override['selected_objects'] = [mesh_obj]
+
+            with bpy.context.temp_override(**override):
+                result = bpy.ops.object.bake(type=bake_type)
+        except Exception as e:
+            print(f"ERROR: Bake with override failed: {e}")
+            try:
+                result = bpy.ops.object.bake(type=bake_type)
+            except Exception as e2:
+                print(f"ERROR: Regular bake also failed: {e2}")
+                result = {'CANCELLED'}
+
+        print(f"DEBUG: Cycles bake complete! Result: {result}")
+
+        # Restore vertex color connections in materials
+        for node_tree, from_socket, to_socket in disconnected_links:
+            node_tree.links.new(from_socket, to_socket)
+            print(f"DEBUG: Restored vertex color connection")
+
+        # Check if baking actually worked
+        has_color = False
+        for poly in mesh.polygons[:10]:
+            for loop_idx in poly.loop_indices:
+                color = vcol_layer.data[loop_idx].color
+                if color[0] > 0.01 or color[1] > 0.01 or color[2] > 0.01:
+                    has_color = True
+                    break
+            if has_color:
+                break
+
+        if has_color:
+            print("DEBUG: Cycles baking successful - vertex colors updated")
+            return True
+        else:
+            print("WARNING: Cycles bake produced black colors - check lights and materials")
+            return False
+
+    def _calculateDanaeVertexLighting(self, ordered_polys, scene):
+        """Bake vertex lighting the way the original DANAE editor did.
+
+        Works straight off the FTS polygon data in Arx units, so no Blender mesh,
+        material or renderer is involved and the result needs no colour space or
+        brightness correction before it goes into the .llf file.
+        """
+        import time
+
+        from .danae_lighting import (POLY_IGNORE, POLY_TRANS, POLY_WATER,
+                                     DanaePolygon, compute_vertex_colors)
+
+        props = scene.arx_lighting
+        lights = gather_danae_lights(scene)
+
+        polygons = []
+        for poly in ordered_polys:
+            count = 4 if poly.get('is_quad', False) else 3
+            vertices = [(v['ssx'], v['sy'], v['ssz']) for v in poly['vertices'][:count]]
+            normals = [(n['x'], n['y'], n['z']) for n in poly['vertex_normals'][:count]]
+            while len(normals) < count:
+                normals.append((0.0, 1.0, 0.0))
+
+            center = (
+                sum(v[0] for v in vertices) / count,
+                sum(v[1] for v in vertices) / count,
+                sum(v[2] for v in vertices) / count,
+            )
+            polygons.append(DanaePolygon(
+                vertices=vertices,
+                normals=normals,
+                center=center,
+                ignore=bool(int(poly.get('poly_type', 0)) & POLY_IGNORE),
+            ))
+
+        visible = None
+        if props.danae_raylaunch:
+            # Every polygon goes in, so that face i in the tree is polygon i and
+            # the bake can recognise a hit on the polygon it is currently lighting.
+            occluders = []
+            for shaded in polygons:
+                vertices = shaded.vertices
+                if len(vertices) == 4:
+                    # FTS stores quads in Z order, so the perimeter is 0,1,3,2.
+                    # Handing the stored order to the BVH would build a bowtie.
+                    vertices = [vertices[0], vertices[1], vertices[3], vertices[2]]
+                occluders.append(vertices)
+            visible = build_danae_occluder(occluders)
+            if visible is None:
+                print("WARNING: No occluding geometry found, baking without shadows")
+
+        ambient = (props.danae_ambient,) * 3
+        started = time.time()
+
+        def progress(index, total):
+            print(f"  DANAE lighting: polygon {index}/{total}")
+
+        colors = compute_vertex_colors(
+            polygons, lights,
+            ambient=ambient,
+            use_normals=props.danae_use_normals,
+            visible=visible,
+            progress=progress,
+        )
+
+        # A vertex sitting exactly on the ambient floor received nothing at all.
+        # A high count means the lights never reached it - out of fallend range, a
+        # normal facing away, or a shadow ray that hit something - rather than the
+        # bake being merely dim.
+        floor = tuple(int(c * 255.0 + 0.5) for c in ambient)
+        unlit = sum(1 for c in colors if c[:3] == floor)
+        print(f"DEBUG: DANAE bake of {len(polygons)} polygons took {time.time() - started:.1f}s")
+        print(f"DEBUG: {unlit}/{len(colors)} vertices came out at the ambient floor {floor}")
+        return colors
+
+    def _calculateCyclesVertexLighting(self, converted_faces, mesh_obj, scene, fts_data):
+        """Calculate vertex lighting using Blender Cycles renderer with actual baking"""
         import bmesh
         import bpy
         from mathutils import Vector
-        
-        print(f"DEBUG: Starting Cycles vertex lighting calculation for {len(converted_faces)} faces")
-        
-        # Store original render settings
+
+        print(f"DEBUG: Starting Cycles vertex lighting baking for {len(converted_faces)} faces")
+
+        # Debug: Check what types of faces we have
+        regular_faces = 0
+        portal_faces = 0
+        quad_count = 0
+        tri_count = 0
+        expected_vertices = 0
+        for face_data in converted_faces:
+            if face_data.get('tex', -1) == -1 and face_data.get('room', None) is not None:
+                # Portal-like face (no texture but has room assignment)
+                portal_faces += 1
+            else:
+                regular_faces += 1
+
+            # Count face types and expected vertex count
+            is_quad = face_data.get('is_quad', False)
+            if is_quad:
+                quad_count += 1
+                expected_vertices += 4
+            else:
+                tri_count += 1
+                expected_vertices += 3  # Triangles need 3 colors
+
+        print(f"DEBUG: Face breakdown - regular: {regular_faces}, portal-like: {portal_faces}")
+        print(f"DEBUG: {quad_count} quads (4 verts each) + {tri_count} triangles (3 verts each) = {expected_vertices} vertices expected for LLF")
+
+        # Store original settings
         original_engine = scene.render.engine
         original_samples = None
-        
+        original_active = scene.view_layers[0].objects.active
+        original_selection = [obj for obj in scene.objects if obj.select_get()]
+
         try:
-            # Set up Cycles for vertex lighting baking
+            # Set up Cycles for baking
             scene.render.engine = 'CYCLES'
-            
-            # Get cycles settings
+            bpy.context.view_layer.update()
+
+            # Configure Cycles settings from user preferences
+            lighting_props = scene.arx_lighting
             cycles = scene.cycles if hasattr(scene, 'cycles') else None
             if cycles:
                 original_samples = cycles.samples
-                cycles.samples = 64  # Fast but decent quality for vertex lighting
-            
-            # Get all existing lights in the scene
-            lights = [obj for obj in scene.objects if obj.type == 'LIGHT']
-            print(f"DEBUG: Found {len(lights)} lights in scene")
-            
-            # Calculate lighting following the EXACT same vertex order as export
+                cycles.samples = lighting_props.cycles_samples
+                cycles.use_denoising = lighting_props.cycles_use_denoising
+
+            # Ensure mesh object is selected and active
+            for obj in scene.objects:
+                obj.select_set(False)
+            mesh_obj.select_set(True)
+            scene.view_layers[0].objects.active = mesh_obj
+
+            # Use the core baking function
+            bake_success = self._bakeLightingToCyclesVertexColors(mesh_obj, scene, lighting_props)
+
+            if not bake_success:
+                print("ERROR: Cycles baking failed - using fallback manual lighting")
+                # Fallback: Simple manual lighting calculation
+                mesh = mesh_obj.data
+                vcol_layer = None
+                for vcol in mesh.vertex_colors:
+                    if vcol.name == "light-color":
+                        vcol_layer = vcol
+                        break
+
+                if vcol_layer:
+                    for poly_idx, poly in enumerate(mesh.polygons):
+                        if poly_idx % 1000 == 0:
+                            print(f"  Processing face {poly_idx}/{len(mesh.polygons)}")
+
+                        # Get face center
+                        face_center = mesh_obj.matrix_world @ poly.center
+                        face_normal = mesh_obj.matrix_world.to_3x3() @ poly.normal
+
+                        # Simple lighting: accumulate from nearby lights
+                        total_light = Vector((0.1, 0.1, 0.1))  # Ambient
+
+                        for light_obj in [obj for obj in scene.objects if obj.type == 'LIGHT'][:50]:  # Limit to 50 lights
+                            light_pos = light_obj.location
+                            light_dir = (light_pos - face_center).normalized()
+                            distance = (light_pos - face_center).length
+
+                            # Simple distance falloff
+                            if distance < 20.0:  # Arbitrary cutoff
+                                dot = max(0, face_normal.dot(light_dir))
+                                intensity = dot * (1.0 - distance / 20.0) * light_obj.data.energy / 1000.0
+                                total_light += Vector(light_obj.data.color) * intensity
+
+                        # Clamp and apply to all loops of this face
+                        for loop_idx in poly.loop_indices:
+                            vcol_layer.data[loop_idx].color = (
+                                min(1.0, total_light.x),
+                                min(1.0, total_light.y),
+                                min(1.0, total_light.z),
+                                1.0
+                            )
+
+                    mesh.update()
+                    print("Manual lighting calculation complete")
+
+            # Now read the baked vertex colors in the exact order needed for LLF
+            # CRITICAL: We need to read colors in the same cell-by-cell order as FTS!
+            # The engine reads polygons from cells in Y-then-X order (GridYXIterator)
             vertex_colors = []
-            processed = 0
-            
-            for face_data in converted_faces:
-                vertices = face_data.get('vertices', [])
-                is_quad = face_data.get('is_quad', False)
-                
-                # Process vertices in export order (same as convertMeshToFtsCells)
-                for i, vertex_data in enumerate(vertices):
-                    # Get vertex position in Arx coordinates
-                    arx_pos = vertex_data['pos']
-                    vertex_pos = Vector((arx_pos[0], arx_pos[1], arx_pos[2])) * 0.1  # Scale to Blender units
-                    
-                    # Get face normal from export data
-                    face_norm = face_data.get('norm', {'x': 0, 'y': 1, 'z': 0})
-                    face_normal = Vector((face_norm['x'], face_norm['y'], face_norm['z']))
-                    
-                    # Calculate lighting at this vertex position
-                    vertex_color = self._evaluateVertexLighting(vertex_pos, face_normal, lights, scene)
-                    vertex_colors.append(vertex_color)
-                    
-                    processed += 1
-                    if processed % 1000 == 0:
-                        print(f"DEBUG: Processed {processed} vertices matching export order")
-                
-                # Handle quad storage format: triangles are stored as quads with 4th vertex = 3rd vertex
-                if not is_quad and len(vertices) == 3:
-                    # Duplicate the last vertex for triangle-as-quad storage
-                    last_vertex = vertices[-1]
-                    arx_pos = last_vertex['pos']
-                    vertex_pos = Vector((arx_pos[0], arx_pos[1], arx_pos[2])) * 0.1
-                    face_norm = face_data.get('norm', {'x': 0, 'y': 1, 'z': 0})
-                    face_normal = Vector((face_norm['x'], face_norm['y'], face_norm['z']))
-                    
-                    vertex_color = self._evaluateVertexLighting(vertex_pos, face_normal, lights, scene)
-                    vertex_colors.append(vertex_color)
-                    processed += 1
-            
-            print(f"DEBUG: Completed Cycles lighting calculation for {len(vertex_colors)} vertices matching export")
+
+            # First, rebuild the cell grid to know the polygon order
+            cell_grid = self._reconstructCellGrid(converted_faces, fts_data)
+
+            # Create a bmesh to access the vertex colors
+            bm = bmesh.new()
+            bm.from_mesh(mesh)
+            bm.faces.ensure_lookup_table()
+
+            # Build a mapping from face data to bmesh face index
+            face_to_bmesh = {}
+            for i, face_data in enumerate(converted_faces):
+                face_to_bmesh[id(face_data)] = i
+
+            # Get the "light-color" layer that we baked to
+            color_layer = None
+            for layer in bm.loops.layers.color:
+                if layer.name == "light-color":
+                    color_layer = layer
+                    break
+
+            # Fallback to active layer if specific layer not found
+            if not color_layer:
+                color_layer = bm.loops.layers.color.active
+
+            if not color_layer:
+                raise Exception("Failed to get vertex color layer after baking")
+
+            print(f"DEBUG: Using color layer: {color_layer.name if hasattr(color_layer, 'name') else 'unknown'}")
+
+            # Map Blender faces to converted_faces
+            # CRITICAL: We need to ensure faces are matched correctly
+            if len(bm.faces) != len(converted_faces):
+                print(f"WARNING: Face count mismatch: Blender has {len(bm.faces)}, converted has {len(converted_faces)}")
+
+            # No need for complex mapping - faces should be in the same order
+            # The import process creates faces sequentially, so they should match
+
+            # Build face index mapping - converted_faces index to bmesh face
+            # This assumes converted_faces and bm.faces have the same faces in the same order
+            # (they should, since converted_faces was built from iterating bm.faces)
+
+            # CRITICAL: We must iterate in EXACTLY the same order as FTS!
+            # The FTS file writes polygons cell by cell (Y first, then X)
+            # We need to read vertex colors in the same order
+
+            debug_samples = 0
+            triangle_count = 0
+            faces_processed = 0
+
+            # Iterate through cells in Y-then-X order (matching FTS write order)
+            for z in range(160):
+                for x in range(160):
+                    if cell_grid[z][x] is not None:
+                        # Process each polygon in this cell
+                        for poly_dict in cell_grid[z][x]:
+                            # poly_dict is the converted face data
+                            face_data = poly_dict
+
+                            # Index of the bmesh face this polygon came from. Not the
+                            # position in converted_faces: faces with an unsupported
+                            # vertex count are skipped during conversion, so the two
+                            # drift apart after the first one.
+                            face_index = poly_dict.get('bmesh_index', -1)
+
+                            # Check if we found the face index
+                            if face_index < 0:
+                                print(f"WARNING: Could not find bmesh face for cell ({x},{z}) polygon")
+                                is_quad = face_data.get('is_quad', False)
+                                vertex_count = 4 if is_quad else 3
+                                for i in range(vertex_count):
+                                    vertex_colors.append((128, 128, 128, 255))
+                                continue
+
+                            # Now process this face's vertex colors
+                            is_quad = face_data.get('is_quad', False)
+                            vertex_count = 4 if is_quad else 3
+                            faces_processed += 1
+
+                            if face_index < len(bm.faces):
+                                blender_face = bm.faces[face_index]
+
+                                # Check for vertex count mismatch
+                                actual_verts = len(blender_face.loops)
+                                if actual_verts != vertex_count:
+                                    print(f"MISMATCH at face {face_index}: converted says {vertex_count} verts, Blender has {actual_verts}")
+
+                                # Get colors from the baked vertex color layer
+                                # IMPORTANT: For quads, vertices were swapped in convertMeshToFtsCells
+
+                                if is_quad and len(blender_face.loops) == 4:
+                                    # For quads: vertices are swapped during export
+                                    loop_indices = [0, 1, 3, 2]  # Read in this order to match the swap
+                                else:
+                                    # For triangles or degenerate quads: Read available loops
+                                    if not is_quad:
+                                        triangle_count += 1
+                                    loop_indices = list(range(len(blender_face.loops)))
+
+                                colors_for_face = []
+
+                                # Process the colors we can get from the actual loops
+                                colors_before = len(vertex_colors)
+                                for i in range(vertex_count):
+                                    if i < len(loop_indices) and loop_indices[i] < len(blender_face.loops):
+                                        idx = loop_indices[i]
+                                        loop = blender_face.loops[idx]
+                                        color = loop[color_layer]
+
+                                        # Apply gamma correction (linear to sRGB)
+                                        def linear_to_srgb(c):
+                                            if c <= 0.0031308:
+                                                return 12.92 * c
+                                            else:
+                                                return 1.055 * (c ** (1.0/2.4)) - 0.055
+
+                                        # Convert to sRGB and then to 0-255 range
+                                        r = min(255, max(0, int(linear_to_srgb(color[0]) * 255)))
+                                        g = min(255, max(0, int(linear_to_srgb(color[1]) * 255)))
+                                        b = min(255, max(0, int(linear_to_srgb(color[2]) * 255)))
+
+                                        colors_for_face.append((r, g, b, 255))
+                                    else:
+                                        # For degenerate quads, duplicate last vertex color
+                                        if faces_processed < 10:
+                                            print(f"DEBUG: Face {face_index} needs padding - is_quad={is_quad}, blender_loops={len(blender_face.loops)}, i={i}")
+                                        if len(colors_for_face) > 0:
+                                            colors_for_face.append(colors_for_face[-1])
+                                        else:
+                                            colors_for_face.append((128, 128, 128, 255))
+
+                                # Add colors for this face
+                                if len(colors_for_face) != vertex_count and faces_processed < 10:
+                                    print(f"WARNING: Face {face_index} expected {vertex_count} colors but got {len(colors_for_face)}")
+                                vertex_colors.extend(colors_for_face)
+                            else:
+                                # No bmesh face found, use default colors
+                                for i in range(vertex_count):
+                                    vertex_colors.append((128, 128, 128, 255))
+
+            bm.free()
+            print(f"DEBUG: Read {len(vertex_colors)} baked vertex colors from Cycles")
             return vertex_colors
-            
+
         except Exception as e:
-            print(f"ERROR: Cycles lighting calculation failed: {e}")
-            # Fall back to simple calculation
-            return self._calculateSimpleVertexLighting(mesh_obj)
-            
+            print(f"ERROR: Cycles baking failed: {e}")
+            import traceback
+            traceback.print_exc()
+            # No fallback - Cycles baking is required
+            raise Exception(f"Cycles vertex color baking failed: {e}")
+
         finally:
-            # Restore original render settings
+            # Restore original settings
             scene.render.engine = original_engine
             if cycles and original_samples is not None:
                 cycles.samples = original_samples
+
+            # Restore selection
+            for obj in scene.objects:
+                obj.select_set(False)
+            for obj in original_selection:
+                obj.select_set(True)
+            if original_active:
+                scene.view_layers[0].objects.active = original_active
     
     def _evaluateVertexLighting(self, world_pos, world_normal, lights, scene):
         """Evaluate lighting at a specific vertex position using scene lights"""
@@ -2691,30 +3695,6 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
             int(final_color.z * 255),
             255
         )
-    
-    def _calculateSimpleVertexLighting(self, mesh_obj):
-        """Simple fallback vertex lighting calculation"""
-        import bmesh
-        
-        print("DEBUG: Using simple fallback vertex lighting")
-        
-        bm = bmesh.new()
-        bm.from_mesh(mesh_obj.data)
-        bm.faces.ensure_lookup_table()
-        bm.normal_update()
-        
-        vertex_colors = []
-        for face in bm.faces:
-            for loop in face.loops:
-                # Simple top-down lighting
-                world_normal = (mesh_obj.matrix_world.to_3x3().normalized() @ loop.vert.normal).normalized()
-                brightness = max(0.2, abs(world_normal.z) * 0.8 + 0.2)  # Top-down + ambient
-                
-                color_val = int(brightness * 200)
-                vertex_colors.append((color_val, color_val, color_val, 255))
-        
-        bm.free()
-        return vertex_colors
     
     def _storeLightsForLighting(self, llfData):
         """Store lights from LLF data for lighting calculations"""
@@ -2818,13 +3798,68 @@ class CUSTOM_OT_arx_view_face_attributes(Operator):
         self.report({'INFO'}, f"Face attributes shown in console. Found {stats['total_faces']} faces.")
         return {'FINISHED'}
 
+def animation_slots_for_model(context, model_name):
+    """The animations a model's own entity script binds, as {slot: path}.
+
+    Keyed off LOADANIM rather than off the file name. Matching animation files by
+    substring puts every human animation under any model whose name happens to be
+    a substring, and finds nothing at all for a model whose animations are named
+    after something else, which is most of them.
+    """
+    addon = getAddon(context)
+    reader = ASLReader(addon.sceneManager.dataPath)
+
+    # NPC models live at graph/obj3d/interactive/npc/<name>/<name>.
+    class_path = f"graph/obj3d/interactive/npc/{model_name}/{model_name}"
+    return reader.animation_set(class_path, npc=True)
+
+
+class ARX_OT_list_animation_sets(Operator):
+    bl_idname = "arx.list_animation_sets"
+    bl_label = "List Animation Sets"
+    bl_description = ("Print every script in the data that binds animations, so a new "
+                      "model can borrow an existing set")
+
+    def execute(self, context):
+        addon = getAddon(context)
+        reader = ASLReader(addon.sceneManager.dataPath)
+        sets = reader.find_animation_sets()
+
+        if not sets:
+            self.report({'WARNING'}, "No scripts bind animations under this data path")
+            return {'CANCELLED'}
+
+        print("\nScripts binding animations, largest set first:")
+        for path, animations in sorted(sets.items(), key=lambda kv: -len(kv[1]))[:25]:
+            print(f"  {len(animations):4d} slots  {path}")
+        print(f"\n{len(sets)} scripts in total. A humanoid borrowing the human rig")
+        print("wants graph/obj3d/interactive/player/player or .../npc/human_base/human_base.\n")
+
+        self.report({'INFO'}, f"{len(sets)} animation sets; see the console")
+        return {'FINISHED'}
+
+
 class ArxAnimationTestProperties(PropertyGroup):
     model: StringProperty(name="Model", description="Selected NPC model")
+    # Layer 0: Base/movement animation (walk, run, idle)
+    animation_layer0: StringProperty(name="Layer 0 (Base)", description="Base animation - movement, idle (full body)")
+    # Layer 1: Primary overlay (combat stance, actions)
+    animation_layer1: StringProperty(name="Layer 1 (Overlay)", description="Overlay animation - typically upper body")
+    # Layer 2: Secondary overlay
+    animation_layer2: StringProperty(name="Layer 2", description="Secondary overlay animation")
+    # Layer 3: Tertiary overlay
+    animation_layer3: StringProperty(name="Layer 3", description="Tertiary overlay animation")
+    # Legacy single animation field
     animation: StringProperty(name="Animation", description="Selected animation")
     flip_w: BoolProperty(name="Flip W", default=False, description="Flip quaternion W component")
     flip_x: BoolProperty(name="Flip X", default=False, description="Flip quaternion X component")
     flip_y: BoolProperty(name="Flip Y", default=False, description="Flip quaternion Y component")
     flip_z: BoolProperty(name="Flip Z", default=False, description="Flip quaternion Z component")
+    negate_overlay_quat: BoolProperty(
+        name="Negate Overlay Quat",
+        default=True,
+        description="Negate quaternion for overlay layers (fixes backwards arms)"
+    )
     axis_mapping: EnumProperty(
         name="Axis Mapping",
         items=[
@@ -3083,23 +4118,76 @@ class ArxAnimationTestPanel(Panel):
         row.operator("arx.select_model", text=props.model if props.model else "Select Model")
         
         if props.model:
-            anim_list = [
-                anim for anim in sorted(arx_files.animations.data.keys())
-                if props.model.lower() in anim.lower()
-            ]
-            row = layout.row()
-            row.label(text="Animation:")
-            row.operator("arx.select_animation", text=props.animation if props.animation else "Select Animation")
+            anim_list = sorted(animation_slots_for_model(context, props.model))
             if not anim_list:
-                layout.label(text="WARNING: No animations found for selected model", icon='ERROR')
-        
+                box = layout.box()
+                box.label(text="This model's script binds no animations", icon='ERROR')
+                box.label(text="Animations come from LOADANIM in an entity script,")
+                box.label(text="not from the file name. Use List Animation Sets to")
+                box.label(text="find a script whose set this model can borrow.")
+            else:
+                layout.label(text=f"{len(anim_list)} animations declared by its script",
+                             icon='CHECKMARK')
+            layout.operator("arx.list_animation_sets", icon='PRESET')
+
+            # Animation Layer Selection
+            layout.separator()
+            layout.label(text="Animation Layers (Arx uses 4 layers):")
+
+            # Layer 0 - Base/Movement
+            box = layout.box()
+            box.label(text="Layer 0 (Base - Movement/Idle):", icon='ARMATURE_DATA')
+            row = box.row()
+            op = row.operator("arx.select_animation_layer", text=props.animation_layer0 if props.animation_layer0 else "Select Base Animation")
+            op.layer = 0
+            if props.animation_layer0:
+                row.operator("arx.clear_animation_layer", text="", icon='X').layer = 0
+
+            # Layer 1 - Primary Overlay
+            box = layout.box()
+            box.label(text="Layer 1 (Overlay - Combat/Action):", icon='MOD_ARMATURE')
+            row = box.row()
+            op = row.operator("arx.select_animation_layer", text=props.animation_layer1 if props.animation_layer1 else "Select Overlay Animation")
+            op.layer = 1
+            if props.animation_layer1:
+                row.operator("arx.clear_animation_layer", text="", icon='X').layer = 1
+
+            # Layer 2 - Secondary Overlay
+            box = layout.box()
+            box.label(text="Layer 2 (Secondary Overlay):", icon='MOD_ARMATURE')
+            row = box.row()
+            op = row.operator("arx.select_animation_layer", text=props.animation_layer2 if props.animation_layer2 else "Select Animation")
+            op.layer = 2
+            if props.animation_layer2:
+                row.operator("arx.clear_animation_layer", text="", icon='X').layer = 2
+
+            # Layer 3 - Tertiary Overlay
+            box = layout.box()
+            box.label(text="Layer 3 (Tertiary Overlay):", icon='MOD_ARMATURE')
+            row = box.row()
+            op = row.operator("arx.select_animation_layer", text=props.animation_layer3 if props.animation_layer3 else "Select Animation")
+            op.layer = 3
+            if props.animation_layer3:
+                row.operator("arx.clear_animation_layer", text="", icon='X').layer = 3
+
+            layout.separator()
+
+            # Legacy single animation (for backwards compatibility)
+            row = layout.row()
+            row.label(text="Single Animation (Legacy):")
+            row.operator("arx.select_animation", text=props.animation if props.animation else "Select Animation")
+
+        layout.separator()
         layout.prop(props, "axis_mapping", text="Axis Mapping")
         layout.prop(props, "flip_w", text="Flip W")
         layout.prop(props, "flip_x", text="Flip X")
         layout.prop(props, "flip_y", text="Flip Y")
         layout.prop(props, "flip_z", text="Flip Z")
-        
-        layout.operator("arx.test_goblin_animations", text="Test Selected Animation")
+        layout.prop(props, "negate_overlay_quat", text="Negate Overlay Quaternion")
+
+        layout.separator()
+        layout.operator("arx.test_layered_animations", text="Test Layered Animations", icon='PLAY')
+        layout.operator("arx.test_goblin_animations", text="Test Single Animation (Legacy)")
 
 class ArxSelectModelOperator(Operator):
     bl_idname = "arx.select_model"
@@ -3172,6 +4260,776 @@ class ArxSetAnimationOperator(Operator):
         props.animation = self.animation
         return {'FINISHED'}
 
+
+class ArxSelectAnimationLayerOperator(Operator):
+    """Select animation for a specific layer"""
+    bl_idname = "arx.select_animation_layer"
+    bl_label = "Select Animation for Layer"
+    layer: IntProperty(default=0, min=0, max=3)
+
+    def invoke(self, context, event):
+        context.window_manager.invoke_props_dialog(self, width=300)
+        return {'RUNNING_MODAL'}
+
+    def draw(self, context):
+        layout = self.layout
+        props = context.scene.arx_animation_test
+        arx_files = getAddon(context).arxFiles
+
+        layout.label(text=f"Select animation for Layer {self.layer}:")
+
+        # Filter animations by model name
+        model_words = props.model.lower().split('_')
+        matching_anims = []
+        for anim in sorted(arx_files.animations.data.keys()):
+            anim_lower = anim.lower()
+            if any(word in anim_lower for word in model_words):
+                matching_anims.append(anim)
+
+        if not matching_anims:
+            layout.label(text="No animations found for model", icon='ERROR')
+            return
+
+        # Categorize animations for easier selection
+        walk_anims = [a for a in matching_anims if 'walk' in a.lower() or 'run' in a.lower() or 'wait' in a.lower()]
+        combat_anims = [a for a in matching_anims if any(w in a.lower() for w in ['strike', 'hit', 'fight', 'bare', '1h', '2h', 'dagger', 'missile'])]
+        other_anims = [a for a in matching_anims if a not in walk_anims and a not in combat_anims]
+
+        if self.layer == 0 and walk_anims:
+            layout.label(text="Movement Animations:", icon='ARMATURE_DATA')
+            for anim in walk_anims[:10]:  # Limit to prevent huge dialogs
+                display_name = anim.replace('.tea', '')
+                op = layout.operator("arx.set_animation_layer", text=display_name)
+                op.animation = anim
+                op.layer = self.layer
+
+        if self.layer >= 1 and combat_anims:
+            layout.label(text="Combat/Action Animations:", icon='MOD_ARMATURE')
+            for anim in combat_anims[:10]:
+                display_name = anim.replace('.tea', '')
+                op = layout.operator("arx.set_animation_layer", text=display_name)
+                op.animation = anim
+                op.layer = self.layer
+
+        layout.separator()
+        layout.label(text="All Matching Animations:")
+        for anim in matching_anims[:20]:  # Limit display
+            display_name = anim.replace('.tea', '')
+            op = layout.operator("arx.set_animation_layer", text=display_name)
+            op.animation = anim
+            op.layer = self.layer
+
+    def execute(self, context):
+        return {'FINISHED'}
+
+
+class ArxSetAnimationLayerOperator(Operator):
+    """Set animation for a specific layer"""
+    bl_idname = "arx.set_animation_layer"
+    bl_label = "Set Animation Layer"
+    animation: StringProperty()
+    layer: IntProperty(default=0, min=0, max=3)
+
+    def execute(self, context):
+        props = context.scene.arx_animation_test
+        if self.layer == 0:
+            props.animation_layer0 = self.animation
+        elif self.layer == 1:
+            props.animation_layer1 = self.animation
+        elif self.layer == 2:
+            props.animation_layer2 = self.animation
+        elif self.layer == 3:
+            props.animation_layer3 = self.animation
+        return {'FINISHED'}
+
+
+class ArxClearAnimationLayerOperator(Operator):
+    """Clear animation from a layer"""
+    bl_idname = "arx.clear_animation_layer"
+    bl_label = "Clear Animation Layer"
+    layer: IntProperty(default=0, min=0, max=3)
+
+    def execute(self, context):
+        props = context.scene.arx_animation_test
+        if self.layer == 0:
+            props.animation_layer0 = ""
+        elif self.layer == 1:
+            props.animation_layer1 = ""
+        elif self.layer == 2:
+            props.animation_layer2 = ""
+        elif self.layer == 3:
+            props.animation_layer3 = ""
+        return {'FINISHED'}
+
+
+class ArxTestLayeredAnimationsOperator(Operator):
+    """
+    Composite layered animations using Arx engine logic.
+
+    This bypasses Blender's NLA and computes final bone transforms
+    exactly like the Arx engine does:
+    - Process layers 3 → 2 → 1 → 0 (highest priority first)
+    - For each bone, use highest layer with non-void data
+    - Bake result as single animation
+    """
+    bl_idname = "arx.test_layered_animations"
+    bl_label = "Composite Layered Animations"
+    bl_options = {'REGISTER'}
+
+    def invoke(self, context, event):
+        return context.window_manager.invoke_confirm(self, event)
+
+    def execute(self, context):
+        from .arx_io_animation import ArxLayerCompositor
+
+        addon = getAddon(context)
+        arx_files = addon.arxFiles
+        if not arx_files.models.data or not arx_files.animations.data:
+            arx_files.updateAll()
+
+        # Clear scene
+        bpy.ops.object.select_all(action='SELECT')
+        bpy.ops.object.delete(use_global=False)
+        for action in bpy.data.actions:
+            bpy.data.actions.remove(action)
+        for collection in bpy.data.collections:
+            bpy.data.collections.remove(collection)
+        for mesh in bpy.data.meshes:
+            bpy.data.meshes.remove(mesh)
+        for armature in bpy.data.armatures:
+            bpy.data.armatures.remove(armature)
+
+        props = context.scene.arx_animation_test
+        model_name = props.model
+        if not model_name:
+            self.report({'ERROR'}, "No model selected")
+            return {'CANCELLED'}
+
+        # Load model
+        model_key = tuple(["npc", model_name])
+        if model_key not in arx_files.models.data:
+            self.report({'ERROR'}, f"Model {model_name} not found")
+            return {'CANCELLED'}
+
+        model_data = arx_files.models.data[model_key]
+        model_path = os.path.join(model_data.path, model_data.model)
+
+        try:
+            addon.objectManager.loadFile(context, model_path, context.scene, import_tweaks=False)
+        except ArxException as e:
+            self.report({'ERROR'}, f"Failed to import model: {str(e)}")
+            return {'CANCELLED'}
+
+        # Find mesh and armature
+        obj = None
+        armature_obj = None
+        for o in bpy.data.objects:
+            if o.name.startswith(f"npc/{model_name}"):
+                if o.type == 'MESH':
+                    obj = o
+                elif o.type == 'ARMATURE':
+                    armature_obj = o
+
+        if not obj:
+            self.report({'ERROR'}, "Model mesh not found")
+            return {'CANCELLED'}
+
+        if not armature_obj:
+            for modifier in obj.modifiers:
+                if modifier.type == 'ARMATURE' and modifier.object:
+                    armature_obj = modifier.object
+                    break
+
+        if not armature_obj:
+            self.report({'ERROR'}, "No armature found")
+            return {'CANCELLED'}
+
+        # Get animation paths for each layer
+        layer_anims = [
+            props.animation_layer0,
+            props.animation_layer1,
+            props.animation_layer2,
+            props.animation_layer3
+        ]
+
+        layer_paths = {}
+        for layer_idx, anim_name in enumerate(layer_anims):
+            if not anim_name:
+                continue
+
+            if anim_name not in arx_files.animations.data:
+                self.report({'WARNING'}, f"Animation {anim_name} not found for layer {layer_idx}")
+                continue
+
+            layer_paths[layer_idx] = arx_files.animations.data[anim_name]
+            self.report({'INFO'}, f"Layer {layer_idx}: {anim_name}")
+
+        if not layer_paths:
+            self.report({'ERROR'}, "No valid animations selected")
+            return {'CANCELLED'}
+
+        # Use the layer compositor to create properly blended animation
+        compositor = ArxLayerCompositor()
+
+        frame_rate = context.scene.render.fps
+        action = compositor.composite_from_paths(
+            armature_obj,
+            layer_paths,
+            frame_rate=frame_rate,
+            scale_factor=0.1,
+            flip_w=props.flip_w,
+            flip_x=props.flip_x,
+            flip_y=props.flip_y,
+            flip_z=props.flip_z,
+            negate_overlay_quat=props.negate_overlay_quat
+        )
+
+        if not action:
+            self.report({'ERROR'}, "Layer composition failed")
+            return {'CANCELLED'}
+
+        # Set scene frame range
+        context.scene.frame_start = 1
+        context.scene.frame_end = int(action.frame_range[1])
+
+        # Select armature for preview
+        bpy.ops.object.select_all(action='DESELECT')
+        armature_obj.select_set(True)
+        bpy.context.view_layer.objects.active = armature_obj
+
+        self.report({'INFO'}, f"Composited {len(layer_paths)} layers into {int(action.frame_range[1])} frames")
+        return {'FINISHED'}
+
+
+def is_portal_object(obj):
+    """A portal is a mesh sitting in the scene's portals collection."""
+    if not obj or obj.type != 'MESH':
+        return False
+    if 'arx_room_1' in obj:
+        return True
+    return any('portal' in collection.name.lower() for collection in obj.users_collection)
+
+
+def portal_corners_in_arx(obj):
+    """The portal's corners in Arx coordinates, in the order the exporter writes them."""
+    mesh = obj.data
+    if not mesh.polygons:
+        return []
+
+    face = mesh.polygons[0]
+    corners = []
+    for i in range(4):
+        index = face.vertices[i] if i < len(face.vertices) else face.vertices[-1]
+        world = obj.matrix_world @ mesh.vertices[index].co
+        corners.append(Vector(blender_pos_to_arx(world)) * 10.0)
+
+    # Same swap the exporter applies to restore FTS Z order.
+    corners[2], corners[3] = corners[3], corners[2]
+    return corners
+
+
+# --- Navigation mesh -------------------------------------------------------
+#
+# A level's anchors are its pathfinding graph, and the addon used to only ever
+# copy them out of the original FTS. Geometry built or reshaped in Blender
+# therefore had nowhere for an NPC to stand, and the failure is silent: NPCs
+# just never move. arx.generate_anchors rebuilds the graph from whatever is in
+# the scene, and exportArea falls back to it rather than write a level nothing
+# can walk in.
+#
+# The graph lives in the scene as the mesh the importer already makes: one
+# vertex per anchor, one edge per link. The cylinder each anchor was measured
+# for rides along as per-vertex attributes, because it is per anchor - DANAE
+# grew each one until it touched something.
+ANCHOR_RADIUS_ATTRIBUTE = 'arx_anchor_radius'
+ANCHOR_HEIGHT_ATTRIBUTE = 'arx_anchor_height'
+ANCHOR_FLAGS_ATTRIBUTE = 'arx_anchor_flags'
+
+POLY_NOPATH = 1 << 18
+
+
+def anchor_mesh_object(scene):
+    """The scene's anchor mesh, wherever the importer or the user put it."""
+    name = scene.name + '-anchors'
+    for obj in scene.objects:
+        if obj.type == 'MESH' and (obj.name == name or 'anchor' in obj.name.lower()):
+            return obj
+    return None
+
+
+def background_mesh_object(scene):
+    for obj in scene.objects:
+        if obj.type == 'MESH' and obj.name.endswith('-background'):
+            return obj
+    return None
+
+
+def arx_polygons_of(mesh_obj):
+    """A Blender mesh as polygons in Arx world coordinates.
+
+    The same conversion convertMeshToFtsCells does. blender_pos_to_arx is a
+    handedness preserving permutation, so it is valid on the normals too.
+    """
+    mesh = mesh_obj.data
+    matrix = mesh_obj.matrix_world
+    rotation = matrix.to_3x3()
+    polytype = mesh.attributes.get('arx_polytype')
+    polygons = []
+    for face in mesh.polygons:
+        verts = [tuple(Vector(blender_pos_to_arx(matrix @ mesh.vertices[i].co)) * 10.0)
+                 for i in face.vertices]
+        normal = Vector(blender_pos_to_arx((rotation @ face.normal).normalized()))
+        nopath = False
+        if polytype is not None:
+            nopath = bool(polytype.data[face.index].value & POLY_NOPATH)
+        polygons.append({'v': verts, 'norm': tuple(normal), 'nopath': nopath})
+    return polygons
+
+
+def write_anchor_mesh(scene, anchors):
+    """Replace the scene's anchor mesh with this graph."""
+    mesh = bpy.data.meshes.new(scene.name + '-anchors-mesh')
+    verts = [tuple(arx_pos_to_blender_for_model(a['pos']) * 0.1) for a in anchors]
+    edges = sorted({(min(i, j), max(i, j))
+                    for i, anchor in enumerate(anchors) for j in anchor['links']})
+    mesh.from_pydata(verts, edges, [])
+    mesh.update()
+    store_anchor_attributes(mesh, anchors)
+
+    obj = anchor_mesh_object(scene)
+    if obj:
+        old = obj.data
+        obj.data = mesh
+        if old.users == 0:
+            bpy.data.meshes.remove(old)
+    else:
+        obj = bpy.data.objects.new(scene.name + '-anchors', mesh)
+        scene.collection.objects.link(obj)
+    obj.display_type = 'WIRE'
+    return obj
+
+
+def store_anchor_attributes(mesh, anchors):
+    """Keep each anchor's cylinder on the mesh, one value per vertex.
+
+    Without this the export has nothing to write and falls back to a default.
+    That default used to be radius 50 and height +100, and a positive height
+    fails the `height <= cyl.height` test in AnchorData_GetNearest against a
+    human's -165 - so every anchor a level round tripped through Blender was
+    quietly unusable, and the level came out with a navmesh that pathfinding
+    would not touch.
+    """
+    for name, key, kind in ((ANCHOR_RADIUS_ATTRIBUTE, 'radius', 'FLOAT'),
+                            (ANCHOR_HEIGHT_ATTRIBUTE, 'height', 'FLOAT'),
+                            (ANCHOR_FLAGS_ATTRIBUTE, 'flags', 'INT')):
+        existing = mesh.attributes.get(name)
+        if existing is not None:
+            mesh.attributes.remove(existing)
+        attribute = mesh.attributes.new(name, kind, 'POINT')
+        for index, anchor in enumerate(anchors):
+            attribute.data[index].value = anchor[key]
+
+
+def read_anchor_attributes(mesh):
+    """Per-vertex cylinders, defaulting to what the engine will actually accept."""
+    count = len(mesh.vertices)
+    values = {}
+    for name, key, default in (
+            (ANCHOR_RADIUS_ATTRIBUTE, 'radius', anchor_generation.ANCHOR_RADIUS),
+            (ANCHOR_HEIGHT_ATTRIBUTE, 'height', anchor_generation.ANCHOR_HEIGHT),
+            (ANCHOR_FLAGS_ATTRIBUTE, 'flags', 0)):
+        attribute = mesh.attributes.get(name)
+        if attribute is None or attribute.domain != 'POINT' or len(attribute.data) != count:
+            values[key] = [default] * count
+        else:
+            values[key] = [item.value for item in attribute.data]
+    return values
+
+
+def generate_anchors_for_scene(scene, report=None):
+    """Build the graph from the scene's background mesh and store it."""
+    background = background_mesh_object(scene)
+    if not background:
+        if report:
+            report({'ERROR'}, f"No background mesh in scene '{scene.name}'")
+        return None
+    anchors = anchor_generation.build_anchors(arx_polygons_of(background))
+    if not anchors:
+        if report:
+            report({'ERROR'}, "No walkable floor found, so there is nothing to anchor to")
+        return None
+    write_anchor_mesh(scene, anchors)
+    if report:
+        links = sum(len(a['links']) for a in anchors) // 2
+        report({'INFO'}, f"Generated {len(anchors)} anchors and {links} links")
+    return anchors
+
+
+class ARX_OT_generate_anchors(Operator):
+    bl_idname = "arx.generate_anchors"
+    bl_label = "Generate Anchors"
+    bl_description = ("Rebuild the pathfinding graph from the background geometry. "
+                      "NPCs cannot move in a level that has none")
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        scene = context.scene
+        if generate_anchors_for_scene(scene, self.report) is None:
+            return {'CANCELLED'}
+        return {'FINISHED'}
+
+
+class ARX_OT_portal_init(Operator):
+    bl_idname = "arx.portal_init"
+    bl_label = "Add Portal Properties"
+    bl_description = "Give this object the room links a portal needs"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        obj = context.object
+        obj['arx_room_1'] = obj.get('arx_room_1', 0)
+        obj['arx_room_2'] = obj.get('arx_room_2', 0)
+        obj['arx_useportal'] = obj.get('arx_useportal', 1)
+        self.report({'INFO'}, "Portal properties added; set the two rooms it joins")
+        return {'FINISHED'}
+
+
+# src/ai/Paths.h
+PATH_AMBIANCE = 1 << 1
+PATH_RGB = 1 << 2
+PATH_FARCLIP = 1 << 3
+
+
+def _zone_flag(bit):
+    """A checkbox backed by one bit of the zone's flags, kept on the object itself."""
+
+    def getter(self):
+        return bool(self.id_data.get("arx_zone_flags", 0) & bit)
+
+    def setter(self, value):
+        flags = self.id_data.get("arx_zone_flags", 0)
+        self.id_data["arx_zone_flags"] = (flags | bit) if value else (flags & ~bit)
+
+    return getter, setter
+
+
+def _zone_colour_get(self):
+    return tuple(self.id_data.get("arx_zone_rgb", (0.0, 0.0, 0.0)))
+
+
+def _zone_colour_set(self, value):
+    self.id_data["arx_zone_rgb"] = tuple(value)
+
+
+_ambiance_get, _ambiance_set = _zone_flag(PATH_AMBIANCE)
+_rgb_get, _rgb_set = _zone_flag(PATH_RGB)
+_farclip_get, _farclip_set = _zone_flag(PATH_FARCLIP)
+
+
+class ARX_zone_properties(PropertyGroup):
+    """The zone flags, as named switches over the bitfield the format stores."""
+
+    use_ambiance: BoolProperty(
+        name="Ambiance",
+        description="Play the named ambient track while the player is inside",
+        get=_ambiance_get, set=_ambiance_set)
+
+    use_rgb: BoolProperty(
+        name="Colour",
+        description="Tint the view while the player is inside",
+        get=_rgb_get, set=_rgb_set)
+
+    use_farclip: BoolProperty(
+        name="Far Clip",
+        description="Override the view distance while the player is inside",
+        get=_farclip_get, set=_farclip_set)
+
+    colour: FloatVectorProperty(
+        name="Tint", subtype='COLOR', size=3, min=0.0, max=1.0,
+        get=_zone_colour_get, set=_zone_colour_set)
+
+
+class ARX_PT_zone_properties(Panel):
+    bl_idname = "OBJECT_PT_arx_zone"
+    bl_label = "Arx Zone"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = "object"
+
+    @classmethod
+    def poll(cls, context):
+        obj = context.object
+        return obj is not None and 'arx_zone_height' in obj
+
+    def draw(self, context):
+        layout = self.layout
+        obj = context.object
+        zone = obj.arx_zone
+
+        layout.prop(obj, '["arx_zone_height"]', text="Height")
+        if obj.get("arx_zone_height", 0) == 0:
+            box = layout.box()
+            box.label(text="A height of zero makes this a path, not a zone", icon='ERROR')
+            box.label(text="The engine only treats it as a volume when height is set.")
+
+        column = layout.column(align=True)
+        column.label(text="Behaviour while the player is inside:")
+        column.prop(zone, "use_ambiance")
+        if zone.use_ambiance:
+            row = column.row(align=True)
+            row.prop(obj, '["arx_zone_ambiance"]', text="Track")
+            column.prop(obj, '["arx_zone_amb_max_vol"]', text="Max Volume")
+        column.prop(zone, "use_rgb")
+        if zone.use_rgb:
+            column.prop(zone, "colour")
+        column.prop(zone, "use_farclip")
+        if zone.use_farclip:
+            column.prop(obj, '["arx_zone_farclip"]', text="View Distance")
+
+        outline = next((child for child in obj.children
+                        if child.name.startswith('zone_outline:')
+                        and child.type == 'MESH'), None)
+        info = layout.box()
+        if outline is None:
+            legacy = [child for child in obj.children
+                      if child.name.startswith('zone_waypoint:')]
+            info.label(text=f"{len(legacy)} waypoint empties (old style)", icon='INFO')
+            info.label(text="Reimport to get an editable outline mesh.")
+            return
+
+        points = len(outline.data.vertices)
+        info.label(text=f"Outline: {points} points, edit it like any mesh", icon='INFO')
+        if points < 3:
+            info.label(text="Fewer than three cannot enclose anything", icon='ERROR')
+        info.label(text="Only the footprint matters; the engine tests X and Z.")
+
+
+class ARX_face_tool_properties(PropertyGroup):
+    """Scratch values for editing Arx face attributes by hand."""
+
+    room: IntProperty(
+        name="Room",
+        description="Room id to assign. Rooms are numbered from 1; 0 is the engine's "
+                    "unused first slot and -1 means the polygon belongs to no room",
+        default=1,
+        min=-1
+    )
+
+
+def arx_face_layer(obj, name):
+    """The named face attribute, whichever mode the object happens to be in.
+
+    Returns (accessor, is_bmesh). In edit mode Blender keeps the live data in a
+    bmesh and the mesh attribute arrays are stale, so the two cases cannot share
+    a code path.
+    """
+    import bmesh
+
+    if obj.mode == 'EDIT':
+        bm = bmesh.from_edit_mesh(obj.data)
+        return bm, bm.faces.layers.int.get(name)
+    return None, obj.data.attributes.get(name)
+
+
+class ARX_OT_assign_face_room(Operator):
+    bl_idname = "arx.assign_face_room"
+    bl_label = "Assign Room To Selected"
+    bl_description = "Write the room id above onto every selected face"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        import bmesh
+
+        obj = context.object
+        room = context.scene.arx_face_tools.room
+        bm, layer = arx_face_layer(obj, 'arx_room')
+        if layer is None:
+            self.report({'ERROR'}, "This mesh has no arx_room attribute; import a level first")
+            return {'CANCELLED'}
+
+        count = 0
+        if bm is not None:
+            for face in bm.faces:
+                if face.select:
+                    face[layer] = room
+                    count += 1
+            bmesh.update_edit_mesh(obj.data)
+        else:
+            for index, poly in enumerate(obj.data.polygons):
+                if poly.select:
+                    layer.data[index].value = room
+                    count += 1
+
+        if not count:
+            self.report({'WARNING'}, "No faces selected")
+            return {'CANCELLED'}
+
+        self.report({'INFO'}, f"Set room {room} on {count} faces")
+        return {'FINISHED'}
+
+
+class ARX_OT_select_faces_by_room(Operator):
+    bl_idname = "arx.select_faces_by_room"
+    bl_label = "Select Faces In Room"
+    bl_description = "Select every face carrying the room id above"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    extend: BoolProperty(name="Extend", default=False)
+
+    def execute(self, context):
+        import bmesh
+
+        obj = context.object
+        room = context.scene.arx_face_tools.room
+        bm, layer = arx_face_layer(obj, 'arx_room')
+        if layer is None or bm is None:
+            self.report({'ERROR'}, "Enter edit mode on a mesh with Arx attributes")
+            return {'CANCELLED'}
+
+        count = 0
+        for face in bm.faces:
+            if face[layer] == room:
+                face.select_set(True)
+                count += 1
+            elif not self.extend:
+                face.select_set(False)
+        bm.select_flush(True)
+        bmesh.update_edit_mesh(obj.data)
+
+        self.report({'INFO'}, f"Selected {count} faces in room {room}")
+        return {'FINISHED'}
+
+
+class ARX_OT_report_room_usage(Operator):
+    bl_idname = "arx.report_room_usage"
+    bl_label = "List Rooms"
+    bl_description = "Print how many faces each room holds, and the first free id"
+
+    def execute(self, context):
+        obj = context.object
+        bm, layer = arx_face_layer(obj, 'arx_room')
+        if layer is None:
+            self.report({'ERROR'}, "This mesh has no arx_room attribute")
+            return {'CANCELLED'}
+
+        counts = {}
+        if bm is not None:
+            for face in bm.faces:
+                counts[face[layer]] = counts.get(face[layer], 0) + 1
+        else:
+            for entry in layer.data:
+                counts[entry.value] = counts.get(entry.value, 0) + 1
+
+        print("\nArx rooms in this mesh:")
+        for room in sorted(counts):
+            print(f"  room {room:4d}: {counts[room]} faces")
+        used = {room for room in counts if room > 0}
+        free = next(i for i in range(1, len(used) + 2) if i not in used)
+        print(f"  {len(used)} rooms in use, lowest free id is {free}")
+        print(f"  the engine refuses to draw anything past {MAX_ROOMS} rooms\n")
+
+        self.report({'INFO'}, f"{len(used)} rooms in use, lowest free id {free}; "
+                              f"see the console for the breakdown")
+        return {'FINISHED'}
+
+
+class ARX_PT_face_attributes(Panel):
+    bl_idname = "DATA_PT_arx_face_attributes"
+    bl_label = "Arx Face Attributes"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = "data"
+
+    @classmethod
+    def poll(cls, context):
+        obj = context.object
+        return obj and obj.type == 'MESH' and 'arx_room' in obj.data.attributes
+
+    def draw(self, context):
+        layout = self.layout
+        obj = context.object
+        tools = context.scene.arx_face_tools
+
+        layout.prop(tools, "room")
+
+        if obj.mode != 'EDIT':
+            layout.label(text="Enter edit mode to work on a selection", icon='INFO')
+        else:
+            import bmesh
+            bm = bmesh.from_edit_mesh(obj.data)
+            layer = bm.faces.layers.int.get('arx_room')
+            active = bm.faces.active
+            # Only the active face is inspected here: walking every face on each
+            # redraw would stall the panel on a level sized mesh.
+            if active is not None and layer is not None:
+                layout.label(text=f"Active face is in room {active[layer]}")
+            layout.label(text=f"{obj.data.total_face_sel} faces selected")
+
+        column = layout.column(align=True)
+        column.operator("arx.assign_face_room", icon='CHECKMARK')
+        row = column.row(align=True)
+        row.enabled = (obj.mode == 'EDIT')
+        row.operator("arx.select_faces_by_room", icon='RESTRICT_SELECT_OFF')
+        layout.operator("arx.report_room_usage", icon='PRESET')
+
+        box = layout.box()
+        box.label(text="Rooms are authored, not derived", icon='INFO')
+        box.label(text="Every room needs a portal or it is never drawn.")
+
+
+class ARX_PT_portal_properties(Panel):
+    bl_idname = "OBJECT_PT_arx_portal"
+    bl_label = "Arx Portal"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = "object"
+
+    @classmethod
+    def poll(cls, context):
+        return is_portal_object(context.object)
+
+    def draw(self, context):
+        layout = self.layout
+        obj = context.object
+
+        if 'arx_room_1' not in obj:
+            layout.label(text="No portal properties on this object", icon='ERROR')
+            layout.label(text="A duplicated portal keeps the room ids it was copied from.")
+            layout.operator("arx.portal_init", icon='ADD')
+            return
+
+        column = layout.column(align=True)
+        column.prop(obj, '["arx_room_1"]', text="Room 1 (normal faces this way)")
+        column.prop(obj, '["arx_room_2"]', text="Room 2")
+        if 'arx_useportal' in obj:
+            column.prop(obj, '["arx_useportal"]', text="Use Portal")
+
+        room_1 = obj.get('arx_room_1', 0)
+        room_2 = obj.get('arx_room_2', 0)
+
+        box = layout.box()
+        if room_1 == room_2:
+            box.label(text="Both sides name the same room", icon='ERROR')
+            box.label(text="The engine can never travel through this portal.")
+        elif room_1 <= 0 or room_2 <= 0:
+            box.label(text="Room 0 is the engine's unused slot", icon='ERROR')
+            box.label(text="Rooms are numbered from 1.")
+
+        corners = portal_corners_in_arx(obj)
+        if len(corners) == 4:
+            normal = portal_plane_normal(corners)
+            centre = sum(corners, Vector((0.0, 0.0, 0.0))) / 4.0
+            radius = max((corner - centre).length for corner in corners)
+            info = layout.box()
+            info.label(text="Computed for export", icon='INFO')
+            info.label(text=f"Plane normal  {normal.x:.2f}, {normal.y:.2f}, {normal.z:.2f}")
+            info.label(text=f"Bounding radius  {radius:.1f}")
+            info.label(text="The exporter flips the winding if this normal does not "
+                            "face Room 1.")
+        else:
+            layout.label(text="Portal mesh needs one quad", icon='ERROR')
+
+
 class ArxLightingPanel(Panel):
     bl_idname = "SCENE_PT_arx_lighting"
     bl_label = "Arx Lighting Controls"
@@ -3196,11 +5054,33 @@ class ArxLightingPanel(Panel):
         if props.regenerate_lighting:
             box.prop(props, "lighting_method")
             
+            # DANAE bake settings
+            if props.lighting_method == 'DANAE':
+                sub_box = box.box()
+                sub_box.label(text="DANAE Bake Settings")
+                sub_box.prop(props, "danae_use_normals")
+                sub_box.prop(props, "danae_raylaunch")
+                sub_box.prop(props, "danae_ambient")
+                sub_box.label(text="Uses the Arx light properties, not Blender wattage", icon='INFO')
+
             # Cycles-specific settings
-            if props.lighting_method == 'CYCLES':
+            elif props.lighting_method == 'CYCLES':
                 sub_box = box.box()
                 sub_box.label(text="Cycles Settings")
                 sub_box.prop(props, "cycles_samples")
+                sub_box.prop(props, "cycles_use_denoising")
+                sub_box.separator()
+
+                sub_box.prop(props, "cycles_bake_type")
+
+                if props.cycles_bake_type == 'DIFFUSE':
+                    sub_box.label(text="Pass Contributions:")
+                    col = sub_box.column(align=True)
+                    col.prop(props, "cycles_use_direct_light")
+                    col.prop(props, "cycles_use_indirect_light")
+                    col.prop(props, "cycles_use_color")
+                elif props.cycles_bake_type == 'AO':
+                    sub_box.prop(props, "cycles_ao_distance")
                 
             # Simple lighting settings  
             elif props.lighting_method == 'SIMPLE':
@@ -3209,7 +5089,17 @@ class ArxLightingPanel(Panel):
                 sub_box.prop(props, "ambient_strength")
                 sub_box.prop(props, "light_falloff_power")
                 sub_box.prop(props, "max_light_contribution")
-        
+
+            # Export intensity multiplier (renderer based methods only)
+            if props.lighting_method not in {'DANAE', 'SKIP'}:
+                box.separator()
+                row = box.row()
+                row.label(text="Export Settings", icon='EXPORT')
+                row = box.row()
+                row.prop(props, "export_intensity_multiplier", slider=True)
+                row = box.row()
+                row.label(text="Note: Multiplier only affects exported LLF, not viewport preview", icon='INFO')
+
         # Lighting operations
         box = layout.box()
         box.label(text="Operations", icon='TOOL_SETTINGS')
@@ -3221,75 +5111,667 @@ class CUSTOM_OT_arx_regenerate_lighting(Operator):
     bl_idname = "arx.regenerate_lighting"
     bl_label = "Regenerate Lighting"
     bl_description = "Regenerate vertex lighting for the current scene"
-    
+
     def execute(self, context):
         scene = context.scene
         props = scene.arx_lighting
-        
+
         # Find background mesh
         background_obj = None
         for obj in scene.objects:
             if obj.type == 'MESH' and obj.name.endswith('-background'):
                 background_obj = obj
                 break
-        
+
         if not background_obj:
             self.report({'ERROR'}, "No background mesh found in scene")
             return {'CANCELLED'}
-        
-        try:
+
+        self.report({'INFO'}, f"Starting {props.lighting_method} lighting regeneration on {background_obj.name}")
+
+        if props.lighting_method == 'DANAE':
+            # Same bake as the export path, run straight off the Blender mesh so the
+            # result can be seen in the viewport. Colours land per loop, in loop
+            # order; the export path is what reorders them for the .llf file.
+            from .danae_lighting import DanaePolygon, compute_vertex_colors
+
+            mesh = background_obj.data
+
+            vcol_layer = None
+            for vcol in mesh.vertex_colors:
+                if vcol.name == "light-color":
+                    vcol_layer = vcol
+                    break
+            if not vcol_layer:
+                self.report({'ERROR'}, "No 'light-color' vertex color layer found!")
+                return {'CANCELLED'}
+
+            matrix = background_obj.matrix_world
+            normal_matrix = matrix.to_3x3()
+
+            polygons = []
+            for poly in mesh.polygons:
+                vertices = []
+                normals = []
+                for loop_idx in poly.loop_indices:
+                    vertex = mesh.vertices[mesh.loops[loop_idx].vertex_index]
+                    world = matrix @ vertex.co
+                    vertices.append(tuple(Vector(blender_pos_to_arx(world)) * 10.0))
+                    normal = (normal_matrix @ vertex.normal).normalized()
+                    normals.append(tuple(Vector(blender_pos_to_arx(normal))))
+
+                count = len(vertices)
+                center = (
+                    sum(v[0] for v in vertices) / count,
+                    sum(v[1] for v in vertices) / count,
+                    sum(v[2] for v in vertices) / count,
+                )
+                polygons.append(DanaePolygon(vertices=vertices, normals=normals,
+                                             center=center, ignore=False))
+
+            visible = None
+            if props.danae_raylaunch:
+                visible = build_danae_occluder([p.vertices for p in polygons])
+
+            colors = compute_vertex_colors(
+                polygons, gather_danae_lights(scene),
+                ambient=(props.danae_ambient,) * 3,
+                use_normals=props.danae_use_normals,
+                visible=visible,
+            )
+
+            mesh.vertex_colors.active = vcol_layer
+            position = 0
+            for poly in mesh.polygons:
+                for loop_idx in poly.loop_indices:
+                    r, g, b, _ = colors[position]
+                    vcol_layer.data[loop_idx].color = (r / 255.0, g / 255.0, b / 255.0, 1.0)
+                    position += 1
+
+            mesh.update()
+            self.report({'INFO'}, f"DANAE lighting applied to {len(polygons)} polygons")
+
+        elif props.lighting_method == 'CYCLES':
+            # Use actual Cycles baking
+            import bpy
+
+            # Store original settings
+            original_engine = scene.render.engine
+            original_active = context.view_layer.objects.active
+            original_selection = [obj for obj in scene.objects if obj.select_get()]
+
+            try:
+                # Switch to Cycles
+                scene.render.engine = 'CYCLES'
+
+                # Configure Cycles from user settings
+                if hasattr(scene, 'cycles'):
+                    scene.cycles.samples = props.cycles_samples
+                    scene.cycles.use_denoising = props.cycles_use_denoising
+
+                # Select and activate mesh
+                for obj in scene.objects:
+                    obj.select_set(False)
+                background_obj.select_set(True)
+                context.view_layer.objects.active = background_obj
+
+                mesh = background_obj.data
+
+                # CRITICAL: Use the SAME layer that materials expect: 'light-color'
+                # The Arx Material node group looks for 'light-color' specifically!
+                vcol_layer = None
+                for vcol in mesh.vertex_colors:
+                    if vcol.name == "light-color":
+                        vcol_layer = vcol
+                        break
+
+                if not vcol_layer:
+                    self.report({'ERROR'}, "No 'light-color' vertex color layer found!")
+                    return {'CANCELLED'}
+
+                mesh.vertex_colors.active = vcol_layer
+                self.report({'INFO'}, "Using 'light-color' vertex color layer for baking")
+
+                # Clear to black
+                for poly in mesh.polygons:
+                    for loop_idx in poly.loop_indices:
+                        vcol_layer.data[loop_idx].color = (0, 0, 0, 1)
+
+                # Ensure UVs exist
+                if len(mesh.uv_layers) == 0:
+                    mesh.uv_layers.new(name="BakeUV")
+
+                # CRITICAL FIX: Temporarily disconnect vertex colors in materials!
+                # The Arx materials multiply by vertex colors, creating circular dependency during baking
+                # We need to disconnect the vertex color nodes so Cycles can bake fresh lighting
+
+                disconnected_links = []
+                for mat in mesh.materials:
+                    if mat and mat.use_nodes:
+                        # Find the Arx Material node group
+                        for node in mat.node_tree.nodes:
+                            if node.type == 'GROUP' and node.node_tree:
+                                # Check inside the node group for vertex color nodes
+                                for group_node in node.node_tree.nodes:
+                                    if group_node.type == 'VERTEX_COLOR' and group_node.layer_name == 'light-color':
+                                        # Disconnect the Color output
+                                        for link in node.node_tree.links:
+                                            if link.from_node == group_node and link.from_socket.name == 'Color':
+                                                # Store references before removing the link
+                                                to_node = link.to_node
+                                                to_socket = link.to_socket
+                                                from_socket = link.from_socket
+
+                                                # Set the multiply node's Color2 to white instead
+                                                if to_node.type == 'MIX_RGB':
+                                                    to_socket.default_value = (1, 1, 1, 1)
+
+                                                # Store the link info for restoration
+                                                disconnected_links.append((node.node_tree, from_socket, to_socket))
+
+                                                # Now remove the link
+                                                node.node_tree.links.remove(link)
+
+                                                self.report({'INFO'}, f"Disconnected vertex color in {mat.name}")
+                                                break
+
+                # Configure bake settings
+                scene.render.bake.target = 'VERTEX_COLORS'
+                scene.render.bake.use_clear = True
+                scene.render.bake.margin = 0
+
+                # Use user-defined bake type and settings
+                bake_type = props.cycles_bake_type
+
+                # Configure passes based on user settings
+                if bake_type == 'DIFFUSE' and hasattr(scene.render.bake, 'use_pass_direct'):
+                    scene.render.bake.use_pass_direct = props.cycles_use_direct_light
+                    scene.render.bake.use_pass_indirect = props.cycles_use_indirect_light
+                    scene.render.bake.use_pass_color = props.cycles_use_color
+                elif bake_type == 'AO':
+                    # Configure AO settings
+                    if hasattr(scene.world.light_settings, 'distance'):
+                        scene.world.light_settings.distance = props.cycles_ao_distance
+
+                self.report({'INFO'}, f"Baking {bake_type} with {scene.cycles.samples} samples...")
+
+                # Perform bake
+                try:
+                    override = context.copy()
+                    override['object'] = background_obj
+                    override['active_object'] = background_obj
+                    with context.temp_override(**override):
+                        result = bpy.ops.object.bake(type=bake_type)
+                except:
+                    result = bpy.ops.object.bake(type=bake_type)
+
+                if result == {'FINISHED'}:
+                    # Check if it worked
+                    has_color = False
+                    for poly in mesh.polygons[:10]:
+                        for loop_idx in poly.loop_indices:
+                            color = vcol_layer.data[loop_idx].color
+                            if color[0] > 0.01 or color[1] > 0.01 or color[2] > 0.01:
+                                has_color = True
+                                break
+                        if has_color:
+                            break
+
+                    if has_color:
+                        self.report({'INFO'}, "Cycles baking successful!")
+                    else:
+                        self.report({'WARNING'}, "Cycles bake produced black colors - check lights and materials")
+                else:
+                    self.report({'ERROR'}, "Cycles bake failed")
+
+                # Restore vertex color connections in materials
+                for node_tree, from_socket, to_socket in disconnected_links:
+                    node_tree.links.new(from_socket, to_socket)
+                    self.report({'INFO'}, "Restored vertex color connection")
+
+            finally:
+                # Restore settings
+                scene.render.engine = original_engine
+                for obj in scene.objects:
+                    obj.select_set(False)
+                for obj in original_selection:
+                    obj.select_set(True)
+                context.view_layer.objects.active = original_active
+
+        elif props.lighting_method == 'SIMPLE':
+            # Simple lighting calculation
             import bmesh
-            bm = bmesh.new()
-            bm.from_mesh(background_obj.data)
-            
-            # Ensure vertex color layer exists
-            color_layer = bm.loops.layers.color.get("light-color")
-            if not color_layer:
-                color_layer = bm.loops.layers.color.new("light-color")
-            
-            # Apply lighting based on method
-            for face in bm.faces:
-                for loop in face.loops:
-                    world_normal = (background_obj.matrix_world.to_3x3().normalized() @ loop.vert.normal).normalized()
-                    
-                    if props.lighting_method == 'SIMPLE':
-                        # Simple top-down lighting
-                        brightness = max(props.ambient_strength, abs(world_normal.z) * 0.8 + props.ambient_strength)
-                        loop[color_layer] = (brightness, brightness, brightness, 1.0)
-                    else:  # PRESERVE or CYCLES (simplified for preview)
-                        # Keep existing colors or use simple calculation
-                        brightness = max(0.2, abs(world_normal.z) * 0.8 + 0.2)
-                        loop[color_layer] = (brightness, brightness, brightness, 1.0)
-            
-            bm.to_mesh(background_obj.data)
-            bm.free()
-            background_obj.data.update()
-            
-            self.report({'INFO'}, f"Regenerated lighting using {props.lighting_method} method")
-            
-        except Exception as e:
-            self.report({'ERROR'}, f"Lighting regeneration failed: {str(e)}")
-            return {'CANCELLED'}
-        
+
+            mesh = background_obj.data
+
+            # Use 'light-color' layer that the materials expect
+            vcol_layer = None
+            for vcol in mesh.vertex_colors:
+                if vcol.name == "light-color":
+                    vcol_layer = vcol
+                    break
+
+            if not vcol_layer:
+                self.report({'ERROR'}, "No 'light-color' vertex color layer found!")
+                return {'CANCELLED'}
+
+            mesh.vertex_colors.active = vcol_layer
+
+            # Simple lighting based on normals
+            for poly in mesh.polygons:
+                face_normal = background_obj.matrix_world.to_3x3() @ poly.normal
+                brightness = max(props.ambient_strength, abs(face_normal.z) * 0.8 + props.ambient_strength)
+
+                for loop_idx in poly.loop_indices:
+                    vcol_layer.data[loop_idx].color = (brightness, brightness, brightness, 1.0)
+
+            mesh.update()
+            self.report({'INFO'}, "Simple lighting applied")
+
+        # Update viewport
+        for area in context.screen.areas:
+            if area.type == 'VIEW_3D':
+                area.tag_redraw()
+
         return {'FINISHED'}
 
 class CUSTOM_OT_arx_preview_lighting(Operator):
     bl_idname = "arx.preview_lighting"
     bl_label = "Preview Lighting"
     bl_description = "Preview lighting in the viewport"
-    
+
     def execute(self, context):
-        # Switch to Material shading to see vertex colors
+        # Find background mesh
+        background_obj = None
+        for obj in context.scene.objects:
+            if obj.type == 'MESH' and obj.name.endswith('-background'):
+                background_obj = obj
+                break
+
+        if background_obj:
+            # Ensure the mesh has a material that shows vertex colors
+            if len(background_obj.data.materials) == 0:
+                # Create a simple material to display vertex colors
+                import bpy
+                mat = bpy.data.materials.new(name="VertexColorPreview")
+                mat.use_nodes = True
+
+                # Get the material's node tree
+                nodes = mat.node_tree.nodes
+                links = mat.node_tree.links
+
+                # Clear default nodes
+                nodes.clear()
+
+                # Add vertex color node
+                vcol_node = nodes.new('ShaderNodeVertexColor')
+                vcol_node.location = (-200, 0)
+                vcol_node.layer_name = "light-color"  # Use the standard lighting layer
+
+                # Add principled BSDF
+                bsdf = nodes.new('ShaderNodeBsdfPrincipled')
+                bsdf.location = (0, 0)
+
+                # Add output node
+                output = nodes.new('ShaderNodeOutputMaterial')
+                output.location = (200, 0)
+
+                # Connect vertex color to base color
+                links.new(vcol_node.outputs['Color'], bsdf.inputs['Base Color'])
+                links.new(bsdf.outputs['BSDF'], output.inputs['Surface'])
+
+                # Assign material to mesh
+                background_obj.data.materials.append(mat)
+            else:
+                # Update existing materials to show vertex colors
+                for mat in background_obj.data.materials:
+                    if mat and mat.use_nodes:
+                        nodes = mat.node_tree.nodes
+                        links = mat.node_tree.links
+
+                        # Check if vertex color node exists
+                        vcol_node = None
+                        for node in nodes:
+                            if node.type == 'VERTEX_COLOR':
+                                vcol_node = node
+                                vcol_node.layer_name = "light-color"
+                                break
+
+                        if not vcol_node:
+                            # Add vertex color node
+                            vcol_node = nodes.new('ShaderNodeVertexColor')
+                            vcol_node.location = (-400, 0)
+                            vcol_node.layer_name = "light-color"
+
+                            # Connect to Principled BSDF
+                            bsdf = nodes.get("Principled BSDF")
+                            if bsdf:
+                                links.new(vcol_node.outputs['Color'], bsdf.inputs['Base Color'])
+
+        # Switch to Solid shading with vertex colors
         for area in context.screen.areas:
             if area.type == 'VIEW_3D':
                 for space in area.spaces:
                     if space.type == 'VIEW_3D':
-                        space.shading.type = 'MATERIAL'
+                        space.shading.type = 'SOLID'
                         space.shading.color_type = 'VERTEX'
+                        # Also try to show the specific vertex color layer
+                        if background_obj and background_obj.data.vertex_colors:
+                            for vcol in background_obj.data.vertex_colors:
+                                if vcol.name == "light-color":
+                                    background_obj.data.vertex_colors.active = vcol
+                                    break
                         break
-        
-        self.report({'INFO'}, "Switched to vertex color preview mode")
+
+        self.report({'INFO'}, "Switched to vertex color preview mode - showing 'light-color' layer")
         return {'FINISHED'}
+
+def asl_class_path(obj):
+    """The class path for an entity object, derived if the scene predates storing it."""
+    stored = obj.get("arx_class_path")
+    if stored:
+        return stored
+    name = obj.get("arx_entity_name")
+    if name:
+        return ASLReader.class_path_from_name(name)
+    return None
+
+
+def asl_text_name(class_path, ident, scope):
+    """Text block name that says exactly which file is open, so saving cannot guess."""
+    return f"ASL[{scope}] {class_path}#{ident:04d}"
+
+
+def parse_asl_text_name(name):
+    """Recover (class_path, ident, scope) from a text block created by us."""
+    import re
+    match = re.match(r"^ASL\[(instance|class)\] (.+)#(\d{4})$", name)
+    if not match:
+        return None, None, None
+    return match.group(2), int(match.group(3)), match.group(1)
+
+
+def open_asl_in_editor(context, class_path, ident, scope, create=False):
+    """Load one script into a text block, optionally creating it first."""
+    addon = getAddon(context)
+    reader = ASLReader(addon.sceneManager.dataPath)
+    path, scope, exists = reader.resolve(class_path, ident, scope)
+
+    if not exists:
+        if not create:
+            return None, path, scope
+        path.parent.mkdir(parents=True, exist_ok=True)
+        name = class_path.rsplit('/', 1)[-1]
+        path.write_text(f"// {name} {scope} script\nON INIT {{\n ACCEPT\n}}\n",
+                        encoding='iso-8859-15')
+
+    content = reader.read_path(path)
+    if content is None:
+        return None, path, scope
+
+    text_name = asl_text_name(class_path, ident, scope)
+    text_block = bpy.data.texts.get(text_name)
+    if text_block is None:
+        text_block = bpy.data.texts.new(text_name)
+    text_block.clear()
+    text_block.write(content)
+
+    for area in context.screen.areas if context.screen else []:
+        if area.type == 'TEXT_EDITOR':
+            area.spaces.active.text = text_block
+            break
+
+    return text_block, path, scope
+
+
+class ARX_OT_open_asl(Operator):
+    bl_idname = "arx.open_asl"
+    bl_label = "Open ASL"
+    bl_description = "Open an entity's script in the text editor"
+
+    scope: EnumProperty(
+        name="Script",
+        items=[('auto', "Whichever Exists", "Instance script if there is one, else the class script"),
+               ('instance', "This Entity Only", "The script belonging to this one placed entity"),
+               ('class', "Every Entity Of This Type", "The script shared by the whole class")],
+        default='auto')
+
+    create: BoolProperty(name="Create If Missing", default=False)
+
+    def execute(self, context):
+        obj = context.active_object
+        if not obj or not obj.name.startswith('e:'):
+            self.report({'ERROR'}, "Select an entity")
+            return {'CANCELLED'}
+
+        ident = obj.get("arx_entity_ident")
+        class_path = asl_class_path(obj)
+        if ident is None or not class_path:
+            self.report({'ERROR'}, "This object has no entity identity")
+            return {'CANCELLED'}
+
+        text_block, path, scope = open_asl_in_editor(context, class_path, ident,
+                                                     self.scope, self.create)
+        if text_block is None:
+            self.report({'WARNING'}, f"No {scope} script at {path}")
+            return {'CANCELLED'}
+
+        self.report({'INFO'}, f"Opened {scope} script: {path}")
+        return {'FINISHED'}
+
+
+class ARX_OT_save_asl(Operator):
+    bl_idname = "arx.save_asl"
+    bl_label = "Save ASL"
+    bl_description = "Write the open script back to the exact file it came from"
+
+    def execute(self, context):
+        space = context.space_data
+        text_block = getattr(space, 'text', None) if space else None
+        if text_block is None:
+            self.report({'ERROR'}, "No text block open")
+            return {'CANCELLED'}
+
+        class_path, ident, scope = parse_asl_text_name(text_block.name)
+        if class_path is None:
+            self.report({'ERROR'}, f"'{text_block.name}' was not opened as an Arx script")
+            return {'CANCELLED'}
+
+        addon = getAddon(context)
+        reader = ASLReader(addon.sceneManager.dataPath)
+        # Resolve with the scope recorded in the name, never 'auto': an instance
+        # edit must not be able to land on the shared class script.
+        path, _scope, _exists = reader.resolve(class_path, ident, scope)
+
+        try:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(text_block.as_string(), encoding='iso-8859-15')
+        except OSError as error:
+            self.report({'ERROR'}, f"Could not write {path}: {error}")
+            return {'CANCELLED'}
+
+        self.report({'INFO'}, f"Saved {scope} script: {path}")
+        return {'FINISHED'}
+
+
+# Commands whose next word names something else in the level. Kept small and
+# explicit rather than guessed at, so a jump either lands somewhere real or is not
+# offered at all.
+ASL_REFERENCE_COMMANDS = {
+    'setcontrolledzone': 'zone',
+    'unsetcontrolledzone': 'zone',
+    'setpath': 'path',
+    'goto': 'label',
+    'gosub': 'label',
+}
+
+ASL_ENTITY_COMMANDS = {'sendevent', 'cameraactivate', 'settarget', 'spawn',
+                       'destroy', 'teleport', 'attach'}
+
+# Keywords that appear where a name would, but do not name anything: setpath none
+# clears the path, cameraactivate none hands the camera back, and so on.
+ASL_NOT_A_TARGET = {'none', 'self', 'me', 'player', 'off', 'on'}
+
+
+def scan_asl_references(text):
+    """Find the things a script points at, as (kind, target, line number).
+
+    Entity instance ids are recognised by shape - a name followed by four digits -
+    because that is how the engine names them, and they can appear as the argument
+    of several commands rather than in one fixed position.
+    """
+    import re
+
+    references = []
+    seen = set()
+    entity_pattern = re.compile(r'\b([a-z_][a-z0-9_]*)_(\d{4})\b', re.IGNORECASE)
+
+    for number, line in enumerate(text.splitlines(), start=1):
+        stripped = line.split('//', 1)[0]
+        words = stripped.replace('"', ' ').split()
+        if not words:
+            continue
+
+        lowered = [w.lower() for w in words]
+        for index, word in enumerate(lowered):
+            kind = ASL_REFERENCE_COMMANDS.get(word)
+            if kind and index + 1 < len(words):
+                target = words[index + 1]
+                if target.lower() in ASL_NOT_A_TARGET:
+                    continue
+                key = (kind, target.lower())
+                if key not in seen:
+                    seen.add(key)
+                    references.append((kind, target, number))
+
+        if any(word in ASL_ENTITY_COMMANDS for word in lowered):
+            for match in entity_pattern.finditer(stripped):
+                target = match.group(0)
+                key = ('entity', target.lower())
+                if key not in seen:
+                    seen.add(key)
+                    references.append(('entity', target, number))
+
+    return references
+
+
+def find_entity_object(id_string):
+    """The scene object for an entity id like intro_0001, or None."""
+    name, _, digits = id_string.rpartition('_')
+    if not digits.isdigit():
+        return None
+    ident = int(digits)
+    for obj in bpy.data.objects:
+        if obj.get("arx_entity_ident") != ident:
+            continue
+        class_path = asl_class_path(obj)
+        if class_path and class_path.rsplit('/', 1)[-1].lower() == name.lower():
+            return obj
+    return None
+
+
+def find_named_object(prefix, target):
+    """A zone or path object by its name, ignoring case."""
+    wanted = f"{prefix}:{target}".lower()
+    for obj in bpy.data.objects:
+        if obj.name.lower() == wanted:
+            return obj
+    return None
+
+
+class ARX_OT_asl_jump(Operator):
+    bl_idname = "arx.asl_jump"
+    bl_label = "Go To Reference"
+    bl_description = "Follow this reference to whatever it names"
+
+    kind: StringProperty()
+    target: StringProperty()
+    line: IntProperty(default=0)
+
+    def execute(self, context):
+        if self.kind == 'label':
+            text_block = context.space_data.text
+            wanted = '>>' + self.target.lower()
+            for number, line in enumerate(text_block.lines):
+                if line.body.strip().lower().startswith(wanted):
+                    text_block.current_line_index = number
+                    text_block.select_end_line_index = number
+                    self.report({'INFO'}, f"Label {self.target} on line {number + 1}")
+                    return {'FINISHED'}
+            self.report({'WARNING'}, f"No label {self.target} in this script")
+            return {'CANCELLED'}
+
+        if self.kind == 'entity':
+            obj = find_entity_object(self.target)
+            if obj is None:
+                self.report({'WARNING'}, f"No entity {self.target} in the open scenes")
+                return {'CANCELLED'}
+            class_path = asl_class_path(obj)
+            ident = obj.get("arx_entity_ident")
+            text_block, path, scope = open_asl_in_editor(context, class_path, ident, 'auto')
+            if text_block is None:
+                self.report({'WARNING'}, f"{self.target} has no script yet ({path})")
+                return {'CANCELLED'}
+            self.report({'INFO'}, f"Opened {scope} script of {self.target}")
+            return {'FINISHED'}
+
+        obj = find_named_object(self.kind, self.target)
+        if obj is None:
+            self.report({'WARNING'}, f"No {self.kind} named {self.target} in the scene")
+            return {'CANCELLED'}
+
+        for other in context.view_layer.objects:
+            other.select_set(False)
+        obj.select_set(True)
+        context.view_layer.objects.active = obj
+        self.report({'INFO'}, f"Selected {self.kind} {obj.name}")
+        return {'FINISHED'}
+
+
+class ARX_PT_asl_references(Panel):
+    bl_idname = "TEXT_PT_arx_asl_references"
+    bl_label = "Arx Script"
+    bl_space_type = 'TEXT_EDITOR'
+    bl_region_type = 'UI'
+    bl_category = "Arx"
+
+    @classmethod
+    def poll(cls, context):
+        return context.space_data and context.space_data.text is not None
+
+    def draw(self, context):
+        layout = self.layout
+        text_block = context.space_data.text
+
+        class_path, ident, scope = parse_asl_text_name(text_block.name)
+        if class_path is None:
+            layout.label(text="Not an Arx script", icon='INFO')
+            return
+
+        box = layout.box()
+        box.label(text=f"{class_path}", icon='TEXT')
+        box.label(text=f"instance {ident:04d}, {scope} script")
+        if scope == 'class':
+            box.label(text="Shared by every entity of this type", icon='ERROR')
+        layout.operator("arx.save_asl", icon='FILE_TICK')
+
+        references = scan_asl_references(text_block.as_string())
+        if not references:
+            layout.label(text="No references found")
+            return
+
+        icons = {'entity': 'OBJECT_DATA', 'zone': 'MESH_CIRCLE',
+                 'path': 'CURVE_PATH', 'label': 'ANCHOR'}
+        column = layout.column(align=True)
+        column.label(text="References:")
+        for kind, target, line in references:
+            row = column.row(align=True)
+            op = row.operator("arx.asl_jump", text=f"{target}  ({kind}, line {line})",
+                              icon=icons.get(kind, 'DOT'))
+            op.kind = kind
+            op.target = target
+            op.line = line
+
 
 class CUSTOM_OT_arx_open_entity_asl(Operator):
     bl_idname = "arx.open_entity_asl"
@@ -3672,22 +6154,42 @@ class ArxEntityPanel(Panel):
         
         entity_ident = obj.get("arx_entity_ident")
         entity_name = obj.get("arx_entity_name", "Unknown")
-        object_id = obj.get("arx_object_id")
-        
+        class_path = asl_class_path(obj)
+
         layout.label(text=f"Entity: {entity_name}")
         layout.label(text=f"ID: {entity_ident:04d}")
-        
-        col = layout.column()
-        col.operator("arx.open_entity_asl", text="Open ASL File", icon='TEXT')
-        col.operator("arx.show_asl_info", text="Show ASL Info", icon='INFO')
-        
-        # Check if there's an ASL text block for this entity
-        text_name = get_asl_text_name(entity_ident, object_id)
-        text_block = bpy.data.texts.get(text_name)
-        if text_block:
-            col.separator()
-            col.operator("arx.save_entity_asl", text="Save ASL File", icon='FILE_TICK')
-            col.operator("arx.reload_entity_asl", text="Reload from File", icon='FILE_REFRESH')
+        if class_path:
+            layout.label(text=class_path, icon='FILE_FOLDER')
+        else:
+            layout.label(text="No class path; reimport the level", icon='ERROR')
+            return
+
+        addon = getAddon(context)
+        reader = ASLReader(addon.sceneManager.dataPath)
+        _ip, _s1, has_instance = reader.resolve(class_path, entity_ident, 'instance')
+        _cp, _s2, has_class = reader.resolve(class_path, entity_ident, 'class')
+
+        # Offered separately on purpose. The class script is shared by every entity
+        # of this type, so editing it when you meant to edit this one entity is a
+        # change to all of them, and that has to be a deliberate choice.
+        column = layout.column(align=True)
+        row = column.row(align=True)
+        op = row.operator("arx.open_asl", icon='TEXT',
+                          text="This Entity" + ("" if has_instance else " (create)"))
+        op.scope = 'instance'
+        op.create = not has_instance
+
+        row = column.row(align=True)
+        row.enabled = has_class
+        op = row.operator("arx.open_asl", icon='COPY_ID',
+                          text="Whole Class" if has_class else "Whole Class (none)")
+        op.scope = 'class'
+        op.create = False
+
+        box = layout.box()
+        box.label(text=f"instance script: {'yes' if has_instance else 'no'}")
+        box.label(text=f"class script: {'yes' if has_class else 'no'}")
+        box.label(text="Save from the Arx tab in the text editor.", icon='INFO')
 
 classes = (
     CUSTOM_OT_arx_area_list_reload,
@@ -3711,7 +6213,26 @@ classes = (
     ArxSetModelOperator,
     ArxSelectAnimationOperator,
     ArxSetAnimationOperator,
+    ArxSelectAnimationLayerOperator,
+    ArxSetAnimationLayerOperator,
+    ArxClearAnimationLayerOperator,
+    ArxTestLayeredAnimationsOperator,
     ArxLightingPanel,
+    ARX_OT_generate_anchors,
+    ARX_OT_portal_init,
+    ARX_PT_portal_properties,
+    ARX_zone_properties,
+    ARX_PT_zone_properties,
+    ARX_face_tool_properties,
+    ARX_OT_assign_face_room,
+    ARX_OT_select_faces_by_room,
+    ARX_OT_report_room_usage,
+    ARX_PT_face_attributes,
+    ARX_OT_open_asl,
+    ARX_OT_save_asl,
+    ARX_OT_asl_jump,
+    ARX_PT_asl_references,
+    ARX_OT_list_animation_sets,
     CUSTOM_OT_arx_regenerate_lighting,
     CUSTOM_OT_arx_preview_lighting,
     CUSTOM_OT_arx_open_entity_asl,
@@ -3733,6 +6254,8 @@ def arx_ui_area_register():
     bpy.types.Scene.arx_animation_test = PointerProperty(type=ArxAnimationTestProperties)
     bpy.types.Scene.arx_model_list_props = PointerProperty(type=ArxModelListProperties)
     bpy.types.Scene.arx_lighting = PointerProperty(type=ARX_lighting_properties)
+    bpy.types.Scene.arx_face_tools = PointerProperty(type=ARX_face_tool_properties)
+    bpy.types.Object.arx_zone = PointerProperty(type=ARX_zone_properties)
     
     # Register text editor header extension
     bpy.types.TEXT_HT_header.append(draw_asl_header_buttons)
@@ -3753,4 +6276,6 @@ def arx_ui_area_unregister():
     del bpy.types.WindowManager.arx_areas_idx
     del bpy.types.Scene.arx_animation_test
     del bpy.types.Scene.arx_model_list_props
+    del bpy.types.Object.arx_zone
+    del bpy.types.Scene.arx_face_tools
     del bpy.types.Scene.arx_lighting

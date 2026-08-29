@@ -269,7 +269,14 @@ class DlfSerializer(object):
         if lsHeader.ident.decode('iso-8859-1') != "DANAE_FILE":
             raise Exception('Invalid ident')
         
-        uncompressed = self.ioLib.unpack(data[pos:])
-        
+        # The header is always plain; the engine only implodes the body from
+        # version 1.44 onwards (DanaeLoadLevel), so earlier files are read as is.
+        if lsHeader.version >= 1.44:
+            uncompressed = self.ioLib.unpack(data[pos:])
+        else:
+            self.log.debug("Version %f predates compression, reading body as is"
+                           % lsHeader.version)
+            uncompressed = data[pos:]
+
         return self.read(uncompressed, lsHeader)
 

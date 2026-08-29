@@ -101,7 +101,14 @@ class LlfSerializer(object):
         f.close()
         self.log.info("Loaded %i bytes from file %s" % (len(compressedData), fileName))
         
-        data = self.ioLib.unpack(compressedData)
+        # The engine only implodes the .llf when the matching .dlf declares version
+        # 1.44 or later, so a hand written level is allowed to store it plainly.
+        # Sniff the header identifier to tell the two apart.
+        if compressedData[4:18] == b'DANAE_LLH_FILE':
+            self.log.debug("Uncompressed llf, reading as is")
+            data = compressedData
+        else:
+            data = self.ioLib.unpack(compressedData)
         
         pos = 0
         

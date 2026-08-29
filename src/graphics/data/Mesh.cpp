@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <exception>
 #include <limits>
 #include <map>
+#include <string>
 #include <unordered_map>
 
 #include <boost/scoped_array.hpp>
@@ -89,6 +90,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/profiler/Profiler.h"
 
+#include "physics/Physics.h"
 #include "scene/Interactive.h"
 #include "scene/Light.h"
 #include "scene/Rooms.h"
@@ -484,8 +486,37 @@ int PointIn2DPolyXZ(const RoomPortal & portal, float x, float z) {
 
 void UpdateIORoom(Entity * io) {
 	
-	if(RoomHandle room = ARX_PORTALS_GetRoomNumForPosition(io->pos - Vec3f(0.f, 60.f, 0.f),
-	                                                       RoomPositionXZOffset)) {
+	Vec3f probe = io->pos - Vec3f(0.f, 60.f, 0.f);
+	RoomHandle room = ARX_PORTALS_GetRoomNumForPosition(probe, RoomPositionXZOffset);
+	
+	// This runs every physics frame for a thrown entity, so only report when the
+	// answer changes: one line per transition rather than a wall of repeats. A
+	// lookup that finds nothing is the interesting case, because the room is then
+	// left at whatever it was and the request is cleared regardless, so the entity
+	// keeps being culled against a room it is no longer in.
+	{
+		static std::map<std::string, int> lastReported;
+		int outcome = room ? int(room.handleData()) : -1;
+		int & previous = lastReported[io->idString()];
+		if(previous != outcome) {
+			previous = outcome;
+			int held = io->room ? int(io->room.handleData()) : -1;
+			long active = (io->obj && io->obj->pbox) ? long(io->obj->pbox->active) : -1;
+			if(!room) {
+				LogWarning << "UpdateIORoom: " << io->idString() << " at ("
+				           << io->pos.x << ", " << io->pos.y << ", " << io->pos.z
+				           << ") probing y=" << probe.y << " found no room, keeping "
+				           << held << ", pbox active " << active;
+			} else {
+				LogInfo << "UpdateIORoom: " << io->idString() << " at ("
+				        << io->pos.x << ", " << io->pos.y << ", " << io->pos.z
+				        << ") room " << held << " -> " << outcome
+				        << ", pbox active " << active;
+			}
+		}
+	}
+	
+	if(room) {
 		io->room = room;
 	}
 	
@@ -768,7 +799,15 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			
 			polygon.transval = ep->transval;
 			polygon.type = PolyType::load(ep->type);
-			
+
+			// Debug: Log first few polygons to see their type
+			static int debugPolyCount = 0;
+			if(debugPolyCount < 10) {
+				LogInfo << "FTS polygon " << debugPolyCount << ": type=" << ep->type
+				        << " POLY_QUAD=" << ((ep->type & POLY_QUAD) ? "yes" : "no");
+				debugPolyCount++;
+			}
+
 			for(size_t kk = 0; kk < 4; kk++) {
 				polygon.v[kk].color = Color::white.toRGBA();
 				polygon.v[kk].w = 1;
@@ -948,8 +987,25 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		LogWarning << "FTS: ignoring " << (end - data) << " bytes at the end of "
 		           << file;
 	}
+	// Debug: Count total polygons loaded
+	size_t totalPolys = 0;
+	size_t totalQuads = 0;
+	size_t totalTris = 0;
+	for(auto tile : g_tiles->tiles()) {
+		for(const EERIEPOLY & poly : tile.polygons()) {
+			totalPolys++;
+			if(poly.type & POLY_QUAD) {
+				totalQuads++;
+			} else {
+				totalTris++;
+			}
+		}
+	}
+	LogInfo << "FTS loaded: " << totalPolys << " polygons ("
+	        << totalQuads << " quads, " << totalTris << " triangles)";
+
 	LogDebug("FTS: done loading");
-	
+
 	return true;
 }
 

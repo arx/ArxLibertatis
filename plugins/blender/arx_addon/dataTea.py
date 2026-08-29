@@ -112,8 +112,123 @@ logger = logging.getLogger(__name__)
 
 TeaFrame = namedtuple("TeaFrame", [
     'duration', 'flags', 'translation', 'rotation', 'groups', 'sampleName',
-    'key_move', 'key_orient', 'key_morph', 'master_key_frame', 'key_frame', 'info_frame'
+    'key_move', 'key_orient', 'key_morph', 'master_key_frame', 'key_frame', 'info_frame',
+    # Position on the animation's own timeline, in 24ths of a second. This is the
+    # only timing the engine uses: Animation.cpp puts keyframe i at num_frame / 24
+    # and never reads time_frame at all.
+    'num_frame'
 ])
+
+#: What the engine needs to play an animation: the keyframes and the length of the
+#: timeline they sit on. anim_time is nb_frames / 24 seconds.
+TeaAnimation = namedtuple("TeaAnimation", ['frames', 'nb_frames', 'nb_groups'])
+
+
+def compute_voidgroups(frames: List[TeaFrame], num_groups: int) -> List[bool]:
+    """
+    Compute void groups matching engine logic (Animation.cpp:431-449).
+
+    A group is void if it has identity transforms across ALL frames:
+    - quaternion == (1, 0, 0, 0) (identity)
+    - translate == (0, 0, 0)
+    - zoom == (0, 0, 0)
+
+    Void groups should NOT be keyframed during import, allowing them to
+    retain their pose from base animations (important for layered animations
+    like combat/casting overlays on walk cycles).
+
+    Args:
+        frames: List of TeaFrame objects from TeaSerializer.read()
+        num_groups: Number of bone groups in the animation
+
+    Returns:
+        List of booleans, True if group is void (has no animation data)
+    """
+    if not frames or num_groups <= 0:
+        return []
+
+    # Start assuming all groups are void
+    voidgroups = [True] * num_groups
+
+    # Tolerance for floating point comparison
+    EPSILON = 0.0001
+
+    for group_idx in range(num_groups):
+        for frame in frames:
+            if group_idx >= len(frame.groups):
+                continue
+
+            group = frame.groups[group_idx]
+
+            # Check if this group has a non-identity transform in this frame
+            # Identity quaternion is (w=1, x=0, y=0, z=0)
+            quat_not_identity = (
+                abs(group.Quaternion.w - 1.0) > EPSILON or
+                abs(group.Quaternion.x) > EPSILON or
+                abs(group.Quaternion.y) > EPSILON or
+                abs(group.Quaternion.z) > EPSILON
+            )
+
+            # Non-zero translation
+            trans_not_zero = (
+                abs(group.translate.x) > EPSILON or
+                abs(group.translate.y) > EPSILON or
+                abs(group.translate.z) > EPSILON
+            )
+
+            # Non-zero zoom/scale
+            zoom_not_zero = (
+                abs(group.zoom.x) > EPSILON or
+                abs(group.zoom.y) > EPSILON or
+                abs(group.zoom.z) > EPSILON
+            )
+
+            if quat_not_identity or trans_not_zero or zoom_not_zero:
+                # This group has animation data - not void
+                voidgroups[group_idx] = False
+                break  # No need to check more frames for this group
+
+    # Log summary
+    animated_count = sum(1 for v in voidgroups if not v)
+    void_count = sum(1 for v in voidgroups if v)
+    logger.debug("Voidgroups computed: %d animated, %d void out of %d total groups",
+                 animated_count, void_count, num_groups)
+
+    return voidgroups
+
+def compute_protected_groups(frames: List[TeaFrame], num_groups: int) -> List[bool]:
+    """Groups deliberately kept out of the void groups, by negated identity.
+
+    -1,0,0,0 is the same rotation as 1,0,0,0 but is not equal to it, so the
+    engine's exact comparison does not see it as identity and the group keeps
+    hold of its bone instead of letting a lower layer drive it. Authors use that
+    on purpose, so it has to survive a round trip rather than being tidied away.
+    """
+    if not frames or num_groups <= 0:
+        return []
+
+    protected = [False] * num_groups
+    for group_idx in range(num_groups):
+        negated = False
+        plain = False
+        for frame in frames:
+            if group_idx >= len(frame.groups):
+                continue
+            quat = frame.groups[group_idx].Quaternion
+            if quat.x or quat.y or quat.z:
+                plain = True
+                break
+            if quat.w == -1.0:
+                negated = True
+            elif quat.w == 1.0:
+                continue
+            else:
+                plain = True
+                break
+        protected[group_idx] = negated and not plain
+
+    return protected
+
 
 class TeaSerializer(object):
     def __init__(self):
@@ -259,7 +374,8 @@ class TeaSerializer(object):
                 key_morph=bool(kf.key_morph),
                 master_key_frame=bool(kf.master_key_frame),
                 key_frame=bool(kf.key_frame),
-                info_frame=kf.info_frame.decode('iso-8859-1') if header.version == 2015 and kf.info_frame else ""
+                info_frame=kf.info_frame.decode('iso-8859-1') if header.version == 2015 and kf.info_frame else "",
+                num_frame=kf.num_frame
             ))
 
         self.log.debug("File loaded with %d frames", len(results))
@@ -293,7 +409,8 @@ class TeaSerializer(object):
                 key_morph=frame.key_morph,
                 master_key_frame=frame.master_key_frame,
                 key_frame=frame.key_frame,
-                info_frame=frame.info_frame
+                info_frame=frame.info_frame,
+                num_frame=frame.num_frame
             ))
         
         # Interpolate missing translations
@@ -353,7 +470,8 @@ class TeaSerializer(object):
                             key_morph=frames[i].key_morph,
                             master_key_frame=frames[i].master_key_frame,
                             key_frame=frames[i].key_frame,
-                            info_frame=frames[i].info_frame
+                            info_frame=frames[i].info_frame,
+                            num_frame=frames[i].num_frame
                         )
                         
                         self.log.debug("Interpolated translation for frame %d: x=%.3f, y=%.3f, z=%.3f", 
@@ -409,7 +527,8 @@ class TeaSerializer(object):
                             key_morph=frames[i].key_morph,
                             master_key_frame=frames[i].master_key_frame,
                             key_frame=frames[i].key_frame,
-                            info_frame=frames[i].info_frame
+                            info_frame=frames[i].info_frame,
+                            num_frame=frames[i].num_frame
                         )
                         
                         self.log.debug("Interpolated rotation for frame %d: w=%.3f, x=%.3f, y=%.3f, z=%.3f", 
@@ -490,7 +609,12 @@ class TeaSerializer(object):
         # This means num_frame should be the frame number at 24fps
         
         # Calculate frame number for 24fps timing (this is what engine uses for timing)
-        num_frame = max(0, int(frame.duration * 24.0))
+        # The frame's own position on the 24 fps timeline. Deriving it from the
+        # duration instead gives every keyframe the same number, which collapses
+        # the animation to a single instant as far as the engine is concerned.
+        num_frame = getattr(frame, 'num_frame', None)
+        if num_frame is None:
+            num_frame = max(0, int(frame.duration * 24.0))
         
         # time_frame is duration in microseconds (this is what we read back as duration)
         time_frame = max(1000, int(frame.duration * 1000000.0))  # Convert seconds to microseconds
@@ -513,9 +637,9 @@ class TeaSerializer(object):
             # Handle info_frame - it can contain binary data
             if frame.info_frame:
                 info_bytes = frame.info_frame.encode('iso-8859-1', errors='replace')[:255]
-                kf.info_frame = info_bytes.ljust(256, b'\\x00')
+                kf.info_frame = info_bytes.ljust(256, b'\x00')
             else:
-                kf.info_frame = b'\\x00' * 256
+                kf.info_frame = b'\x00' * 256
             kf.master_key_frame = 1 if frame.master_key_frame else 0
             kf.key_frame = 1 if frame.key_frame else 0
             kf.key_move = 1 if frame.key_move else 0
