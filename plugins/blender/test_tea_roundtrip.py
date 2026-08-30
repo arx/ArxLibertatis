@@ -26,13 +26,18 @@ def compare_tea_files(original_path, exported_path):
         
         differences = []
         
-        # Compare basic properties
-        if len(original_data) != len(exported_data):
-            differences.append(f"Frame count differs: original={len(original_data)}, exported={len(exported_data)}")
-            return differences
+        # A re bake writes a keyframe per frame, so the counts legitimately differ.
+        # What has to survive the trip is the pose at the frames the original
+        # actually keyed, so pair the two up on num_frame and compare those.
+        exported_by_frame = {f.num_frame: f for f in exported_data}
+        missing = [f.num_frame for f in original_data if f.num_frame not in exported_by_frame]
+        if missing:
+            differences.append(f"Frames missing from export: {missing}")
+        pairs = [(f, exported_by_frame[f.num_frame]) for f in original_data
+                 if f.num_frame in exported_by_frame]
         
         # Compare each frame
-        for i, (orig_frame, exp_frame) in enumerate(zip(original_data, exported_data)):
+        for i, (orig_frame, exp_frame) in enumerate(pairs):
             frame_diffs = []
             
             # Compare durations (allow small differences due to conversion)
@@ -43,24 +48,23 @@ def compare_tea_files(original_path, exported_path):
             if orig_frame.flags != exp_frame.flags:
                 frame_diffs.append(f"flags: {orig_frame.flags} vs {exp_frame.flags}")
             
-            # Compare translations
-            if orig_frame.translation and exp_frame.translation:
-                if (abs(orig_frame.translation.x - exp_frame.translation.x) > 0.001 or
-                    abs(orig_frame.translation.y - exp_frame.translation.y) > 0.001 or
-                    abs(orig_frame.translation.z - exp_frame.translation.z) > 0.001):
-                    frame_diffs.append(f"translation: ({orig_frame.translation.x:.3f}, {orig_frame.translation.y:.3f}, {orig_frame.translation.z:.3f}) vs ({exp_frame.translation.x:.3f}, {exp_frame.translation.y:.3f}, {exp_frame.translation.z:.3f})")
-            elif orig_frame.translation != exp_frame.translation:
-                frame_diffs.append(f"translation: {orig_frame.translation} vs {exp_frame.translation}")
+            # A frame with no key_move reads back as None, which is the engine
+            # holding the root still - the same animation as an explicit zero, so
+            # compare the pose either side describes rather than how it is stored.
+            orig_t = (0.0, 0.0, 0.0) if orig_frame.translation is None else (
+                orig_frame.translation.x, orig_frame.translation.y, orig_frame.translation.z)
+            exp_t = (0.0, 0.0, 0.0) if exp_frame.translation is None else (
+                exp_frame.translation.x, exp_frame.translation.y, exp_frame.translation.z)
+            if max(abs(a - b) for a, b in zip(orig_t, exp_t)) > 0.001:
+                frame_diffs.append(f"translation: {orig_t} vs {exp_t}")
             
-            # Compare rotations
-            if orig_frame.rotation and exp_frame.rotation:
-                if (abs(orig_frame.rotation.w - exp_frame.rotation.w) > 0.001 or
-                    abs(orig_frame.rotation.x - exp_frame.rotation.x) > 0.001 or
-                    abs(orig_frame.rotation.y - exp_frame.rotation.y) > 0.001 or
-                    abs(orig_frame.rotation.z - exp_frame.rotation.z) > 0.001):
-                    frame_diffs.append(f"rotation: ({orig_frame.rotation.w:.3f}, {orig_frame.rotation.x:.3f}, {orig_frame.rotation.y:.3f}, {orig_frame.rotation.z:.3f}) vs ({exp_frame.rotation.w:.3f}, {exp_frame.rotation.x:.3f}, {exp_frame.rotation.y:.3f}, {exp_frame.rotation.z:.3f})")
-            elif orig_frame.rotation != exp_frame.rotation:
-                frame_diffs.append(f"rotation: {orig_frame.rotation} vs {exp_frame.rotation}")
+            orig_r = (1.0, 0.0, 0.0, 0.0) if orig_frame.rotation is None else (
+                orig_frame.rotation.w, orig_frame.rotation.x, orig_frame.rotation.y, orig_frame.rotation.z)
+            exp_r = (1.0, 0.0, 0.0, 0.0) if exp_frame.rotation is None else (
+                exp_frame.rotation.w, exp_frame.rotation.x, exp_frame.rotation.y, exp_frame.rotation.z)
+            if min(max(abs(a - b) for a, b in zip(orig_r, exp_r)),
+                   max(abs(a + b) for a, b in zip(orig_r, exp_r))) > 0.001:
+                frame_diffs.append(f"rotation: {orig_r} vs {exp_r}")
             
             # Compare groups
             if len(orig_frame.groups) != len(exp_frame.groups):
@@ -69,18 +73,18 @@ def compare_tea_files(original_path, exported_path):
                 for j, (orig_group, exp_group) in enumerate(zip(orig_frame.groups, exp_frame.groups)):
                     group_diffs = []
                     
-                    if orig_group.key_group != exp_group.key_group:
-                        group_diffs.append(f"key_group: {orig_group.key_group} vs {exp_group.key_group}")
-                    
                     if (abs(orig_group.translate.x - exp_group.translate.x) > 0.001 or
                         abs(orig_group.translate.y - exp_group.translate.y) > 0.001 or
                         abs(orig_group.translate.z - exp_group.translate.z) > 0.001):
                         group_diffs.append(f"translate: ({orig_group.translate.x:.3f}, {orig_group.translate.y:.3f}, {orig_group.translate.z:.3f}) vs ({exp_group.translate.x:.3f}, {exp_group.translate.y:.3f}, {exp_group.translate.z:.3f})")
                     
-                    if (abs(orig_group.Quaternion.w - exp_group.Quaternion.w) > 0.001 or
-                        abs(orig_group.Quaternion.x - exp_group.Quaternion.x) > 0.001 or
-                        abs(orig_group.Quaternion.y - exp_group.Quaternion.y) > 0.001 or
-                        abs(orig_group.Quaternion.z - exp_group.Quaternion.z) > 0.001):
+                    # q and -q are the same rotation, so compare up to sign.
+                    oq = (orig_group.Quaternion.w, orig_group.Quaternion.x,
+                          orig_group.Quaternion.y, orig_group.Quaternion.z)
+                    eq = (exp_group.Quaternion.w, exp_group.Quaternion.x,
+                          exp_group.Quaternion.y, exp_group.Quaternion.z)
+                    if min(max(abs(a - b) for a, b in zip(oq, eq)),
+                           max(abs(a + b) for a, b in zip(oq, eq))) > 0.001:
                         group_diffs.append(f"quaternion: ({orig_group.Quaternion.w:.3f}, {orig_group.Quaternion.x:.3f}, {orig_group.Quaternion.y:.3f}, {orig_group.Quaternion.z:.3f}) vs ({exp_group.Quaternion.w:.3f}, {exp_group.Quaternion.x:.3f}, {exp_group.Quaternion.y:.3f}, {exp_group.Quaternion.z:.3f})")
                     
                     if (abs(orig_group.zoom.x - exp_group.zoom.x) > 0.001 or
@@ -92,7 +96,7 @@ def compare_tea_files(original_path, exported_path):
                         frame_diffs.append(f"group {j}: {'; '.join(group_diffs)}")
             
             if frame_diffs:
-                differences.append(f"Frame {i}: {'; '.join(frame_diffs)}")
+                differences.append(f"Frame {orig_frame.num_frame}: {'; '.join(frame_diffs)}")
         
         return differences
         

@@ -58,8 +58,10 @@ def arx_transform_to_blender(location, rotation, scale, scale_factor=0.1, flip_w
     transformed_matrix = transform_matrix @ rot_matrix @ transform_matrix.inverted()
     rot = transformed_matrix.to_quaternion()
     
-    # Transform scale
-    scl = Vector((1.0, 1.0, 1.0)) if scale.length == 0 else Vector((scale.x, scale.z, scale.y))
+    # Transform scale. The engine stores zoom as an offset from 1, not a factor:
+    # AnimationRender.cpp does (bone.init.scale + 1) * parent scale, which is why
+    # every stock file leaves it at 0 for a bone that is not scaled.
+    scl = Vector((scale.x, scale.z, scale.y)) + Vector((1.0, 1.0, 1.0))
     
     return loc, rot, scl
 

@@ -444,8 +444,11 @@ def blender_to_arx_transform(location, rotation, scale, scale_factor=0.1, flip_w
     
     # Reverse the rotation transformation
     rot_matrix = rotation.to_matrix().to_4x4()
-    # Inverse transform matrix (transpose of the original)
-    inv_transform_matrix = Matrix([[1, 0, 0, 0], [0, 0, 1, 0], [0, -1, 0, 0], [0, 0, 0, 1]])
+    # The transpose of the matrix arx_transform_to_blender conjugates by. It used
+    # to be that same matrix, which conjugates a second time instead of undoing
+    # the first, so a round trip came back turned 180 degrees about x - every
+    # bone quaternion with its y and z negated.
+    inv_transform_matrix = Matrix([[1, 0, 0, 0], [0, 0, -1, 0], [0, 1, 0, 0], [0, 0, 0, 1]])
     transformed_matrix = inv_transform_matrix @ rot_matrix @ inv_transform_matrix.inverted()
     arx_rot = transformed_matrix.to_quaternion()
     
@@ -458,8 +461,8 @@ def blender_to_arx_transform(location, rotation, scale, scale_factor=0.1, flip_w
         -z if flip_z else z
     ))
     
-    # Reverse the scale transformation 
-    arx_scale = Vector((scale.x, scale.z, scale.y))
+    # Reverse the scale transformation: back to the engine's offset from 1.
+    arx_scale = Vector((scale.x, scale.z, scale.y)) - Vector((1.0, 1.0, 1.0))
     
     return arx_loc, arx_rot, arx_scale
 
@@ -665,13 +668,15 @@ class ArxAnimationManager(object):
             bpy.context.view_layer.objects.active = obj
             
             if frame.translation:
+                # key_move is a position on the animation's own timeline, not a step
+                # from the frame before - the engine reads the last frame of a walk
+                # as the whole distance covered. This scaled it by 0.1 on top of
+                # scale_factor and then accumulated it, shrinking every value
+                # tenfold and then summing the absolute positions on top of
+                # each other.
                 root_location = Vector((frame.translation.x, frame.translation.y, frame.translation.z))
-                root_location *= 0.1
                 root_loc, _, _ = arx_transform_to_blender(root_location, Quaternion((1,0,0,0)), Vector((1,1,1)), scale_factor, flip_w, flip_x, flip_y, flip_z)
-                if frame_index == 0:
-                    obj.location = root_loc
-                else:
-                    obj.location = obj.location + root_loc
+                obj.location = root_loc
                 obj.keyframe_insert(data_path="location")
                 self.log.debug("Frame %d: Applied root translation=%s to mesh", frame_index, root_loc)
 
@@ -876,9 +881,9 @@ class ArxAnimationManager(object):
         step_sound_frames = []
         for frame_idx, frame in enumerate(data):
             if frame.sampleName:
-                sound_effects.append(f"{frame_idx}:{frame.sampleName}")
+                sound_effects.append(f"{frame.num_frame}:{frame.sampleName}")
             if frame.flags == 9:  # Step sound flag
-                step_sound_frames.append(frame_idx)
+                step_sound_frames.append(frame.num_frame)
         
         if sound_effects:
             action["arx_sound_effects"] = ";".join(sound_effects)
@@ -918,6 +923,11 @@ class ArxAnimationManager(object):
         action["arx_frame_durations"] = ",".join(frame_durations)
         action["arx_frame_info_strings"] = ";".join(frame_info_strings)
         action["arx_keyframe_flags"] = ",".join(keyframe_flags)
+
+        # The four lists above are positional, but an export re bakes every frame,
+        # so the index it walks is not the index they were written with. Keep the
+        # timeline positions they belong to and let the export line them up.
+        action["arx_frame_numbers"] = ",".join(str(frame.num_frame) for frame in data)
 
         # Store voidgroups information for layered animation support
         # Animated groups are the ones that have actual animation data
@@ -1026,8 +1036,15 @@ class ArxAnimationManager(object):
             bpy.context.view_layer.objects.active = armature_obj
             bpy.ops.object.mode_set(mode='POSE')
             
+            frame_numbers_str = action.get("arx_frame_numbers", "")
+            frame_numbers = [int(f) for f in frame_numbers_str.split(",") if f.strip()]
+
             for frame_idx, frame_num in enumerate(range(frame_start, frame_end + 1)):
                 bpy.context.scene.frame_set(frame_num)
+
+                # Position on the engine's 24 fps timeline, which is the only
+                # timing it reads back. Blender counts frames from one.
+                num_frame = frame_num - frame_start
                 
                 # Use pre-calculated duration
                 duration = frame_durations[frame_idx]
@@ -1043,29 +1060,11 @@ class ArxAnimationManager(object):
                 # Extract bone transformations
                 groups = self._extract_bone_groups(armature_obj, bone_map, scale_factor)
                 
-                # Detect if this frame has root movement
-                has_root_movement = (root_translation is not None or root_rotation is not None)
-                
-                # Detect animation type and determine if it should have step sounds
-                anim_number = action.get("arx_animation_number", detect_animation_type_from_action(action))
-                is_looping = is_looping_animation(anim_number)
-                
-                has_bone_movement = any(
-                    i in bone_map and (
-                        abs(bone_map[i].location.length) > 0.001 or
-                        abs(bone_map[i].rotation_quaternion.angle) > 0.001
-                    ) for i in range(len(groups))
-                )
-                
-                # Set step sound flag for movement frames in walking/running animations
-                is_walk_run_anim = anim_number in {
-                    AnimationNumber.ANIM_WALK, AnimationNumber.ANIM_WALK2, AnimationNumber.ANIM_WALK3,
-                    AnimationNumber.ANIM_RUN, AnimationNumber.ANIM_RUN2, AnimationNumber.ANIM_RUN3,
-                    AnimationNumber.ANIM_WALK_BACKWARD, AnimationNumber.ANIM_RUN_BACKWARD,
-                    AnimationNumber.ANIM_CROUCH_WALK, AnimationNumber.ANIM_CROUCH_WALK_BACKWARD,
-                    AnimationNumber.ANIM_FIGHT_WALK_FORWARD, AnimationNumber.ANIM_FIGHT_WALK_BACKWARD
-                }
-                step_sound_flag = 9 if (is_walk_run_anim and has_bone_movement) else -1
+                # -1 - no footstep - unless the animation says otherwise below.
+                # Deciding it from "this is a walk and some bone moved" was true of
+                # nearly every frame, so a walk came out with a footstep on most of
+                # them instead of the two it actually has.
+                step_sound_flag = -1
                 
                 # Extract sound effects from action custom properties
                 sample_name = None
@@ -1075,7 +1074,7 @@ class ArxAnimationManager(object):
                     for effect in sound_effects.split(";"):
                         if ":" in effect:
                             effect_frame_str, effect_sample = effect.split(":", 1)
-                            if int(effect_frame_str) == (frame_num - frame_start):
+                            if int(effect_frame_str) == num_frame:
                                 sample_name = effect_sample
                                 break
                 
@@ -1084,20 +1083,22 @@ class ArxAnimationManager(object):
                 is_step_sound_frame = False
                 if step_sound_frames_str:
                     step_sound_frames = [int(f) for f in step_sound_frames_str.split(",") if f.strip()]
-                    is_step_sound_frame = (frame_num - frame_start) in step_sound_frames
+                    is_step_sound_frame = num_frame in step_sound_frames
                 
                 # Override step sound flag if explicitly set
                 if is_step_sound_frame:
                     step_sound_flag = 9
                 
-                # Extract comprehensive frame metadata from action
-                frame_relative_idx = frame_idx  # Use frame index, not frame number
+                # Extract comprehensive frame metadata from action. The stored
+                # lists are indexed by the keyframe they came from, so a baked
+                # frame that was not one of those keyframes keeps the defaults.
+                frame_relative_idx = frame_numbers.index(num_frame) if num_frame in frame_numbers else None
                 
                 # Extract frame flags
                 frame_flags_str = action.get("arx_frame_flags", "")
                 if frame_flags_str:
                     frame_flags_list = frame_flags_str.split(",")
-                    if frame_relative_idx < len(frame_flags_list):
+                    if frame_relative_idx is not None and frame_relative_idx < len(frame_flags_list):
                         try:
                             step_sound_flag = int(frame_flags_list[frame_relative_idx])
                         except ValueError:
@@ -1107,7 +1108,7 @@ class ArxAnimationManager(object):
                 frame_durations_str = action.get("arx_frame_durations", "")
                 if frame_durations_str:
                     frame_durations_list = frame_durations_str.split(",")
-                    if frame_relative_idx < len(frame_durations_list):
+                    if frame_relative_idx is not None and frame_relative_idx < len(frame_durations_list):
                         try:
                             duration = float(frame_durations_list[frame_relative_idx])
                         except ValueError:
@@ -1118,7 +1119,7 @@ class ArxAnimationManager(object):
                 frame_info_strings_str = action.get("arx_frame_info_strings", "")
                 if frame_info_strings_str:
                     frame_info_list = frame_info_strings_str.split(";")
-                    if frame_relative_idx < len(frame_info_list):
+                    if frame_relative_idx is not None and frame_relative_idx < len(frame_info_list):
                         info_frame = frame_info_list[frame_relative_idx]
                 
                 # Extract keyframe flags
@@ -1131,11 +1132,15 @@ class ArxAnimationManager(object):
                 keyframe_flags_str = action.get("arx_keyframe_flags", "")
                 if keyframe_flags_str:
                     keyframe_flags_list = keyframe_flags_str.split(",")
-                    if frame_relative_idx < len(keyframe_flags_list):
+                    if frame_relative_idx is not None and frame_relative_idx < len(keyframe_flags_list):
                         try:
                             flags = int(keyframe_flags_list[frame_relative_idx])
-                            key_move = bool(flags & 1)
-                            key_orient = bool(flags & 2)
+                            # key_move and key_orient are deliberately not taken
+                            # from here. An export bakes every frame, so it has a
+                            # sampled root pose for each one and writes it; leaving
+                            # the gaps the original had would hand them back to the
+                            # engine's own fill in, which interpolates on its own
+                            # terms and not on the curve that was authored.
                             key_morph = bool(flags & 4)
                             master_key_frame = bool(flags & 8)
                             key_frame = bool(flags & 16)
@@ -1156,9 +1161,7 @@ class ArxAnimationManager(object):
                     master_key_frame=master_key_frame,
                     key_frame=key_frame,
                     info_frame=info_frame,
-                    # Position on the engine's 24 fps timeline, which is the only
-                    # timing it reads back. Blender counts frames from one.
-                    num_frame=frame_num - frame_start
+                    num_frame=num_frame
                 )
                 
                 frames.append(frame)

@@ -535,17 +535,21 @@ class TeaSerializer(object):
                                      i, interpolated_rotation.w, interpolated_rotation.x, interpolated_rotation.y, interpolated_rotation.z)
     
     def _get_time_between_keyframes(self, frames, start_idx, end_idx):
-        """
-        Calculate time between two keyframes based on frame durations.
+        """GetTimeBetweenKeyFrames from Animation.cpp, quirk included.
+
+        It sums frames[kk].time over kk in (start, end], and that time is the
+        keyframe's position on the 24 fps timeline rather than a step from the
+        frame before - so what comes out is a sum of absolute positions. Odd, but
+        these are the weights the engine actually plays the animation with, and
+        summing the duration field instead (which the shipped files leave at zero,
+        so it fell back to a flat frame each) gave a different curve from the one
+        the game shows.
         """
         if start_idx >= end_idx:
             return 0.0
-            
-        total_time = 0.0
-        for i in range(start_idx, end_idx):
-            total_time += frames[i].duration
-            
-        return total_time
+
+        return sum(frames[i].num_frame / 24.0
+                   for i in range(start_idx + 1, end_idx + 1))
 
     def write(self, frames: List[TeaFrame], fileName: str, anim_name: str = "", version: int = 2015):
         """
@@ -670,21 +674,19 @@ class TeaSerializer(object):
         for group in frame.groups:
             f.write(group)
             
-        # Write sample data
-        num_sample = c_int32(-1)  # No sample
-        if frame.sampleName:
-            # TODO: Implement sample writing if needed
-            pass
-            
-        f.write(num_sample)
+        # Write sample data. -1 means no sample; anything else means a THEA_SAMPLE
+        # follows, and the count that follows it is how many bytes of embedded
+        # audio to skip. This used to write -1 and then the record anyway, which
+        # left 260 bytes nothing would account for and desynced every keyframe
+        # after it. The engine loads the sample by name, so none of the audio has
+        # to be carried in the file - only the name and a zero length.
+        f.write(c_int32(-1 if not frame.sampleName else 1))
         
-        # Write sample if present
         if frame.sampleName:
             sample = THEA_SAMPLE()
             sample.sample_name = frame.sampleName.encode('iso-8859-1')[:256].ljust(256, b'\x00')
-            sample.sample_size = 0  # No sample data
+            sample.sample_size = 0  # No embedded audio, loaded by name
             f.write(sample)
             
-        # Write num_sfx (always 0)
-        num_sfx = c_int32(0)
-        f.write(num_sfx)
+        # num_sfx, which every stock file leaves at -1
+        f.write(c_int32(-1))

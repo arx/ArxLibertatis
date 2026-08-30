@@ -968,16 +968,18 @@ class FtsSerializer(object):
                 room_data_struct.nb_polys = 0
                 data.extend(bytes(room_data_struct))
             
-            # Write simple distance matrix (size is (nb_rooms + 1) x (nb_rooms + 1))
+            # Write an empty distance matrix (size is (nb_rooms + 1) x (nb_rooms + 1)).
+            # Every entry stays at zero, which SP_GetRoomDist reads as "no route
+            # recorded" and answers with straight line distance - the same thing the
+            # engine does for a level with no matrix at all. 999999 used to go here
+            # instead, and since the waypoints beside it were left on the world
+            # origin the engine returned roughly a million for any cross room pair.
+            # PrepareIOTreatZone compares that against a limit of a few thousand, so
+            # every entity the player was not sharing a room with dropped out of the
+            # treat zone: not simulated, and not drawn.
             distance_matrix_size = nb_rooms + 1
-            for i in range(distance_matrix_size):
-                for j in range(distance_matrix_size):
-                    dist_data = ROOM_DIST_DATA_SAVE()
-                    if i == j:
-                        dist_data.distance = 0.0
-                    else:
-                        dist_data.distance = 999999.0
-                    data.extend(bytes(dist_data))
+            for _ in range(distance_matrix_size * distance_matrix_size):
+                data.extend(bytes(ROOM_DIST_DATA_SAVE()))
         
         return bytes(data)
     

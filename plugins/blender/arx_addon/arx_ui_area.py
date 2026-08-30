@@ -506,7 +506,46 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
             data.room_2 = self._map_room_id_to_index(data.room_2)
             portals.append(bytes(data))
 
-        return fts_data._replace(portals=portals)
+        # So do the room structures and the distance matrix, which are indexed by
+        # room id as well. Leaving them behind is what made a renumbered level
+        # cull entities out of existence: each room kept the portal list of
+        # whichever room used to hold that index, so rooms that replaced an empty
+        # one ended up with no portals at all. A room portal traversal can never
+        # open has an empty frustum list, and ARX_SCENE_PORTAL_ClipIO answers that
+        # by hiding everything standing in it.
+        #
+        # The portal index lists themselves need no adjustment: they point into
+        # the portal array, which keeps its order.
+        room_data = self._remapRoomData(fts_data.room_data, len(used) + 1)
+
+        return fts_data._replace(portals=portals, room_data=room_data)
+
+    def _remapRoomData(self, room_data, size):
+        """Move preserved room structures and room distances onto the new ids."""
+        from .dataFts import ROOM_DIST_DATA_SAVE
+
+        if not room_data:
+            return room_data
+        old_rooms, old_distances = room_data
+        pairs = [(old, new) for old, new in self._room_map.items() if new < size]
+
+        new_rooms = [({'nb_portals': 0, 'nb_polys': 0, 'padd': [0] * 6}, [], [])
+                     for _ in range(size)]
+        for old, new in pairs:
+            if old < len(old_rooms):
+                new_rooms[new] = old_rooms[old]
+
+        empty = bytes(ROOM_DIST_DATA_SAVE())
+        new_distances = [[empty] * size for _ in range(size)]
+        for old_i, new_i in pairs:
+            if old_i >= len(old_distances):
+                continue
+            row = old_distances[old_i]
+            for old_j, new_j in pairs:
+                if old_j < len(row):
+                    new_distances[new_i][new_j] = row[old_j]
+
+        return (new_rooms, new_distances)
     
     def exportArea(self, context, scene, area_id, export_fts=True, export_llf=True, export_dlf=True):
         """Export area data based on flags"""
@@ -1490,17 +1529,16 @@ class CUSTOM_OT_arx_area_list_export_all(Operator, ArxAreaExportHelper):
                         # Copy existing distance data
                         row.append(room_distances[i][j])
                     else:
-                        # Create default distance data for new rooms
+                        # No route known for a room that was added here. Leave the
+                        # whole entry at zero: the writer fills those in from the
+                        # portal graph, and if it cannot, the engine reads zero as
+                        # "no route" and falls back to straight line distance. A
+                        # large distance with the waypoints on the world origin
+                        # makes SP_GetRoomDist return about a million instead, which
+                        # puts every entity in that room outside the treat zone -
+                        # frozen and invisible until the player walks in.
                         from .dataFts import ROOM_DIST_DATA_SAVE
-                        dist_data = ROOM_DIST_DATA_SAVE()
-                        if i == j:
-                            dist_data.distance = 0.0  # Same room
-                        else:
-                            dist_data.distance = 999999.0  # Different rooms, max distance
-                        # Set start/end positions to zero for new rooms
-                        dist_data.startpos.x = dist_data.startpos.y = dist_data.startpos.z = 0.0
-                        dist_data.endpos.x = dist_data.endpos.y = dist_data.endpos.z = 0.0
-                        row.append(bytes(dist_data))
+                        row.append(bytes(ROOM_DIST_DATA_SAVE()))
                 new_room_distances.append(row)
             room_distances = new_room_distances
         
