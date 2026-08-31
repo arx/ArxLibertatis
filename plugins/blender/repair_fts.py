@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Arx Libertatis. If not, see <http://www.gnu.org/licenses/>.
 
-"""Check, and optionally repair, the room section of a fast.fts.
+"""Check, and optionally repair, a fast.fts that has been round tripped.
 
 Three things in an FTS are indexed by room id: the polygons, the portals, and the
 per room structures that list which portals and polygons a room owns. An exporter
@@ -29,7 +29,12 @@ Both facts are recoverable from the portals themselves, which is what --fix does
 a room's portals are exactly the portals naming it, and the distance matrix is the
 shortest route through that portal graph.
 
-  repair_fts_rooms.py <fast.fts> [--fix]
+It also checks the anchors. An anchor's height is a cylinder height and so is
+negative - the stock levels use -165. An exporter that lost the value and wrote a
+positive default makes every anchor fail PathFinder's `height > m_height` test
+against any creature, which leaves the level with a navmesh nothing can use.
+
+  repair_fts.py <fast.fts> [--fix]
 
 --fix writes the payload uncompressed, which FastSceneLoad accepts: it only calls
 blast when the header's uncompressedsize is set. The original is kept as .bak.
@@ -76,8 +81,10 @@ def parse(raw):
         pos += sizeof(F.FAST_SCENE_INFO)
         pos += sizeof(F.FAST_EERIEPOLY) * info.nbpoly
         pos += sizeof(ctypes.c_int32) * info.nbianchors
+    anchors = []
     for _ in range(head.nb_anchors):
         anchor = F.FAST_ANCHOR_DATA.from_buffer_copy(raw, pos)
+        anchors.append((pos, anchor))
         pos += sizeof(F.FAST_ANCHOR_DATA)
         pos += sizeof(ctypes.c_int32) * anchor.nb_linked
 
@@ -100,7 +107,7 @@ def parse(raw):
     pos += sizeof(F.ROOM_DIST_DATA_SAVE) * (head.nb_rooms + 1) ** 2
     if pos != len(raw):
         print(f"  warning: {len(raw) - pos} bytes left over after the room data")
-    return head, portals, rooms_start, rooms
+    return head, portals, anchors, rooms_start, rooms
 
 
 def check(head, portals, rooms):
@@ -148,6 +155,23 @@ def rebuild(head, portals, rooms):
     return bytes(out)
 
 
+#: What DANAE's own anchors use, and what EERIE_COLLISION_Cylinder_Create clamps a
+#: human sized entity to. Anything shallower admits nobody.
+ANCHOR_HEIGHT = -165.0
+
+
+def fix_anchors(raw, anchors):
+    """Give back any anchor whose height is not a cylinder height."""
+    broken = [(offset, anchor) for offset, anchor in anchors if anchor.height >= 0.0]
+    if not broken:
+        return raw, 0
+    patched = bytearray(raw)
+    field = F.FAST_ANCHOR_DATA.height.offset
+    for offset, _anchor in broken:
+        patched[offset + field:offset + field + 4] = bytes(ctypes.c_float(ANCHOR_HEIGHT))
+    return bytes(patched), len(broken)
+
+
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith('--')]
     fix = '--fix' in sys.argv[1:]
@@ -157,9 +181,13 @@ def main():
     path = args[0]
 
     prefix, header, raw = read_container(path)
-    head, portals, rooms_start, rooms = parse(raw)
+    head, portals, anchors, rooms_start, rooms = parse(raw)
     print(f"{path}: {head.nb_rooms + 1} rooms, {len(portals)} portals, "
           f"{head.nb_polys} polygons")
+
+    bad_anchors = [a for _, a in anchors if a.height >= 0.0]
+    print(f"  anchors with a non negative height (unusable by any creature): "
+          f"{len(bad_anchors)} of {len(anchors)}")
 
     stale, stranded = check(head, portals, rooms)
     print(f"  room portal lists naming a portal that does not touch the room: {len(stale)}")
@@ -168,15 +196,24 @@ def main():
     print(f"  rooms with geometry but no portals (entities in them are never drawn): "
           f"{stranded if stranded else 'none'}")
 
-    if not stale and not stranded:
-        print("  room section is consistent")
+    if not stale and not stranded and not bad_anchors:
+        print("  nothing to repair")
         return 0
     if not fix:
-        print("  re-run with --fix to rebuild the room section from the portals")
+        print("  re-run with --fix to repair")
         return 1
 
-    repaired = raw[:rooms_start] + rebuild(head, portals, rooms)
-    shutil.copy2(path, path + '.bak')
+    raw, fixed = fix_anchors(raw, anchors)
+    if fixed:
+        print(f"  reset {fixed} anchor heights to {ANCHOR_HEIGHT}")
+    repaired = raw[:rooms_start]
+    if stale or stranded:
+        repaired += rebuild(head, portals, rooms)
+    else:
+        repaired += raw[rooms_start:]
+    backup = path + '.bak'
+    if not os.path.exists(backup):  # never clobber an earlier original
+        shutil.copy2(path, backup)
     header.uncompressedsize = 0  # FastSceneLoad only calls blast when this is set
     with open(path, 'wb') as out:
         out.write(bytes(header))
