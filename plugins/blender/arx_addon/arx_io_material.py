@@ -26,12 +26,19 @@ log = logging.getLogger('Materials')
 
 def arx_create_image(rootDirectory, relativePath):
     extensions = [".png", ".jpg", ".jpeg", ".bmp", ".tga"]
+    fullPath = None
     for ext in extensions:
-        fullPath = os.path.join(rootDirectory, relativePath) + ext
-        if os.path.exists(fullPath):
+        testPath = os.path.join(rootDirectory, relativePath) + ext
+        #print(f"DEBUG: Testing texture path: {testPath}")
+        if os.path.exists(testPath):
+            fullPath = testPath
+            #print(f"DEBUG: Found texture at: {fullPath}")
             break
 
-    if not os.path.exists(fullPath):
+    if not fullPath or not os.path.exists(fullPath):
+        print(f"ERROR: Texture not found: {relativePath}")
+        print(f"DEBUG: Root directory: {rootDirectory}")
+        print(f"DEBUG: Relative path: {relativePath}")
         log.warning("Texture not found: %s" % relativePath)
         return None
 
@@ -138,8 +145,10 @@ def arx_get_material_node_group():
 
     group = bpy.data.node_groups.new(arx_material_node_group_name, 'ShaderNodeTree')
 
-    group.outputs.new('NodeSocketShader', 'Shader')
-    group.inputs.new('NodeSocketColor', 'Color')
+    # Blender 4.0+ uses interface instead of inputs/outputs
+    # Create input and output sockets first
+    group.interface.new_socket('Color', in_out='INPUT', socket_type='NodeSocketColor')
+    group.interface.new_socket('Shader', in_out='OUTPUT', socket_type='NodeSocketShader')
 
     n_out = group.nodes.new('NodeGroupOutput')
     n_out.name = 'n_out'
@@ -181,6 +190,7 @@ def arx_get_material_node_group():
     n_in.name = 'n_in'
     n_in.location = Vector((-1300.0, 0.0))
 
+    # Create links between nodes
     group.links.new(n_mix.outputs['Shader'], n_out.inputs['Shader'])
 
     group.links.new(n_math1.outputs['Value'], n_mix.inputs['Fac'])

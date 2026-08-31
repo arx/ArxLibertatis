@@ -1,0 +1,19 @@
+import bpy
+import bmesh
+
+obj = bpy.context.edit_object
+if obj and obj.type == 'MESH':
+    bm = bmesh.from_edit_mesh(obj.data)
+    uv_layer = bm.loops.layers.uv.active
+    if not uv_layer:
+        print("No active UV layer found!")
+    else:
+        for face in bm.faces:
+            if face.select and len(face.verts) == 4: 
+                face.loops[0][uv_layer].uv = (0, 0)
+                face.loops[1][uv_layer].uv = (1, 0)
+                face.loops[2][uv_layer].uv = (1, 1)
+                face.loops[3][uv_layer].uv = (0, 1)
+        bmesh.update_edit_mesh(obj.data)
+else:
+    print("Please select a mesh object in edit mode.")

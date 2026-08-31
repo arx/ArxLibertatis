@@ -93,14 +93,25 @@ void TileData::computeIntersectingPolygons() {
 }
 
 size_t TileData::countVertices() {
-	
+
 	size_t count = 0;
-	
+	size_t quadCount = 0;
+	size_t triCount = 0;
+
 	for(auto tile : tiles()) {
 		for(const EERIEPOLY & ep : tile.polygons()) {
-			count += (ep.type & POLY_QUAD) ? 4 : 3;
+			if(ep.type & POLY_QUAD) {
+				count += 4;
+				quadCount++;
+			} else {
+				count += 3;
+				triCount++;
+			}
 		}
 	}
-	
+
+	// Debug output disabled here - will log from LoadLevel.cpp instead
+	// to avoid include issues
+
 	return count;
 }

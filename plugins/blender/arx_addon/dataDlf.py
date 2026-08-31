@@ -171,9 +171,15 @@ from typing import List, Tuple
 
 @dataclass
 class DlfData:
+    header:   DANAE_LS_HEADER
+    scene:    DANAE_LS_SCENE
     entities: List[DANAE_LS_INTER]
+    lights:   List[DANAE_LS_LIGHT]
     fogs:     List[DANAE_LS_FOG]
     paths:    List[Tuple[DANAE_LS_PATH, List[DANAE_LS_PATHWAYS]]]
+    zones:    List[Tuple[DANAE_LS_PATH, List[DANAE_LS_PATHWAYS]]]  # Zones are paths with height != 0
+    nodes_data: bytes  # Raw nodes data (skipped for now)
+    lighting_data: bytes  # Raw lighting data
 
 class DlfSerializer(object):
     def __init__(self, ioLib):
@@ -192,24 +198,33 @@ class DlfSerializer(object):
         entities = EntitiesType.from_buffer_copy(data, pos)
         pos += sizeof(EntitiesType)
 
+        lighting_data = b""
         if lsHeader.lighting != 0:
             lightingHeader = DANAE_LS_LIGHTINGHEADER.from_buffer_copy(data, pos)
-            pos += sizeof(DANAE_LS_LIGHTINGHEADER)
-            
-            pos += lightingHeader.nb_values * 4 # Skip the data
+            lighting_header_size = sizeof(DANAE_LS_LIGHTINGHEADER)
+            lighting_values_size = lightingHeader.nb_values * 4
+            # Store the complete lighting data (header + values)
+            lighting_data = data[pos:pos + lighting_header_size + lighting_values_size]
+            pos += lighting_header_size + lighting_values_size
         
-        # Skip lights
-        pos += sizeof(DANAE_LS_LIGHT) * lsHeader.nb_lights
+        # Read lights
+        LightsType = DANAE_LS_LIGHT * lsHeader.nb_lights
+        lights = LightsType.from_buffer_copy(data, pos)
+        pos += sizeof(LightsType)
 
         FogsType = DANAE_LS_FOG * lsHeader.nb_fogs
         fogs = FogsType.from_buffer_copy(data, pos)
         pos += sizeof(FogsType)
 
-        # Skip nodes
+        # Store nodes data as raw bytes for now (zones are defined elsewhere)
+        nodes_data = b""
         if lsHeader.version >= 1.001:
-            pos += lsHeader.nb_nodes * (204 + lsHeader.nb_nodeslinks * 64)
+            nodes_size = lsHeader.nb_nodes * (204 + lsHeader.nb_nodeslinks * 64)
+            nodes_data = data[pos:pos + nodes_size]
+            pos += nodes_size
 
         paths = []
+        zones = []
         for i in range(lsHeader.nb_paths):
             path = DANAE_LS_PATH.from_buffer_copy(data, pos)
             pos += sizeof(DANAE_LS_PATH)
@@ -220,12 +235,22 @@ class DlfSerializer(object):
                 pos += sizeof(DANAE_LS_PATHWAYS)
                 segments.append(segment)
 
-            paths.append((path, segments))
+            # Zones are paths with height != 0 (from engine source)
+            if path.height != 0:
+                zones.append((path, segments))
+            else:
+                paths.append((path, segments))
 
         return DlfData(
+            header=lsHeader,
+            scene=scnHeader,
             entities=entities,
+            lights=lights,
             fogs=fogs,
-            paths=paths
+            paths=paths,
+            zones=zones,
+            nodes_data=nodes_data,
+            lighting_data=lighting_data
         )
         
     
@@ -244,7 +269,14 @@ class DlfSerializer(object):
         if lsHeader.ident.decode('iso-8859-1') != "DANAE_FILE":
             raise Exception('Invalid ident')
         
-        uncompressed = self.ioLib.unpack(data[pos:])
-        
+        # The header is always plain; the engine only implodes the body from
+        # version 1.44 onwards (DanaeLoadLevel), so earlier files are read as is.
+        if lsHeader.version >= 1.44:
+            uncompressed = self.ioLib.unpack(data[pos:])
+        else:
+            self.log.debug("Version %f predates compression, reading body as is"
+                           % lsHeader.version)
+            uncompressed = data[pos:]
+
         return self.read(uncompressed, lsHeader)
 

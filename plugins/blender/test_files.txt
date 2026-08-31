@@ -1,0 +1,2 @@
+Import         	Export         	Compare        	File           
+Ok             	Ok             	Failed 0000    	game/graph/obj3d/interactive/fix_inter/akbaa_puzzle/akbaa_puzzle.ftl

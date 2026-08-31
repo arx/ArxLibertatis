@@ -1,4 +1,4 @@
-# Copyright 2014-2020 Arx Libertatis Team (see the AUTHORS file)
+# Copyright 2015-2020 Arx Libertatis Team (see the AUTHORS file)
 #
 # This file is part of Arx Libertatis.
 #
@@ -16,40 +16,23 @@
 # along with Arx Libertatis. If not, see <http://www.gnu.org/licenses/>.
 
 bl_info = {
-    "name": "Arx Libertatis Addon",
+    "name": "Arx Libertatis Tools",
     "author": "Arx Libertatis Team",
-    "version": (0, 0, 2),
-    "blender": (2, 80, 0),
-    "location": "",
-    "description": "Addon for managing Arx Libertatis assets",
-    "warning": "This is alpha software, read the documentation, keep your original blend files!",
-    "wiki_url": "https://wiki.arx-libertatis.org/Blender",
-    "tracker_url": "https://bugs.arx-libertatis.org/arx/issues/new",
+    "version": (1, 0, 0),
+    "blender": (4, 4, 0),
+    "location": "File > Import-Export, Properties > Scene",
+    "description": "Import and export Arx Fatalis models and animations",
     "category": "Import-Export",
-    "support": "COMMUNITY",
 }
 
-import imp
+import bpy
+from . import main
 
-try:
-    imp.find_module('bpy')
-    blenderFound = True
-except ImportError:
-    blenderFound = False
+def register():
+    main.register()
 
-print("Running inside blender: " + str(blenderFound))
+def unregister():
+    main.unregister()
 
-if blenderFound:
-    import importlib
-    if "main" in locals():
-        importlib.reload(main)
-
-    from .main import register
-
-    def register():
-        main.register();
-
-    def unregister():
-        main.unregister();
-
-
+if __name__ == "__main__":
+    register()

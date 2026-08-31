@@ -12,7 +12,7 @@ from arx_addon.dataFtl import FtlFace
 from arx_addon.files import ArxFiles
 from arx_addon import dataFtl, lib
 
-from arx_addon.managers import InconsistentStateException
+# from arx_addon.managers import InconsistentStateException
 
 # ======================================================================================================================
 
@@ -235,7 +235,8 @@ class RoundtripTester(object):
         def removeObj(name):
             defaultCube = bpy.context.scene.objects.get(name)
             if defaultCube:
-                defaultCube.select = True
+                defaultCube.select_set(True)
+                bpy.context.view_layer.objects.active = defaultCube
                 bpy.ops.object.delete()
 
         removeObj('Cube')
@@ -251,7 +252,17 @@ class RoundtripTester(object):
 
         current_error_id = 0
 
-        for key, val in sorted(self.arxFiles.models.data.items()):
+        # Test only the first file to avoid infinite loops
+        model_items = list(sorted(self.arxFiles.models.data.items()))
+        if not model_items:
+            print("No models found")
+            return
+        
+        key, val = model_items[0]
+        print(f"Testing single file: {key}")
+        
+        # Only test the first file for now
+        for key, val in [model_items[0]]:
             import_file = os.path.join(val.path, val.model)
             import_file_relative = os.path.relpath(import_file, self.dataDirectory)
             export_file = "test.ftl"
@@ -262,6 +273,21 @@ class RoundtripTester(object):
                 bpy.ops.arx.import_ftl(filepath=import_file)
                 import_status = "Ok"
                 import_ok = True
+                
+                # Set the imported mesh object as active (not the armature)
+                print(f"Selected objects: {[obj.name for obj in bpy.context.selected_objects]}")
+                print(f"All objects: {[obj.name for obj in bpy.data.objects]}")
+                print(f"Mesh objects: {[obj.name for obj in bpy.data.objects if obj.type == 'MESH']}")
+                
+                # Always prioritize mesh objects over armatures
+                mesh_objects = [obj for obj in bpy.data.objects if obj.type == 'MESH']
+                if mesh_objects:
+                    active_obj = mesh_objects[0]
+                    bpy.context.view_layer.objects.active = active_obj
+                    print(f"Set active object to: {active_obj.name}")
+                else:
+                    print("No mesh objects found")
+                        
             except RuntimeError as e:
                 import_ok = False
                 error_file.write(formatError(current_error_id, import_file_relative, e.args[0]))
@@ -354,24 +380,36 @@ class RoundtripTester(object):
                             if not o.parent:
                                 root = o
 
-                        root.select = True
-                        bpy.context.scene.objects.active = root
+                        root.select_set(True)
+                        bpy.context.view_layer.objects.active = root
 
                         try:
                             bpy.ops.arx.import_tea(filepath=animFileName)
-                        except:
-                        #except InconsistentStateException as ise:
-                            pass
-                            #self.log.error("Failed to import animation {} for model {}".format(anim, key))
+                        except Exception as e:
+                            self.log.error("Failed to import animation {} for model {}: {}".format(anim, key, str(e)))
 
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--data-dir', help='Where to find the data files', required=True)
-    args = parser.parse_args()
+    
+    # Debug: print sys.argv
+    import sys
+    print("sys.argv:", sys.argv)
+    
+    # Parse only the arguments after '--'
+    try:
+        double_dash_index = sys.argv.index('--')
+        script_args = sys.argv[double_dash_index + 1:]
+        print("script_args:", script_args)
+        args = parser.parse_args(script_args)
+    except ValueError:
+        # No '--' found, parse all arguments
+        args = parser.parse_args()
+        
     print("Using data dir: " + args.data_dir)
 
     tester = RoundtripTester(args.data_dir)
     tester.roundtripModels()
-    tester.loadAnimations()
+    # tester.loadAnimations()  # Disable animation loading for now

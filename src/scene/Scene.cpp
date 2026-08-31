@@ -50,6 +50,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <array>
 #include <memory>
+#include <sstream>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -1572,6 +1574,30 @@ void ARX_SCENE_Update() {
 		}
 	} else if(RoomHandle room = ARX_PORTALS_GetRoomNumForPosition(camPos, RoomPositionForCamera)) {
 		ARX_PORTALS_Frustrum_ComputeRoom(room, g_screenFrustum, camPos, camDepth);
+	}
+	
+	// Which rooms did portal traversal actually open this frame, and with how many
+	// frustums each. An entity sitting in a room that never appears here is culled
+	// outright by isOccludedByPortals, which bails as soon as the room's frustum
+	// list is empty. Reported only when the set changes, so moving the camera about
+	// produces one line per transition.
+	{
+		static std::string lastReported;
+		std::ostringstream summary;
+		if(RoomHandle here = ARX_PORTALS_GetRoomNumForPosition(camPos, RoomPositionForCamera)) {
+			summary << "camera in room " << here.handleData();
+		} else {
+			summary << "camera in no room";
+		}
+		summary << ", visible:";
+		for(RoomHandle room : g_rooms->visibleRooms) {
+			summary << ' ' << room.handleData()
+			        << '(' << g_rooms->frustums[room].size() << ')';
+		}
+		if(summary.str() != lastReported) {
+			lastReported = summary.str();
+			LogInfo << "Rooms: " << lastReported;
+		}
 	}
 	
 	for(RoomHandle room : g_rooms->visibleRooms) {

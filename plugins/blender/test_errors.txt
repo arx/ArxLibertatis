@@ -1,0 +1,15 @@
+ErrorId: 0	File: game/graph/obj3d/interactive/fix_inter/akbaa_puzzle/akbaa_puzzle.ftl
+
+╰ root
+  ├ Vertex array
+  │ ╰ Index: 0
+  │   ╰ n
+  │     ├ expecteded (0.5000087022781372, 6.416160886146827e-06, -0.49999645352363586)
+  │     ╰ actual     (0.7071222066879272, 9.073571163753513e-06, -0.7070913910865784)
+  ╰ Faces array
+    ╰ Index: 0
+      ╰ normal
+        ├ expecteded (0.0, 1.0693850526877213e-05, -0.9999999403953552)
+        ╰ actual     (0.0, 0.0, 0.0)
+
+========================================

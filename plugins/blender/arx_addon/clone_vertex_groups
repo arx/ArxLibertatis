@@ -1,0 +1,9 @@
+import bpy
+
+context = bpy.context
+active_obj = context.active_object
+selected_objs = [obj for obj in context.selected_objects if obj != active_obj and obj.type == 'MESH']
+for target_obj in selected_objs:
+    target_obj.vertex_groups.clear()
+    for vg in active_obj.vertex_groups:
+        target_obj.vertex_groups.new(name=vg.name)

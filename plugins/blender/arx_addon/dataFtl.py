@@ -75,7 +75,6 @@ class EERIE_FACE_FTL(LittleEndianStructure):
                 (self.norm.x, self.norm.y, self.norm.z),
                 self.temp)
 
-
 class Texture_Container_FTL(LittleEndianStructure):
     _pack_ = 1
     _fields_ = [
@@ -109,7 +108,6 @@ class EERIE_SELECTIONS_FTL(LittleEndianStructure):
         ("selected",    c_int32),
     ]
 
-
 class ARX_FTL_PRIMARY_HEADER(LittleEndianStructure):
     _pack_ = 1
     _fields_ = [
@@ -128,7 +126,7 @@ class ARX_FTL_SECONDARY_HEADER(LittleEndianStructure):
         ("offset_collision_spheres", c_int32),
         ("offset_physics_box",       c_int32)
     ]
-    
+
 class ARX_FTL_3D_DATA_HEADER(LittleEndianStructure):
     _pack_ = 1
     _fields_ = [
@@ -142,15 +140,12 @@ class ARX_FTL_3D_DATA_HEADER(LittleEndianStructure):
         ("name",          c_char * 256)
     ]
 
-
 def comp(a, b):
     for fld in a._fields_:
         attra = getattr(a, fld[0])
         attrb = getattr(b, fld[0])
         print("foo")
-
     return True
-
 
 from collections import namedtuple
 from dataclasses import dataclass
@@ -162,7 +157,6 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 from typing import Any, List
-
 
 @dataclass(frozen=True)
 class FtlMetadata():
@@ -210,17 +204,15 @@ class FtlData():
     actions: List[FtlAction]
     sels: List[FtlSelection]
 
-
 def getFatherIndex(groups, childIndex):
     child = groups[childIndex]
-    i = childIndex-1
+    i = childIndex - 1
     while i >= 0:
         group = groups[i]
         for vertexIndex in group.indices:
             if vertexIndex == child.origin:
                 return i
-        i-=1
-
+        i -= 1
     return -1
 
 class FtlSerializer(object):
@@ -261,15 +253,12 @@ class FtlSerializer(object):
 
         metadata = FtlMetadata(name=chunkHeader.name.decode('iso-8859-1'), org=chunkHeader.origin)
 
-        # self.log.debug("Name %s" % chunkHeader.name.decode('iso-8859-1'))  # This might be empty
-
         verts = []
         for i in range(chunkHeader.nb_vertex):
             vert = EERIE_OLD_VERTEX.from_buffer_copy(data, pos)
             pos += sizeof(EERIE_OLD_VERTEX)
             verts.append(FtlVertex(xyz=(vert.v.x, vert.v.y, vert.v.z), n=(vert.norm.x, vert.norm.y, vert.norm.z)))
 
-        # debugFaces = []
         faces = []
         for i in range(chunkHeader.nb_faces):
             face = EERIE_FACE_FTL.from_buffer_copy(data, pos)
@@ -290,16 +279,6 @@ class FtlSerializer(object):
                             face.transval,
                             (face.norm.x, face.norm.y, face.norm.z))
             faces.append(oface)
-            """
-            debugFaceVids = (face.vid[0], face.vid[1], face.vid[2])
-            for j, df in debugFaces:
-                myVids = (df.vid[0], df.vid[1], df.vid[2])
-                for p in itertools.permutations(myVids):
-                    if debugFaceVids == p:
-                        print("face %i %s" % (i, str(face.toTuple())))
-                        print("dupl %i %s" % (j, str(df.toTuple())))
-            debugFaces.append((i, face))
-            """
 
         mats = []
         for i in range(chunkHeader.nb_maps):
@@ -307,29 +286,24 @@ class FtlSerializer(object):
             pos += sizeof(Texture_Container_FTL)
             mats.append(texture.name.decode('iso-8859-1'))
 
-        temp = []
+        group_temp = []  # Separate list for groups
         for i in range(chunkHeader.nb_groups):
             group = EERIE_GROUPLIST_FTL.from_buffer_copy(data, pos)
             pos += sizeof(EERIE_GROUPLIST_FTL)
-
-            # print(str(group.indexes) + ":" + str(group.nb_index) + ":" + str(group.siz))
-            # assert (group.indexes == group.nb_index)
-            # assert (group.siz == 0)
-
-            temp.append((group.name.decode('iso-8859-1'), group.origin, group.nb_index))
+            group_temp.append((group.name.decode('iso-8859-1'), group.origin, group.nb_index))
 
         groups = []
-        for (name, origin, count) in temp:
+        for i, (name, origin, count) in enumerate(group_temp):
             vertArray = c_int32 * count
             vertsIndices = vertArray.from_buffer_copy(data, pos)
             pos += sizeof(vertsIndices)
-            # 0 temporarily for parentIndex.
             groups.append(FtlGroup(name, origin, list(vertsIndices), 0))
+            self.log.debug("Group %d (%s): origin=%d, indices=%s", i, name, origin, list(vertsIndices))
 
-        # parenting
+        # Parenting
         for i, group in enumerate(groups):
             father = getFatherIndex(groups, i)
-            self.log.debug("group %d with father %d" % (i,father))
+            self.log.debug("group %d with father %d" % (i, father))
             group.parentIndex = father
 
         actions = []
@@ -338,14 +312,14 @@ class FtlSerializer(object):
             pos += sizeof(EERIE_ACTIONLIST_FTL)
             actions.append(FtlAction(action.name.decode('iso-8859-1'), action.idx))
 
-        temp = []
+        sel_temp = []  # Separate list for selections
         for i in range(chunkHeader.nb_selections):
             selection = EERIE_SELECTIONS_FTL.from_buffer_copy(data, pos)
             pos += sizeof(EERIE_SELECTIONS_FTL)
-            temp.append((selection.name.decode('iso-8859-1'), selection.nb_selected))
+            sel_temp.append((selection.name.decode('iso-8859-1'), selection.nb_selected))
 
         sels = []
-        for (name, count) in temp:
+        for name, count in sel_temp:
             vertArray = c_int32 * count
             vertsIndices = vertArray.from_buffer_copy(data, pos)
             pos += sizeof(vertsIndices)
@@ -362,7 +336,6 @@ class FtlSerializer(object):
         )
 
     def write(self, data: FtlData) -> bytearray:
-
         result = bytearray()
 
         primaryHeader = ARX_FTL_PRIMARY_HEADER()
@@ -372,7 +345,6 @@ class FtlSerializer(object):
 
         secondaryHeader = ARX_FTL_SECONDARY_HEADER()
         secondaryHeader.offset_3Ddata = sizeof(ARX_FTL_PRIMARY_HEADER) + sizeof(ARX_FTL_SECONDARY_HEADER)
-
         secondaryHeader.offset_cylinder = -1
         secondaryHeader.offset_progressive_data = -1
         secondaryHeader.offset_clothes_data = -1
@@ -387,7 +359,6 @@ class FtlSerializer(object):
         chunkHeader.nb_groups = len(data.groups)
         chunkHeader.nb_action = len(data.actions)
         chunkHeader.nb_selections = len(data.sels)
-
         chunkHeader.origin = data.metadata.org
         chunkHeader.name = data.metadata.name.encode('iso-8859-1')
         result += bytearray(chunkHeader)
@@ -407,17 +378,13 @@ class FtlSerializer(object):
             face.vid = (c_uint16 * 3)(*f.vids)
             face.u, face.v = zip(*f.uvs)
             
-            if f[2] < len(data.mats):
-                face.texid = f[2]
+            if f.texid < len(data.mats):
+                face.texid = f.texid
             else:
                 face.texid = -1
             
-            #face.texid = f[2]
-            face.facetype.asUInt = f[3]
-            face.transval = f[4]
-            # face.norm.x = f.normal[0]
-            # face.norm.y = f.normal[1]
-            # face.norm.z = f.normal[2]
+            face.facetype.asUInt = f.facetype
+            face.transval = f.transval
             result += bytearray(face)
 
         self.log.debug("Mats start: %s" % hex(len(result)))
@@ -431,35 +398,35 @@ class FtlSerializer(object):
 
         for g in data.groups:
             group = EERIE_GROUPLIST_FTL()
-            group.name = g[0].encode('iso-8859-1')
-            group.origin = g[1]
-            group.nb_index = len(g[2])
+            group.name = g.name.encode('iso-8859-1')
+            group.origin = g.origin
+            group.nb_index = len(g.indices)
             result += bytearray(group)
 
         for g in data.groups:
-            VertArray = c_int32 * len(g[2])
-            array = (VertArray)(*g[2])
+            VertArray = c_int32 * len(g.indices)
+            array = (VertArray)(*g.indices)
             result += bytearray(array)
 
         self.log.debug("Actions start: %s" % hex(len(result)))
 
         for a in data.actions:
             action = EERIE_ACTIONLIST_FTL()
-            action.name = a[0].encode('iso-8859-1')
-            action.idx = a[1]
+            action.name = a.name.encode('iso-8859-1')
+            action.idx = a.vidx
             result += bytearray(action)
 
         self.log.debug("Sels start: %s" % hex(len(result)))
 
         for s in data.sels:
             selection = EERIE_SELECTIONS_FTL()
-            selection.name = s[0].encode('iso-8859-1')
-            selection.nb_selected = len(s[1])
+            selection.name = s.name.encode('iso-8859-1')
+            selection.nb_selected = len(s.indices)
             result += bytearray(selection)
 
         for s in data.sels:
-            VertArray = c_int32 * len(s[1])
-            array = (VertArray)(*s[1])
+            VertArray = c_int32 * len(s.indices)
+            array = (VertArray)(*s.indices)
             result += bytearray(array)
 
         return result

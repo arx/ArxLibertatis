@@ -1,0 +1,49 @@
+import bpy
+import bmesh
+
+# Get the active object
+obj = bpy.context.active_object
+
+# Ensure the object is a mesh and in Object Mode initially
+if obj.type != 'MESH':
+    print("Error: Active object must be a mesh.")
+else:
+    # Switch to Object Mode to ensure clean BMesh access
+    bpy.ops.object.mode_set(mode='OBJECT')
+    
+    # Create a BMesh instance
+    bm = bmesh.new()
+    bm.from_mesh(obj.data)
+    
+    # Ensure custom data layers exist for sharp_face, material_index, arx_transval, and arx_facetype
+    # Create them if they don't exist
+    if not bm.faces.layers.int.get('sharp_face'):  # Using int for boolean (0/1) as Blender doesn't have boolean face layers
+        bm.faces.layers.int.new('sharp_face')
+    if not bm.faces.layers.int.get('material_index'):
+        bm.faces.layers.int.new('material_index')
+    if not bm.faces.layers.float.get('arx_transval'):
+        bm.faces.layers.float.new('arx_transval')
+    if not bm.faces.layers.int.get('arx_facetype'):
+        bm.faces.layers.int.new('arx_facetype')
+    
+    # Get references to the custom data layers
+    sharp_face_layer = bm.faces.layers.int['sharp_face']
+    material_index_layer = bm.faces.layers.int['material_index']
+    transval_layer = bm.faces.layers.float['arx_transval']
+    facetype_layer = bm.faces.layers.int['arx_facetype']
+    
+    # Loop through all faces and set custom properties
+    for face in bm.faces:
+        face[sharp_face_layer] = 1  # Set sharp_face to True (1)
+        face[material_index_layer] = 1  # Set material_index to 1
+        face[transval_layer] = 0.0  # Set arx_transval to 0.0
+        face[facetype_layer] = 1  # Set arx_facetype to 1
+    
+    # Write changes back to the mesh
+    bm.to_mesh(obj.data)
+    bm.free()  # Free BMesh to avoid memory leaks
+    
+    # Update the mesh
+    obj.data.update()
+    
+    print("Custom properties set for all faces.")

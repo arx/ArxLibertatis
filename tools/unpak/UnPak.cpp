@@ -41,6 +41,7 @@
 #include "platform/ProgramOptions.h"
 
 #include "util/MD5.h"
+#include "util/String.h"
 #include "util/Unicode.h"
 #include "util/cmdline/CommandLine.h"
 
@@ -67,7 +68,7 @@ static void processDirectory(PakDirectory & dir, const fs::path & prefix,
 		SortedFiles files;
 		for(auto file : dir.files()) {
 			// TODO this should really be done when loading the pak file
-			std::string name = util::convert<util::ISO_8859_1, util::UTF8>(file.name);
+			std::string name = util::toLowercase(util::convert<util::ISO_8859_1, util::UTF8>(file.name));
 			files[name] = &file.entry;
 		}
 		for(const SortedFiles::value_type & entry : files) {
@@ -111,7 +112,7 @@ static void processDirectory(PakDirectory & dir, const fs::path & prefix,
 		SortedDirs subdirs;
 		for(auto subdir : dir.dirs()) {
 			// TODO this should really be done when loading the pak file
-			std::string name = util::convert<util::ISO_8859_1, util::UTF8>(subdir.name);
+			std::string name = util::toLowercase(util::convert<util::ISO_8859_1, util::UTF8>(subdir.name));
 			subdirs[name] = &subdir.entry;
 		}
 		for(const SortedDirs::value_type & entry : subdirs) {
